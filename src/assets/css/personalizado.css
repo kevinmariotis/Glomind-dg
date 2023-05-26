@@ -16,3 +16,30 @@
     color: #fff; /* Color del spinner */
   }
   /*Fin de Spinner de carga central*/
+
+  /*generar una version de select oscuro*/
+  .select-dark {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  .select-dark option {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  .select-dark:focus,
+  .select-dark:hover {
+    border-color: #fff;
+    outline-color: #fff;
+  }
+  
+  .select-dark:focus option,
+  .select-dark:hover option {
+    background-color: #444;
+  }
+  
+  .select-dark:disabled,
+  .select-dark option:disabled {
+    color: #888;
+  }

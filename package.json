@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host myedu2.com",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -14,6 +14,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^1.6.3",
     "react-dom": "^18.2.0",
+    "react-google-recaptcha": "^2.1.0",
     "react-router-dom": "^6.11.2"
   },
   "devDependencies": {

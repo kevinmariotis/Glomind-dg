@@ -80,36 +80,7 @@ export const AuthProvider = ({ children }) => {
             }
         });
     };
-
-    /*
-    const validarToken = async () => {
-        const jwt = Cookies.get('jwt');
-        if(jwt){
-            //primero miramos si esta cookie ya está expirada y el navegador no la ha eliminado            
-            const isExpired = jwt ? new Date(jwt.expires) < new Date() : true;
-            if(isExpired){
-                Cookies.remove('jwt');                
-            }else{
-                const opciones = {
-                    method: 'PUT',
-                    headers: { 
-                        'Authorization':`Bearer ${jwt}`
-                    }
-                };        
-                const response = await fetch(`${urlBaseApi}/api/sesion/validarToken`, opciones);
-                const data = await response.json();        
-                if (response.ok) {
-                    //sessionStorage.setItem('permisos', JSON.stringify(data.permisos));    //los permisos solo son almacenados en memoria                   
-                    //setIsMounted(false);
-                    login({'token':jwt, 'permisos':data.permisos});              
-                }else{
-                    Cookies.remove('jwt');
-                }
-            }
-        }
-    }
-    */
-   
+       
     return (
         <AuthContext.Provider value={{jwt, authenticated, permissions, setJwt, logout, validarToken}}>
             {children}

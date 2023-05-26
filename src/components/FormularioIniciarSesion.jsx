@@ -1,24 +1,27 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import ReCAPTCHA from "react-google-recaptcha";
 
 import SpamError from './SpamError';
 import Popup from './Popup';
 
 
-function FormularioIniciarSesion() {    
-    const urlBase = import.meta.env.VITE_URL_BASE;    
+function FormularioIniciarSesion() {        
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;  
-    const navigate = useNavigate();
-    
+    const navigate = useNavigate();            
+
     const [botonIniciarSesionEstado, setBotonIniciarSesionEstado] = useState('');
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [captchaValue, setCaptchaValue] = useState("");
 
     const [errorUsuario, setErrorUsuario] = useState('');
     const [errorContrasena, seterrorContrasena] = useState('');
-    
+    const [erroresCaptcha, seterroresCaptcha] = useState('');    
+    const [resetKey, setResetKey] = useState(0);
+
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
 
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -42,6 +45,11 @@ function FormularioIniciarSesion() {
         setPassword(event.target.value);
     };    
 
+    const handleCaptchaChange = (value) => {
+        // Almacena el valor del reCAPTCHA en el estado
+        setCaptchaValue(value);
+    };
+    
     const fetchData = async (event) => {
         event.preventDefault();
        
@@ -49,6 +57,7 @@ function FormularioIniciarSesion() {
         const formData = new FormData();
         formData.append('usuario', username);
         formData.append('contrasena', password);
+        formData.append('g-recaptcha-response', captchaValue);        
         const opciones = {
             method: 'POST',
             headers: {                      
@@ -70,8 +79,7 @@ function FormularioIniciarSesion() {
                 return;
             } else {
                 // Obtener el código de error de la respuesta
-                const statusCode = response.status;
-
+                const statusCode = response.status;                
                 let errores = {};          
                 if (typeof data.datos !== 'undefined') {
                     errores = data.datos;                      
@@ -79,6 +87,8 @@ function FormularioIniciarSesion() {
                 
                 let erroresusuario = '';
                 let errorecontrasena = '';
+                let errorescapchax = '';
+                
                 Object.entries(errores).forEach(([clave, mensajes]) => {
                     console.log(`Clave: ${clave}`);                                           
                     mensajes.forEach((mensaje) => {
@@ -97,12 +107,20 @@ function FormularioIniciarSesion() {
                                     errorecontrasena = `${mensaje}`;                                    
                                 }
                             break;
+                            case 'g-recaptcha-response':
+                                if(errorescapchax!=''){
+                                    errorescapchax = `${errorescapchax}, ${mensaje}`;                                    
+                                }else{
+                                    errorescapchax = `${mensaje}`;                                    
+                                }                                                                
+                            break; 
                         }
                         console.log(`- ${mensaje}`);
                     });
                 });
                 setErrorUsuario(erroresusuario);
                 seterrorContrasena(errorecontrasena);
+                seterroresCaptcha(errorescapchax);
 
                 //si viene un codigo de error se muestra un mensaje en popup
                 if(data.codigo!=''){
@@ -136,10 +154,12 @@ function FormularioIniciarSesion() {
                         console.log('Datos de error:', data);
                   break;
                 }
+                setResetKey(prevKey => prevKey + 1);
             }
             setBotonIniciarSesionEstado('');
         }catch (error) {
             console.error('Error de conexión:', error);        
+            setBotonIniciarSesionEstado('');
         }
     };    
 
@@ -192,6 +212,12 @@ function FormularioIniciarSesion() {
                                         </div>
                                         {errorContrasena!='' && <SpamError mensaje={errorContrasena} />}
                                     </div>
+                                    <div className="input-box">
+                                        <div className="input-group mb-3">                  
+                                            <ReCAPTCHA key={resetKey} onChange={handleCaptchaChange} sitekey="6LfyHT0mAAAAADE_ZAEDvGr4Z6QBa8WWbuBJ8WzA" />                                                
+                                        </div>
+                                        {erroresCaptcha!='' && (<SpamError mensaje={erroresCaptcha} />)}
+                                    </div>
                                     <div className="btn-box">
                                         <div className="d-flex align-items-center justify-content-between pb-4">
                                             <div className="custom-control custom-checkbox fs-15">
@@ -201,7 +227,7 @@ function FormularioIniciarSesion() {
                                             <a href="recover.html" className="btn-text">Olvidé mi contraseña</a>
                                         </div>
                                         <button className="btn theme-btn" type="submit" disabled={botonIniciarSesionEstado} onClick={fetchData}>Iniciar sesión <i className="la la-arrow-right icon ml-1"></i></button>
-                                        <p className="fs-14 pt-2">No tiene una cuenta? <Link to="/signup" ><a href="sign-up.html" className="text-color hover-underline">Regístrese</a></Link></p>
+                                        <p className="fs-14 pt-2">No tiene una cuenta? <Link to="/signup" className="text-color hover-underline">Regístrese</Link></p>
                                     </div>
                                 </form>
                             </div>
