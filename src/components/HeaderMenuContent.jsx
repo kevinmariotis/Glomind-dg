@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../AuthContext';
 
 function HeaderMenuContent() {
     const [datos, setDatos] = useState({"datos":{},"fechahora":0});
+    const [contadorCarrito, setContadorCarrito] = useState({"contador":0, "productos":{},"fechahora":0});
+
     const urlBase = import.meta.env.VITE_URL_BASE;    
-    const urlBaseApi = import.meta.env.VITE_URL_BASE_API;        
-    
-    useEffect(() => {
+    const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
+    const host = window.location.host;
+    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, authenticated} = useContext(AuthContext);
+
+    useEffect(() => {        
         // Verificar si los datos están almacenados en la caché local
-        const categoriasistema = localStorage.getItem('categoriasistema');
-    
+        const categoriasistema = sessionStorage.getItem('categoriasistema');    
         if (categoriasistema) {   
             console.log('las categorias ya estaban guardadas');
             setDatos(JSON.parse(categoriasistema));                          
@@ -20,9 +25,29 @@ function HeaderMenuContent() {
             console.log('las categorias NO existen');
             obtenerDatosDelServidor();
         }
+
+        //miramos si no tiene los datos del carrito en sessionStorage
+        const contadorcarrito = sessionStorage.getItem('contadorcarrito');    
+        if (contadorcarrito) {   
+            console.log('El contador de productos de carrito ya existia');
+            setContadorCarrito(JSON.parse(contadorcarrito));
+            if(Math.floor(new Date().getTime()/1000)-parseInt(JSON.parse(contadorcarrito).fechahora)>=3600){                
+                setCargarContadorCarrito(true);
+            }
+        }else{            
+            setCargarContadorCarrito(true);
+        }
+
     }, []);
     
-    const obtenerDatosDelServidor = async () => {
+    //use efect para cargar los datos contadores del carrito
+    useEffect(() => {        
+        if(cargarContadorCarrito && authenticated){                                    
+            obtenerDatosCarrito();            
+        }
+    }, [cargarContadorCarrito, authenticated]); 
+
+    const obtenerDatosDelServidor = async () => {        
         try {            
             const opciones = {
                 method: 'GET',
@@ -36,10 +61,38 @@ function HeaderMenuContent() {
             if (response.ok) {                
                 console.log('Categorías recuperadas del servidor:');
                 const categoriasistema = await response.json();                    
-                localStorage.setItem('categoriasistema', JSON.stringify({"datos":categoriasistema, "fechahora":Math.floor(new Date().getTime() / 1000)}));
+                sessionStorage.setItem('categoriasistema', JSON.stringify({"datos":categoriasistema, "fechahora":Math.floor(new Date().getTime() / 1000)}));
                 setDatos({"datos":categoriasistema, "fechahora":Math.floor(new Date().getTime() / 1000)});                                                  
             } else {                
                 console.error(`Error en la respuesta: ${response.status} - ${response.statusText}`);
+            }
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+    const obtenerDatosCarrito = async () => {
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: {                   
+                    'Authorization':`Bearer ${jwt}`,                   
+                },
+            };
+                
+            const response = await fetch(`${urlBaseApi}/api/carrito/1`, opciones);
+
+            if (response.ok) {                
+                console.log('Contador carrito recuperado del servidor:');
+                const contadorcarrito = await response.json();                    
+                const tamanocarrito = contadorcarrito.productos.length;
+                sessionStorage.setItem('contadorcarrito', JSON.stringify({"contador":tamanocarrito, "productos":contadorcarrito.productos, "total":contadorcarrito.factura.total, "fechahora":Math.floor(new Date().getTime() / 1000)}));
+                setContadorCarrito({"contador":tamanocarrito, "productos":contadorcarrito.productos, "total":contadorcarrito.factura.total, "fechahora":Math.floor(new Date().getTime() / 1000)});                                                  
+                setCargarContadorCarrito(false);
+            } else {                
+                setCargarContadorCarrito(false);
+                console.error(`Error al intentar botener el contedor del carrito: ${response.status} - ${response.statusText}`);
             }
         }catch(error){
             // Manejar el caso de error en la solicitud
@@ -99,139 +152,36 @@ function HeaderMenuContent() {
                                     <span className="la la-search search-icon"></span>
                                 </div>
                             </form>
-                            <nav className="main-menu">
-                                <ul>
-                                    <li>
-                                        <a href="#">Home <i className="la la-angle-down fs-12"></i></a>
-                                        <ul className="dropdown-menu-item">
-                                            <li><a href="index.html">Home One</a></li>
-                                            <li><a href="home-2.html">Home Two</a></li>
-                                            <li><a href="home-3.html">Home Three</a></li>
-                                            <li><a href="home-4.html">Home four</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="#">courses <i className="la la-angle-down fs-12"></i></a>
-                                        <ul className="dropdown-menu-item">
-                                            <li><a href="course-grid.html">course grid</a></li>
-                                            <li><a href="course-list.html">course list</a></li>
-                                            <li><a href="course-grid-left-sidebar.html">grid left sidebar</a></li>
-                                            <li><a href="course-grid-right-sidebar.html">grid right sidebar</a></li>
-                                            <li><a href="course-list-left-sidebar.html">list left sidebar <span className="ribbon ribbon-blue-bg">New</span></a></li>
-                                            <li><a href="course-list-right-sidebar.html">list right sidebar <span className="ribbon ribbon-blue-bg">New</span></a></li>
-                                            <li><a href="course-details.html">course details</a></li>
-                                            <li><a href="lesson-details.html">lesson details</a></li>
-                                            <li><a href="my-courses.html">My courses</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="#">Student <i className="la la-angle-down fs-12"></i></a>
-                                        <ul className="dropdown-menu-item">
-                                            <li><a href="student-detail.html">student detail</a></li>
-                                            <li><a href="student-quiz.html">take quiz</a></li>
-                                            <li><a href="student-quiz-results.html">quiz results</a></li>
-                                            <li><a href="student-quiz-result-details.html">quiz details</a></li>
-                                            <li><a href="student-quiz-result-details-2.html">quiz details 2</a></li>
-                                            <li><a href="student-path.html">path details</a></li>
-                                            <li><a href="student-path-assessment.html">Skill Assessment</a></li>
-                                            <li><a href="student-path-assessment-result.html">Skill result</a></li>
-                                        </ul>
-                                    </li>
-                                    <li className="mega-menu-has">
-                                        <a href="#">pages <i className="la la-angle-down fs-12"></i></a>
-                                        <div className="dropdown-menu-item mega-menu">
-                                            <ul className="row no-gutters">
-                                                <li className="col-lg-3">
-                                                    <a href="dashboard.html">dashboard <span className="ribbon">Hot</span></a>
-                                                    <a href="about.html">about</a>
-                                                    <a href="teachers.html">Teachers</a>
-                                                    <a href="teacher-detail.html">Teacher detail</a>
-                                                    <a href="categories.html">categories</a>
-                                                    <a href="terms-and-conditions.html">Terms & conditions</a>
-                                                    <a href="privacy-policy.html">privacy policy</a>
-                                                    <a href="invite.html">invite friend</a>
-                                                </li>
-                                                <li className="col-lg-3">
-                                                    <a href="careers.html">careers</a>
-                                                    <a href="career-details.html">career details</a>
-                                                    <a href="become-a-teacher.html">become an instructor</a>
-                                                    <a href="faq.html">FAQs</a>
-                                                    <a href="admission.html">admission</a>
-                                                    <a href="gallery.html">gallery</a>
-                                                    <a href="pricing-table.html">pricing tables</a>
-                                                    <a href="contact.html">contact</a>
-                                                </li>
-                                                <li className="col-lg-3">
-                                                    <a href="for-business.html">for business</a>
-                                                    <a href="sign-up.html">sign-up</a>
-                                                    <a href="login.html">login</a>
-                                                    <a href="recover.html">recover</a>
-                                                    <a href="shopping-cart.html">cart</a>
-                                                    <a href="checkout.html">checkout</a>
-                                                    <a href="error.html">page 404</a>
-                                                </li>
-                                                <li className="col-lg-3">
-                                                    <div className="menu-banner position-relative h-100">
-                                                        <div className="overlay rounded-rounded opacity-4"></div>
-                                                        <div className="menu-banner-content p-4 position-absolute bottom-0 left-0">
-                                                            <h4 className="fs-20 font-weight-bold pb-3 text-white">30 days free trail for new users</h4>
-                                                            <a href="sign-up.html" className="btn theme-btn theme-btn-sm theme-btn-white">Start Learning <i className="la la-arrow-right icon ml-1"></i></a>
-                                                        </div>
-                                                        <img src="images/menu-banner-img.jpg" alt="menu banner image" className="w-100 h-100 rounded-rounded" />
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a href="#">blog <i className="la la-angle-down fs-12"></i></a>
-                                        <ul className="dropdown-menu-item">
-                                            <li><a href="blog-full-width.html">blog full width </a></li>
-                                            <li><a href="blog-no-sidebar.html">blog no sidebar</a></li>
-                                            <li><a href="blog-left-sidebar.html">blog left sidebar</a></li>
-                                            <li><a href="blog-right-sidebar.html">blog right sidebar</a></li>
-                                            <li><a href="blog-single.html">blog detail</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </nav>
+
                             <div className="shop-cart mr-4">
                                 <ul>
                                     <li>
                                         <p className="shop-cart-btn d-flex align-items-center">
                                             <i className="la la-shopping-cart"></i>
-                                            <span className="product-count">2</span>
+                                            {contadorCarrito.contador>0 && <span className="product-count">{contadorCarrito.contador}</span>}
                                         </p>
-                                        <ul className="cart-dropdown-menu">
-                                            <li className="media media-card">
-                                                <a href="shopping-cart.html" className="media-img">
-                                                    <img src="images/small-img.jpg" alt="Cart image" />
-                                                </a>
-                                                <div className="media-body">
-                                                    <h5><a href="course-details.html">The Complete JavaScript Course 2021: From Zero to Expert!</a></h5>
-                                                    <span className="d-block lh-18 py-1">Kamran Ahmed</span>
-                                                    <p className="text-black font-weight-semi-bold lh-18">$12.99 <span className="before-price fs-14">$129.99</span></p>
-                                                </div>
-                                            </li>
-                                            <li className="media media-card">
-                                                <a href="shopping-cart.html" className="media-img">
-                                                    <img src="images/small-img.jpg" alt="Cart image" />
-                                                </a>
-                                                <div className="media-body">
-                                                    <h5><a href="course-details.html">The Complete JavaScript Course 2021: From Zero to Expert!</a></h5>
-                                                    <span className="d-block lh-18 py-1">Kamran Ahmed</span>
-                                                    <p className="text-black font-weight-semi-bold lh-18">$12.99 <span className="before-price fs-14">$129.99</span></p>
-                                                </div>
-                                            </li>
+                                        {contadorCarrito.contador>0 && <ul className="cart-dropdown-menu">
+                                            {Object.keys(contadorCarrito.productos).map((key) => (
+                                                <li key={contadorCarrito.productos[key].id_curso+contadorCarrito.productos[key].tipo_compra} className="media media-card">
+                                                    <a href="shopping-cart.html" className="media-img">
+                                                        <img src="images/small-img.jpg" alt="Cart image" />
+                                                    </a>
+                                                    <div className="media-body">
+                                                        <h5><a href="course-details.html">{contadorCarrito.productos[key].nombre}</a></h5>
+                                                        {contadorCarrito.productos[key].nombres!='' && <span className="d-block lh-18 py-1">{contadorCarrito.productos[key].nombres} {contadorCarrito.productos[key].apellidos}</span>}
+                                                        <p className="text-black font-weight-semi-bold lh-18">${contadorCarrito.productos[key].total_momento} {contadorCarrito.productos[key].precio_anterior!=0 && <span className="before-price fs-14">${contadorCarrito.productos[key].precio_anterior}</span>}</p>
+                                                    </div>
+                                                </li>
+                                            ))}                                                
                                             <li className="media media-card">
                                                 <div className="media-body fs-16">
-                                                    <p className="text-black font-weight-semi-bold lh-18">Total: <span className="cart-total">$12.99</span> <span className="before-price fs-14">$129.99</span></p>
+                                                    <p className="text-black font-weight-semi-bold lh-18">Total: <span className="cart-total">${contadorCarrito.total}</span></p>
                                                 </div>
                                             </li>
                                             <li>
                                                 <a href="shopping-cart.html" className="btn theme-btn w-100">Got to cart <i className="la la-arrow-right icon ml-1"></i></a>
                                             </li>
-                                        </ul>
+                                        </ul>}
                                     </li>
                                 </ul>
                             </div>

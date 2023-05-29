@@ -20,7 +20,7 @@ function Pagina404() {
                                 </p>
                             </div>
                             <div className="btn-box pt-30px">
-                                <Link to="/signup"><a href="index.html" className="btn theme-btn"><i className="la la-reply mr-1"></i> Back to Home</a></Link>
+                                <Link to="/signup" className="btn theme-btn"><i className="la la-reply mr-1"></i> Back to Home</Link>
                             </div>
                         </div>
                     </div>

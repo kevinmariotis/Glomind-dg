@@ -8,7 +8,9 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {    
     const [authenticated, setAuthenticated] = useState(false);
     const [permissions, setPermissions] = useState('');
-    const [jwt, setJwt] = useState(false);    
+    const [cargarContadorCarrito, setCargarContadorCarrito] = useState(true);   //setCargarContadorCarrito debe ser usado por cualquier parte del programa para dar la orden de que se recarge el contador de items en el carrito
+
+    const [jwt, setJwt] = useState('');    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
     const [isMounted, setIsMounted] = useState(false);
     // Función para dar la sesion por iniciada
@@ -64,7 +66,7 @@ export const AuthProvider = ({ children }) => {
                         const response = await fetch(`${urlBaseApi}/api/sesion/validarToken`, opciones);
                         const data = await response.json();
                         if (response.status === 200) {                            
-                            login({'token':jwt, 'permisos':JSON.stringify(data.permisos)});
+                            login({'jwt':jwt, 'permisos':JSON.stringify(data.permisos)});
                             resolve(); // Resuelve la promesa si el token es válido
                         } else {
                             Cookies.remove('jwt');
@@ -82,7 +84,7 @@ export const AuthProvider = ({ children }) => {
     };
        
     return (
-        <AuthContext.Provider value={{jwt, authenticated, permissions, setJwt, logout, validarToken}}>
+        <AuthContext.Provider value={{jwt, authenticated, permissions, setJwt, logout, validarToken, cargarContadorCarrito, setCargarContadorCarrito}}>
             {children}
         </AuthContext.Provider>
     );

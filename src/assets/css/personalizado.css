@@ -43,3 +43,8 @@
   .select-dark option:disabled {
     color: #888;
   }
+
+  /*Reescritura Hacer que el busador superior ocupe mas espacio al retirar los menues de al lado*/
+  .menu-wrapper form {
+    width: 950px;   
+}

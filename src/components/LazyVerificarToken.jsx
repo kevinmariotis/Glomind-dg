@@ -2,7 +2,7 @@ import React, {useEffect, Suspense, lazy, useContext, useState} from 'react';
 import { AuthContext } from '../AuthContext';
 import LoadingAnimation from './LoadingAnimation';
 
-function LazyVerificarToken() {    
+function LazyVerificarToken({ children }) {    
     const {validarToken} = useContext(AuthContext);
     const [cargado, setCargado] = useState(false);
 
@@ -16,6 +16,7 @@ function LazyVerificarToken() {
     const verificarToken = async () => {        
         try{            
             if(!cargado){
+                setCargado(true);
                 return await validarToken();        
             }else{
                 return null;
@@ -31,6 +32,7 @@ function LazyVerificarToken() {
     return (
         <Suspense fallback={<LoadingAnimation />}>     
             <LazyComponent/>
+            {children}
         </Suspense>
     );
 }

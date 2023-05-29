@@ -322,13 +322,6 @@ function FormularioRegistrarse(){
                                                 {erroresCampos['identificacion'].length > 0 && (<SpamError mensaje={erroresCampos['identificacion']} />)}
                                             </div>
                                             <div className="form-group col-md-6">
-                                                <input onChange={handleEmailChange} value={email} className="form-control form--control" type="email" name="email" placeholder="Correo electrónico" />
-                                                <span className="la la-envelope input-icon"></span>
-                                                {erroresCampos['email'].length > 0 && (<SpamError mensaje={erroresCampos['email']} />)}
-                                            </div>
-                                        </div>                                                                             
-                                        <div className="input-box form-row">                                                           
-                                            <div className="form-group col-md-6">
                                                 <select onChange={handleCambiarPais} className="form-control form--control select-dark" type="text" name="pais">                                                        
                                                     <option value="">Seleccione País</option>
                                                     {paises.map((dato, index) => (
@@ -338,6 +331,8 @@ function FormularioRegistrarse(){
                                                 <span className="la la-user input-icon"></span>
                                                 {erroresCampos['id_pais'].length > 0 && (<SpamError mensaje={erroresCampos['id_pais']} />)}
                                             </div>
+                                        </div>                                                                             
+                                        <div className="input-box form-row">                                                                                                   
                                             <div className="form-group col-md-6">
                                                 <select onChange={handleDepartamentoChange} className="form-control form--control select-container-select" type="text" name="departamento">
                                                     <option value="" >Seleccione departamento</option>
@@ -348,13 +343,18 @@ function FormularioRegistrarse(){
                                                 <span className="la la-user input-icon"></span>
                                                 {erroresCampos['id_departamento'].length > 0 && (<SpamError mensaje={erroresCampos['id_departamento']} />)}
                                             </div>
-                                        </div>                                       
-                                        <div className="input-box">                                
-                                            <div className="form-group">
+                                            <div className="form-group col-md-6">
                                                 <input onChange={handleCiudadChange} value={ciudad} className="form-control form--control" type="text" name="ciudad" placeholder="Ciudad" />
                                                 <span className="la la-user input-icon"></span>
                                                 {erroresCampos['ciudad'].length > 0 && (<SpamError mensaje={erroresCampos['ciudad']} />)}
                                             </div>
+                                        </div>                                       
+                                        <div className="input-box">    
+                                            <div className="form-group">
+                                                <input onChange={handleEmailChange} value={email} className="form-control form--control" type="email" name="email" placeholder="Correo electrónico" />
+                                                <span className="la la-envelope input-icon"></span>
+                                                {erroresCampos['email'].length > 0 && (<SpamError mensaje={erroresCampos['email']} />)}
+                                            </div>                                                                        
                                         </div>   
                                         <div className="input-box">      
                                             <div className="input-group mb-3">
