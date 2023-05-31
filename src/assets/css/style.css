@@ -3659,7 +3659,7 @@ div.datedropper .picker .pick-lg-b li {
     width: 200px;
     height: 200px;
     background-position: center;
-    background-image: url("../images/dots.png");
+    background-image: url("/images/dots.png");
     -webkit-border-radius: 100%;
     -moz-border-radius: 100%;
     border-radius: 100%;
@@ -3771,13 +3771,13 @@ div.datedropper .picker .pick-lg-b li {
   z-index: 2; }
 
 .img-bg {
-  background-image: url(../images/img7.jpg); }
+  background-image: url(/images/img7.jpg); }
 
 .img-bg-2 {
-  background-image: url("../images/breadcrumb-bg.jpg"); }
+  background-image: url("/images/breadcrumb-bg.jpg"); }
 
 .img-bg-3 {
-  background-image: url("../images/breadcrumb-bg-2.jpg"); }
+  background-image: url("/images/breadcrumb-bg-2.jpg"); }
 
 .overlay {
   position: absolute;
@@ -3790,7 +3790,7 @@ div.datedropper .picker .pick-lg-b li {
   opacity: .8; }
 
 .pattern-bg {
-  background-image: url("../images/pattern.png"); }
+  background-image: url("/images/pattern.png"); }
 
 /*============= generic-img-box =================*/
 .generic-img-box {
@@ -3803,7 +3803,7 @@ div.datedropper .picker .pick-lg-b li {
     bottom: 150px;
     width: 200px;
     height: 150px;
-    background-image: url(../images/dots.png);
+    background-image: url(/images/dots.png);
     background-position: center;
     background-size: cover;
     pointer-events: none;
@@ -6293,19 +6293,19 @@ div.datedropper .picker .pick-lg-b li {
 
 /*-=========== hero-bg ==========-*/
 .hero-bg-1 {
-  background-image: url("../images/slider-img1.jpg"); }
+  background-image: url("/images/slider-img1.jpg"); }
 
 .hero-bg-2 {
-  background-image: url("../images/slider-img2.jpg"); }
+  background-image: url("/images/slider-img2.jpg"); }
 
 .hero-bg-3 {
-  background-image: url("../images/slider-img3.jpg"); }
+  background-image: url("/images/slider-img3.jpg"); }
 
 .hero-bg-4 {
-  background-image: url("../images/slider-img4.jpg"); }
+  background-image: url("/images/slider-img4.jpg"); }
 
 .hero-bg-5 {
-  background-image: url("../images/slider-img5.jpg"); }
+  background-image: url("/images/slider-img5.jpg"); }
 
 /*-=========== hero-slider ==========-*/
 @media (max-width: 480px) {
@@ -6480,7 +6480,7 @@ div.datedropper .picker .pick-lg-b li {
       padding-top: 120px;
       padding-bottom: 120px; } }
   .hero-area-4 .hero-slider-item::before {
-    background-image: url("../images/hero-shape.jpg");
+    background-image: url("/images/hero-shape.jpg");
     z-index: -1; }
 
 .hero-area-4 .hero-content .form-control {

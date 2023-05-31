@@ -9,7 +9,7 @@ function HeaderMenuContent() {
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const host = window.location.host;
-    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, authenticated} = useContext(AuthContext);
+    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, authenticated} = useContext(AuthContext);    
 
     useEffect(() => {        
         // Verificar si los datos están almacenados en la caché local
@@ -107,7 +107,7 @@ function HeaderMenuContent() {
                 <div className="row align-items-center">
                     <div className="col-lg-2">
                         <div className="logo-box">
-                            <a href="index.html" className="logo"><img src="images/logo.png" alt="logo" /></a>
+                            <a href="index.html" className="logo"><img src={`${urlBase}/images/logo.png`} alt="logo" /></a>
                             <div className="user-btn-action">
                                 <div className="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2" data-toggle="tooltip" data-placement="top" title="Search">
                                     <i className="la la-search"></i>
@@ -126,16 +126,16 @@ function HeaderMenuContent() {
                             <div className="menu-category">
                                 <ul>
                                     <li>
-                                        <a href="#">Categorías <i className="la la-angle-down fs-12"></i></a>
+                                        <Link to="/">Categorías <i className="la la-angle-down fs-12"></i></Link>
                                         <ul className="cat-dropdown-menu">
                                             {Object.keys(datos.datos).map((key) => (
                                                 <li key={datos.datos[key].id}>
-                                                    <a href={`${urlBase}/categoria/${datos.datos[key].id}/${datos.datos[key].url_amigable}`}>{datos.datos[key].nombre} {datos.datos[key].categorias_hijas.length > 0 && (<i className="la la-angle-right"></i>)}</a>
+                                                    <Link to={`${urlBase}/categoria/${datos.datos[key].id}/${datos.datos[key].url_amigable}`}>{datos.datos[key].nombre} {datos.datos[key].categorias_hijas.length > 0 && (<i className="la la-angle-right"></i>)}</Link>
                                                     { }{
                                                         datos.datos[key].categorias_hijas.length > 0 && (
                                                             <ul className="sub-menu">
                                                                 {datos.datos[key].categorias_hijas.map((sub_categoria) => {                                                                    
-                                                                    return <li key={sub_categoria.id}><a href={`${urlBase}/categoria/${sub_categoria.id}/${sub_categoria.url_amigable}`}>{sub_categoria.nombre}</a></li>
+                                                                    return <li key={sub_categoria.id}><Link to={`${urlBase}/categoria/${sub_categoria.id}/${sub_categoria.url_amigable}`}>{sub_categoria.nombre}</Link></li>
                                                                 })}
                                                             </ul>
                                                         )
@@ -158,13 +158,13 @@ function HeaderMenuContent() {
                                     <li>
                                         <p className="shop-cart-btn d-flex align-items-center">
                                             <i className="la la-shopping-cart"></i>
-                                            {contadorCarrito.contador>0 && <span className="product-count">{contadorCarrito.contador}</span>}
+                                            {authenticated && contadorCarrito.contador>0 && <span className="product-count">{contadorCarrito.contador}</span>}
                                         </p>
-                                        {contadorCarrito.contador>0 && <ul className="cart-dropdown-menu">
+                                        {authenticated && contadorCarrito.contador>0 && <ul className="cart-dropdown-menu">
                                             {Object.keys(contadorCarrito.productos).map((key) => (
                                                 <li key={contadorCarrito.productos[key].id_curso+contadorCarrito.productos[key].tipo_compra} className="media media-card">
                                                     <a href="shopping-cart.html" className="media-img">
-                                                        <img src="images/small-img.jpg" alt="Cart image" />
+                                                        {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} /> : <img src="images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} /> }
                                                     </a>
                                                     <div className="media-body">
                                                         <h5><a href="course-details.html">{contadorCarrito.productos[key].nombre}</a></h5>
