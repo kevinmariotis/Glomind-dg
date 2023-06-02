@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import TarjetaCurso from './TarjetaCurso';
+import Paginador from './Paginador';
 
 function FormularioCategoriaNavegacion() {
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
+    const {jwt, authenticated} = useContext(AuthContext);  
     const { id } = useParams();
     
     const [pagina, setPagina] = useState(1);
@@ -19,14 +21,38 @@ function FormularioCategoriaNavegacion() {
     const [niveles, setNiveles] = useState([]);
     const [costos, setCostos] = useState([]);
     const [instructores, setInstructores] = useState([]);    
-
-    const [nombre_seleccionado, setNombreSeleccionado] = useState('');    
+        
+    const [nombre_seleccionado, setNombreSeleccionado] = useState('');            
     const [estrella_seleccionada, setEstrellaSeleccionada] = useState([]);    
     const [video_selecionado, setVideoSelecionado] = useState('');    
     const [nivel_selecionado, setNivelSelecionado] = useState([]);    
     const [costo_selecionado, setCostoSelecionado] = useState([]);    
     const [instructor_selecionado, setInstructorSelecionado] = useState([]);    
-    
+       
+    //interval para manejar la busqueda por nombre en lapsos de tiempo
+    const intervalRef = useRef(null);
+    const latest_ultimo_nombre_escrito = useRef('');
+    const latest_nombre_seleccionado = useRef(nombre_seleccionado);
+           
+    const chekearCambiosBusquedaNombre = useCallback(() => {
+        if(latest_ultimo_nombre_escrito.current!=latest_nombre_seleccionado.current){                    
+            setNombreSeleccionado(latest_ultimo_nombre_escrito.current);                          
+            latest_nombre_seleccionado.current = latest_ultimo_nombre_escrito.current;
+            //console.log("Buscando por nombre..", latest_ultimo_nombre_escrito.current, latest_nombre_seleccionado.current);
+        }                                            
+        //console.log("Esperando nuevos cambios une:"+latest_ultimo_nombre_escrito.current+" ns:"+latest_nombre_seleccionado.current);
+    }, []);
+
+    useEffect(() => {        
+        if (!intervalRef.current) {
+            console.log("creando interval");            
+            intervalRef.current = setInterval(() => {
+                chekearCambiosBusquedaNombre();                
+            }, 1500);
+        }        
+    }, []);
+
+
     const handleEstrellaSeleccionada = (event) => {                
         const dataId = event.target.getAttribute('data-id');
         const { checked } = event.target;
@@ -40,10 +66,12 @@ function FormularioCategoriaNavegacion() {
                 setEstrellaSeleccionada(nuevoArray);                
             }
         }
+    };        
+    const handleBusquedaPorNombre = (event) => {           
+        latest_ultimo_nombre_escrito.current = event.target.value;        
     };
-    const handleBusquedaPorNombre = (event) => {                        
-        setNombreSeleccionado(event.target.value);
-        console.log("buscando por ", event.target.value);
+    const handleOrdenarPor = (event) => {           
+        setOrderBy(event.target.value);
     };
     const handleVideoSeleccionado = (event) => {                        
         setVideoSelecionado(event.target.value);
@@ -53,14 +81,12 @@ function FormularioCategoriaNavegacion() {
         const { checked } = event.target;
         if(checked){            
             if(!nivel_selecionado.includes(dataId)) {                
-                setNivelSelecionado([...nivel_selecionado, dataId]);
-                //console.log("activando ", dataId);
+                setNivelSelecionado([...nivel_selecionado, dataId]);                
             }    
         }else{
             if(nivel_selecionado.includes(dataId)) {
                 const nuevoArray = nivel_selecionado.filter((item) => item !== dataId);
-                setNivelSelecionado(nuevoArray);
-                //console.log("desactivando ", dataId);
+                setNivelSelecionado(nuevoArray);                
             }
         }
     };
@@ -69,14 +95,12 @@ function FormularioCategoriaNavegacion() {
         const { checked } = event.target;
         if(checked){            
             if(!costo_selecionado.includes(dataId)) {                
-                setCostoSelecionado([...costo_selecionado, dataId]);
-                console.log("activando ", dataId);
+                setCostoSelecionado([...costo_selecionado, dataId]);                
             }    
         }else{
             if(costo_selecionado.includes(dataId)) {
                 const nuevoArray = costo_selecionado.filter((item) => item !== dataId);
-                setCostoSelecionado(nuevoArray);
-                console.log("desactivando ", dataId);
+                setCostoSelecionado(nuevoArray);               
             }
         }
     };
@@ -85,29 +109,31 @@ function FormularioCategoriaNavegacion() {
         const { checked } = event.target;
         if(checked){            
             if(!instructor_selecionado.includes(dataId)) {                
-                setInstructorSelecionado([...instructor_selecionado, dataId]);
-                console.log("activando instructor ", dataId);
+                setInstructorSelecionado([...instructor_selecionado, dataId]);                
             }    
         }else{
             if(instructor_selecionado.includes(dataId)) {
                 const nuevoArray = instructor_selecionado.filter((item) => item !== dataId);
-                setInstructorSelecionado(nuevoArray);
-                console.log("desactivando instructor ", dataId);
+                setInstructorSelecionado(nuevoArray);                
             }
         }
     };
 
     useEffect(() => {
         obtenerDatosDelServidor();                    
-    }, [id, pagina, orderBy, estrella_seleccionada, video_selecionado, nivel_selecionado, costo_selecionado, instructor_selecionado]);
+    }, [id, pagina, orderBy, nombre_seleccionado, estrella_seleccionada, video_selecionado, nivel_selecionado, costo_selecionado, instructor_selecionado]);
 
-    const obtenerDatosDelServidor = async () => {        
+    const obtenerDatosDelServidor = async () => {  
+        let headers = {}      
+        if(authenticated){
+            headers = {
+                'Authorization':`Bearer ${jwt}`,
+            }
+        }
         try {            
             const opciones = {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',             
-                },
+                headers: headers,
             };
                 
             //estrella:0,4-nivel:1,2,3-costo:0,1-instructor:3-video:0,157            
@@ -121,9 +147,11 @@ function FormularioCategoriaNavegacion() {
             let obtener_detalles = '1';
             if(add!=''){
                 obtener_detalles = '0';
+            }else{
+                add = 'ninguno';
             }
 
-            const response = await fetch(`${urlBaseApi}/api/categoriasistema/getCursos/${id}/1/${pagina}/${orderBy}/${obtener_detalles}/${add}`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/categoriasistema/getCursos/${id}/1/${pagina}/${orderBy}/${obtener_detalles}/${add}/${nombre_seleccionado}`, opciones);
 
             if (response.ok) {                
                 //console.log('Categorías recuperadas del servidor:');
@@ -160,16 +188,16 @@ function FormularioCategoriaNavegacion() {
                                 <li><a href="course-grid.html" data-toggle="tooltip" data-placement="top" title="Grid View" className="active"><span className="la la-th-large"></span></a></li>
                                 <li><a href="course-list.html" data-toggle="tooltip" data-placement="top" title="List View"><span className="la la-list"></span></a></li>
                             </ul>
-                            <div className="select-container select--container">
-                                <select className="select-container-select">
-                                    <option value="all-category">Todos los filtros</option>
-                                    <option value="newest">Cursos nuevos</option>
-                                    <option value="oldest">Cursos no tan nuevos</option>
-                                    <option value="high-rated">Mejores reseñas</option>
-                                    <option value="popular-courses">Populares</option>
-                                    <option value="high-to-low">Mayor a menor precio</option>
-                                    <option value="low-to-high">Menor a mayor precio</option>
-                                </select>
+                            <div className="select-container select--container">    
+                                <select onChange={handleOrdenarPor} className="form-control select-dark" >                                                        
+                                    <option value="precio_actual-asc">Ordenar por</option>
+                                    <option value="precio_actual-asc">Menor a mayor precio</option>
+                                    <option value="precio_actual-desc">Mayor a menor precio</option>                                    
+                                    <option value="ultima_actualizacion-desc">Más nuevos a antiguos</option>                                    
+                                    <option value="ultima_actualizacion-asc">Antiguos a más nuevos</option>                                    
+                                    <option value="porcentaje_descuento-desc">Mayor a menor descuento</option>
+                                    <option value="estudiantes_cantidad-desc">Cantidad Matriculados</option>
+                                </select>                                          
                             </div>
                         </div>
                     </div>
@@ -182,7 +210,7 @@ function FormularioCategoriaNavegacion() {
                                     <h3 className="card-title fs-18 pb-2">Sub Categorías</h3>
                                     <div className="divider"><span></span></div>
                                     {Object.keys(subcategorias).map((key) => (
-                                        <div key={'cate${subcategorias[key].id}'} className="custom-control custom-checkbox mb-1 fs-15">                                                                                    
+                                        <div key={`cate${subcategorias[key].id}`} className="custom-control custom-checkbox mb-1 fs-15">                                                                                    
                                             <Link to={`${urlBase}/categoria/${subcategorias[key].id}/${subcategorias[key].url_amigable}`}>{subcategorias[key].nombre}<span className="ml-1 text-gray">({subcategorias[key].cantidad_cursos})</span></Link>
                                         </div>
                                     ))}                                                                                                                     
@@ -190,7 +218,7 @@ function FormularioCategoriaNavegacion() {
                             </div>        
                             <div className="card card-item">
                                 <div className="card-body">
-                                    <h3 className="card-title fs-18 pb-2">Campos de filtrado</h3>
+                                    <h3 className="card-title fs-18 pb-2">Búsqueda</h3>
                                     <div className="divider"><span></span></div>
                                     <form method="post">
                                         <div className="form-group mb-0">
@@ -401,31 +429,11 @@ function FormularioCategoriaNavegacion() {
                                     reviews_cantidad={cursos[key].reviews_cantidad}
                                     precio_actual={cursos[key].precio_actual}
                                     precio_anterior={cursos[key].precio_anterior}
+                                    favorito={cursos[key].favorito}
                                 />
                             ))}              
                         </div>                                    
-                        <div className="text-center pt-3">
-                            <nav aria-label="Page navigation example" className="pagination-box">
-                                <ul className="pagination justify-content-center">
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Previous">
-                                            <span aria-hidden="true"><i className="la la-arrow-left"></i></span>
-                                            <span className="sr-only">Previous</span>
-                                        </a>
-                                    </li>
-                                    <li className="page-item active"><a className="page-link" href="#">1</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Next">
-                                            <span aria-hidden="true"><i className="la la-arrow-right"></i></span>
-                                            <span className="sr-only">Next</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                            <p className="fs-14 pt-2">Showing 1-10 of 56 results</p>
-                        </div>
+                        <Paginador elemetosTotales={cantidad_total_cursos} elementosPorPagina={20} paginaActual={pagina} callbackCambioPagina={setPagina} />
                     </div>
                 </div>
             </div>

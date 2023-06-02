@@ -17,6 +17,7 @@ function TarjetaCurso(
         reviews_cantidad=0,
         precio_actual=0.00,
         precio_anterior=0.00,
+        favorito=-1,
     }) {
         const urlBase = import.meta.env.VITE_URL_BASE;    
         const niveles = {
@@ -25,7 +26,14 @@ function TarjetaCurso(
             3: 'Experto',
         }
         const estrellas = [1, 2, 3, 4, 5];
-
+        
+        const favoritoSeleccionado = `  
+            .favoritoSeleccionado{      
+                color: yellow;
+                font-size: 16px;
+            }
+        `;      
+        console.log("Este es el favorito ", favorito);
         return (<div className="col-lg-6 responsive-column-half">
                     <div className="card card-item card-preview" data-tooltip-content="#tooltip_content_1">
                         <div className="card-image">
@@ -55,11 +63,11 @@ function TarjetaCurso(
                             </div>
                             <div className="d-flex justify-content-between align-items-center">
                                 <p className="card-price text-black font-weight-bold">{precio_actual} {precio_anterior!=0 && <span className="before-price font-weight-medium">{precio_anterior}</span>}</p>
-                                <div className="icon-element icon-element-sm shadow-sm cursor-pointer" title="Agregar a favoritos"><i className="la la-heart-o"></i></div>
+                                {favorito!=-1 && <div className={`icon-element icon-element-sm shadow-sm cursor-pointer ${favorito==1 ? ' favoritoSeleccionado' : '' }`} title="Agregar a favoritos"><i className="la la-heart-o"></i></div>}
                             </div>
                         </div>
                     </div>
-                </div>);
+                </div>);          
 }
 
 export default TarjetaCurso;
