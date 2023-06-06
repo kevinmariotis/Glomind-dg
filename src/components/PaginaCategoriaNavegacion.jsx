@@ -1,18 +1,23 @@
-import {React, Suspense} from 'react';
-import LoadingAnimation from './LoadingAnimation';
+import {React, useState} from 'react';
 import Header from './Header';
 import BreadCrumbArea from './BreadCrumbArea';
 import FormularioCategoriaNavegacion from './FormularioCategoriaNavegacion';
 import FooterArea from './FooterArea';
 
 function PaginaCategoriaNavegacion() {
-  return (
-        <>              
-            <Header/>
-            <BreadCrumbArea nombreseccion="Explorar"/>
-            <FormularioCategoriaNavegacion />
-            <FooterArea />
-        </>    );
+
+  const [breadCrumb, setBreadCrumb] = useState('Inicio');
+  const actualizarBreadCrumb = (nuevoBreadCrumb) => {
+      setBreadCrumb(nuevoBreadCrumb);
+  };
+
+    return (
+          <>              
+              <Header/>
+              <BreadCrumbArea nombreseccion="Explorar" breadCrumbData={breadCrumb}/>
+              <FormularioCategoriaNavegacion actualizarBreadCrumb={actualizarBreadCrumb}/>
+              <FooterArea />
+          </>    );
 }
 
 export default PaginaCategoriaNavegacion;

@@ -6,10 +6,8 @@ import LazyVerificarToken from './LazyVerificarToken';
 
 function App() {     
     return (<React.StrictMode>                                          
-                <AuthProvider>                              
-                    <LazyVerificarToken>
-                    <Rutas />           
-                    </LazyVerificarToken> 
+                <AuthProvider>                                                  
+                    <Rutas />                               
                 </AuthProvider>                            
             </React.StrictMode>);  
 }

@@ -5,10 +5,13 @@ import FormularioIniciarSesion from './FormularioIniciarSesion';
 import FooterArea from './FooterArea';
 
 function PaginaIniciarSesion() {  
-  return (
+
+    const breadCrumb = [{'link':'/login', 'nombre':'Iniciar sesión'}];
+
+    return (        
         <>              
             <Header/>
-            <BreadCrumbArea nombreseccion="Iniciar sesión"/>
+            <BreadCrumbArea nombreseccion="Iniciar sesión" breadCrumbData={breadCrumb}/>
             <FormularioIniciarSesion/>
             <FooterArea />
         </>    );

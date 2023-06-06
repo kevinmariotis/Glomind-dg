@@ -5,6 +5,7 @@ import { AuthContext } from './AuthContext';
 import PaginaRegistrarse from './components/PaginaRegistrarse';
 import PaginaIniciarSesion from './components/PaginaIniciarSesion';
 import PaginaCategoriaNavegacion from './components/PaginaCategoriaNavegacion';
+import PaginaDetallesDeCurso from './components/PaginaDetallesDeCurso';
 
 import Pagina404 from './components/Pagina404';
 //import About from './components/About';
@@ -34,7 +35,7 @@ const Rutas = () => {
                 <Route path="/usuario" element={<Pagina404/>} />
                 <Route path="/curso/favoritos" element={<Pagina404/>} />
                 <Route path="/curso/comprados" element={<Pagina404/>} />          
-                <Route path="/curso/:id" element={<Pagina404/>} />                      
+                <Route path="/curso/:id/:url_amigable" element={<PaginaDetallesDeCurso/>} />                      
                 <Route path="/curso" element={<Pagina404/>} />
                 <Route path="/categoria/:id/:url_amigable" element={<PaginaCategoriaNavegacion/>} />          
                 <Route path="/carrito/finalizadas" element={<Pagina404/>} />          

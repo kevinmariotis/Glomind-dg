@@ -80,6 +80,9 @@ function FormularioRegistrarse(){
         };
     }, []);
 
+    useEffect(() => {    
+        window.scrollTo(0, 0);
+    });
 
     const obtenerDatosInterfaz = () => {
         return new Promise(async (resolve, reject) => {

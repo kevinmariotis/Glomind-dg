@@ -6,10 +6,13 @@ import FormularioRegistrarse from './FormularioRegistarse';
 import FooterArea from './FooterArea';
 
 function PaginaRegistrarse() {
-  return (
+
+    const breadCrumb = [{'link':'/signup', 'nombre':'Registrarme'}];
+
+    return (
         <>              
             <Header/>
-            <BreadCrumbArea nombreseccion="Registrarse"/>
+            <BreadCrumbArea nombreseccion="Registrarse" breadCrumbData={breadCrumb}/>
             <FormularioRegistrarse />
             <FooterArea />
         </>    );

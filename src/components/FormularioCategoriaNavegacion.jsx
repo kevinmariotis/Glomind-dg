@@ -4,14 +4,14 @@ import { AuthContext } from '../AuthContext';
 import TarjetaCurso from './TarjetaCurso';
 import Paginador from './Paginador';
 
-function FormularioCategoriaNavegacion() {
+function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const {jwt, authenticated} = useContext(AuthContext);  
     const { id } = useParams();
     
     const [pagina, setPagina] = useState(1);
-    const [orderBy, setOrderBy] = useState('precio_actual-asc');
+    const [orderBy, setOrderBy] = useState('precio_actual-asc');    
         
     const [cursos, setCursos] = useState([]);
     const [subcategorias, setSubcategorias] = useState([]);
@@ -158,14 +158,23 @@ function FormularioCategoriaNavegacion() {
                 const datos = await response.json();                    
                 //sessionStorage.setItem('categoriasistema', JSON.stringify({"datos":categoriasistema, "fechahora":Math.floor(new Date().getTime() / 1000)}));
                 setCursos(datos.cursos);
-                setCantidadTotalCursos(datos.cantidad_total_cursos);                
+                setCantidadTotalCursos(datos.cantidad_total_cursos);                                                
+                
+                //se actualiza el breadCrrumb
+                const datosArbol = datos.arbol;
+                let nuevaDataBreadCrumb = [];
+                datosArbol.forEach((elemento) => {  nuevaDataBreadCrumb.push({'link':`${urlBase}/categoria/${elemento.id_categoria}/${elemento.nombre}`, 'nombre':elemento.nombre}); });            
+                actualizarBreadCrumb(nuevaDataBreadCrumb);
+                console.log("nuevos datos breadCrumb", nuevaDataBreadCrumb);
+                //fin de actualizar el breadCrumb
+
                 if(obtener_detalles=='1'){
                     setSubcategorias(datos.subcategorias);                                    
                     setEstrellas(datos.estrellas);
                     setDuracionVideo(datos.duracion_video);
                     setNiveles(datos.niveles);
                     setCostos(datos.costos);
-                    setInstructores(datos.instructores);
+                    setInstructores(datos.instructores);                    
                 }
                 console.log("cantidad total cursos ",datos.cantidad_total_cursos);
             } else {                

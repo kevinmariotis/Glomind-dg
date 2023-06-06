@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-
+import LoadingAnimation from './components/LoadingAnimation';
 // Crea el contexto de autenticación
 export const AuthContext = createContext();
 
@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     const [jwt, setJwt] = useState('');    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
-    const [isMounted, setIsMounted] = useState(false);
+    const [cargado, setCargado] = useState(false);
     // Función para dar la sesion por iniciada
     const login = ({jwt, permisos}) => {
         // Lógica para autenticar al usuario        
@@ -31,19 +31,8 @@ export const AuthProvider = ({ children }) => {
 
 
     useEffect(() => {   //El objetivo de este effect es establecer si se esta autenticado, recobrar los permisos y establecer el jwt en el contexto cuando el sitio se ejecute por primera vez.        
-        if(isMounted){
-            //validarToken();                
-        }else{
-            setIsMounted(true);
-        }
-        return () => {
-            // Limpieza del efecto secundario (opcional)
-        };
-    }, []);
-    
-    
-    const validarToken = () => {
-        return new Promise(async (resolve, reject) => {
+        
+        async function cargarUsuario(){
             try {
 
                 const jwt = Cookies.get('jwt');
@@ -66,26 +55,35 @@ export const AuthProvider = ({ children }) => {
                         const response = await fetch(`${urlBaseApi}/api/sesion/validarToken`, opciones);
                         const data = await response.json();
                         if (response.status === 200) {                            
-                            login({'jwt':jwt, 'permisos':JSON.stringify(data.permisos)});
-                            resolve(); // Resuelve la promesa si el token es válido
+                            login({'jwt':jwt, 'permisos':JSON.stringify(data.permisos)});                           
+                            setCargado(true);
                         } else {
                             Cookies.remove('jwt');
-                            reject(new Error('El token no es válido')); // Rechaza la promesa si el token no es válido
+                            console.log('El token no es valido');
+                            setCargado(true);
                         }
                     }
                 }else{
-                    //reject(new Error('No está el token establecido'));
-                    reject(new Error('No está el token establecido'));
+                    //reject(new Error('No está el token establecido'));                
+                    console.log('No está el token establecido');
+                    setCargado(true);
                 }
             } catch (error) {
-                reject(error); // Rechaza la promesa si ocurre algún error en la petición
+                console.log(error);
             }
-        });
-    };
+
+        }
+
+        cargarUsuario();
+
+        return () => {
+            // Limpieza del efecto secundario (opcional)
+        };
+    }, []);           
        
     return (
-        <AuthContext.Provider value={{jwt, authenticated, permissions, setJwt, logout, validarToken, cargarContadorCarrito, setCargarContadorCarrito}}>
+        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito}}>
             {children}
-        </AuthContext.Provider>
+        </AuthContext.Provider> : <LoadingAnimation />}</>
     );
 };
