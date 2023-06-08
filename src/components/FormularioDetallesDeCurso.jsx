@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import ReCAPTCHA from "react-google-recaptcha";
 import { AuthContext } from '../AuthContext';
 import LoadingAnimation from './LoadingAnimation';
+import TarjetaCursoHorizontal from './TarjetaCursoHorizontal';
 import Popup from './Popup';
 import SpamError from './SpamError';
 
@@ -14,12 +15,20 @@ function FormularioDetallesDeCurso(){
 
     const [datos, setDatos] = useState([]);
     const [breadCrumb, setBreadCrumb] = useState([]);
-
-    useEffect(() => {    
-        window.scrollTo(0, 0);
-    });
+    const [cursoFavorito, setCursoFavorito] = useState(-1);
+    const [queAprenderas, setQueAprenderas] = useState([]);
+    const [listadoRequerimientos, setListadoRequerimientos] = useState([]);
+    const [descripcion, setDescripcion] = useState([]);
+    const [contenido, setContenido] = useState([]);
+    const [otrosCursos, setOtrosCursos] = useState([]);
+    const [docenteDescripcion, setDocenteDescripcion] = useState([]);
+    const [docenteCursos, setDocenteCursos] = useState([]);
+    
+    const [pestanaActivada, setPestanaActivada]  = useState(0);
+    const [mostrarMasDocente, setMostrarMasDocente]  = useState(false);
 
     useEffect(() => {   
+        window.scrollTo(0, 0);
         obtenerDatosDelServidor();
     }, []);
 
@@ -45,7 +54,14 @@ function FormularioDetallesDeCurso(){
                 let nuevaDataBreadCrumb = [];
                 datosArbol.forEach((elemento) => {  nuevaDataBreadCrumb.push({'link':`${urlBase}/categoria/${elemento.id_categoria}/${elemento.nombre}`, 'nombre':elemento.nombre}); });            
                 setBreadCrumb(nuevaDataBreadCrumb);
-
+                setCursoFavorito(datos.curso.favorito);                   
+                setQueAprenderas(datos.curso.desc_que_aprenderas.split("<separador>"));
+                setListadoRequerimientos(datos.curso.desc_requerimientos.split("<separador>"));
+                setDescripcion(datos.curso.desc_general.split("<br />"));
+                setContenido(datos.curso.contenido);
+                setOtrosCursos(datos.curso.otros_usuarios_compraron);
+                setDocenteDescripcion(datos.curso.docente_descripcion.split("<separador>"));
+                setDocenteCursos(datos.curso.docente_cursos);
             } else {                
                 console.error(`Error en la respuesta: ${response.status} - ${response.statusText}`);
             }            
@@ -55,11 +71,128 @@ function FormularioDetallesDeCurso(){
         }
     };
 
+    const handleSetFavorito = () =>{
+        if(cursoFavorito==0){
+            establecerFavorito();
+        }else{
+            retirarFavorito();
+        }
+    }
+
+    const establecerFavorito = async (event) => {
+                               
+        const formData = new FormData();
+        formData.append('id_curso', id);           
+        const opciones = {
+            method: 'POST',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: formData
+        };
+        
+        try {
+            const response = await fetch(`${urlBaseApi}/api/cursofavorito`, opciones);
+            const data = await response.json();
+        
+            if (response.ok) {
+                setCursoFavorito(1);
+                return;
+            } else {
+                // Obtener el código de error de la respuesta
+                const statusCode = response.status;                
+                                       
+                // Mostrar mensaje de error según el código de error
+                switch (statusCode){
+                    case 400:
+                        console.error('Error 400: Bad Request');                        
+                    break;
+                    case 401:
+                        console.error('Error 401: Unauthorized');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 404:
+                        console.error('Error 404: Not Found');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 500:
+                        console.error('Error 500: Internal Server Error');
+                        console.log('Datos de error:', data);
+                    break;
+                    default:
+                        console.error('Error desconocido');
+                        console.log('Datos de error:', data);
+                  break;
+                }                    
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    };    
+
+    const retirarFavorito = async (event) => {
+                                          
+        const opciones = {
+            method: 'DELETE',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            }
+        };
+        
+        try {
+            const response = await fetch(`${urlBaseApi}/api/cursofavorito/${id}`, opciones);
+            const data = await response.json();
+        
+            if (response.ok) {
+                setCursoFavorito(0);
+                return;
+            } else {
+                // Obtener el código de error de la respuesta
+                const statusCode = response.status;                
+                                       
+                // Mostrar mensaje de error según el código de error
+                switch (statusCode){
+                    case 400:
+                        console.error('Error 400: Bad Request');                        
+                    break;
+                    case 401:
+                        console.error('Error 401: Unauthorized');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 404:
+                        console.error('Error 404: Not Found');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 500:
+                        console.error('Error 500: Internal Server Error');
+                        console.log('Datos de error:', data);
+                    break;
+                    default:
+                        console.error('Error desconocido');
+                        console.log('Datos de error:', data);
+                  break;
+                }                    
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    };
+
     const estrellas = [1, 2, 3, 4, 5];
 
+    const handleActivarPestana = (pestana) => {                
+        if(pestana!=pestanaActivada){            
+            setPestanaActivada(pestana);
+        }
+    };
+
+    const handleMostrarMasDocente = () => {                
+        setMostrarMasDocente(!mostrarMasDocente);
+    };
+    
     return (
-        <>{datos.length==0 ? <LoadingAnimation /> :
-            <section className="breadcrumb-area pt-50px pb-50px bg-white pattern-bg">
+        <>{datos.length==0 ? <LoadingAnimation /> :           
+            <><section className="breadcrumb-area pt-50px pb-50px bg-white pattern-bg">
                 <div className="container">
                     <div className="col-lg-8 mr-auto">
                         <div className="breadcrumb-content">
@@ -102,22 +235,189 @@ function FormularioDetallesDeCurso(){
                                 </p>
                             </div>
                             <div className="bread-btn-box pt-3">
-                                <button className="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mr-2 mb-2">
-                                    <i className="la la-heart-o mr-1"></i>
+                                {authenticated && <button className="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mr-2 mb-2" onClick={handleSetFavorito}>
+                                    <i className={`la la-heart${cursoFavorito==1 ? '' : '-o'} mr-1`}></i>
                                     <span className="swapping-btn" data-text-swap="Wishlisted" data-text-original="Wishlist">Favorito</span>
-                                </button>
+                                </button>}
                                 <button className="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mr-2 mb-2" data-toggle="modal" data-target="#shareModal">
                                     <i className="la la-share mr-1"></i>Compartir
                                 </button>
-                                <button className="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mb-2" data-toggle="modal" data-target="#reportModal">
+                                {authenticated && <button className="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mb-2" data-toggle="modal" data-target="#reportModal">
                                     <i className="la la-flag mr-1"></i>Reportar
-                                </button>
+                                </button>}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section className="course-details-area pb-20px">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-8 pb-5">
+                            <div className="course-details-content-wrap pt-90px">
+                                {queAprenderas.length>0 && <div className="course-overview-card bg-gray p-4 rounded">
+                                    <h3 className="fs-24 font-weight-semi-bold pb-3">Qué aprenderás?</h3>
+                                    <ul className="generic-list-item overview-list-item">
+                                        {Object.keys(queAprenderas).map((key) => (                                               
+                                            <li key={`queAprenderas${key}`}><i className="la la-check mr-1 text-black"></i>{queAprenderas[key]}</li>
+                                        ))}                                        
+                                    </ul>
+                                </div>} 
+                                {listadoRequerimientos.length>0 && <div className="course-overview-card">
+                                    <h3 className="fs-24 font-weight-semi-bold pb-3">Requirementos</h3>
+                                    <ul className="generic-list-item generic-list-item-bullet fs-15">
+                                        {Object.keys(listadoRequerimientos).map((key) => (                                               
+                                            <li key={`requerimiento${key}`}>{listadoRequerimientos[key]}</li>
+                                        ))} 
+                                    </ul>
+                                </div>}
+                                <div className="course-overview-card border border-gray p-4 rounded">
+                                    <h3 className="fs-20 font-weight-semi-bold">Las mejores empresas confían en Nombre empresa</h3>                                    
+                                    <div className="pb-3">
+                                        <img width="85" className="mr-3" src={`${urlBase}/images/sponsor-img.png`} alt="Logo de empresa"/>
+                                        <img width="80" className="mr-3" src={`${urlBase}/images/sponsor-img2.png`} alt="Logo de empresa"/>
+                                        <img width="80" className="mr-3" src={`${urlBase}/images/sponsor-img3.png`} alt="Logo de empresa"/>
+                                        <img width="70" className="mr-3" src={`${urlBase}/images/sponsor-img4.png`} alt="Logo de empresa"/>
+                                    </div>                                    
+                                </div>
+
+                                {descripcion.length>0 && <div className="course-overview-card">
+                                    <h3 className="fs-24 font-weight-semi-bold pb-3">Descripción</h3>
+                                    {Object.keys(descripcion).map((key) => (                                               
+                                        <p className="fs-15 pb-2" key={`descripcion-parrafo-${key}`}>{descripcion[key]}</p>
+                                    ))}                                    
+                                </div>}
+
+                                {contenido.length>0 && <div className="course-overview-card">
+                                    <div className="curriculum-header d-flex align-items-center justify-content-between pb-4">
+                                        <h3 className="fs-24 font-weight-semi-bold">Contenido del curso</h3>
+                                        <div className="curriculum-duration fs-15">
+                                            <span className="curriculum-total__text mr-2"><strong className="text-black font-weight-semi-bold">Total:</strong> {datos.cantidad_examenes} Exámenes</span>
+                                            <span className="curriculum-total__hours"><strong className="text-black font-weight-semi-bold">Horas totales:</strong> {datos.cantidad_horas_de_video}</span>
+                                        </div>
+                                    </div>
+                                    <div className="curriculum-content">
+                                        <div id="accordion" className="generic-accordion">
+                                            {Object.keys(contenido).map((key) => (
+                                                <div className="card" key={`card-contenido${key}`}>
+                                                    <div className="card-header" id={`heading${key}`}>
+                                                        <button onClick={() => handleActivarPestana(key)} className={`btn btn-link d-flex align-items-center justify-content-between ${key!=pestanaActivada ? 'collapsed' : ''} `} data-toggle="collapse" data-target={`#collapse${key}`} aria-expanded={`${key==pestanaActivada ? 'true' : 'false'}`} aria-controls={`collapse${key}`}>
+                                                            <i className="la la-plus"></i>
+                                                            <i className="la la-minus"></i>
+                                                            {contenido[key].nombre}
+                                                            <span className="fs-15 text-gray font-weight-medium">6 lectures</span>
+                                                        </button>
+                                                    </div>
+                                                    <div id={`collapse${key}`} className={`collapse ${key==pestanaActivada ? 'show' : ''}`} aria-labelledby={`heading${key}`} data-parent="#accordion">
+                                                        <div className="card-body">
+                                                            <ul className="generic-list-item">   
+                                                                {contenido[key].curso_contenido.map((tema) => 
+                                                                    (tema.tipo_contenido==1 && tema.preview!=null ? 
+                                                                        (<li key={tema.id_contenido} >
+                                                                            <a href="#" className="d-flex align-items-center justify-content-between text-color" data-toggle="modal" data-target="#previewModal">
+                                                                                <span>
+                                                                                    <i className="la la-play-circle mr-1"></i>
+                                                                                    {tema.nombre}
+                                                                                    <span className="ribbon ml-2 fs-13">Preview</span>
+                                                                                </span>
+                                                                                <span>{ new Date(tema.duracion * 1000).toISOString().substr(11, 8) }</span>
+                                                                            </a>
+                                                                        </li>)
+                                                                        :
+                                                                        (<li key={tema.id_contenido}>                                                                        
+                                                                            <div className="d-flex align-items-center justify-content-between">
+                                                                                <span>
+                                                                                    <i className={`la ${tema.tipo_contenido==1 ? 'la-play-circle' : 'la-pencil'} mr-1`}></i>
+                                                                                    {tema.nombre}
+                                                                                </span>
+                                                                                {tema.tipo_contenido==1 && (<span>{ new Date(tema.duracion * 1000).toISOString().substr(11, 8) }</span>)}                                                                            
+                                                                            </div>                                                                        
+                                                                        </li>)
+                                                                    )
+                                                                )}                                                                
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}                                            
+                                        </div>
+                                    </div>
+                                </div>}
+                                {otrosCursos.length>0 && <div className="course-overview-card pt-4">
+                                    <h3 className="fs-24 font-weight-semi-bold pb-4">Los estudiantes también compraron</h3>
+                                    <div className="view-more-carousel owl-action-styled">
+                                        {Object.keys(otrosCursos).map((key) => (                                
+                                            <TarjetaCursoHorizontal
+                                                key={`tarjeta${otrosCursos[key].id}`}
+                                                idcurso={otrosCursos[key].id}
+                                                url_amigable={'a'}
+                                                nombre={otrosCursos[key].nombre}
+                                                imagen={otrosCursos[key].imagen_pequena}
+                                                bestseller={otrosCursos[key].bestseller}
+                                                promocionado={otrosCursos[key].promocionado}
+                                                gratis={otrosCursos[key].gratis}
+                                                alto_valorado={otrosCursos[key].alto_valorado}
+                                                porcentaje_descuento={otrosCursos[key].porcentaje_descuento}
+                                                nivel={otrosCursos[key].nivel}
+                                                instructor={otrosCursos[key].instructor}
+                                                id_instructor={otrosCursos[key].id_instructor}
+                                                reviews_puntuacion={otrosCursos[key].reviews_puntuacion}
+                                                reviews_cantidad={otrosCursos[key].reviews_cantidad}
+                                                precio_actual={otrosCursos[key].precio_actual}
+                                                precio_anterior={otrosCursos[key].precio_anterior}
+                                                favorito={otrosCursos[key].favorito}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>}
+
+                                {datos.instructor!='' && <div className="course-overview-card pt-4">
+                                    <h3 className="fs-24 font-weight-semi-bold pb-4">Instructor</h3>
+                                    <div className="instructor-wrap">
+                                        <div className="media media-card">
+                                            <div className="instructor-img">
+                                                <a href="teacher-detail.html" className="media-img d-block">
+                                                    <img className="lazy" src={datos.instructor_imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${datos.instructor_imagen_pequena}`} data-src={`${urlBase}/images/avatar_docente.jpg`} alt="Avatar image" />
+                                                </a>
+                                                <ul className="generic-list-item pt-3">
+                                                    <li><i className="la la-star mr-2 text-color-3"></i> {datos.instructor_rating} Calificación del instructor</li>
+                                                    <li><i className="la la-user mr-2 text-color-3"></i> {datos.docente_estudiantes_cantidad} Estudiantes</li>
+                                                    <li><i className="la la-comment-o mr-2 text-color-3"></i> {datos.docente_reviews} Reseñas</li>
+                                                    <li><i className="la la-play-circle-o mr-2 text-color-3"></i> {datos.docente_cursos_cantidad} Cursos</li>
+                                                    <li><a href="teacher-detail.html">Ver todos los cursos</a></li>
+                                                </ul>
+                                            </div>
+                                            <div className="media-body">
+                                                <h5><a href="teacher-detail.html">{datos.instructor}</a></h5>
+                                                <span className="d-block lh-18 pt-2 pb-3">Se unió {datos.instructor_created_at}</span>
+                                                {Object.keys(docenteCursos).map((key) => (
+                                                    <p key={`curso_docente${docenteCursos[key].id}`} className="text-black lh-18 pb-3">{docenteCursos[key].nombre} - {docenteCursos[key].estudiantes_cantidad}+ estudiantes</p>
+                                                ))}
+                                                
+                                                {Object.keys(docenteDescripcion).slice(0, 1).map((key) => (
+                                                    <p key={`desc_docente_${key}`} className="pb-3">{docenteDescripcion[key]}</p>
+                                                ))}                                                    
+                                                {Object.keys(docenteDescripcion).length>1 && <div className={mostrarMasDocente==0 ? "collapse" : ""}   id="collapseMoreTwo">
+                                                    {Object.keys(docenteDescripcion).slice(1, docenteDescripcion.length).map((key) => (
+                                                        <p key={`desc_docente_${key}`} className="pb-3">{docenteDescripcion[key]}</p>
+                                                    ))}
+                                                </div>}
+                                                {Object.keys(docenteDescripcion).length>1 && <a className="collapse-btn collapse--btn fs-15" data-toggle="collapse" href="#collapseMoreTwo" role="button" aria-expanded={mostrarMasDocente==0 ? "false" : "true"} aria-controls="collapseMoreTwo">
+                                                    <span className="collapse-btn-hide" onClick={handleMostrarMasDocente}>Show more<i className="la la-angle-down ml-1 fs-14"></i></span>
+                                                    <span className="collapse-btn-show" onClick={handleMostrarMasDocente}>Show less<i className="la la-angle-up ml-1 fs-14"></i></span>
+                                                </a>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>}
+
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
             
+            </>     
         }</>
 
     );

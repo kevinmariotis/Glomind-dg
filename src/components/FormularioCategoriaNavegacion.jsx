@@ -12,7 +12,8 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
     
     const [pagina, setPagina] = useState(1);
     const [orderBy, setOrderBy] = useState('precio_actual-asc');    
-        
+    const [mostrarMasDocente, setMostrarMasDocente]  = useState(false);   
+    
     const [cursos, setCursos] = useState([]);
     const [subcategorias, setSubcategorias] = useState([]);
     const [cantidad_total_cursos, setCantidadTotalCursos] = useState(0);
@@ -117,6 +118,10 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
                 setInstructorSelecionado(nuevoArray);                
             }
         }
+    };
+
+    const handleMostrarMasDocente = () => {                
+        setMostrarMasDocente(!mostrarMasDocente);
     };
 
     useEffect(() => {
@@ -400,8 +405,8 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
                                             </label>
                                         </div>
                                     ))}                                    
-                                    <div className="collapse" id="collapseMoreThree">
-                                        {Object.keys(instructores).slice(6, instructores.length).map((key) => (  
+                                    {Object.keys(instructores).length>5 && <div className={mostrarMasDocente==0 ? "collapse" : ""} id="collapseMoreThree">
+                                        {Object.keys(instructores).slice(5, instructores.length).map((key) => (  
                                             <div key={`instructor${key}`} className="custom-control custom-checkbox mb-1 fs-15">
                                                 <input type="checkbox" className="custom-control-input" id={`instructorCheckbox${key}`} data-id={key} onChange={handleInstructorSeleccionado} />
                                                 <label className="custom-control-label custom--control-label text-black" htmlFor={`instructorCheckbox${key}`} >
@@ -409,11 +414,11 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
                                                 </label>
                                             </div>
                                         ))}                                                 
-                                    </div>
-                                    <a className="collapse-btn collapse--btn fs-15" data-toggle="collapse" href="#collapseMoreThree" role="button" aria-expanded="false" aria-controls="collapseMoreThree">
-                                        <span className="collapse-btn-hide">Show more<i className="la la-angle-down ml-1 fs-14"></i></span>
-                                        <span className="collapse-btn-show">Show less<i className="la la-angle-up ml-1 fs-14"></i></span>
-                                    </a>
+                                    </div>}
+                                    {Object.keys(instructores).length>5 && <a className="collapse-btn collapse--btn fs-15" data-toggle="collapse" href="#collapseMoreThree" role="button" aria-expanded={mostrarMasDocente==0 ? "false" : "true"} aria-controls="collapseMoreThree">
+                                        <span className="collapse-btn-hide" onClick={handleMostrarMasDocente}>Mostrar más<i className="la la-angle-down ml-1 fs-14"></i></span>
+                                        <span className="collapse-btn-show" onClick={handleMostrarMasDocente}>Mostrar menos<i className="la la-angle-up ml-1 fs-14"></i></span>
+                                    </a>}
                                 </div>
                             </div>                            
                         </div>
@@ -434,6 +439,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
                                     porcentaje_descuento={cursos[key].porcentaje_descuento}
                                     nivel={cursos[key].nivel}
                                     instructor={cursos[key].instructor}
+                                    id_instructor={cursos[key].id_instructor}
                                     reviews_puntuacion={cursos[key].reviews_puntuacion}
                                     reviews_cantidad={cursos[key].reviews_cantidad}
                                     precio_actual={cursos[key].precio_actual}

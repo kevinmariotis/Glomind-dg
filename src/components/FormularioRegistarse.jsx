@@ -67,6 +67,7 @@ function FormularioRegistrarse(){
     //fin de los estados de errores de campos
     
     useEffect(() => {    
+        window.scrollTo(0, 0);
         try{            
             obtenerDatosInterfaz().then(datos => {
                 setPaises(datos);
@@ -79,11 +80,7 @@ function FormularioRegistrarse(){
             // Limpieza del efecto secundario (opcional)            
         };
     }, []);
-
-    useEffect(() => {    
-        window.scrollTo(0, 0);
-    });
-
+    
     const obtenerDatosInterfaz = () => {
         return new Promise(async (resolve, reject) => {
             try{                            

@@ -52,7 +52,7 @@ function FormularioIniciarSesion() {
     
     useEffect(() => {    
         window.scrollTo(0, 0);
-    });
+    }, []);
 
     const fetchData = async (event) => {
         event.preventDefault();
