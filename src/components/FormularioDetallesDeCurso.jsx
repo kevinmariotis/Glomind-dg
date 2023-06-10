@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, lazy} from 'react';
+import React, {useState, useEffect, useContext, useCallback, useRef} from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ReCAPTCHA from "react-google-recaptcha";
 import { AuthContext } from '../AuthContext';
@@ -23,14 +23,49 @@ function FormularioDetallesDeCurso(){
     const [otrosCursos, setOtrosCursos] = useState([]);
     const [docenteDescripcion, setDocenteDescripcion] = useState([]);
     const [docenteCursos, setDocenteCursos] = useState([]);
+    const [reviews, setReviews] = useState({});    
     
     const [pestanaActivada, setPestanaActivada]  = useState(0);
     const [mostrarMasDocente, setMostrarMasDocente]  = useState(false);
+    const [paginaComentarios, setPaginaComentarios]  = useState(1);         //los nuevos datos traidos de la nueva página de acumulan en el estado "reviews"
+    const [cantidadComentariosMaximo, setCantidadComentariosMaximo]  = useState(-1);
+    const [orderByComentarios, setOrderByComentarios]  = useState('fecha_creacion-desc');
+    const [filtrarByComentarios, setFiltarByComentarios]  = useState('estrella:0');
+
+    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
+
+    //interval para manejar la busqueda por nombre en lapsos de tiempo
+    const [nombre_seleccionado, setNombreSeleccionado] = useState('');   
+    const intervalRef = useRef(null);
+    const latest_ultimo_nombre_escrito = useRef('');
+    const latest_nombre_seleccionado = useRef(nombre_seleccionado);
+              
+    const chekearCambiosBusquedaNombre = useCallback(() => {
+        if(latest_ultimo_nombre_escrito.current!=latest_nombre_seleccionado.current){                    
+            setNombreSeleccionado(latest_ultimo_nombre_escrito.current);                          
+            latest_nombre_seleccionado.current = latest_ultimo_nombre_escrito.current;     
+            setReviews({});           
+            setPaginaComentarios(1);       
+        }                                                    
+    }, []);
+
+    useEffect(() => {        
+        if (!intervalRef.current) {
+            console.log("creando interval");            
+            intervalRef.current = setInterval(() => {
+                chekearCambiosBusquedaNombre();                
+            }, 1500);
+        }        
+    }, []);
 
     useEffect(() => {   
         window.scrollTo(0, 0);
         obtenerDatosDelServidor();
     }, []);
+
+    useEffect(() => {   
+        getComentarios();        
+    }, [paginaComentarios, filtrarByComentarios, orderByComentarios, nombre_seleccionado]);
 
     const obtenerDatosDelServidor = async () => {  
         let headers = {}      
@@ -62,6 +97,7 @@ function FormularioDetallesDeCurso(){
                 setOtrosCursos(datos.curso.otros_usuarios_compraron);
                 setDocenteDescripcion(datos.curso.docente_descripcion.split("<separador>"));
                 setDocenteCursos(datos.curso.docente_cursos);
+                //setReviews(datos.curso.reviews);
             } else {                
                 console.error(`Error en la respuesta: ${response.status} - ${response.statusText}`);
             }            
@@ -78,6 +114,13 @@ function FormularioDetallesDeCurso(){
             retirarFavorito();
         }
     }
+
+    const handleFuncionAceptarPopUp = () => {        
+        setPopup({...popUp, mostrar:false});
+    };
+    const handleFuncionCerrarPopUp = () => {        
+        setPopup({...popUp, mostrar:false});
+    };
 
     const establecerFavorito = async (event) => {
                                
@@ -189,10 +232,187 @@ function FormularioDetallesDeCurso(){
     const handleMostrarMasDocente = () => {                
         setMostrarMasDocente(!mostrarMasDocente);
     };
-    
+
+    const handleCargarMasComentarios = () => {                
+        setPaginaComentarios(paginaComentarios+1);        
+    };
+
+    const handleFiltrarByComentarios = (event) => {
+        setReviews({});           
+        setPaginaComentarios(1);
+        const ordenAlterno = ['calificacion-desc', 'posision_ranking-desc'];
+
+        if (!ordenAlterno.includes(event.target.value)){
+            setFiltarByComentarios(event.target.value);
+            setOrderByComentarios('fecha_creacion-desc');
+        }else{            
+            setOrderByComentarios(event.target.value);
+            setFiltarByComentarios('estrella:0');
+        }
+    };
+
+    const handleBusquedaPorNombreComentarios = (event) => {           
+        latest_ultimo_nombre_escrito.current = event.target.value;        
+    };
+
+    const handlerVotarComentario = ({key, id_curso, id_usuario_review, calificacion}) =>{
+        votarPorComentario({'key':key, 'id_curso': id_curso, 'id_usuario_review': id_usuario_review, 'calificacion': calificacion});
+    }
+
+    const votarPorComentario = async (parametros) => {                                       
+        const formData = new FormData();
+        formData.append('id_curso', parametros.id_curso);   
+        formData.append('id_usuario_review', parametros.id_usuario_review);   
+        formData.append('calificacion', parametros.calificacion);
+        const opciones = {
+            method: 'POST',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: formData
+        };
+        
+        try {
+            const response = await fetch(`${urlBaseApi}/api/cursoreviewvoto`, opciones);
+            const data = await response.json();
+        
+            if (response.ok){  
+                //todo esto para que aparezca el boton coloreado              
+                let nuevos_reviews = {}
+                Object.keys(reviews).forEach((keyx) => {
+                    if(keyx==parametros.key){
+                        reviews[keyx].voto = parametros.calificacion;
+                    }                    
+                    nuevos_reviews[keyx] = reviews[keyx];
+                });
+                setReviews(nuevos_reviews); 
+                //fin
+                
+                return;
+            } else {
+                // Obtener el código de error de la respuesta
+                const statusCode = response.status;                
+                      
+                let errores = {};   
+                let string_errores = '';       
+                if (typeof data.datos !== 'undefined') {
+                    errores = data.datos;                      
+                }                                    
+                Object.entries(errores).forEach(([clave, mensajes]) => {                                            
+                    mensajes.forEach((mensaje) => {                        
+                        //setErrorCampoGlobal(clave, mensaje);                                                
+                        if(string_errores!=''){
+                            string_errores+=', ';
+                        }
+                        string_errores+=mensaje;   
+                    });
+                    if(string_errores!=''){
+                        setPopup({mostrar:true, titulo:'Mensaje', contenido:string_errores});
+                    }
+                });
+
+                // Mostrar mensaje de error según el código de error
+                switch (statusCode){
+                    case 400:
+                        console.error('Error 400: Bad Request');                        
+                    break;
+                    case 401:
+                        console.error('Error 401: Unauthorized');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 404:
+                        console.error('Error 404: Not Found');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 500:
+                        console.error('Error 500: Internal Server Error');
+                        console.log('Datos de error:', data);
+                    break;
+                    default:
+                        console.error('Error desconocido');
+                        console.log('Datos de error:', data);
+                  break;
+                }                    
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    };
+
+    const getComentarios = async (event) => {                                       
+        const opciones = {
+            method: 'GET',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },            
+        };
+        
+        try {
+            const response = await fetch(`${urlBaseApi}/api/cursoreview/getReviews/${id}/${paginaComentarios}/${orderByComentarios}/${filtrarByComentarios}/${nombre_seleccionado}`, opciones);
+            const data = await response.json();
+        
+            if (response.ok){                               
+                //se mezcla el nuevo json con el existente evitando que se reemplazen los indices existentes
+                const mergedJson = { ...reviews };
+                console.log("la data es ", data);
+                Object.keys(data.reviews).forEach((key) => {
+                    const newKey = parseInt(key, 10);
+                    let currentIndex = newKey;
+                    while (mergedJson[currentIndex] !== undefined) {
+                        currentIndex++;
+                    }
+                    mergedJson[currentIndex] = data.reviews[newKey];
+                });
+                setReviews(mergedJson);  
+                setCantidadComentariosMaximo(parseInt(data.tamano_total));
+                return;
+            } else {
+                // Obtener el código de error de la respuesta
+                const statusCode = response.status;                
+                                       
+                // Mostrar mensaje de error según el código de error
+                switch (statusCode){
+                    case 400:
+                        console.error('Error 400: Bad Request');                        
+                    break;
+                    case 401:
+                        console.error('Error 401: Unauthorized');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 404:
+                        console.error('Error 404: Not Found');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 500:
+                        console.error('Error 500: Internal Server Error');
+                        console.log('Datos de error:', data);
+                    break;
+                    default:
+                        console.error('Error desconocido');
+                        console.log('Datos de error:', data);
+                  break;
+                }                    
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    };
+
+
     return (
         <>{datos.length==0 ? <LoadingAnimation /> :           
-            <><section className="breadcrumb-area pt-50px pb-50px bg-white pattern-bg">
+            <>
+            <Popup 
+                mostrarPopup={popUp.mostrar} 
+                tamano="xx"
+                tipo={2} 
+                titulo={popUp.titulo} 
+                mensaje={popUp.contenido} 
+                funcionAceptar={handleFuncionAceptarPopUp} 
+                funcionCerrar={handleFuncionCerrarPopUp}
+                textoCerrar="Aceptar"
+            />
+            <section className="breadcrumb-area pt-50px pb-50px bg-white pattern-bg">
                 <div className="container">
                     <div className="col-lg-8 mr-auto">
                         <div className="breadcrumb-content">
@@ -293,7 +513,7 @@ function FormularioDetallesDeCurso(){
                                         <h3 className="fs-24 font-weight-semi-bold">Contenido del curso</h3>
                                         <div className="curriculum-duration fs-15">
                                             <span className="curriculum-total__text mr-2"><strong className="text-black font-weight-semi-bold">Total:</strong> {datos.cantidad_examenes} Exámenes</span>
-                                            <span className="curriculum-total__hours"><strong className="text-black font-weight-semi-bold">Horas totales:</strong> {datos.cantidad_horas_de_video}</span>
+                                            <span className="curriculum-total__hours"><strong className="text-black font-weight-semi-bold">Tiempo total de videos:</strong> {datos.cantidad_horas_de_video}</span>
                                         </div>
                                     </div>
                                     <div className="curriculum-content">
@@ -403,13 +623,143 @@ function FormularioDetallesDeCurso(){
                                                     ))}
                                                 </div>}
                                                 {Object.keys(docenteDescripcion).length>1 && <a className="collapse-btn collapse--btn fs-15" data-toggle="collapse" href="#collapseMoreTwo" role="button" aria-expanded={mostrarMasDocente==0 ? "false" : "true"} aria-controls="collapseMoreTwo">
-                                                    <span className="collapse-btn-hide" onClick={handleMostrarMasDocente}>Show more<i className="la la-angle-down ml-1 fs-14"></i></span>
-                                                    <span className="collapse-btn-show" onClick={handleMostrarMasDocente}>Show less<i className="la la-angle-up ml-1 fs-14"></i></span>
+                                                    <span className="collapse-btn-hide" onClick={handleMostrarMasDocente}>Mostrar más<i className="la la-angle-down ml-1 fs-14"></i></span>
+                                                    <span className="collapse-btn-show" onClick={handleMostrarMasDocente}>Mostrar menos<i className="la la-angle-up ml-1 fs-14"></i></span>
                                                 </a>}
                                             </div>
                                         </div>
                                     </div>
                                 </div>}
+                                
+                                <div className="course-overview-card pt-4">
+                                    <h3 className="fs-24 font-weight-semi-bold pb-40px">Reseñas de estudiantes</h3>
+                                    <div className="feedback-wrap">
+                                        <div className="media media-card align-items-center">
+                                            <div className="review-rating-summary">
+                                                    <span className="stats-average__count">{datos.reviews_puntuacion}</span>
+                                                <div className="rating-wrap pt-1">
+                                                    <div className="review-stars">                                                       
+                                                        {estrellas.map((number) => (                                                                                
+                                                            <span key={`estrella-curso-detalle-2-${number}`} className={`la la-star${datos.reviews_puntuacion < number ? "-o" : ""}`}></span>
+                                                        ))} 
+                                                    </div>
+                                                    <span className="rating-total d-block">({datos.reviews_cantidad})</span>
+                                                    <span>Puntuación del curso</span>
+                                                </div>
+                                            </div>
+                                            <div className="media-body">
+                                                <div className="review-bars d-flex align-items-center mb-2">
+                                                    <div className="review-bars__text">5&nbsp;estrellas</div>
+                                                    <div className="review-bars__fill">
+                                                        <div className="skillbar-box">
+                                                            <div className="skillbar" data-percent={`${datos.reviews_porcentajes[5]}%`}>
+                                                                <div className="skillbar-bar bg-3" style={{ width:`${datos.reviews_porcentajes[5]}%`}}></div>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                    <div className="review-bars__percent">{datos.reviews_porcentajes[5]}%</div>
+                                                </div>
+                                                <div className="review-bars d-flex align-items-center mb-2">
+                                                    <div className="review-bars__text">4&nbsp;estrellas</div>
+                                                    <div className="review-bars__fill">
+                                                        <div className="skillbar-box">
+                                                            <div className="skillbar" data-percent={`${datos.reviews_porcentajes[4]}%`} >
+                                                                <div className="skillbar-bar bg-3" style={{ width:`${datos.reviews_porcentajes[4]}%`}}></div>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                    <div className="review-bars__percent">{datos.reviews_porcentajes[4]}%</div>
+                                                </div>
+                                                <div className="review-bars d-flex align-items-center mb-2">
+                                                    <div className="review-bars__text">3&nbsp;estrellas</div>
+                                                    <div className="review-bars__fill">
+                                                        <div className="skillbar-box">
+                                                            <div className="skillbar" data-percent={`${datos.reviews_porcentajes[3]}%`}>
+                                                                <div className="skillbar-bar bg-3" style={{ width:`${datos.reviews_porcentajes[3]}%`}}></div>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                    <div className="review-bars__percent">{datos.reviews_porcentajes[3]}%</div>
+                                                </div>
+                                                <div className="review-bars d-flex align-items-center mb-2">
+                                                    <div className="review-bars__text">2&nbsp;estrellas</div>
+                                                    <div className="review-bars__fill">
+                                                        <div className="skillbar-box">
+                                                            <div className="skillbar" data-percent={`${datos.reviews_porcentajes[2]}%`}>
+                                                                <div className="skillbar-bar bg-3" style={{ width:`${datos.reviews_porcentajes[2]}%`}}></div>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                    <div className="review-bars__percent">{datos.reviews_porcentajes[2]}%</div>
+                                                </div>
+                                                <div className="review-bars d-flex align-items-center mb-2">
+                                                    <div className="review-bars__text">1&nbsp;estrella&nbsp;&nbsp;&nbsp;</div>
+                                                    <div className="review-bars__fill">
+                                                        <div className="skillbar-box">
+                                                            <div className="skillbar" data-percent={`${datos.reviews_porcentajes[1]}%`} >
+                                                                <div className="skillbar-bar bg-3" style={{ width:`${datos.reviews_porcentajes[1]}%`}}></div>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                    <div className="review-bars__percent">{datos.reviews_porcentajes[1]}%</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="course-overview-card pt-4">
+                                    <h3 className="fs-24 font-weight-semi-bold pb-4">Comentarios</h3>
+                                    <div className="review-wrap">
+                                        <div className="d-flex flex-wrap align-items-center pb-4">
+                                            <form method="post" className="mr-3 flex-grow-1">
+                                                <div className="form-group">
+                                                    <input className="form-control form--control pl-3" type="text" name="search_reviews" placeholder="Buscar comentarios" maxLength="32" onKeyUp={handleBusquedaPorNombreComentarios} />
+                                                    <span className="la la-search search-icon"></span>
+                                                </div>
+                                            </form>
+                                            <div className="select-container select--container mb-3">
+                                                <select className="form-control select-dark" onChange={handleFiltrarByComentarios}>
+                                                    <option value="estrella:0">Todos (Recientes)</option>
+                                                    <option value="posision_ranking-desc">Todos (Más Útiles)</option>
+                                                    <option value="calificacion-desc">Todos (Mejor valorados)</option>                                                    
+                                                    <option value="estrella:5">Cinco estrellas</option>
+                                                    <option value="estrella:4">Cuatro estrellas</option>
+                                                    <option value="estrella:3">Tres estrellas</option>
+                                                    <option value="estrella:2">Dos estrellas</option>
+                                                    <option value="estrella:1">Una estrella</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {Object.keys(reviews).map((key) => (
+                                            <div key={`id_review_${reviews[key].id}`} className="media media-card border-bottom border-bottom-gray pb-4 mb-4">
+                                                <div className="media-img mr-4 rounded-full">
+                                                    <img className="rounded-full lazy" src={reviews[key].imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${reviews[key].imagen_pequena}`} data-src={`${urlBase}/images/avatar_docente.jpg`} alt="User image" />
+                                                </div>
+                                                <div className="media-body">
+                                                    <div className="d-flex flex-wrap align-items-center justify-content-between pb-1">
+                                                        <h5>{reviews[key].nombre_completo}</h5>
+                                                        <div className="review-stars">
+                                                            {estrellas.map((number) => (                                                                                
+                                                                <span key={`estrella-curso-detalle-2-${number}`} className={`la la-star${reviews[key].calificacion < number ? "-o" : ""}`}></span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                    <span className="d-block lh-18 pb-2">{reviews[key].fecha_creacion}</span>
+                                                    <p className="pb-2">{reviews[key].comentario}</p>
+                                                    <div className="helpful-action">
+                                                        <span className="d-block fs-13">Te resultó últil el comentario?</span>
+                                                        <button className={`btn ${reviews[key].voto=='1' && 'btn-info'}`} onClick={() => handlerVotarComentario({'key':key, 'id_curso':id, 'id_usuario_review':reviews[key].id, 'calificacion':1})}>Si</button>
+                                                        <button className={`btn ${reviews[key].voto=='-1' && 'btn-info'}`} onClick={() => handlerVotarComentario({'key':key, 'id_curso':id, 'id_usuario_review':reviews[key].id, 'calificacion':-1})}>No</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}                                        
+                                    </div>
+                                    {Object.keys(reviews).length<cantidadComentariosMaximo && <div className="see-more-review-btn text-center">
+                                        <button type="button" className="btn theme-btn theme-btn-transparent" onClick={handleCargarMasComentarios}>Cargar más comentarios</button>
+                                    </div>}
+                                </div>
 
                             </div>
                         </div>

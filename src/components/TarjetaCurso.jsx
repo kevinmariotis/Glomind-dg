@@ -15,6 +15,7 @@ function TarjetaCurso(
         porcentaje_descuento=0,
         nivel=1,
         instructor='',
+        id_instructor=0,
         reviews_puntuacion=0.0,
         reviews_cantidad=0,
         precio_actual=0.00,
