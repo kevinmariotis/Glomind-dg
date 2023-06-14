@@ -130,12 +130,12 @@ function HeaderMenuContent() {
                                         <ul className="cat-dropdown-menu">
                                             {Object.keys(datos.datos).map((key) => (
                                                 <li key={datos.datos[key].id}>
-                                                    <Link to={`${urlBase}/categoria/${datos.datos[key].id}/${datos.datos[key].url_amigable}`}>{datos.datos[key].nombre} {datos.datos[key].categorias_hijas.length > 0 && (<i className="la la-angle-right"></i>)}</Link>
+                                                    <Link to={`${urlBase}/categoria/${datos.datos[key].url_amigable}`}>{datos.datos[key].nombre} {datos.datos[key].categorias_hijas.length > 0 && (<i className="la la-angle-right"></i>)}</Link>
                                                     { }{
                                                         datos.datos[key].categorias_hijas.length > 0 && (
                                                             <ul className="sub-menu">
                                                                 {datos.datos[key].categorias_hijas.map((sub_categoria) => {                                                                    
-                                                                    return <li key={sub_categoria.id}><Link to={`${urlBase}/categoria/${sub_categoria.id}/${sub_categoria.url_amigable}`}>{sub_categoria.nombre}</Link></li>
+                                                                    return <li key={sub_categoria.id}><Link to={`${urlBase}/categoria/${sub_categoria.url_amigable}`}>{sub_categoria.nombre}</Link></li>
                                                                 })}
                                                             </ul>
                                                         )

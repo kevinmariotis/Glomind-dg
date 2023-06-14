@@ -11,8 +11,9 @@ function FormularioDetallesDeCurso(){
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API; 
     const urlBase = import.meta.env.VITE_URL_BASE;     
     const {jwt, authenticated} = useContext(AuthContext);
-    const { id } = useParams();
+    const { url_amigable } = useParams();
 
+    const [id, setId] = useState(-1);
     const [datos, setDatos] = useState([]);
     const [breadCrumb, setBreadCrumb] = useState([]);
     const [cursoFavorito, setCursoFavorito] = useState(-1);
@@ -24,7 +25,19 @@ function FormularioDetallesDeCurso(){
     const [docenteDescripcion, setDocenteDescripcion] = useState([]);
     const [docenteCursos, setDocenteCursos] = useState([]);
     const [reviews, setReviews] = useState({});    
+    const [tieneReviews, setTieneReview] = useState(0);    
+    const [cursoImagenGrande, setCursoImagenGrande] = useState('images/pattern.png');    
+    const [videoVistaPrevia, setVideoVistaPrevia] = useState('');    
+    const [videoVistaPreviaImagen, setVideoVistaPreviaImagen] = useState('');    
+    const [mostrarVideoVistaPrevia, setMostrarVideoVistaPrevia] = useState(false);    
     
+
+    const [valorMensaje, setValorMensaje] = useState('');
+    const [valorEstrellaReview, setValorEstrellaReview] = useState(0);    
+    const [botonDesactivadoMensaje, setBotonDesactivadoMensaje] = useState(false); 
+    
+
+
     const [pestanaActivada, setPestanaActivada]  = useState(0);
     const [mostrarMasDocente, setMostrarMasDocente]  = useState(false);
     const [paginaComentarios, setPaginaComentarios]  = useState(1);         //los nuevos datos traidos de la nueva página de acumulan en el estado "reviews"
@@ -55,7 +68,9 @@ function FormularioDetallesDeCurso(){
             intervalRef.current = setInterval(() => {
                 chekearCambiosBusquedaNombre();                
             }, 1500);
-        }        
+        }else{
+            return () => { clearInterval(intervalRef.current); }
+        } 
     }, []);
 
     useEffect(() => {   
@@ -64,8 +79,10 @@ function FormularioDetallesDeCurso(){
     }, []);
 
     useEffect(() => {   
-        getComentarios();        
-    }, [paginaComentarios, filtrarByComentarios, orderByComentarios, nombre_seleccionado]);
+        if(id!=-1){
+            getComentarios();        
+        }
+    }, [id, paginaComentarios, filtrarByComentarios, orderByComentarios, nombre_seleccionado]);
 
     const obtenerDatosDelServidor = async () => {  
         let headers = {}      
@@ -80,14 +97,15 @@ function FormularioDetallesDeCurso(){
                 headers: headers,
             };
             
-            const response = await fetch(`${urlBaseApi}/api/curso/${id}`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/curso/verPorUrlAmigable/${url_amigable}`, opciones);
             if (response.ok) {                                
                 const datos = await response.json();                                    
                 setDatos(datos.curso);
-                
+                setId(datos.curso.id);
+
                 const datosArbol = datos.arbol;
                 let nuevaDataBreadCrumb = [];
-                datosArbol.forEach((elemento) => {  nuevaDataBreadCrumb.push({'link':`${urlBase}/categoria/${elemento.id_categoria}/${elemento.nombre}`, 'nombre':elemento.nombre}); });            
+                datosArbol.forEach((elemento) => {  nuevaDataBreadCrumb.push({'link':`${urlBase}/categoria/${elemento.url_amigable}`, 'nombre':elemento.nombre}); });            
                 setBreadCrumb(nuevaDataBreadCrumb);
                 setCursoFavorito(datos.curso.favorito);                   
                 setQueAprenderas(datos.curso.desc_que_aprenderas.split("<separador>"));
@@ -97,7 +115,10 @@ function FormularioDetallesDeCurso(){
                 setOtrosCursos(datos.curso.otros_usuarios_compraron);
                 setDocenteDescripcion(datos.curso.docente_descripcion.split("<separador>"));
                 setDocenteCursos(datos.curso.docente_cursos);
-                //setReviews(datos.curso.reviews);
+                setTieneReview(datos.curso.tiene_review);
+                setCursoImagenGrande(datos.curso.imagen_grande);
+                setVideoVistaPrevia(datos.curso.video_vista_previa);
+                setVideoVistaPreviaImagen(datos.curso.video_imagen_vista_previa);
             } else {                
                 console.error(`Error en la respuesta: ${response.status} - ${response.statusText}`);
             }            
@@ -121,6 +142,70 @@ function FormularioDetallesDeCurso(){
     const handleFuncionCerrarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };
+
+    const handleEnviarResena = (event) => {        
+        event.preventDefault();        
+        enviarResenaSevidor();
+    }
+
+    const enviarResenaSevidor = async (event) => {
+        
+        setBotonDesactivadoMensaje(true);
+
+        const formData = new FormData();
+        formData.append('id_curso', id);
+        formData.append('calificacion', valorEstrellaReview);
+        formData.append('comentario', valorMensaje);
+        const opciones = {
+            method: 'POST',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: formData
+        };
+        
+        try {
+            const response = await fetch(`${urlBaseApi}/api/cursoreview`, opciones);
+            const data = await response.json();
+
+            setBotonDesactivadoMensaje(false);
+
+            if (response.ok) {
+                setCursoFavorito(1);
+                setTieneReview(1);
+                setPopup({mostrar:true, titulo:'Listo', contenido:'La reseña fue guardada'});
+                return;
+            } else {
+                // Obtener el código de error de la respuesta
+                const statusCode = response.status;                
+                                       
+                // Mostrar mensaje de error según el código de error
+                switch (statusCode){
+                    case 400:
+                        console.error('Error 400: Bad Request');                        
+                    break;
+                    case 401:
+                        console.error('Error 401: Unauthorized');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 404:
+                        console.error('Error 404: Not Found');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 500:
+                        console.error('Error 500: Internal Server Error');
+                        console.log('Datos de error:', data);
+                    break;
+                    default:
+                        console.error('Error desconocido');
+                        console.log('Datos de error:', data);
+                  break;
+                }                    
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    }; 
 
     const establecerFavorito = async (event) => {
                                
@@ -257,6 +342,12 @@ function FormularioDetallesDeCurso(){
 
     const handlerVotarComentario = ({key, id_curso, id_usuario_review, calificacion}) =>{
         votarPorComentario({'key':key, 'id_curso': id_curso, 'id_usuario_review': id_usuario_review, 'calificacion': calificacion});
+    }
+
+    const handlePreviewVideo = () => {        
+        if(videoVistaPrevia!=''){            
+            setMostrarVideoVistaPrevia(!mostrarVideoVistaPrevia);
+        }        
     }
 
     const votarPorComentario = async (parametros) => {                                       
@@ -397,7 +488,8 @@ function FormularioDetallesDeCurso(){
             console.error('Error de conexión:', error);
         }
     };
-
+    
+    const nivelHabilidad = ['', 'Básico', 'Intermedio', 'Avanzado'];
 
     return (
         <>{datos.length==0 ? <LoadingAnimation /> :           
@@ -412,7 +504,27 @@ function FormularioDetallesDeCurso(){
                 funcionCerrar={handleFuncionCerrarPopUp}
                 textoCerrar="Aceptar"
             />
-            <section className="breadcrumb-area pt-50px pb-50px bg-white pattern-bg">
+            {mostrarVideoVistaPrevia && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="previewModal" tabIndex="-1" role="dialog" aria-labelledby="previewModalTitle" aria-hidden="true">
+                <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header border-bottom-gray">
+                            <div className="pr-2">
+                                <p className="pb-2 font-weight-semi-bold">Vista previa del curso</p>
+                                <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="previewModalTitle">{datos.nombre}</h5>
+                            </div>
+                            <button type="button" className="close" data-dismiss="modal" onClick={handlePreviewVideo} aria-label="Close">
+                                <span aria-hidden="true" className="la la-times"></span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <video controls crossOrigin="true" playsInline poster={`${videoVistaPreviaImagen!='' ? `${urlBaseApi}/${videoVistaPreviaImagen}` : `${urlBase}/images/pattern.png` }`} id="player" style={{'width':'100%'}}>                                
+                                <source src={`${urlBaseApi}/${videoVistaPrevia}`} type="video/mp4"/>                                
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>}
+            <section className="breadcrumb-area pt-50px pb-50px bg-white pattern-bg" >
                 <div className="container">
                     <div className="col-lg-8 mr-auto">
                         <div className="breadcrumb-content">
@@ -524,8 +636,7 @@ function FormularioDetallesDeCurso(){
                                                         <button onClick={() => handleActivarPestana(key)} className={`btn btn-link d-flex align-items-center justify-content-between ${key!=pestanaActivada ? 'collapsed' : ''} `} data-toggle="collapse" data-target={`#collapse${key}`} aria-expanded={`${key==pestanaActivada ? 'true' : 'false'}`} aria-controls={`collapse${key}`}>
                                                             <i className="la la-plus"></i>
                                                             <i className="la la-minus"></i>
-                                                            {contenido[key].nombre}
-                                                            <span className="fs-15 text-gray font-weight-medium">6 lectures</span>
+                                                            {contenido[key].nombre}                                                            
                                                         </button>
                                                     </div>
                                                     <div id={`collapse${key}`} className={`collapse ${key==pestanaActivada ? 'show' : ''}`} aria-labelledby={`heading${key}`} data-parent="#accordion">
@@ -570,7 +681,7 @@ function FormularioDetallesDeCurso(){
                                             <TarjetaCursoHorizontal
                                                 key={`tarjeta${otrosCursos[key].id}`}
                                                 idcurso={otrosCursos[key].id}
-                                                url_amigable={'a'}
+                                                url_amigable={otrosCursos[key].url_amigable}
                                                 nombre={otrosCursos[key].nombre}
                                                 imagen={otrosCursos[key].imagen_pequena}
                                                 bestseller={otrosCursos[key].bestseller}
@@ -617,7 +728,7 @@ function FormularioDetallesDeCurso(){
                                                 {Object.keys(docenteDescripcion).slice(0, 1).map((key) => (
                                                     <p key={`desc_docente_${key}`} className="pb-3">{docenteDescripcion[key]}</p>
                                                 ))}                                                    
-                                                {Object.keys(docenteDescripcion).length>1 && <div className={mostrarMasDocente==0 ? "collapse" : ""}   id="collapseMoreTwo">
+                                                {Object.keys(docenteDescripcion).length>1 && <div className={mostrarMasDocente==0 ? "collapse" : ""} id="collapseMoreTwo">
                                                     {Object.keys(docenteDescripcion).slice(1, docenteDescripcion.length).map((key) => (
                                                         <p key={`desc_docente_${key}`} className="pb-3">{docenteDescripcion[key]}</p>
                                                     ))}
@@ -747,11 +858,11 @@ function FormularioDetallesDeCurso(){
                                                     </div>
                                                     <span className="d-block lh-18 pb-2">{reviews[key].fecha_creacion}</span>
                                                     <p className="pb-2">{reviews[key].comentario}</p>
-                                                    <div className="helpful-action">
+                                                    {authenticated && <div className="helpful-action">
                                                         <span className="d-block fs-13">Te resultó últil el comentario?</span>
                                                         <button className={`btn ${reviews[key].voto=='1' && 'btn-info'}`} onClick={() => handlerVotarComentario({'key':key, 'id_curso':id, 'id_usuario_review':reviews[key].id, 'calificacion':1})}>Si</button>
                                                         <button className={`btn ${reviews[key].voto=='-1' && 'btn-info'}`} onClick={() => handlerVotarComentario({'key':key, 'id_curso':id, 'id_usuario_review':reviews[key].id, 'calificacion':-1})}>No</button>
-                                                    </div>
+                                                    </div>}
                                                 </div>
                                             </div>
                                         ))}                                        
@@ -761,6 +872,121 @@ function FormularioDetallesDeCurso(){
                                     </div>}
                                 </div>
 
+                                {(authenticated && tieneReviews==0) && <div className="course-overview-card pt-4">
+                                    <h3 className="fs-24 font-weight-semi-bold pb-4">Agrega una reseña</h3>
+                                    <div className="leave-rating-wrap pb-4">
+                                        <div className="leave-rating leave--rating">
+                                            <input type="radio" name='rate' id="star5"/>
+                                            <label htmlFor="star5" data-valor="5" onClick={(event) => { setValorEstrellaReview(event.target.dataset.valor); } }></label>
+                                            <input type="radio" name='rate' value="4" id="star4"/>
+                                            <label htmlFor="star4" data-valor="4" onClick={(event) => { setValorEstrellaReview(event.target.dataset.valor); } }></label>
+                                            <input type="radio" name='rate' value="3" id="star3"/>
+                                            <label htmlFor="star3" data-valor="3" onClick={(event) => { setValorEstrellaReview(event.target.dataset.valor); } }></label>
+                                            <input type="radio" name='rate' value="2" id="star2"/>
+                                            <label htmlFor="star2" data-valor="2" onClick={(event) => { setValorEstrellaReview(event.target.dataset.valor); } }></label>
+                                            <input type="radio" name='rate' value="1" id="star1"/>
+                                            <label htmlFor="star1" data-valor="1" onClick={(event) => { setValorEstrellaReview(event.target.dataset.valor); } }></label>
+                                        </div>
+                                    </div>
+                                    <form method="post" className="row">                                        
+                                        <div className="input-box col-lg-12">
+                                            <label className="label-text">Mensaje</label>
+                                            <div className="form-group">
+                                                <textarea className="form-control form--control pl-3" name="message" placeholder="Escribe el mensaje" maxLength="512" onKeyUp={(event) => { setValorMensaje(event.target.value); }} rows="5"></textarea>
+                                            </div>
+                                        </div>
+                                        <div className="btn-box col-lg-12">                                            
+                                            <button disabled={botonDesactivadoMensaje} className="btn theme-btn" type="submit" onClick={handleEnviarResena}>Enviar reseña</button>
+                                        </div>
+                                    </form>
+                                </div>}
+
+                            </div>
+                        </div>
+
+                        <div className="col-lg-4">
+                            <div className="sidebar sidebar-negative">
+                                <div className="card card-item">
+                                    <div className="card-body">
+                                        {videoVistaPrevia!='' && <div className="preview-course-video">
+                                            <a href="#" data-toggle="modal" data-target="#previewModal">
+                                                <img src={`${videoVistaPreviaImagen!='' ? `${urlBaseApi}/${videoVistaPreviaImagen}` : `${urlBase}/images/pattern.png` }`} data-src={`${videoVistaPreviaImagen!='' ? `${urlBaseApi}/${videoVistaPreviaImagen}` : `${urlBase}/images/pattern.png` }`} alt="Imaagen del curso" className="w-100 rounded lazy" />
+                                                <div className="preview-course-video-content">
+                                                    <div className="overlay"></div>
+                                                    <div className="play-button" onClick={handlePreviewVideo}>
+                                                        <svg viewBox="-307.4 338.8 91.8 91.8" xmlSpace="preserve">                                                            
+                                                            <g>
+                                                                <circle style={{'fill':'#ffffff', 'borderRadius':'100px'}} cx="-261.5" cy="384.7" r="45.9"></circle><path style={{'fill':'#000000'}} d="M-272.9,363.2l35.8,20.7c0.7,0.4,0.7,1.3,0,1.7l-35.8,20.7c-0.7,0.4-1.5-0.1-1.5-0.9V364C-274.4,363.3-273.5,362.8-272.9,363.2z"></path>
+                                                            </g>
+                                                        </svg>
+                                                    </div>
+                                                    <p className="fs-15 font-weight-bold text-white pt-3" onClick={handlePreviewVideo}>Vista previa del curso</p>
+                                                </div>
+                                            </a>
+                                        </div>}
+                                        <div className="preview-course-feature-content pt-40px">
+                                            <p className="d-flex align-items-center pb-2">
+                                                <span className="fs-35 font-weight-semi-bold text-black">${datos.precio_actual}</span>
+                                                {datos.precio_anterior!=0 && <><span className="before-price mx-1">${datos.precio_anterior}</span>
+                                                <span className="price-discount">-{datos.porcentaje_descuento}%</span></>}
+                                            </p>
+                                            {datos.fecha_final_descuento_dias!='' && <p className="preview-price-discount-text pb-35px">
+                                                Quedan <span className="text-color-3">{datos.fecha_final_descuento_dias}</span> a este precio!
+                                            </p>}
+                                            <div className="buy-course-btn-box">
+                                                <button type="button" className="btn theme-btn w-100 mb-2"><i className="la la-shopping-cart fs-18 mr-1"></i> Agregar al carrito</button>
+                                                <button type="button" className="btn theme-btn w-100 theme-btn-white mb-2"><i className="la la-shopping-bag mr-1"></i> Comprar este curso</button>
+                                            </div>                                            
+                                            <div className="preview-course-incentives">
+                                                <h3 className="card-title fs-18 pb-2">Este precio incluye</h3>
+                                                <ul className="generic-list-item pb-3">
+                                                    {datos.cantidad_horas_de_video_horas>0 && <li><i className="la la-play-circle-o mr-2 text-color"></i>{datos.cantidad_horas_de_video_horas} horas de video en demanda</li>}
+                                                    {datos.cantidad_examenes>0 && datos.examenes_solo_pago==0 && <li><i className="la la-file mr-2 text-color"></i>{datos.cantidad_examenes} exámenes {datos.examenes_solo_pago==1 ? <span className="text-color-3">(Pago adicional)</span> : <span className="text-color-3">(Incluido)</span>}</li>}
+                                                    {datos.cantidad_descargables>0 && <li><i className="la la-file-text mr-2 text-color"></i>{datos.cantidad_descargables} recursos descargables</li>}                                                                                                        
+                                                    {datos.expedir_certificado==1 && datos.certificado_solo_pago==0 && <li><i className="la la-certificate mr-2 text-color"></i>Certificado de Finalización {datos.certificado_solo_pago==1 ? <span className="text-color-3">(Pago adicional)</span> : <span className="text-color-3">(Incluido)</span>}</li>}
+                                                </ul>                                
+                                                {((datos.cantidad_examenes>0 && datos.examenes_solo_pago==1) || (datos.expedir_certificado==1 && datos.certificado_solo_pago==1)) &&              
+                                                <>
+                                                    <div className="section-block"></div>
+                                                    <div className="buy-for-team-container pt-4">
+                                                        <h3 className="fs-18 font-weight-semi-bold pb-2">Pago Adicional</h3>
+                                                        <ul className="generic-list-item pb-3">
+                                                            {datos.cantidad_examenes>0 && datos.examenes_solo_pago==1 && <li><i className="la la-file mr-2 text-color"></i>{datos.cantidad_examenes} exámenes {datos.examenes_solo_pago==1 ? <span className="text-color-3">(Pago adicional)</span> : <span className="text-color-3">(Incluido)</span>}</li>}
+                                                            {datos.expedir_certificado==1 && datos.certificado_solo_pago==0 && <li><i className="la la-certificate mr-2 text-color"></i>Certificado de Finalización {datos.certificado_solo_pago==1 ? <span className="text-color-3">(Pago adicional)</span> : <span className="text-color-3">(Incluido)</span>}</li>}
+                                                        </ul>                                                          
+                                                    </div>
+                                                </>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="card card-item">
+                                    <div className="card-body">
+                                        <h3 className="card-title fs-18 pb-2">Características del curso</h3>
+                                        <div className="divider"><span></span></div>
+                                        <ul className="generic-list-item generic-list-item-flash">
+                                            {datos.cantidad_horas_de_video_horas>0  && <li className="d-flex align-items-center justify-content-between"><span><i className="la la-clock mr-2 text-color"></i>Duración</span> {datos.cantidad_horas_de_video_horas} horas</li>}                                                                                        
+                                            {datos.cantidad_examenes>0 && <li className="d-flex align-items-center justify-content-between"><span><i className="la la-bolt mr-2 text-color"></i>Exámenes</span> {datos.cantidad_examenes}</li>}
+                                            {datos.cantidad_descargables>0 && <li className="d-flex align-items-center justify-content-between"><span><i className="la la-file-text-o mr-2 text-color"></i>Recursos</span> {datos.cantidad_descargables}</li>}                                            
+                                            <li className="d-flex align-items-center justify-content-between"><span><i className="la la-language mr-2 text-color"></i>Idioma</span> Español</li>
+                                            <li className="d-flex align-items-center justify-content-between"><span><i className="la la-lightbulb mr-2 text-color"></i>Nivel de habilidad</span> {nivelHabilidad[datos.nivel]}</li>
+                                            <li className="d-flex align-items-center justify-content-between"><span><i className="la la-users mr-2 text-color"></i>Estudiantes</span> {datos.estudiantes_cantidad}</li>
+                                            <li className="d-flex align-items-center justify-content-between"><span><i className="la la-certificate mr-2 text-color"></i>Certificado</span> {datos.expedir_certificado==1 ? 'Si' : 'No' }</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="card card-item">
+                                    <div className="card-body">
+                                        <h3 className="card-title fs-18 pb-2">Categorías del curso</h3>
+                                        <div className="divider"><span></span></div>
+                                        <ul className="generic-list-item">
+                                            <li><Link to={breadCrumb[0].link}>{breadCrumb[0].nombre}</Link></li>
+                                            {Object.keys(datos.tags).map((key) => (
+                                                <li key={`tag-link${key}`}><Link to={`${urlBase}/tag/${datos.tags[key].id_tag}`}>{datos.tags[key].nombre}</Link></li>
+                                            ))}    
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-import {React, useState} from 'react';
+import {React, useState, useEffect} from 'react';
 import Header from './Header';
 import BreadCrumbArea from './BreadCrumbArea';
 import FormularioCategoriaNavegacion from './FormularioCategoriaNavegacion';
@@ -11,7 +11,12 @@ function PaginaCategoriaNavegacion() {
       setBreadCrumb(nuevoBreadCrumb);
   };
 
-    return (
+  useEffect(() => {   
+      window.scrollTo(0, 0);    
+  }, []);
+  
+
+  return (
           <>              
               <Header/>
               <BreadCrumbArea nombreseccion="Explorar" breadCrumbData={breadCrumb}/>

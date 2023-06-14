@@ -146,7 +146,7 @@ function TarjetaCurso(
         return (<div className="col-lg-6 responsive-column-half">
                     <div className="card card-item card-preview" data-tooltip-content="#tooltip_content_1">
                         <div className="card-image">
-                            <Link to={`${urlBase}/curso/${idcurso}/${url_amigable}`} className="d-block">
+                            <Link to={`${urlBase}/curso/${url_amigable}`} className="d-block">
                                 <img className="card-img-top lazy" src="/images/img-loading.png" data-src={imagen} alt={nombre} />
                             </Link>
                             <div className="course-badge-labels">
@@ -159,7 +159,7 @@ function TarjetaCurso(
                         </div>
                         <div className="card-body">
                             <h6 className="ribbon ribbon-blue-bg fs-14 mb-3">{niveles[nivel]}</h6>
-                            <h5 className="card-title"><Link to={`${urlBase}/curso/${idcurso}/${url_amigable}`}>{nombre}</Link></h5>
+                            <h5 className="card-title"><Link to={`${urlBase}/curso/${url_amigable}`}>{nombre}</Link></h5>
                             {instructor!='' && <p className="card-text"><a href="teacher-detail.html">{instructor}</a></p>}
                             <div className="rating-wrap d-flex align-items-center py-2">
                                 <div className="review-stars">

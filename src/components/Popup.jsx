@@ -15,8 +15,8 @@ function Popup({mostrarPopup=false, tamano="lg", tipo=2, titulo="", mensaje="", 
                 {(titulo!='') && <Modal.Header>
                     <Modal.Title>{titulo}</Modal.Title>                   
                 </Modal.Header>}
-                <Modal.Body>                    
-                    {mensaje}
+                <Modal.Body>   
+                    <div dangerouslySetInnerHTML={{ __html: mensaje }} />
                 </Modal.Body>
                 <Modal.Footer>
                     {(tipo==2 || tipo==3) && <Button variant="primary" onClick={handleFuncionAceptar}>{textoAceptar}</Button>}

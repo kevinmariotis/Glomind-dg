@@ -8,8 +8,8 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const {jwt, authenticated} = useContext(AuthContext);  
-    const { id } = useParams();
-    
+    const { url_amigable } = useParams();
+        
     const [pagina, setPagina] = useState(1);
     const [orderBy, setOrderBy] = useState('precio_actual-asc');    
     const [mostrarMasDocente, setMostrarMasDocente]  = useState(false);   
@@ -50,7 +50,9 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
             intervalRef.current = setInterval(() => {
                 chekearCambiosBusquedaNombre();                
             }, 1500);
-        }        
+        }else{
+            return () => { clearInterval(intervalRef.current); }
+        }
     }, []);
 
 
@@ -124,9 +126,9 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
         setMostrarMasDocente(!mostrarMasDocente);
     };
 
-    useEffect(() => {
-        obtenerDatosDelServidor();                    
-    }, [id, pagina, orderBy, nombre_seleccionado, estrella_seleccionada, video_selecionado, nivel_selecionado, costo_selecionado, instructor_selecionado]);
+    useEffect(() => {        
+        obtenerDatosDelServidor();                          
+    }, [url_amigable, pagina, orderBy, nombre_seleccionado, estrella_seleccionada, video_selecionado, nivel_selecionado, costo_selecionado, instructor_selecionado]);
 
     const obtenerDatosDelServidor = async () => {  
         let headers = {}      
@@ -156,7 +158,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
                 add = 'ninguno';
             }
 
-            const response = await fetch(`${urlBaseApi}/api/categoriasistema/getCursos/${id}/1/${pagina}/${orderBy}/${obtener_detalles}/${add}/${nombre_seleccionado}`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/categoriasistema/getCursosUrlAmigable/${url_amigable}/1/${pagina}/${orderBy}/${obtener_detalles}/${add}/${nombre_seleccionado}`, opciones);
 
             if (response.ok) {                
                 //console.log('Categorías recuperadas del servidor:');
@@ -168,7 +170,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
                 //se actualiza el breadCrrumb
                 const datosArbol = datos.arbol;
                 let nuevaDataBreadCrumb = [];
-                datosArbol.forEach((elemento) => {  nuevaDataBreadCrumb.push({'link':`${urlBase}/categoria/${elemento.id_categoria}/${elemento.nombre}`, 'nombre':elemento.nombre}); });            
+                datosArbol.forEach((elemento) => {  nuevaDataBreadCrumb.push({'link':`${urlBase}/categoria/${elemento.url_amigable}`, 'nombre':elemento.nombre}); });            
                 actualizarBreadCrumb(nuevaDataBreadCrumb);
                 console.log("nuevos datos breadCrumb", nuevaDataBreadCrumb);
                 //fin de actualizar el breadCrumb
@@ -225,7 +227,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
                                     <div className="divider"><span></span></div>
                                     {Object.keys(subcategorias).map((key) => (
                                         <div key={`cate${subcategorias[key].id}`} className="custom-control custom-checkbox mb-1 fs-15">                                                                                    
-                                            <Link to={`${urlBase}/categoria/${subcategorias[key].id}/${subcategorias[key].url_amigable}`}>{subcategorias[key].nombre}<span className="ml-1 text-gray">({subcategorias[key].cantidad_cursos})</span></Link>
+                                            <Link to={`${urlBase}/categoria/${subcategorias[key].url_amigable}`}>{subcategorias[key].nombre}<span className="ml-1 text-gray">({subcategorias[key].cantidad_cursos})</span></Link>
                                         </div>
                                     ))}                                                                                                                     
                                 </div>
@@ -429,7 +431,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
                                 <TarjetaCurso
                                     key={`tarjeta${cursos[key].id}`}
                                     idcurso={cursos[key].id}
-                                    url_amigable={'a'}
+                                    url_amigable={cursos[key].url_amigable}
                                     nombre={cursos[key].nombre}
                                     imagen={cursos[key].imagen_pequena}
                                     bestseller={cursos[key].bestseller}

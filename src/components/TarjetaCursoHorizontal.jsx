@@ -144,7 +144,7 @@ function TarjetaCursoHorizontal(
 
         return (<div className="card card-item card-item-list-layout border border-gray shadow-none">
                     <div className="card-image">
-                         <Link to={`${urlBase}/curso/${idcurso}/${url_amigable}`} className="d-block">
+                         <Link to={`${urlBase}/curso/${url_amigable}`} className="d-block">
                             <img className="card-img-top" src={`${urlBaseApi}/${imagen}`} alt="Card image cap" />
                         </Link>
                         <div className="course-badge-labels">
@@ -157,7 +157,7 @@ function TarjetaCursoHorizontal(
                     </div>
                     <div className="card-body">
                         <h6 className="ribbon ribbon-blue-bg fs-14 mb-3">{niveles[nivel]}</h6>
-                        <h5 className="card-title"><Link to={`${urlBase}/curso/${idcurso}/${url_amigable}`}>{nombre}</Link></h5>
+                        <h5 className="card-title"><Link to={`${urlBase}/curso/${url_amigable}`}>{nombre}</Link></h5>
                         {instructor!='' && <p className="card-text"><a href="teacher-detail.html">{instructor}</a></p>}
                         <div className="rating-wrap d-flex align-items-center py-2">
                             <div className="review-stars">
