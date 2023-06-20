@@ -147,7 +147,7 @@ function TarjetaCurso(
                     <div className="card card-item card-preview" data-tooltip-content="#tooltip_content_1">
                         <div className="card-image">
                             <Link to={`${urlBase}/curso/${url_amigable}`} className="d-block">
-                                <img className="card-img-top lazy" src="/images/img-loading.png" data-src={imagen} alt={nombre} />
+                                <img className="card-img-top lazy" src={imagen!='/images/img8.jpg' ? urlBaseApi+'/'+imagen : imagen} data-src={imagen} alt={nombre} />
                             </Link>
                             <div className="course-badge-labels">
                                 {bestseller==1 && <div className="course-badge">Más vendidos</div>}

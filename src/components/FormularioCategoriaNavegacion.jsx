@@ -4,7 +4,7 @@ import { AuthContext } from '../AuthContext';
 import TarjetaCurso from './TarjetaCurso';
 import Paginador from './Paginador';
 
-function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
+function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCrumbData, actualizarBreadCrumbImagen}) {
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const {jwt, authenticated} = useContext(AuthContext);  
@@ -171,7 +171,9 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb}) {
                 const datosArbol = datos.arbol;
                 let nuevaDataBreadCrumb = [];
                 datosArbol.forEach((elemento) => {  nuevaDataBreadCrumb.push({'link':`${urlBase}/categoria/${elemento.url_amigable}`, 'nombre':elemento.nombre}); });            
-                actualizarBreadCrumb(nuevaDataBreadCrumb);
+                actualizarBreadCrumb(datosArbol[datosArbol.length-1].nombre);
+                actualizarBreadCrumbData(nuevaDataBreadCrumb);
+                actualizarBreadCrumbImagen(datosArbol[datosArbol.length-1].imagen_grande!=null ? datosArbol[datosArbol.length-1].imagen_grande : 'images/breadcrumb-bg.jpg');
                 console.log("nuevos datos breadCrumb", nuevaDataBreadCrumb);
                 //fin de actualizar el breadCrumb
 

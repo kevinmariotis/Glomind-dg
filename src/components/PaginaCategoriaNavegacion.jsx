@@ -6,10 +6,20 @@ import FooterArea from './FooterArea';
 
 function PaginaCategoriaNavegacion() {
 
-  const [breadCrumb, setBreadCrumb] = useState('Inicio');
+  const [breadCrumb, setBreadCrumb] = useState('Explorar');
+  const [breadCrumbImagen, setBreadCrumbImagen] = useState('');
+  const [breadCrumbData, setBreadCrumbData] = useState({});
+
   const actualizarBreadCrumb = (nuevoBreadCrumb) => {
-      setBreadCrumb(nuevoBreadCrumb);
+        setBreadCrumb(nuevoBreadCrumb);
+    };
+  const actualizarBreadCrumbData = (nuevoBreadCrumbData) => {
+        setBreadCrumbData(nuevoBreadCrumbData);
   };
+
+  const actualizarBreadCrumbImagen = (imagen) => {
+    setBreadCrumbImagen(imagen);
+};
 
   useEffect(() => {   
       window.scrollTo(0, 0);    
@@ -19,8 +29,8 @@ function PaginaCategoriaNavegacion() {
   return (
           <>              
               <Header/>
-              <BreadCrumbArea nombreseccion="Explorar" breadCrumbData={breadCrumb}/>
-              <FormularioCategoriaNavegacion actualizarBreadCrumb={actualizarBreadCrumb}/>
+              <BreadCrumbArea nombreseccion={breadCrumb} breadCrumbData={breadCrumbData} imagen={breadCrumbImagen}/>
+              <FormularioCategoriaNavegacion actualizarBreadCrumb={actualizarBreadCrumb} actualizarBreadCrumbData={actualizarBreadCrumbData} actualizarBreadCrumbImagen={actualizarBreadCrumbImagen} />
               <FooterArea />
           </>    );
 }

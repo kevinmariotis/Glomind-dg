@@ -163,7 +163,7 @@ function HeaderMenuContent() {
                                         {authenticated && contadorCarrito.contador>0 && <ul className="cart-dropdown-menu">
                                             {Object.keys(contadorCarrito.productos).map((key) => (
                                                 <li key={contadorCarrito.productos[key].id_curso+contadorCarrito.productos[key].tipo_compra} className="media media-card">
-                                                    <a href="shopping-cart.html" className="media-img">
+                                                    <a href="shopping-cart.html" className="media-img" style={{ height: 'auto' }}>
                                                         {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} /> : <img src="images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} /> }
                                                     </a>
                                                     <div className="media-body">
@@ -179,14 +179,14 @@ function HeaderMenuContent() {
                                                 </div>
                                             </li>
                                             <li>
-                                                <a href="shopping-cart.html" className="btn theme-btn w-100">Got to cart <i className="la la-arrow-right icon ml-1"></i></a>
+                                                <a href="shopping-cart.html" className="btn theme-btn w-100">Ir al carrito <i className="la la-arrow-right icon ml-1"></i></a>
                                             </li>
                                         </ul>}
                                     </li>
                                 </ul>
                             </div>
                             <div className="nav-right-button">
-                                <a href="admission.html" className="btn theme-btn d-none d-lg-inline-block"><i className="la la-user-plus mr-1"></i> Admission</a>
+                                <a href="admission.html" className="btn theme-btn d-none d-lg-inline-block"><i className="la la-user-plus mr-1"></i> Admisión</a>
                             </div>
                         </div>
                     </div>

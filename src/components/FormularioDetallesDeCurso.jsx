@@ -1,17 +1,18 @@
 import React, {useState, useEffect, useContext, useCallback, useRef} from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import ReCAPTCHA from "react-google-recaptcha";
 import { AuthContext } from '../AuthContext';
 import LoadingAnimation from './LoadingAnimation';
 import TarjetaCursoHorizontal from './TarjetaCursoHorizontal';
 import Popup from './Popup';
-import SpamError from './SpamError';
+import Spinner from './Spinner';
+import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 
 function FormularioDetallesDeCurso(){
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API; 
     const urlBase = import.meta.env.VITE_URL_BASE;     
-    const {jwt, authenticated} = useContext(AuthContext);
+    const {jwt, authenticated, setCargarContadorCarrito} = useContext(AuthContext);
     const { url_amigable } = useParams();
+    const navigate = useNavigate();
 
     const [id, setId] = useState(-1);
     const [datos, setDatos] = useState([]);
@@ -30,13 +31,17 @@ function FormularioDetallesDeCurso(){
     const [videoVistaPrevia, setVideoVistaPrevia] = useState('');    
     const [videoVistaPreviaImagen, setVideoVistaPreviaImagen] = useState('');    
     const [mostrarVideoVistaPrevia, setMostrarVideoVistaPrevia] = useState(false);    
+    const [mostrarSpinner, setMostrarSpinner] = useState(false);    
+    const [mostrarPopUpComprar, setMostrarPopUpComprar] = useState(false);        
+    const [compraDirecta, setCompraDirecta] = useState(0);        
     
-
+    
     const [valorMensaje, setValorMensaje] = useState('');
     const [valorEstrellaReview, setValorEstrellaReview] = useState(0);    
     const [botonDesactivadoMensaje, setBotonDesactivadoMensaje] = useState(false); 
     
-
+    const [comprarExamenes, setComprarExamenes] = useState(true);
+    const [comprarCertificado, setComprarCertificado] = useState(true);    
 
     const [pestanaActivada, setPestanaActivada]  = useState(0);
     const [mostrarMasDocente, setMostrarMasDocente]  = useState(false);
@@ -46,6 +51,7 @@ function FormularioDetallesDeCurso(){
     const [filtrarByComentarios, setFiltarByComentarios]  = useState('estrella:0');
 
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
+    const [popUpIniciarSesion, setPopUpIniciarSesion] = useState({mostrar:false, titulo:'', contenido:'', tipo:3, textoAceptar:"Aceptar", textoCerrar:"Cerrar"});
 
     //interval para manejar la busqueda por nombre en lapsos de tiempo
     const [nombre_seleccionado, setNombreSeleccionado] = useState('');   
@@ -76,7 +82,9 @@ function FormularioDetallesDeCurso(){
     useEffect(() => {   
         window.scrollTo(0, 0);
         obtenerDatosDelServidor();
-    }, []);
+        setComprarExamenes(true);
+        setComprarCertificado(true);
+    }, [url_amigable]);
 
     useEffect(() => {   
         if(id!=-1){
@@ -118,7 +126,9 @@ function FormularioDetallesDeCurso(){
                 setTieneReview(datos.curso.tiene_review);
                 setCursoImagenGrande(datos.curso.imagen_grande);
                 setVideoVistaPrevia(datos.curso.video_vista_previa);
-                setVideoVistaPreviaImagen(datos.curso.video_imagen_vista_previa);
+                setVideoVistaPreviaImagen(datos.curso.video_imagen_vista_previa);                     
+                setComprarExamenes(datos.curso.examenes_solo_pago==1 ? true : false);
+                setComprarCertificado(datos.curso.certificado_solo_pago==1 ? true : false);                
             } else {                
                 console.error(`Error en la respuesta: ${response.status} - ${response.statusText}`);
             }            
@@ -141,6 +151,18 @@ function FormularioDetallesDeCurso(){
     };
     const handleFuncionCerrarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
+    };
+
+    const handleFuncionAceptarPopUpIniciarSesion = () => {        
+        setPopUpIniciarSesion({...popUpIniciarSesion, mostrar:false});
+        navigate('/login');
+    };
+    const handleFuncionCerrarPopUpIniciarSesion = () => {           
+        setPopUpIniciarSesion({...popUpIniciarSesion, mostrar:false});        
+    };
+    const handleFuncionCerrarPopUpIniciarSesionTercerBoton = () => {        
+        setPopUpIniciarSesion({...popUpIniciarSesion, mostrar:false});
+        navigate('/signup');
     };
 
     const handleEnviarResena = (event) => {        
@@ -349,7 +371,158 @@ function FormularioDetallesDeCurso(){
             setMostrarVideoVistaPrevia(!mostrarVideoVistaPrevia);
         }        
     }
+    const handleCerrarComprar = () => {                
+        setMostrarPopUpComprar(!mostrarPopUpComprar);                    
+    }
 
+    const handleOpcionesAgregarAlCarrito = async ({tipo=1, directo=0}) => {                                
+        setCompraDirecta(directo);        
+        //miramos si el producto tiene exameens o certificados adicionales con los datos locales, si no tiene se pasa a a agregar al carrito directamente        
+        if(authenticated){
+            if(datos.examenes_solo_pago!=0 || datos.certificado_solo_pago!=0){
+                setMostrarSpinner(true);
+                //miramos que tiene agregado en el carrito actualmente para establecer los switchs y que al mostrar la ventana aparezcan actualizados
+                const opciones = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization' : `Bearer ${jwt}`
+                    },            
+                };
+                try {
+                    const response = await fetch(`${urlBaseApi}/api/carrito/1`, opciones);
+                    const data = await response.json();
+                    setMostrarSpinner(false);
+                    if (response.ok){                                                      
+                        let encontrados = [];
+                        Object.keys(data.productos).forEach((key) => {                            
+                            encontrados.push(data.productos[key]['tipo_compra']);                                                        
+                        });                          
+                        setComprarExamenes(encontrados.includes(2) ? true : false);
+                        setComprarCertificado(encontrados.includes(3) ? true : false);                                                                        
+                        if(encontrados.length==0){
+                            handleAgregarAlCarrito({'tipo':1});
+                        }else{
+                            setMostrarPopUpComprar(true);
+                        }
+                        return;
+                    } else {
+                        // Obtener el código de error de la respuesta
+                        const statusCode = response.status;                
+                                                
+                        // Mostrar mensaje de error según el código de error
+                        switch (statusCode){
+                            case 400:
+                                console.error('Error 400: Bad Request');                        
+                            break;
+                            case 401:
+                                console.error('Error 401: Unauthorized');
+                                console.log('Datos de error:', data);
+                            break;
+                            case 404:
+                                console.error('Error 404: Not Found');
+                                console.log('Datos de error:', data);
+                            break;
+                            case 500:
+                                console.error('Error 500: Internal Server Error');
+                                console.log('Datos de error:', data);
+                            break;
+                            default:
+                                console.error('Error desconocido');
+                                console.log('Datos de error:', data);
+                            break;
+                        }                    
+                    }                
+                }catch (error) {
+                    console.error('Error de conexión:', error);
+                }            
+            }else{            
+                //aqui se ejecuta el hande para agregar al carrito directamente ya que no tiene opciones
+                handleAgregarAlCarrito({'tipo':tipo});
+            }
+        }else{
+            setPopUpIniciarSesion({mostrar:true, tipo:3, titulo:'Mensaje', contenido:'Inicia sesión o regístrate para comprar este producto.', textoAceptar:"Iniciar Sesión", textoCerrar:"Cerrar"});
+        }
+    }
+   
+    const handleAgregarAlCarrito = async ({tipo=1}) => {
+        setMostrarSpinner(true); 
+        
+        let accion = 'PUT';
+        //miramos si realmente se va a borrar
+        if([2, 3].includes(tipo)){
+            if(tipo==2 && !comprarExamenes){
+                accion = 'DELETE';
+            }
+            if(tipo==3 && !comprarCertificado){
+                accion = 'DELETE';
+            }
+        }
+        //fin de definir si se va a borrar
+
+        const raw = {
+            'tipo_compra': tipo.toString(),            
+        };
+        const opciones = {
+            method: accion,
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },    
+            body: JSON.stringify(raw),        
+        };
+        
+        try {
+            const response = await fetch(`${urlBaseApi}/api/carrito/${id}/0`, opciones);
+            const data = await response.json();
+            setMostrarSpinner(false);   
+            setCargarContadorCarrito(true);            
+            if (response.ok){                                               
+                return;
+            } else {
+                // Obtener el código de error de la respuesta
+                const statusCode = response.status;                
+                                        
+                // Mostrar mensaje de error según el código de error
+                switch (statusCode){
+                    case 400:
+                        console.error('Error 400: Bad Request');                        
+                    break;
+                    case 401:
+                        console.error('Error 401: Unauthorized');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 404:
+                        console.error('Error 404: Not Found');
+                        console.log('Datos de error:', data);
+                    break;
+                    case 500:
+                        console.error('Error 500: Internal Server Error');
+                        console.log('Datos de error:', data);
+                    break;
+                    default:
+                        console.error('Error desconocido');
+                        console.log('Datos de error:', data);
+                    break;
+                }                    
+            }
+            if(tipo==1){      
+                if(datos.examenes_solo_pago==1){
+                    handleAgregarAlCarrito({'tipo':2});
+                }
+                if(datos.certificado_solo_pago==1){
+                    handleAgregarAlCarrito({'tipo':3});
+                }
+                setMostrarPopUpComprar(false);
+                if(compraDirecta==0){
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Carrito actualizado'});
+                }else{
+                    navigate('/carrito');
+                }
+            }
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }        
+    }
+    
     const votarPorComentario = async (parametros) => {                                       
         const formData = new FormData();
         formData.append('id_curso', parametros.id_curso);   
@@ -364,9 +537,10 @@ function FormularioDetallesDeCurso(){
         };
         
         try {
+            setMostrarSpinner(true);
             const response = await fetch(`${urlBaseApi}/api/cursoreviewvoto`, opciones);
             const data = await response.json();
-        
+            setMostrarSpinner(false);
             if (response.ok){  
                 //todo esto para que aparezca el boton coloreado              
                 let nuevos_reviews = {}
@@ -494,6 +668,7 @@ function FormularioDetallesDeCurso(){
     return (
         <>{datos.length==0 ? <LoadingAnimation /> :           
             <>
+            {mostrarSpinner && <Spinner />}
             <Popup 
                 mostrarPopup={popUp.mostrar} 
                 tamano="xx"
@@ -504,6 +679,119 @@ function FormularioDetallesDeCurso(){
                 funcionCerrar={handleFuncionCerrarPopUp}
                 textoCerrar="Aceptar"
             />
+            <Popup 
+                mostrarPopup={popUpIniciarSesion.mostrar} 
+                tamano="xx"
+                tipo={popUpIniciarSesion.tipo} 
+                titulo={popUpIniciarSesion.titulo} 
+                mensaje={popUpIniciarSesion.contenido} 
+                funcionAceptar={handleFuncionAceptarPopUpIniciarSesion} 
+                funcionCerrar={handleFuncionCerrarPopUpIniciarSesion}
+                textoCerrar={popUpIniciarSesion.textoCerrar}
+                textoAceptar={popUpIniciarSesion.textoAceptar}
+                textoTercerBoton="Registrarme"
+                funcionTercerBoton={handleFuncionCerrarPopUpIniciarSesionTercerBoton}
+            />
+            {mostrarPopUpComprar && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
+                <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header border-bottom-gray">
+                            <div className="pr-2">
+                                <p className="pb-2 font-weight-semi-bold">Añadir al carrito</p>
+                                <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="comprarModalTitle">{datos.nombre}</h5>
+                            </div>                            
+                        </div>
+                        <div className="modal-body">
+                            <p>Este curso tiene algunos items de costo adicional, por favor selecciona los items adicionales que deseas:</p>
+                            <table className="table generic-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Seleccionar</th>
+                                        <th scope="col">Detalles</th>
+                                        <th scope="col">Precio</th>                                
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">
+                                            <div className="media media-card">                                                
+                                                <a href="#" className="media-img mr-0" style={{ height: 'auto' }}>
+                                                    <img src={datos.imagen_pequena==null ? `${urlBase}/images/img8.jpg` : `${urlBaseApi}/${datos.imagen_pequena}`} alt="Imagen del curso" />
+                                                </a>
+                                            </div>
+                                        </th>
+                                        <td>
+                                            <a href="#" className="text-black font-weight-semi-bold">{datos.nombre}</a>
+                                            <p className="fs-14 text-gray lh-20">Curso</p>
+                                        </td>
+                                        <td>
+                                            <ul className="generic-list-item font-weight-semi-bold">
+                                                <li className="text-black lh-18">${datos.precio_actual}</li>                                                
+                                            </ul>
+                                        </td>                                
+                                    </tr>
+                                    {datos.examenes_solo_pago==1 && <tr>
+                                        <th scope="row">
+                                            <div className="media media-card">
+                                                <BootstrapSwitchButton
+                                                    checked={comprarExamenes}
+                                                    onlabel='Si'
+                                                    offlabel='No'
+                                                    onChange={(checked) => {
+                                                        setComprarExamenes(checked)
+                                                    }}
+                                                    size="lg"
+                                                    onstyle="success"
+                                                    offstyle="dark"
+                                                />
+                                            </div>
+                                        </th>
+                                        <td>                                            
+                                            <a href="#" className="text-black font-weight-semi-bold">{datos.nombre}</a>
+                                            <p className="fs-14 text-gray lh-20">Exámenes</p>
+                                        </td>
+                                        <td>
+                                            <ul className="generic-list-item font-weight-semi-bold">                                                
+                                                <li className="text-black lh-18">${datos.precio_adicional_examenes}</li>                                                
+                                            </ul>
+                                        </td>                                    
+                                    </tr>}
+                                    {datos.certificado_solo_pago==1 && <tr>
+                                        <th scope="row">
+                                            <div className="media media-card">
+                                            <BootstrapSwitchButton
+                                                    checked={comprarCertificado}
+                                                    onlabel='Si'
+                                                    offlabel='No'
+                                                    onChange={(checked) => {
+                                                        setComprarCertificado(checked)
+                                                    }}
+                                                    size="lg"
+                                                    onstyle="success"
+                                                    offstyle="dark"
+                                                />                                                                                            
+                                            </div>
+                                        </th>
+                                        <td>                                            
+                                            <a href="#" className="text-black font-weight-semi-bold">{datos.nombre}</a>
+                                            <p className="fs-14 text-gray lh-20">Certificado</p>
+                                        </td>
+                                        <td>
+                                            <ul className="generic-list-item font-weight-semi-bold">                                                
+                                                <li className="text-black lh-18">${datos.precio_adicional_certificado}</li>                                                
+                                            </ul>
+                                        </td>                                    
+                                    </tr>}
+                                </tbody>
+                            </table>                            
+                        </div>
+                        <div className="modal-footer border-top-gray">
+                            <button type="button" className="btn theme-btn mb-2" onClick={()=>{ handleAgregarAlCarrito({'tipo':1}); }}><i className="la la-shopping-cart fs-18 mr-1"></i>{(comprarExamenes || comprarCertificado) ? 'Actualizar carrito' : 'Agregar al carrito'}</button>                             
+                            <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={handleCerrarComprar}> Cancelar </button>
+                        </div>
+                    </div>
+                </div>
+            </div>}
             {mostrarVideoVistaPrevia && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="previewModal" tabIndex="-1" role="dialog" aria-labelledby="previewModalTitle" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                     <div className="modal-content">
@@ -934,8 +1222,8 @@ function FormularioDetallesDeCurso(){
                                                 Quedan <span className="text-color-3">{datos.fecha_final_descuento_dias}</span> a este precio!
                                             </p>}
                                             <div className="buy-course-btn-box">
-                                                <button type="button" className="btn theme-btn w-100 mb-2"><i className="la la-shopping-cart fs-18 mr-1"></i> Agregar al carrito</button>
-                                                <button type="button" className="btn theme-btn w-100 theme-btn-white mb-2"><i className="la la-shopping-bag mr-1"></i> Comprar este curso</button>
+                                                <button type="button" className="btn theme-btn w-100 mb-2" onClick={()=>{ handleOpcionesAgregarAlCarrito({'tipo':1}); }}><i className="la la-shopping-cart fs-18 mr-1"></i> Agregar al carrito</button>
+                                                <button type="button" className="btn theme-btn w-100 theme-btn-white mb-2" onClick={()=>{ handleOpcionesAgregarAlCarrito({'tipo':1, 'directo':1}); }}><i className="la la-shopping-bag mr-1"></i> Comprar este curso</button>
                                             </div>                                            
                                             <div className="preview-course-incentives">
                                                 <h3 className="card-title fs-18 pb-2">Este precio incluye</h3>
@@ -951,8 +1239,8 @@ function FormularioDetallesDeCurso(){
                                                     <div className="buy-for-team-container pt-4">
                                                         <h3 className="fs-18 font-weight-semi-bold pb-2">Pago Adicional</h3>
                                                         <ul className="generic-list-item pb-3">
-                                                            {datos.cantidad_examenes>0 && datos.examenes_solo_pago==1 && <li><i className="la la-file mr-2 text-color"></i>{datos.cantidad_examenes} exámenes {datos.examenes_solo_pago==1 ? <span className="text-color-3">(Pago adicional)</span> : <span className="text-color-3">(Incluido)</span>}</li>}
-                                                            {datos.expedir_certificado==1 && datos.certificado_solo_pago==0 && <li><i className="la la-certificate mr-2 text-color"></i>Certificado de Finalización {datos.certificado_solo_pago==1 ? <span className="text-color-3">(Pago adicional)</span> : <span className="text-color-3">(Incluido)</span>}</li>}
+                                                            {datos.cantidad_examenes>0 && datos.examenes_solo_pago==1 && <li><i className="la la-file mr-2 text-color"></i>{datos.cantidad_examenes} exámenes {datos.examenes_solo_pago==1 ? <span className="text-color-3">(${datos.precio_adicional_examenes})</span> : <span className="text-color-3">(Incluido)</span>}</li>}
+                                                            {datos.expedir_certificado==1 && datos.certificado_solo_pago==1 && <li><i className="la la-certificate mr-2 text-color"></i>Certificado de Finalización {datos.certificado_solo_pago==1 ? <span className="text-color-3">(${datos.precio_adicional_certificado})</span> : <span className="text-color-3">(Incluido)</span>}</li>}
                                                         </ul>                                                          
                                                     </div>
                                                 </>}
