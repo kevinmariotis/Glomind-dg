@@ -87,7 +87,7 @@ function HeaderMenuContent() {
                 console.log('Contador carrito recuperado del servidor:');
                 const contadorcarrito = await response.json();                    
                 const tamanocarrito = contadorcarrito.productos.length;
-                sessionStorage.setItem('contadorcarrito', JSON.stringify({"contador":tamanocarrito, "productos":contadorcarrito.productos, "total":contadorcarrito.factura.total, "fechahora":Math.floor(new Date().getTime() / 1000)}));
+                sessionStorage.setItem('contadorcarrito', JSON.stringify({"contador":tamanocarrito, "productos":contadorcarrito.productos, "total":contadorcarrito.factura.total, "fechahora":Math.floor(new Date().getTime() / 1000)}));                
                 setContadorCarrito({"contador":tamanocarrito, "productos":contadorcarrito.productos, "total":contadorcarrito.factura.total, "fechahora":Math.floor(new Date().getTime() / 1000)});                                                  
                 setCargarContadorCarrito(false);
             } else {                
@@ -156,30 +156,37 @@ function HeaderMenuContent() {
                             <div className="shop-cart mr-4">
                                 <ul>
                                     <li>
-                                        <p className="shop-cart-btn d-flex align-items-center">
+                                        <Link to="/carrito "className="shop-cart-btn d-flex align-items-center">
                                             <i className="la la-shopping-cart"></i>
                                             {authenticated && contadorCarrito.contador>0 && <span className="product-count">{contadorCarrito.contador}</span>}
-                                        </p>
+                                        </Link>
                                         {authenticated && contadorCarrito.contador>0 && <ul className="cart-dropdown-menu">
-                                            {Object.keys(contadorCarrito.productos).map((key) => (
-                                                <li key={contadorCarrito.productos[key].id_curso+contadorCarrito.productos[key].tipo_compra} className="media media-card">
-                                                    <a href="shopping-cart.html" className="media-img" style={{ height: 'auto' }}>
+                                            {Object.keys(contadorCarrito.productos).slice(0, 3).map((key) => (
+                                                <li key={contadorCarrito.productos[key].id_curso+'tc'+contadorCarrito.productos[key].tipo_compra} className="media media-card">
+                                                    <Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
                                                         {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} /> : <img src="images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} /> }
-                                                    </a>
+                                                    </Link>
                                                     <div className="media-body">
-                                                        <h5><a href="course-details.html">{contadorCarrito.productos[key].nombre}</a></h5>
+                                                        <h5><Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`}>{contadorCarrito.productos[key].nombre}</Link></h5>
                                                         {contadorCarrito.productos[key].nombres!='' && <span className="d-block lh-18 py-1">{contadorCarrito.productos[key].nombres} {contadorCarrito.productos[key].apellidos}</span>}
                                                         <p className="text-black font-weight-semi-bold lh-18">${contadorCarrito.productos[key].total_momento} {contadorCarrito.productos[key].precio_anterior!=0 && <span className="before-price fs-14">${contadorCarrito.productos[key].precio_anterior}</span>}</p>
                                                     </div>
                                                 </li>
-                                            ))}                                                
+                                            ))}          
+                                            {Object.keys(contadorCarrito.productos).length>3 &&
+                                                <li className="media media-card">
+                                                    <div className="media-body fs-16">
+                                                    <Link to="/carrito"><p className="text-black font-weight-semi-bold lh-18"> + {Object.keys(contadorCarrito.productos).length-3} productos</p></Link>
+                                                    </div>
+                                                </li>
+                                            }
                                             <li className="media media-card">
                                                 <div className="media-body fs-16">
                                                     <p className="text-black font-weight-semi-bold lh-18">Total: <span className="cart-total">${contadorCarrito.total}</span></p>
                                                 </div>
                                             </li>
                                             <li>
-                                                <a href="shopping-cart.html" className="btn theme-btn w-100">Ir al carrito <i className="la la-arrow-right icon ml-1"></i></a>
+                                                <Link to="/carrito" className="btn theme-btn w-100">Ir al carrito <i className="la la-arrow-right icon ml-1"></i></Link>
                                             </li>
                                         </ul>}
                                     </li>

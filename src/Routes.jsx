@@ -6,6 +6,7 @@ import PaginaRegistrarse from './components/PaginaRegistrarse';
 import PaginaIniciarSesion from './components/PaginaIniciarSesion';
 import PaginaCategoriaNavegacion from './components/PaginaCategoriaNavegacion';
 import PaginaDetallesDeCurso from './components/PaginaDetallesDeCurso';
+import PaginaCarrito from './components/PaginaCarrito';
 
 import Pagina404 from './components/Pagina404';
 //import About from './components/About';
@@ -40,7 +41,7 @@ const Rutas = () => {
                 <Route path="/categoria/:url_amigable" element={<PaginaCategoriaNavegacion/>} />          
                 <Route path="/carrito/finalizadas" element={<Pagina404/>} />          
                 <Route path="/carrito/checkout" element={<Pagina404/>} />          
-                <Route path="/carrito" element={<Pagina404/>} />
+                <Route path="/carrito" element={<PaginaCarrito/>} />
                 <Route path="/factura/:id" element={<Pagina404/>} />          
                 <Route path="/video/:id" element={<Pagina404/>} />          
                 <Route path="/video" element={<Pagina404/>} />          
