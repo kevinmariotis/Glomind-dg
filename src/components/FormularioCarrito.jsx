@@ -20,6 +20,8 @@ function FormularioCarrito() {
     
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
 
+    const [valorCupon, setValorCupon] = useState('');    
+
     const handleTogglePassword = () => {
         
     };
@@ -136,6 +138,79 @@ function FormularioCarrito() {
 
     const descripcion_tipo_compra = ['', 'Acceso a los videos, las descargas, y las actividades que tuviera el curso (No exámenes).', 'Incluye los exámenes que se hacen a lo largo del curso, incluyendo el exámen final.', 'Posibilidad de descargar el certificado en PDF con QR de validación de autenticidad.'];
 
+    const handleAplicarCupon = async (event) =>{
+        event.preventDefault();        
+        if(valorCupon!=''){
+            event.target.disabled = true;        
+            setMostrarSpinner(true);
+                                                
+            const formData = new FormData();
+            formData.append('clave', valorCupon);               
+            const opciones = {
+                method: 'POST',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`,                    
+                },
+                body: formData,
+            };
+
+            try {
+                const response = await fetch(`${urlBaseApi}/api/carrito/aplicarcupon/1`, opciones);
+                const data = await response.json();
+                setMostrarSpinner(false);   
+                event.target.disabled = false;
+                if (response.ok){
+                    obtenerDatosDelServidor();                        
+                    setValorCupon("");
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'El cupon ha sido aplicado al carrito, si el carrito cumple las condiciones de precio mínimo, se aplicará automáticamente el cupón.'});
+                    return;
+                } else {
+                    // Obtener el código de error de la respuesta
+                    const statusCode = response.status;                
+                                            
+                    // Mostrar mensaje de error según el código de error
+                    switch (statusCode){
+                        case 400:
+                            console.error('Error 400: Bad Request');                        
+                        break;
+                        case 401:
+                            console.error('Error 401: Unauthorized');
+                            console.log('Datos de error:', data);
+                        break;
+                        case 404:
+                            console.error('Error 404: Not Found');
+                            console.log('Datos de error:', data);
+                        break;
+                        case 500:
+                            console.error('Error 500: Internal Server Error');
+                            console.log('Datos de error:', data);
+                        break;
+                        default:
+                            console.error('Error desconocido');
+                            console.log('Datos de error:', data);
+                        break;
+                    }  
+                    
+                    //recopilamos y mostramos cualquien mensaje de error
+                    let errores = {};          
+                    if (typeof data.datos !== 'undefined') {
+                        errores = data.datos;                      
+                    }
+                    Object.entries(errores).forEach(([clave, mensajes]) => {                                        
+                        mensajes.forEach((mensaje) => {
+                            setPopup({mostrar:true, titulo:'Mensaje', contenido:mensaje+'.'});
+                        });
+                    });    
+                    //fin de recopirar y mostrar cualquier mensaje de error
+    
+                }            
+            }catch (error) {
+                console.error('Error de conexión:', error);
+            }      
+
+        }
+    }
+
     return (        
         <>
             {mostrarSpinner && <Spinner />}
@@ -193,9 +268,9 @@ function FormularioCarrito() {
                         {Object.keys(productos).length>0 && <div className="d-flex flex-wrap align-items-center justify-content-between pt-4">
                             <form method="post">
                                 <div className="input-group mb-2">
-                                    <input className="form-control form--control pl-3" type="text" name="search" placeholder="Código de cupón" />
+                                    <input onChange={(event)=>{ setValorCupon(event.target.value); }} value={valorCupon} className="form-control form--control pl-3" type="text" name="search" placeholder="Código de cupón" />
                                     <div className="input-group-append">
-                                        <button className="btn theme-btn">Aplicar código</button>
+                                        <button className="btn theme-btn" onClick={handleAplicarCupon}>Aplicar código</button>
                                     </div>
                                 </div>
                             </form>
@@ -211,6 +286,10 @@ function FormularioCarrito() {
                                     <span className="text-black">Subtotal:</span>
                                     <span>${factura.subtotal}</span>
                                 </li>
+                                {factura.cupon_valor_descuento!=0 && <li className="d-flex align-items-center justify-content-between font-weight-semi-bold">
+                                    <span className="text-black">Descuento del cupón:</span>
+                                    <span>-${factura.cupon_valor_descuento}</span>
+                                </li>}
                                 <li className="d-flex align-items-center justify-content-between font-weight-semi-bold">
                                     <span className="text-black">Total:</span>
                                     <span>${factura.total}</span>
