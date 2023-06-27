@@ -89,10 +89,10 @@ function FormularioRegistrarse(){
                     headers: {                       
                     }
                 };                                     
-                const response = await fetch(`${urlBaseApi}/api/usuario`, opciones);
+                const response = await fetch(`${urlBaseApi}/api/pais/getTodos`, opciones);
                 const data = await response.json();
                 if (response.status === 200) {                                              
-                    resolve(data.paises);
+                    resolve(data);
                 } else {                  
                     reject(null);
                 }                          

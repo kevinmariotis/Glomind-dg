@@ -273,8 +273,7 @@ function FormularioCarrito() {
                                         <button className="btn theme-btn" onClick={handleAplicarCupon}>Aplicar código</button>
                                     </div>
                                 </div>
-                            </form>
-                            <button onClick={obtenerDatosDelServidor} className="btn theme-btn mb-2">Actualizar carrito</button>
+                            </form>                            
                         </div>}
                     </div>
                     <div className="col-lg-4 ml-auto">
@@ -295,7 +294,7 @@ function FormularioCarrito() {
                                     <span>${factura.total}</span>
                                 </li>
                             </ul>
-                            <a href="checkout.html" className="btn theme-btn w-100">Checkout <i className="la la-arrow-right icon ml-1"></i></a>
+                            <Link to="/carrito/checkout" className="btn theme-btn w-100">Checkout <i className="la la-arrow-right icon ml-1"></i></Link>
                         </div>
                     </div>
                 </div>

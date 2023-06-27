@@ -2,11 +2,13 @@ import React, {useEffect, useContext, Suspense} from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
+import ProtectedRoute from './components/ProtectedRoute';
 import PaginaRegistrarse from './components/PaginaRegistrarse';
 import PaginaIniciarSesion from './components/PaginaIniciarSesion';
 import PaginaCategoriaNavegacion from './components/PaginaCategoriaNavegacion';
 import PaginaDetallesDeCurso from './components/PaginaDetallesDeCurso';
 import PaginaCarrito from './components/PaginaCarrito';
+import PaginaCheckout from './components/PaginaCheckout';
 
 import Pagina404 from './components/Pagina404';
 //import About from './components/About';
@@ -30,8 +32,8 @@ const Rutas = () => {
     return (        
         <BrowserRouter>            
             <Routes>                                
-                {!authenticated && <Route path="/login" element={<PaginaIniciarSesion/>} />}
-                {!authenticated && <Route path="/signup" element={<PaginaRegistrarse/>} />}
+                <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} />
+                <Route path="/signup" element={<ProtectedRoute permiso={!authenticated} ><PaginaRegistrarse/></ProtectedRoute>} />
                 <Route path="/usuario/:id" element={<Pagina404/>} />
                 <Route path="/usuario" element={<Pagina404/>} />
                 <Route path="/curso/favoritos" element={<Pagina404/>} />
@@ -40,8 +42,8 @@ const Rutas = () => {
                 <Route path="/curso" element={<Pagina404/>} />
                 <Route path="/categoria/:url_amigable" element={<PaginaCategoriaNavegacion/>} />          
                 <Route path="/carrito/finalizadas" element={<Pagina404/>} />          
-                <Route path="/carrito/checkout" element={<Pagina404/>} />          
-                <Route path="/carrito" element={<PaginaCarrito/>} />
+                <Route path="/carrito/checkout" element={<ProtectedRoute permiso={authenticated} ><PaginaCheckout/></ProtectedRoute>} />          
+                <Route path="/carrito" element={<ProtectedRoute permiso={authenticated} ><PaginaCarrito/></ProtectedRoute>} />
                 <Route path="/factura/:id" element={<Pagina404/>} />          
                 <Route path="/video/:id" element={<Pagina404/>} />          
                 <Route path="/video" element={<Pagina404/>} />          

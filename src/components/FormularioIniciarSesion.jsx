@@ -129,7 +129,7 @@ function FormularioIniciarSesion() {
                 //si viene un codigo de error se muestra un mensaje en popup
                 if(data.codigo!=''){
                     const contenidos = {
-                        "sesioniniciada" : {titulo:"Sesion iniciada", contenido:"Ya tenias la sesión iniciada previamente"},
+                        "sesioniniciada" : {titulo:"Sesion iniciada", contenido:"Ya tenías la sesión iniciada previamente"},
                         "suspendido" : {titulo:"Suspendido", contenido:"Su cuenta ha sido suspendida"},
                         "incorrecto" : {titulo:"Incorrecto", contenido:"Nombre de usuario o contraseña incorrecta"},
                     }                                        
