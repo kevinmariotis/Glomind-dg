@@ -334,7 +334,7 @@ function FormularioRegistrarse(){
                                         </div>                                                                             
                                         <div className="input-box form-row">                                                                                                   
                                             <div className="form-group col-md-6">
-                                                <select onChange={handleDepartamentoChange} className="form-control form--control select-container-select" type="text" name="departamento">
+                                                <select onChange={handleDepartamentoChange} className="form-control form--control select-dark" type="text" name="departamento">
                                                     <option value="" >Seleccione departamento</option>
                                                     {departamentos.map((dato, index) => (
                                                         <option key={dato.id} value={dato.id} >{dato.nombre}</option>

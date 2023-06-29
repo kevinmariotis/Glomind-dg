@@ -86,10 +86,7 @@ function FormularioDetallesDeCurso(){
 
     useEffect(() => {   
         window.scrollTo(0, 0);
-        obtenerDatosDelServidor();
-        //setComprarCurso(false);
-        //setComprarExamenes(false);
-        //setComprarCertificado(false);
+        obtenerDatosDelServidor();        
     }, [url_amigable]);
 
     useEffect(() => {   

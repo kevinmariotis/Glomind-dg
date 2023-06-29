@@ -9,8 +9,10 @@ import PaginaCategoriaNavegacion from './components/PaginaCategoriaNavegacion';
 import PaginaDetallesDeCurso from './components/PaginaDetallesDeCurso';
 import PaginaCarrito from './components/PaginaCarrito';
 import PaginaCheckout from './components/PaginaCheckout';
+import PaginaDashboardHome from './components/PaginaDashboardHome';
 
 import Pagina404 from './components/Pagina404';
+
 //import About from './components/About';
 //import Home from './components/Home';
 
@@ -50,6 +52,7 @@ const Rutas = () => {
                 <Route path="/examen/:id" element={<Pagina404/>} />          
                 <Route path="/examen" element={<Pagina404/>} />
                 <Route path="/permisos" element={<Pagina404/>} />
+                <Route path="/home" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardHome/></ProtectedRoute>} />
                 <Route exact path="/" element={<Pagina404/>} />          
                 <Route path="*" component={<Pagina404/>} />
             </Routes>            

@@ -5,6 +5,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 
 import SpamError from './SpamError';
 import Popup from './Popup';
+import Spinner from './Spinner';
 
 
 function FormularioIniciarSesion() {        
@@ -23,6 +24,7 @@ function FormularioIniciarSesion() {
     const [resetKey, setResetKey] = useState(0);
 
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
+    const [mostrarSpinner, setMostrarSpinner] = useState(false);  
 
     const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -58,6 +60,7 @@ function FormularioIniciarSesion() {
         event.preventDefault();
        
         setBotonIniciarSesionEstado('disabled');
+        setMostrarSpinner(true);
         const formData = new FormData();
         formData.append('usuario', username);
         formData.append('contrasena', password);
@@ -71,8 +74,8 @@ function FormularioIniciarSesion() {
         
         try {
             const response = await fetch(`${urlBaseApi}/api/sesion`, opciones);
-            const data = await response.json();
-        
+            setMostrarSpinner(false);
+            const data = await response.json();            
             if (response.ok) {
                 // Procesar los datos en caso de éxito
                 console.log('Inició sesión correctamente, datos de respuesta:', data);                
@@ -168,7 +171,8 @@ function FormularioIniciarSesion() {
     };    
 
     return (        
-        <section className="contact-area section--padding position-relative">            
+        <section className="contact-area section--padding position-relative">   
+            {mostrarSpinner && <Spinner />}         
             <Popup 
                 mostrarPopup={popUp.mostrar} 
                 tamano="xx"

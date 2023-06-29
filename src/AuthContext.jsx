@@ -8,6 +8,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {    
     const [authenticated, setAuthenticated] = useState(false);
     const [permissions, setPermissions] = useState('');
+    const [temaActual, setTemaActual] = useState(0);    //1 'light-theme', 0 'dark-theme'
     const [cargarContadorCarrito, setCargarContadorCarrito] = useState(true);   //setCargarContadorCarrito debe ser usado por cualquier parte del programa para dar la orden de que se recarge el contador de items en el carrito
 
     const [jwt, setJwt] = useState('');    
@@ -29,6 +30,17 @@ export const AuthProvider = ({ children }) => {
         setJwt(null);  
     };
 
+    useEffect(() => {    
+        //se establece el nuevo tema
+        if(temaActual==1){
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+        }else{
+            document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+        }
+
+    }, [temaActual]);
 
     useEffect(() => {   //El objetivo de este effect es establecer si se esta autenticado, recobrar los permisos y establecer el jwt en el contexto cuando el sitio se ejecute por primera vez.        
         
@@ -83,7 +95,7 @@ export const AuthProvider = ({ children }) => {
     }, []);           
        
     return (
-        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito}}>
+        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual}}>
             {children}
         </AuthContext.Provider> : <LoadingAnimation />}</>
     );
