@@ -5,7 +5,7 @@ import { AuthContext } from '../AuthContext';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
-
+import { mensajesDeError } from './utils';
 
 function FormularioCheckout() {        
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
@@ -137,12 +137,16 @@ function FormularioCheckout() {
                         getDepartamentos(datos2.usuario.id_pais).then(datos => {
                             setDepartamentos(datos);
                         });
+                    }else{
+                        const data2 = await response.json(); 
+                        mensajesDeError(setPopup, response.status, (typeof data2.datos !== 'undefined') ? data2.datos : {});  
                     }
                 }else{
                     setPopupVolver({mostrar:true, titulo:'Sin items', contenido:'En el momento no tienes ningún item en tu carrito de compras, te invitamos a navegar las categorías del sistema para encontrar cursos'});
                 }
-            } else {                
-                console.error(`Error en la respuesta: ${response.status} - ${response.statusText}`);
+            } else {   
+                const data = await response.json();             
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});  
             }            
         }catch(error){
             // Manejar el caso de error en la solicitud
@@ -212,22 +216,12 @@ function FormularioCheckout() {
                     setVolanteResponseUrl(datos2.responseUrl);
                     setVolanteConfirmationUrl(datos2.confirmationUrl);                    
                 }else{
+                    const datos2 = await response2.json();
+                    mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {}); 
                     const statusCode = response2.status; 
                 }                
-            } else { 
-                const statusCode = response.status;                
-                let errores = {};          
-                if (typeof datos.datos !== 'undefined') {
-                    errores = datos.datos;                      
-                }                                    
-                Object.entries(errores).forEach(([clave, mensajes]) => {                                                           
-                    mensajes.forEach((mensaje) => {                        
-                        setErrorCampoGlobal(clave, mensaje);                                               
-                    });                   
-                });       
-                if(Object.entries(errores).length>0){
-                    setPopup({mostrar:true, titulo:'Rellenar formulario', contenido:'Por favor rellene todos los campos del formulario correctamente.'}); 
-                }               
+            } else {                 
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Rellenar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
             }            
         }catch(error){
             // Manejar el caso de error en la solicitud

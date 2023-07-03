@@ -1,13 +1,24 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
+import { mensajesDeError } from './utils';
+import Popup from './Popup';
+
 
 function DashboardHeader() {  
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
     const {jwt, cargarContadorCarrito, setCargarContadorCarrito, authenticated} = useContext(AuthContext);
 
+    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
     const [contadorCarrito, setContadorCarrito] = useState({"contador":0, "productos":{},"fechahora":0});
+
+    const handleFuncionAceptarPopUp = () => {        
+        setPopup({...popUp, mostrar:false});
+    };
+    const handleFuncionCerrarPopUp = () => {        
+        setPopup({...popUp, mostrar:false});
+    };
 
     useEffect(() => {                
         //miramos si no tiene los datos del carrito en sessionStorage
@@ -50,7 +61,8 @@ function DashboardHeader() {
                 setCargarContadorCarrito(false);
             } else {                
                 setCargarContadorCarrito(false);
-                console.error(`Error al intentar botener el contedor del carrito: ${response.status} - ${response.statusText}`);
+                const data = await response.json();
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});
             }
         }catch(error){
             // Manejar el caso de error en la solicitud
@@ -59,6 +71,17 @@ function DashboardHeader() {
     };
 
     return (
+        <>
+        <Popup 
+                mostrarPopup={popUp.mostrar} 
+                tamano="xx"
+                tipo={2} 
+                titulo={popUp.titulo} 
+                mensaje={popUp.contenido} 
+                funcionAceptar={handleFuncionAceptarPopUp} 
+                funcionCerrar={handleFuncionCerrarPopUp}
+                textoCerrar="Aceptar"
+            />
         <header className="header-menu-area">
             <div className="header-menu-content dashboard-menu-content pr-30px pl-30px bg-white shadow-sm">
                 <div className="container-fluid">
@@ -66,7 +89,7 @@ function DashboardHeader() {
                         <div className="row align-items-center">
                             <div className="col-lg-12">
                                 <div className="logo-box logo--box">
-                                    <a href="index.html" className="logo"><img src="images/logo.png" alt="logo" /></a>
+                                    <Link to="/" className="logo"><img src={`${urlBase}/images/myedulogo-transparente_2.png`} alt="logo" /></Link>
                                     <div className="user-btn-action">
                                         <div className="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2" data-toggle="tooltip" data-placement="top" title="Search">
                                             <i className="la la-search"></i>
@@ -570,6 +593,7 @@ function DashboardHeader() {
             </div>
             <div className="body-overlay"></div>
         </header>
+        </>
     )
 }
 

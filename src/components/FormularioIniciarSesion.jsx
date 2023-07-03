@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import ReCAPTCHA from "react-google-recaptcha";
+import { mensajesDeError } from './utils';
 
 import SpamError from './SpamError';
 import Popup from './Popup';

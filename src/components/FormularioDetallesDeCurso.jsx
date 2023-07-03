@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext, useCallback, useRef} from 'react
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 import { AuthContext } from '../AuthContext';
+import { mensajesDeError } from './utils';
 import LoadingAnimation from './LoadingAnimation';
 import TarjetaCursoHorizontal from './TarjetaCursoHorizontal';
 import Popup from './Popup';
@@ -133,8 +134,9 @@ function FormularioDetallesDeCurso(){
                 setComprarExamenes(datos.curso.examenes_solo_pago==1 ? true : false);
                 setComprarCertificado(datos.curso.certificado_solo_pago==1 ? true : false);                
                 
-            } else {                
-                console.error(`Error en la respuesta: ${response.status} - ${response.statusText}`);
+            } else { 
+                const data = await response.json();               
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});
             }            
         }catch(error){
             // Manejar el caso de error en la solicitud
@@ -202,31 +204,7 @@ function FormularioDetallesDeCurso(){
                 setPopup({mostrar:true, titulo:'Listo', contenido:'La reseña fue guardada'});
                 return;
             } else {
-                // Obtener el código de error de la respuesta
-                const statusCode = response.status;                
-                                       
-                // Mostrar mensaje de error según el código de error
-                switch (statusCode){
-                    case 400:
-                        console.error('Error 400: Bad Request');                        
-                    break;
-                    case 401:
-                        console.error('Error 401: Unauthorized');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 404:
-                        console.error('Error 404: Not Found');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 500:
-                        console.error('Error 500: Internal Server Error');
-                        console.log('Datos de error:', data);
-                    break;
-                    default:
-                        console.error('Error desconocido');
-                        console.log('Datos de error:', data);
-                  break;
-                }                    
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});           
             }                
         }catch (error) {
             console.error('Error de conexión:', error);
@@ -253,31 +231,7 @@ function FormularioDetallesDeCurso(){
                 setCursoFavorito(1);
                 return;
             } else {
-                // Obtener el código de error de la respuesta
-                const statusCode = response.status;                
-                                       
-                // Mostrar mensaje de error según el código de error
-                switch (statusCode){
-                    case 400:
-                        console.error('Error 400: Bad Request');                        
-                    break;
-                    case 401:
-                        console.error('Error 401: Unauthorized');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 404:
-                        console.error('Error 404: Not Found');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 500:
-                        console.error('Error 500: Internal Server Error');
-                        console.log('Datos de error:', data);
-                    break;
-                    default:
-                        console.error('Error desconocido');
-                        console.log('Datos de error:', data);
-                  break;
-                }                    
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});          
             }                
         }catch (error) {
             console.error('Error de conexión:', error);
@@ -301,31 +255,7 @@ function FormularioDetallesDeCurso(){
                 setCursoFavorito(0);
                 return;
             } else {
-                // Obtener el código de error de la respuesta
-                const statusCode = response.status;                
-                                       
-                // Mostrar mensaje de error según el código de error
-                switch (statusCode){
-                    case 400:
-                        console.error('Error 400: Bad Request');                        
-                    break;
-                    case 401:
-                        console.error('Error 401: Unauthorized');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 404:
-                        console.error('Error 404: Not Found');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 500:
-                        console.error('Error 500: Internal Server Error');
-                        console.log('Datos de error:', data);
-                    break;
-                    default:
-                        console.error('Error desconocido');
-                        console.log('Datos de error:', data);
-                  break;
-                }                    
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});
             }                
         }catch (error) {
             console.error('Error de conexión:', error);
@@ -411,31 +341,7 @@ function FormularioDetallesDeCurso(){
                             setMostrarPopUpComprar(true);                        
                             return;
                         } else {
-                            // Obtener el código de error de la respuesta
-                            const statusCode = response.status;                
-                                                    
-                            // Mostrar mensaje de error según el código de error
-                            switch (statusCode){
-                                case 400:
-                                    console.error('Error 400: Bad Request');                        
-                                break;
-                                case 401:
-                                    console.error('Error 401: Unauthorized');
-                                    console.log('Datos de error:', data);
-                                break;
-                                case 404:
-                                    console.error('Error 404: Not Found');
-                                    console.log('Datos de error:', data);
-                                break;
-                                case 500:
-                                    console.error('Error 500: Internal Server Error');
-                                    console.log('Datos de error:', data);
-                                break;
-                                default:
-                                    console.error('Error desconocido');
-                                    console.log('Datos de error:', data);
-                                break;
-                            }                    
+                            mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});
                         }                
                     }catch (error) {
                         console.error('Error de conexión:', error);
@@ -494,31 +400,7 @@ function FormularioDetallesDeCurso(){
                         setPopup({mostrar:true, titulo:'Listo', contenido:'Carrito actualizado'});
                     }                
                 } else {
-                    // Obtener el código de error de la respuesta
-                    const statusCode = response.status;                
-                                            
-                    // Mostrar mensaje de error según el código de error
-                    switch (statusCode){
-                        case 400:
-                            console.error('Error 400: Bad Request');                        
-                        break;
-                        case 401:
-                            console.error('Error 401: Unauthorized');
-                            console.log('Datos de error:', data);
-                        break;
-                        case 404:
-                            console.error('Error 404: Not Found');
-                            console.log('Datos de error:', data);
-                        break;
-                        case 500:
-                            console.error('Error 500: Internal Server Error');
-                            console.log('Datos de error:', data);
-                        break;
-                        default:
-                            console.error('Error desconocido');
-                            console.log('Datos de error:', data);
-                        break;
-                    }                    
+                    mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});
                 }            
                 if(tipo==1){
                     setMostrarPopUpComprar(false);
@@ -574,49 +456,7 @@ function FormularioDetallesDeCurso(){
                 
                 return;
             } else {
-                // Obtener el código de error de la respuesta
-                const statusCode = response.status;                
-                      
-                let errores = {};   
-                let string_errores = '';       
-                if (typeof data.datos !== 'undefined') {
-                    errores = data.datos;                      
-                }                                    
-                Object.entries(errores).forEach(([clave, mensajes]) => {                                            
-                    mensajes.forEach((mensaje) => {                        
-                        //setErrorCampoGlobal(clave, mensaje);                                                
-                        if(string_errores!=''){
-                            string_errores+=', ';
-                        }
-                        string_errores+=mensaje;   
-                    });
-                    if(string_errores!=''){
-                        setPopup({mostrar:true, titulo:'Mensaje', contenido:string_errores});
-                    }
-                });
-
-                // Mostrar mensaje de error según el código de error
-                switch (statusCode){
-                    case 400:
-                        console.error('Error 400: Bad Request');                        
-                    break;
-                    case 401:
-                        console.error('Error 401: Unauthorized');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 404:
-                        console.error('Error 404: Not Found');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 500:
-                        console.error('Error 500: Internal Server Error');
-                        console.log('Datos de error:', data);
-                    break;
-                    default:
-                        console.error('Error desconocido');
-                        console.log('Datos de error:', data);
-                  break;
-                }                    
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
             }                
         }catch (error) {
             console.error('Error de conexión:', error);
@@ -651,31 +491,7 @@ function FormularioDetallesDeCurso(){
                 setCantidadComentariosMaximo(parseInt(data.tamano_total));
                 return;
             } else {
-                // Obtener el código de error de la respuesta
-                const statusCode = response.status;                
-                                       
-                // Mostrar mensaje de error según el código de error
-                switch (statusCode){
-                    case 400:
-                        console.error('Error 400: Bad Request');                        
-                    break;
-                    case 401:
-                        console.error('Error 401: Unauthorized');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 404:
-                        console.error('Error 404: Not Found');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 500:
-                        console.error('Error 500: Internal Server Error');
-                        console.log('Datos de error:', data);
-                    break;
-                    default:
-                        console.error('Error desconocido');
-                        console.log('Datos de error:', data);
-                  break;
-                }                    
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});
             }                
         }catch (error) {
             console.error('Error de conexión:', error);

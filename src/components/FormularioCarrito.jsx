@@ -7,6 +7,7 @@ import { AuthContext } from '../AuthContext';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
+import { mensajesDeError } from './utils';
 
 
 function FormularioCarrito() {        
@@ -54,15 +55,15 @@ function FormularioCarrito() {
             };
             
             const response = await fetch(`${urlBaseApi}/api/carrito/1`, opciones);
-            if (response.ok){                           
-                const datos = await response.json();                                    
+            const datos = await response.json();
+            if (response.ok){                                                                               
                 setProductos(datos.productos);
                 setFactura(datos.factura);
                 if(datos.productos.length==0){
                     setPopup({mostrar:true, titulo:'Sin items', contenido:'En el momento no tienes ningún item en tu carrito de compras, te invitamos a navegar las categorías del sistema para encontrar cursos'});
                 }
             } else {                
-                console.error(`Error en la respuesta: ${response.status} - ${response.statusText}`);
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
             }            
         }catch(error){
             // Manejar el caso de error en la solicitud
@@ -91,45 +92,8 @@ function FormularioCarrito() {
             setCargarContadorCarrito(true);
             if (response.ok){                                               
                 return;
-            } else {
-                // Obtener el código de error de la respuesta
-                const statusCode = response.status;                
-                                        
-                // Mostrar mensaje de error según el código de error
-                switch (statusCode){
-                    case 400:
-                        console.error('Error 400: Bad Request');                        
-                    break;
-                    case 401:
-                        console.error('Error 401: Unauthorized');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 404:
-                        console.error('Error 404: Not Found');
-                        console.log('Datos de error:', data);
-                    break;
-                    case 500:
-                        console.error('Error 500: Internal Server Error');
-                        console.log('Datos de error:', data);
-                    break;
-                    default:
-                        console.error('Error desconocido');
-                        console.log('Datos de error:', data);
-                    break;
-                }  
-                
-                //recopilamos y mostramos cualquien mensaje de error
-                let errores = {};          
-                if (typeof data.datos !== 'undefined') {
-                    errores = data.datos;                      
-                }
-                Object.entries(errores).forEach(([clave, mensajes]) => {                                        
-                    mensajes.forEach((mensaje) => {
-                        setPopup({mostrar:true, titulo:'Mensaje', contenido:mensaje+'.'});
-                    });
-                });    
-                //fin de recopirar y mostrar cualquier mensaje de error
-
+            } else {                           
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
             }            
         }catch (error) {
             console.error('Error de conexión:', error);
@@ -165,44 +129,7 @@ function FormularioCarrito() {
                     setPopup({mostrar:true, titulo:'Listo', contenido:'El cupon ha sido aplicado al carrito, si el carrito cumple las condiciones de precio mínimo, se aplicará automáticamente el cupón.'});
                     return;
                 } else {
-                    // Obtener el código de error de la respuesta
-                    const statusCode = response.status;                
-                                            
-                    // Mostrar mensaje de error según el código de error
-                    switch (statusCode){
-                        case 400:
-                            console.error('Error 400: Bad Request');                        
-                        break;
-                        case 401:
-                            console.error('Error 401: Unauthorized');
-                            console.log('Datos de error:', data);
-                        break;
-                        case 404:
-                            console.error('Error 404: Not Found');
-                            console.log('Datos de error:', data);
-                        break;
-                        case 500:
-                            console.error('Error 500: Internal Server Error');
-                            console.log('Datos de error:', data);
-                        break;
-                        default:
-                            console.error('Error desconocido');
-                            console.log('Datos de error:', data);
-                        break;
-                    }  
-                    
-                    //recopilamos y mostramos cualquien mensaje de error
-                    let errores = {};          
-                    if (typeof data.datos !== 'undefined') {
-                        errores = data.datos;                      
-                    }
-                    Object.entries(errores).forEach(([clave, mensajes]) => {                                        
-                        mensajes.forEach((mensaje) => {
-                            setPopup({mostrar:true, titulo:'Mensaje', contenido:mensaje+'.'});
-                        });
-                    });    
-                    //fin de recopirar y mostrar cualquier mensaje de error
-    
+                    mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});  
                 }            
             }catch (error) {
                 console.error('Error de conexión:', error);

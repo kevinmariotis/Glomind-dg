@@ -68,7 +68,7 @@ function FooterArea() {
                         <div className="col-lg-6">
                             <div className="d-flex flex-wrap align-items-center">
                                 <a href="index.html" className="pr-4">
-                                    <img src={`${urlBase}/images/logo.png`} alt="footer logo" className="footer__logo" />
+                                    <img src={`${urlBase}/images/myedulogo-transparente_2.png`} alt="footer logo" className="footer__logo" />
                                 </a>
                                 <p className="copy-desc">Copyright &copy; 2021 <a href="https://techydevs.com/">TechyDevs</a> Inc.</p>
                             </div>

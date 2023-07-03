@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
     const [permissions, setPermissions] = useState('');
     const [temaActual, setTemaActual] = useState(0);    //1 'light-theme', 0 'dark-theme'
     const [cargarContadorCarrito, setCargarContadorCarrito] = useState(true);   //setCargarContadorCarrito debe ser usado por cualquier parte del programa para dar la orden de que se recarge el contador de items en el carrito
+    const [nombres, setNombres] = useState('');
 
     const [jwt, setJwt] = useState('');    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
@@ -67,7 +68,8 @@ export const AuthProvider = ({ children }) => {
                         const response = await fetch(`${urlBaseApi}/api/sesion/validarToken`, opciones);
                         const data = await response.json();
                         if (response.status === 200) {                            
-                            login({'jwt':jwt, 'permisos':JSON.stringify(data.permisos)});                           
+                            login({'jwt':jwt, 'permisos':JSON.stringify(data.permisos)});
+                            setNombres(data.nombres);                             
                             setCargado(true);
                         } else {
                             Cookies.remove('jwt');
@@ -95,7 +97,7 @@ export const AuthProvider = ({ children }) => {
     }, []);           
        
     return (
-        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual}}>
+        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual}}>
             {children}
         </AuthContext.Provider> : <LoadingAnimation />}</>
     );

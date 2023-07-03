@@ -3,13 +3,16 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import TarjetaCurso from './TarjetaCurso';
 import Paginador from './Paginador';
+import Popup from './Popup';
+import { mensajesDeError } from './utils';
 
 function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCrumbData, actualizarBreadCrumbImagen}) {
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const {jwt, authenticated} = useContext(AuthContext);  
     const { url_amigable } = useParams();
-        
+      
+    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
     const [pagina, setPagina] = useState(1);
     const [orderBy, setOrderBy] = useState('precio_actual-asc');    
     const [mostrarMasDocente, setMostrarMasDocente]  = useState(false);   
@@ -55,6 +58,12 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
         }
     }, []);
 
+    const handleFuncionAceptarPopUp = () => {        
+        setPopup({...popUp, mostrar:false});
+    };
+    const handleFuncionCerrarPopUp = () => {        
+        setPopup({...popUp, mostrar:false});
+    };
 
     const handleEstrellaSeleccionada = (event) => {                
         const dataId = event.target.getAttribute('data-id');
@@ -186,8 +195,9 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
                     setInstructores(datos.instructores);                    
                 }
                 console.log("cantidad total cursos ",datos.cantidad_total_cursos);
-            } else {                
-                console.error(`Error en la respuesta: ${response.status} - ${response.statusText}`);
+            } else {   
+                const data = await response.json(); 
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                             
             }            
         }catch(error){
             // Manejar el caso de error en la solicitud
@@ -196,6 +206,17 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
     };
 
     return (
+        <>
+        <Popup 
+            mostrarPopup={popUp.mostrar} 
+            tamano="xx"
+            tipo={2} 
+            titulo={popUp.titulo} 
+            mensaje={popUp.contenido} 
+            funcionAceptar={handleFuncionAceptarPopUp} 
+            funcionCerrar={handleFuncionCerrarPopUp}
+            textoCerrar="Aceptar"
+        />
         <section className="course-area section--padding">
             <div className="container">
                 <div className="filter-bar mb-4">
@@ -456,7 +477,8 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
                     </div>
                 </div>
             </div>
-        </section>);
+        </section>
+        </>);
 }
 
 export default FormularioCategoriaNavegacion;

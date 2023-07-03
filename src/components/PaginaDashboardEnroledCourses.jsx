@@ -2,17 +2,17 @@ import {React} from 'react';
 import DashboardHeader from './DashboardHeader';
 import DashboardArea from './DashboardArea';
 import DashboardMenu from './DashboardMenu';
-import FormularioDashboardHome from './FormularioDashboardHome';
+import FormularioDashboardEnroledCourses from './FormularioDashboardEnroledCourses';
 
-function PaginaDashboardHome() {      
+function PaginaDashboardEnroledCourses() {      
     return (        
         <>              
             <DashboardHeader/>  
             <DashboardArea>
                 <DashboardMenu />
-                <FormularioDashboardHome />
+                <FormularioDashboardEnroledCourses />
             </DashboardArea>                   
         </>);
 }
 
-export default PaginaDashboardHome;
+export default PaginaDashboardEnroledCourses;
