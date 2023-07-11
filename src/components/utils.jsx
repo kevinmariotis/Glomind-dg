@@ -22,6 +22,9 @@
             break;            
             case 401:       //No autorizado
                 setPopPup({mostrar:true, titulo:'Sesión finalizada', contenido:'La sesión ha vencido, inicia sesión de nuevo.'});                
+                setTimeout(function(){
+                    document.location.reload();
+                }, 3000);
             break;
             case 404:       //no encontrado
                 setPopPup({mostrar:true, titulo:'No encontrado', contenido:'El recurso no ha sido encontrado.'});                

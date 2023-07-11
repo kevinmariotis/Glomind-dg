@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import ReCAPTCHA from "react-google-recaptcha";
+import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
 
 import SpamError from './SpamError';
@@ -11,8 +12,8 @@ import Spinner from './Spinner';
 
 function FormularioIniciarSesion() {        
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;  
-    const navigate = useNavigate();            
-
+    const navigate = useNavigate();                
+    const {temaActual} = useContext(AuthContext);
     const [botonIniciarSesionEstado, setBotonIniciarSesionEstado] = useState('');
 
     const [username, setUsername] = useState('');
@@ -223,7 +224,7 @@ function FormularioIniciarSesion() {
                                     </div>
                                     <div className="input-box">
                                         <div className="input-group mb-3">                  
-                                            <ReCAPTCHA key={resetKey} onChange={handleCaptchaChange} sitekey="6LfyHT0mAAAAADE_ZAEDvGr4Z6QBa8WWbuBJ8WzA" />                                                
+                                            <ReCAPTCHA theme={`${temaActual==1 ? 'light' : 'dark'}`} key={resetKey} onChange={handleCaptchaChange} sitekey="6LfyHT0mAAAAADE_ZAEDvGr4Z6QBa8WWbuBJ8WzA" />                                                
                                         </div>
                                         {erroresCaptcha!='' && (<SpamError mensaje={erroresCaptcha} />)}
                                     </div>

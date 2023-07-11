@@ -8,10 +8,12 @@ import Popup from './Popup';
 function DashboardHeader() {  
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, authenticated} = useContext(AuthContext);
+    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, authenticated, nombres, correo, imagen_pequena, temaActual, setTemaActual} = useContext(AuthContext);
 
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
     const [contadorCarrito, setContadorCarrito] = useState({"contador":0, "productos":{},"fechahora":0});
+    const [misCursos, setMisCursos] = useState({});    
+    const [favoritos, setFavoritos] = useState({});
 
     const handleFuncionAceptarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
@@ -19,6 +21,14 @@ function DashboardHeader() {
     const handleFuncionCerrarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };
+
+    const handleThemeToggle = () => {
+        if(temaActual==1){
+            setTemaActual(0);
+        }else{
+            setTemaActual(1);
+        }
+    }
 
     useEffect(() => {                
         //miramos si no tiene los datos del carrito en sessionStorage
@@ -32,14 +42,17 @@ function DashboardHeader() {
         }else{            
             setCargarContadorCarrito(true);
         }
+        obtenerFavoritos();
     }, []);
 
     //use efect para cargar los datos contadores del carrito
     useEffect(() => {        
         if(cargarContadorCarrito && authenticated){                                    
             obtenerDatosCarrito();            
+            obtenerMisCursos();            
         }
     }, [cargarContadorCarrito, authenticated]);
+
 
     const obtenerDatosCarrito = async () => {
         try {            
@@ -64,6 +77,54 @@ function DashboardHeader() {
                 const data = await response.json();
                 mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});
             }
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+    const obtenerMisCursos = async () => {                  
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try { 
+            //buscamos los datos de los cursos a mostrar                       
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };                                    
+            const response = await fetch(`${urlBaseApi}/api/usuario/miscursos/1/1/nombre-asc/3`, opciones);            
+            if (response.ok){   
+                const datos = await response.json();
+                setMisCursos(datos.cursos);
+            } else {     
+                const datos = await response.json();            
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
+            }                          
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+    const obtenerFavoritos = async () => {                  
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try { 
+            //buscamos los datos de los cursos a mostrar                       
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };                                    
+            const response = await fetch(`${urlBaseApi}/api/usuario/getfavoritos/1/2/nombre-asc/3`, opciones);  //favoritos no comprados           
+            if (response.ok){   
+                const datos = await response.json();
+                setFavoritos(datos.cursos);
+            } else {     
+                const datos = await response2.json();            
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
+            }                          
         }catch(error){
             // Manejar el caso de error en la solicitud
             console.error('Error en la solicitud al servidor', error);
@@ -105,7 +166,7 @@ function DashboardHeader() {
                                 <div className="menu-wrapper">
                                     <form method="post" className="mr-auto ml-0">
                                         <div className="form-group mb-0">
-                                            <input className="form-control form--control form--control-gray pl-3" type="text" name="search" placeholder="Search for anything" />
+                                            <input className="form-control form--control form--control-gray pl-3" type="text" name="search" placeholder="Buscar curso" />
                                             <span className="la la-search search-icon"></span>
                                         </div>
                                     </form>
@@ -118,25 +179,25 @@ function DashboardHeader() {
                                                             Mis cursos
                                                             <span className="la la-angle-down fs-13 ml-1"></span>
                                                         </p>
-                                                        {authenticated && contadorCarrito.contador>0 && <ul className="cart-dropdown-menu after-none">
-                                                            {Object.keys(contadorCarrito.productos).slice(0, 3).map((key) => (
-                                                                <li key={contadorCarrito.productos[key].id_curso+'tc'+contadorCarrito.productos[key].tipo_compra} className="media media-card">
-                                                                    <Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
-                                                                        {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} /> : <img src="images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} /> }
+                                                        {Object.keys(misCursos).length>0 && <ul className="cart-dropdown-menu after-none">
+                                                            {Object.keys(misCursos).slice(0, 3).map((key) => (
+                                                                <li key={misCursos[key].id+'mis-cursos'} className="media media-card">
+                                                                    <Link to={`/vercurso/${misCursos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
+                                                                        {misCursos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${misCursos[key].imagen_pequena}`} alt={misCursos[key].nombre} /> : <img src="images/course-no-image.png" alt={misCursos[key].nombre} /> }
                                                                     </Link>
                                                                     <div className="media-body">
-                                                                        <h5><Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`}>{contadorCarrito.productos[key].nombre}</Link></h5>
+                                                                        <h5><Link to={`/vercurso/${misCursos[key].url_amigable}`}>{misCursos[key].nombre}</Link></h5>
                                                                         <div className="skillbar-box pt-3">
                                                                             <div className="skillbar skillbar-skillbar" data-percent="36%">
-                                                                                <div className="skillbar-bar skillbar--bar bg-1"></div>
+                                                                                <div className="skillbar-bar skillbar--bar bg-1" style={{width:`${misCursos[key].porcentaje_progreso}%`}}></div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </li>
                                                              ))}                                                                 
-                                                            <li>
-                                                                <a href="my-courses.html" className="btn theme-btn w-100">Got to my course <i className="la la-arrow-right icon ml-1"></i></a>
-                                                            </li>
+                                                            {Object.keys(misCursos).length>3 && <li>
+                                                                <Link to="/cursos-matriculados" className="btn theme-btn w-100">Ver todos mis cursos <i className="la la-arrow-right icon ml-1"></i></Link>
+                                                            </li>}
                                                         </ul>}
                                                     </li>
                                                 </ul>
@@ -182,43 +243,34 @@ function DashboardHeader() {
                                                     <li>
                                                         <p className="shop-cart-btn">
                                                             <i className="la la-heart-o"></i>
-                                                            <span className="dot-status bg-1"></span>
+                                                            {Object.keys(favoritos).length>0 &&
+                                                                <span className="dot-status bg-1"></span>
+                                                            }
                                                         </p>
-                                                        <ul className="cart-dropdown-menu after-none">
-                                                            <li>
-                                                                <div className="media media-card">
-                                                                    <a href="course-details.html" className="media-img">
-                                                                        <img className="mr-3" src="images/small-img.jpg" alt="Cart image" />
-                                                                    </a>
-                                                                    <div className="media-body">
-                                                                        <h5><a href="course-details.html">The Complete JavaScript Course 2021: From Zero to Expert!</a></h5>
-                                                                        <span className="d-block lh-18 py-1">Kamran Ahmed</span>
-                                                                        <p className="text-black font-weight-semi-bold lh-18">$12.99 <span className="before-price fs-14">$129.99</span></p>
+                                                        {authenticated && Object.keys(favoritos).length>0 && <ul className="cart-dropdown-menu after-none">
+                                                            {Object.keys(favoritos).slice(0, 3).map((key) => (
+                                                                <li>
+                                                                    <div className="media media-card">
+                                                                        <Link to={`/curso/${favoritos[key].url_amigable}`} className="media-img">
+                                                                            <img className="mr-3" src="images/small-img.jpg" alt="Cart image" />
+                                                                        </Link>
+                                                                        <div className="media-body">
+                                                                            <h5><Link to={`/curso/${favoritos[key].url_amigable}`}>{favoritos[key].nombre}</Link></h5>
+                                                                            {favoritos[key].instructor!='' && <span className="d-block lh-18 py-1">{favoritos[key].instructor}</span>}
+                                                                            <p className="text-black font-weight-semi-bold lh-18">${favoritos[key].precio_actual} {favoritos[key].precio_anterior!=0 && <span className="before-price fs-14">${favoritos[key].precio_anterior}</span>}</p>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <a href="#" className="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 w-100 mt-3">Add to cart <i className="la la-arrow-right icon ml-1"></i></a>
-                                                            </li>
+                                                                    <Link to={`/curso/${favoritos[key].url_amigable}`} className="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 w-100 mt-3">Agregar al carrito <i className="la la-arrow-right icon ml-1"></i></Link>
+                                                                </li>
+                                                            ))}                                                            
                                                             <li>
-                                                                <div className="media media-card">
-                                                                    <a href="course-details.html" className="media-img">
-                                                                        <img className="mr-3" src="images/small-img.jpg" alt="Cart image" />
-                                                                    </a>
-                                                                    <div className="media-body">
-                                                                        <h5><a href="course-details.html">The Complete JavaScript Course 2021: From Zero to Expert!</a></h5>
-                                                                        <span className="d-block lh-18 py-1">Kamran Ahmed</span>
-                                                                        <p className="text-black font-weight-semi-bold lh-18">$12.99 <span className="before-price fs-14">$129.99</span></p>
-                                                                    </div>
-                                                                </div>
-                                                                <a href="#" className="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 w-100 mt-3">Add to cart <i className="la la-arrow-right icon ml-1"></i></a>
+                                                                <a href="my-courses.html" className="btn theme-btn w-100">Ver mi lista de deseos <i className="la la-arrow-right icon ml-1"></i></a>
                                                             </li>
-                                                            <li>
-                                                                <a href="my-courses.html" className="btn theme-btn w-100">Got to wishlist <i className="la la-arrow-right icon ml-1"></i></a>
-                                                            </li>
-                                                        </ul>
+                                                        </ul>}
                                                     </li>
                                                 </ul>
                                             </div>
-                                            <div className="shop-cart notification-cart pr-3 mr-3 border-right border-right-gray">
+                                            <div className="shop-cart notification-cart pr-3 mr-3 border-right border-right-gray" style={{ display: 'none' }}>
                                                 <ul>
                                                     <li>
                                                         <p className="shop-cart-btn">
@@ -227,7 +279,7 @@ function DashboardHeader() {
                                                         </p>
                                                         <ul className="cart-dropdown-menu after-none p-0 notification-dropdown-menu">
                                                             <li className="menu-heading-block d-flex align-items-center justify-content-between">
-                                                                <h4>Notifications</h4>
+                                                                <h4>Notificaciones</h4>
                                                                 <span className="ribbon fs-14">18</span>
                                                             </li>
                                                             <li>
@@ -273,29 +325,29 @@ function DashboardHeader() {
                                                     <li>
                                                         <div className="shop-cart-btn">
                                                             <div className="avatar-xs">
-                                                                <img className="rounded-full img-fluid" src="images/small-avatar-1.jpg" alt="Avatar image" />
+                                                                <img className="rounded-full img-fluid" src={imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Avatar image" />
                                                             </div>
                                                             <span className="dot-status bg-1"></span>
                                                         </div>
                                                         <ul className="cart-dropdown-menu after-none p-0 notification-dropdown-menu">
                                                             <li className="menu-heading-block d-flex align-items-center">
                                                                 <a href="teacher-detail.html" className="avatar-sm flex-shrink-0 d-block">
-                                                                    <img className="rounded-full img-fluid" src="images/small-avatar-1.jpg" alt="Avatar image" />
+                                                                    <img className="rounded-full img-fluid" src={imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Avatar image" />
                                                                 </a>
                                                                 <div className="ml-2">
-                                                                    <h4><a href="teacher-detail.html" className="text-black">Alex Smith</a></h4>
-                                                                    <span className="d-block fs-14 lh-20">alexsmith@example.com</span>
+                                                                    <h4><a href="teacher-detail.html" className="text-black">{nombres}</a></h4>
+                                                                    <span className="d-block fs-14 lh-20">{correo}</span>
                                                                 </div>
                                                             </li>
                                                             <li>
                                                                 <div className="theme-picker d-flex align-items-center justify-content-center lh-40">
-                                                                    <button className="theme-picker-btn dark-mode-btn w-100 font-weight-semi-bold justify-content-center" title="Dark mode">
+                                                                    <button onClick={handleThemeToggle} className="theme-picker-btn dark-mode-btn w-100 font-weight-semi-bold justify-content-center" title="Modo oscuro">
                                                                         <svg className="mr-1" viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                                                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                                                                         </svg>
-                                                                        Dark Mode
+                                                                        Modo oscuro
                                                                     </button>
-                                                                    <button className="theme-picker-btn light-mode-btn w-100 font-weight-semi-bold justify-content-center" title="Light mode">
+                                                                    <button onClick={handleThemeToggle} className="theme-picker-btn light-mode-btn w-100 font-weight-semi-bold justify-content-center" title="Modo claro">
                                                                         <svg className="mr-1" viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                                                             <circle cx="12" cy="12" r="5"></circle>
                                                                             <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -307,75 +359,75 @@ function DashboardHeader() {
                                                                             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                                                                             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                                                                         </svg>
-                                                                        Light Mode
+                                                                        Modo claro
                                                                     </button>
                                                                 </div>
                                                             </li>
                                                             <li>
                                                                 <ul className="generic-list-item">
                                                                     <li>
-                                                                        <a href="my-courses.html">
-                                                                            <i className="la la-file-video-o mr-1"></i> My courses
-                                                                        </a>
+                                                                        <Link to="/cursos-matriculados">
+                                                                            <i className="la la-file-video-o mr-1"></i> Mis cursos matriculados
+                                                                        </Link>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="shopping-cart.html">
-                                                                            <i className="la la-shopping-basket mr-1"></i> My cart
-                                                                        </a>
+                                                                        <Link to="/carrito">
+                                                                            <i className="la la-shopping-basket mr-1"></i> Mi carrito
+                                                                        </Link>
                                                                     </li>
-                                                                    <li>
+                                                                    <li style={{ display: 'none' }}>
                                                                         <a href="my-courses.html">
                                                                             <i className="la la-heart-o mr-1"></i> My wishlist
                                                                         </a>
                                                                     </li>
-                                                                    <li><div className="section-block"></div></li>
-                                                                    <li>
+                                                                    <li style={{ display: 'none' }}><div className="section-block"></div></li>
+                                                                    <li style={{ display: 'none' }}>
                                                                         <a href="dashboard.html">
                                                                             <i className="la la-bell mr-1"></i> Notifications
                                                                             <span className="badge bg-info text-white ml-2 p-1">9+</span>
                                                                         </a>
                                                                     </li>
-                                                                    <li>
+                                                                    <li style={{ display: 'none' }}>
                                                                         <a href="dashboard-message.html">
                                                                             <i className="la la-envelope mr-1"></i> Messages
                                                                             <span className="badge bg-info text-white ml-2 p-1">12+</span>
                                                                         </a>
                                                                     </li>
-                                                                    <li><div className="section-block"></div></li>
-                                                                    <li>
+                                                                    <li style={{ display: 'none' }}><div className="section-block"></div></li>
+                                                                    <li style={{ display: 'none' }}>
                                                                         <a href="dashboard-settings.html">
                                                                             <i className="la la-gear mr-1"></i> Settings
                                                                         </a>
                                                                     </li>
-                                                                    <li>
+                                                                    <li style={{ display: 'none' }}>
                                                                         <a href="dashboard-purchase-history.html">
                                                                             <i className="la la-history mr-1"></i> Purchase history
                                                                         </a>
                                                                     </li>
-                                                                    <li><div className="section-block"></div></li>
-                                                                    <li>
+                                                                    <li style={{ display: 'none' }}><div className="section-block"></div></li>
+                                                                    <li style={{ display: 'none' }}>
                                                                         <a href="student-detail.html">
                                                                             <i className="la la-user mr-1"></i> Public profile
                                                                         </a>
                                                                     </li>
-                                                                    <li>
+                                                                    <li style={{ display: 'none' }}>
                                                                         <a href="dashboard-settings.html">
                                                                             <i className="la la-edit mr-1"></i> Edit profile
                                                                         </a>
                                                                     </li>
                                                                     <li><div className="section-block"></div></li>
-                                                                    <li>
+                                                                    <li style={{ display: 'none' }}>
                                                                         <a href="#">
                                                                             <i className="la la-question mr-1"></i> Help
                                                                         </a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="index.html">
-                                                                            <i className="la la-power-off mr-1"></i> Logout
+                                                                            <i className="la la-power-off mr-1"></i> Cerrar sesión
                                                                         </a>
                                                                     </li>
-                                                                    <li><div className="section-block"></div></li>
-                                                                    <li>
+                                                                    <li style={{ display: 'none' }}><div className="section-block"></div></li>
+                                                                    <li style={{ display: 'none' }}>
                                                                         <a href="#" className="position-relative">
                                                                             <span className="fs-17 font-weight-semi-bold d-block">Aduca for Business</span>
                                                                             <span className="lh-20 d-block fs-14 text-gray">Bring learning to your company</span>
@@ -582,7 +634,7 @@ function DashboardHeader() {
                 <div className="d-flex align-items-center">
                     <form method="post" className="flex-grow-1 mr-3">
                         <div className="form-group mb-0">
-                            <input className="form-control form--control pl-3" type="text" name="search" placeholder="Search for anything" />
+                            <input className="form-control form--control pl-3" type="text" name="search" placeholder="Buscar curso" />
                             <span className="la la-search search-icon"></span>
                         </div>
                     </form>

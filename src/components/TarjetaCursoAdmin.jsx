@@ -42,7 +42,7 @@ function TarjetaCursoAdmin(
                                 <p className="skillbar-title">Complete:</p>
                                 <div className="skillbar-box">
                                     <div className="skillbar skillbar-skillbar-2" data-percent={`${porcentaje_progreso}%`}>
-                                        <div className="skillbar-bar skillbar--bar-2 bg-1"></div>
+                                        <div className="skillbar-bar skillbar--bar-2 bg-1" style={{width:`${porcentaje_progreso}%`}}></div>
                                     </div>
                                 </div>
                                 <div className="skill-bar-percent">{porcentaje_progreso}%</div>

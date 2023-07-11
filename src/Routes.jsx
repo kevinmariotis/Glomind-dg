@@ -11,6 +11,7 @@ import PaginaCarrito from './components/PaginaCarrito';
 import PaginaCheckout from './components/PaginaCheckout';
 import PaginaDashboardHome from './components/PaginaDashboardHome';
 import PaginaDashboardEnroledCourses from './components/PaginaDashboardEnroledCourses';
+import PaginaDashboardCursos from './components/PaginaDashboardCursos';
 
 import Pagina404 from './components/Pagina404';
 
@@ -18,20 +19,17 @@ import Pagina404 from './components/Pagina404';
 //import Home from './components/Home';
 
 const Rutas = () => {    
-    const {authenticated, permissions} = useContext(AuthContext);  //se obtiene los datos del contexto de la sesion (AuthContext)
+    const {authenticated, permissions} = useContext(AuthContext);  //se obtiene los datos del contexto de la sesion (AuthContext)                    
+    const validarPermisos = (lista=[]) => {        
+        let retornar = false;
+        lista.forEach(function(element) {                        
+            if(permissions[element]===1){
+                retornar = true;
+            }
+        });
+        return retornar;
+    };
     
-    const permisos = (permissions!='') ? JSON.parse(permissions) : Array(150).fill(0);    
-    console.log("permisos ", permisos);
-    const publicRoutes = ['/', '/login', '/signup']; // Rutas abiertas al público
-
-    useEffect(() => {        
-        const currentPath = window.location.pathname;
-        // Verificar si la ruta actual no está en las rutas abiertas al público
-        /*if (!publicRoutes.includes(currentPath)) {
-            validateJWT();
-        }*/
-    }, []);
-        
     return (        
         <BrowserRouter>            
             <Routes>                                
@@ -39,6 +37,7 @@ const Rutas = () => {
                 <Route path="/signup" element={<ProtectedRoute permiso={!authenticated} ><PaginaRegistrarse/></ProtectedRoute>} />
                 <Route path="/usuario/:id" element={<Pagina404/>} />
                 <Route path="/usuario" element={<Pagina404/>} />
+                <Route path="/cursos" element={<ProtectedRoute permiso={validarPermisos([20, 21, 22])} ><PaginaDashboardCursos/></ProtectedRoute>} />
                 <Route path="/curso/favoritos" element={<Pagina404/>} />
                 <Route path="/curso/comprados" element={<Pagina404/>} />          
                 <Route path="/curso/:url_amigable" element={<PaginaDetallesDeCurso/>} />                      

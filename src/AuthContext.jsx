@@ -7,10 +7,12 @@ export const AuthContext = createContext();
 // Crea el proveedor de autenticación
 export const AuthProvider = ({ children }) => {    
     const [authenticated, setAuthenticated] = useState(false);
-    const [permissions, setPermissions] = useState('');
+    const [permissions, setPermissions] = useState([]);
     const [temaActual, setTemaActual] = useState(0);    //1 'light-theme', 0 'dark-theme'
     const [cargarContadorCarrito, setCargarContadorCarrito] = useState(true);   //setCargarContadorCarrito debe ser usado por cualquier parte del programa para dar la orden de que se recarge el contador de items en el carrito
     const [nombres, setNombres] = useState('');
+    const [correo, setCorreo] = useState('');
+    const [imagen_pequena, setImagenPequena] = useState('');
 
     const [jwt, setJwt] = useState('');    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
@@ -18,8 +20,9 @@ export const AuthProvider = ({ children }) => {
     // Función para dar la sesion por iniciada
     const login = ({jwt, permisos}) => {
         // Lógica para autenticar al usuario        
+        const permisos_array = (permisos!='') ? JSON.parse(permisos) : Array(150).fill(0); 
         setAuthenticated(true);        
-        setPermissions(permisos);                          
+        setPermissions(permisos_array);                          
         setJwt(jwt);          
     };
 
@@ -27,7 +30,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         // Lógica para cerrar la sesión del usuario
         setAuthenticated(false);
-        setPermissions('');
+        setPermissions([]);
         setJwt(null);  
     };
 
@@ -70,6 +73,8 @@ export const AuthProvider = ({ children }) => {
                         if (response.status === 200) {                            
                             login({'jwt':jwt, 'permisos':JSON.stringify(data.permisos)});
                             setNombres(data.nombres);                             
+                            setCorreo(data.correo);
+                            setImagenPequena(data.imagen_pequena);
                             setCargado(true);
                         } else {
                             Cookies.remove('jwt');
@@ -97,7 +102,7 @@ export const AuthProvider = ({ children }) => {
     }, []);           
        
     return (
-        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual}}>
+        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, correo, imagen_pequena, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual}}>
             {children}
         </AuthContext.Provider> : <LoadingAnimation />}</>
     );

@@ -8,7 +8,7 @@ import SpamError from './SpamError';
 
 function FormularioRegistrarse(){
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API; 
-    const {jwt} = useContext(AuthContext);
+    const {jwt, temaActual} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [datosCargados, setDatosCargados] = useState(false);
@@ -371,7 +371,7 @@ function FormularioRegistrarse(){
                                         </div>                                        
                                         <div className="input-box">
                                             <div className="input-group mb-3">                  
-                                                <ReCAPTCHA key={resetKey} onChange={handleCaptchaChange} sitekey="6LfyHT0mAAAAADE_ZAEDvGr4Z6QBa8WWbuBJ8WzA" />                                                
+                                                <ReCAPTCHA theme={`${temaActual==1 ? 'light' : 'dark'}`} key={resetKey} onChange={handleCaptchaChange} sitekey="6LfyHT0mAAAAADE_ZAEDvGr4Z6QBa8WWbuBJ8WzA" />                                                
                                             </div>
                                             {erroresCampos['g-recaptcha-response'].length > 0 && (<SpamError mensaje={erroresCampos['g-recaptcha-response']} />)}
                                         </div>

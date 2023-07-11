@@ -5,6 +5,7 @@ import Spinner from './Spinner';
 import TarjetaCursoAdmin from './TarjetaCursoAdmin';
 import Paginador from './Paginador';
 import Popup from './Popup';
+import DashboardFooter from './DashboardFooter';
 
 function FormularioDashboardEnroledCourses() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
@@ -144,11 +145,7 @@ function FormularioDashboardEnroledCourses() {
                                 <span className="rating-total pl-1">({datosUsuario.docente_reviews})</span>
                             </div>}
                         </div>
-                    </div>
-                    <div className="file-upload-wrap file-upload-wrap-2 file--upload-wrap">
-                        <input type="file" name="files[]" className="multi file-upload-input" />
-                        <span className="file-upload-text"><i className="la la-upload mr-2"></i>Upload a course</span>
-                    </div>
+                    </div>                    
                 </div>
                 <div className="section-block mb-5"></div>
                 <div className="dashboard-heading mb-5">
@@ -228,17 +225,7 @@ function FormularioDashboardEnroledCourses() {
                     </div>
                 </div>
                 <Paginador elemetosTotales={totalCursos} elementosPorPagina={3} paginaActual={paginaNavegacion} callbackCambioPagina={setPaginaNavegacion} />
-                <div className="row align-items-center dashboard-copyright-content pb-4">
-                    <div className="col-lg-6">
-                        <p className="copy-desc">&copy; 2021 Aduca. All Rights Reserved. by <a href="https://techydevs.com/">TechyDevs</a></p>
-                    </div>
-                    <div className="col-lg-6">
-                        <ul className="generic-list-item d-flex flex-wrap align-items-center fs-14 justify-content-end">
-                            <li className="mr-3"><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-                            <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                        </ul>
-                    </div>
-                </div>
+                <DashboardFooter />
             </div>
         </div>
         </>
