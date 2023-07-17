@@ -1,4 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
 import Spinner from './Spinner';
@@ -93,13 +94,11 @@ function FormularioDashboardCursos() {
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
                     <div className="media media-card align-items-center">                        
                         <h3 className="fs-22 font-weight-semi-bold">Cursos del sistema</h3>                        
-                    </div>
-                    <div className="file-upload-wrap file-upload-wrap-2 file--upload-wrap">                        
-                        <input type="file" name="files[]" className="multi file-upload-input" />
-                        {permissions[21] && <span className="file-upload-text"><i className="la la-upload mr-2"></i>Crear curso</span>}
+                    </div>                    
+                    <div className="btn-box pt-30px">
+                        {permissions[21] && <Link to="/crear-curso" className="btn theme-btn"><i className="la la-plus mr-2"></i> Crear curso</Link>}
                     </div>
                 </div>
-
                 <div className="row">
                     <div className="col-lg-6">
                         <div className="form-group">
@@ -139,11 +138,11 @@ function FormularioDashboardCursos() {
                                 </div>
                                 <ul className="card-duration d-flex align-items-center fs-15 pb-2">
                                     <li className="mr-2">
-                                        <span className="text-black">Status:</span>
-                                        <span className="badge badge-success text-white">Published</span>
+                                        <span className="text-black">Estado: </span>
+                                        {cursos[key].estado==1 ? <span className="badge badge-success text-white">Publicado</span>: <span className="badge badge-danger text-white">No publicado</span>}
                                     </li>
                                     <li className="mr-2">
-                                        <span className="text-black">Duration:</span>
+                                        <span className="text-black">Duración: </span>
                                         <span>{cursos[key].cantidad_horas_de_video}</span>
                                     </li>
                                     <li className="mr-2">
@@ -155,7 +154,7 @@ function FormularioDashboardCursos() {
                                     <p className="card-price text-black font-weight-bold">{cursos[key].precio_actual} {cursos[key].precio_anterior!=0 && <span className="before-price font-weight-medium">{cursos[key].precio_anterior}</span>}</p>
                                     <div className="card-action-wrap pl-3">
                                         <a href="course-details.html" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="View"><i className="la la-eye"></i></a>
-                                        <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Edit"><i className="la la-edit"></i></div>
+                                        <Link to={`/editar-curso/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Edit"><i className="la la-edit"></i></div></Link>
                                         <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">
                                             <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
                                         </div>

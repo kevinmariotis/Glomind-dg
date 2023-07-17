@@ -12,6 +12,8 @@ import PaginaCheckout from './components/PaginaCheckout';
 import PaginaDashboardHome from './components/PaginaDashboardHome';
 import PaginaDashboardEnroledCourses from './components/PaginaDashboardEnroledCourses';
 import PaginaDashboardCursos from './components/PaginaDashboardCursos';
+import PaginaCrearCurso from './components/PaginaCrearCurso';
+import PaginaEditarCurso from './components/PaginaEditarCurso';
 
 import Pagina404 from './components/Pagina404';
 
@@ -54,6 +56,8 @@ const Rutas = () => {
                 <Route path="/permisos" element={<Pagina404/>} />
                 <Route path="/home" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardHome/></ProtectedRoute>} />
                 <Route path="/cursos-matriculados" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardEnroledCourses/></ProtectedRoute>} />
+                <Route path="/crear-curso" element={<ProtectedRoute permiso={validarPermisos([21])} ><PaginaCrearCurso/></ProtectedRoute>} />
+                <Route path="/editar-curso/:id" element={<ProtectedRoute permiso={validarPermisos([22])} ><PaginaEditarCurso/></ProtectedRoute>} />
                 <Route exact path="/" element={<Pagina404/>} />          
                 <Route path="*" component={<Pagina404/>} />
             </Routes>            

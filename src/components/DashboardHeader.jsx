@@ -195,7 +195,7 @@ function DashboardHeader() {
                                                                     </div>
                                                                 </li>
                                                              ))}                                                                 
-                                                            {Object.keys(misCursos).length>3 && <li>
+                                                            {Object.keys(misCursos).length>3 && <li key="vertodoscursos" >
                                                                 <Link to="/cursos-matriculados" className="btn theme-btn w-100">Ver todos mis cursos <i className="la la-arrow-right icon ml-1"></i></Link>
                                                             </li>}
                                                         </ul>}
@@ -213,7 +213,7 @@ function DashboardHeader() {
                                                         </p>
                                                         {authenticated && contadorCarrito.contador>0 && <ul className="cart-dropdown-menu after-none">
                                                             {Object.keys(contadorCarrito.productos).slice(0, 3).map((key) => (
-                                                                <li className="media media-card">
+                                                                <li key={`´productos-carrito-${key}`} className="media media-card">
                                                                     <Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
                                                                         {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} className="mr-3" /> : <img src="images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} className="mr-3" /> }
                                                                     </Link>
@@ -249,7 +249,7 @@ function DashboardHeader() {
                                                         </p>
                                                         {authenticated && Object.keys(favoritos).length>0 && <ul className="cart-dropdown-menu after-none">
                                                             {Object.keys(favoritos).slice(0, 3).map((key) => (
-                                                                <li>
+                                                                <li key={`´productos-favoritos-${key}`}>
                                                                     <div className="media media-card">
                                                                         <Link to={`/curso/${favoritos[key].url_amigable}`} className="media-img">
                                                                             <img className="mr-3" src="images/small-img.jpg" alt="Cart image" />

@@ -21,6 +21,7 @@
   .select-dark {
     background-color: #333;
     color: #fff;
+    border-color: rgba(127, 136, 151, 0.2);;
   }
   
   .select-dark option {
@@ -30,8 +31,10 @@
   
   .select-dark:focus,
   .select-dark:hover {
-    border-color: #fff;
-    outline-color: #fff;
+    border-color: #333;
+    outline-color: #333;
+    background-color: #333;
+    color: #fff;
   }
   
   .select-dark:focus option,
