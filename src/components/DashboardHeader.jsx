@@ -252,7 +252,7 @@ function DashboardHeader() {
                                                                 <li key={`´productos-favoritos-${key}`}>
                                                                     <div className="media media-card">
                                                                         <Link to={`/curso/${favoritos[key].url_amigable}`} className="media-img">
-                                                                            <img className="mr-3" src="images/small-img.jpg" alt="Cart image" />
+                                                                            <img className="mr-3" src={`${urlBase}/images/small-img.jpg`} alt="Cart image" />
                                                                         </Link>
                                                                         <div className="media-body">
                                                                             <h5><Link to={`/curso/${favoritos[key].url_amigable}`}>{favoritos[key].nombre}</Link></h5>

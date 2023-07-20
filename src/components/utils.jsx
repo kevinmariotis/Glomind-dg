@@ -6,6 +6,9 @@
     export const mensajesDeError = (setPopPup, codigoError, errores={}, setErrorCampoGlobal=false, mensaeSiErrorCamposGlobal={titulo:'', contenido:''}) => {
         let mostrar_errores_data = false;
         switch(codigoError){
+            case 200:   //aveces se muestran mensajes a pesar de que el estado es 200 ok
+                mostrar_errores_data = true;
+            break;
             case 400:       //bad-request
                 if(Object.entries(errores).length==0 || !setErrorCampoGlobal){  //si no llego error y no se ha establecido una funcion para mostrar errores de campos especificos, se coloca mensaje generico
                     mostrar_errores_data = true;

@@ -154,7 +154,8 @@ function FormularioDashboardCursos() {
                                     <p className="card-price text-black font-weight-bold">{cursos[key].precio_actual} {cursos[key].precio_anterior!=0 && <span className="before-price font-weight-medium">{cursos[key].precio_anterior}</span>}</p>
                                     <div className="card-action-wrap pl-3">
                                         <a href="course-details.html" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="View"><i className="la la-eye"></i></a>
-                                        <Link to={`/editar-curso/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Edit"><i className="la la-edit"></i></div></Link>
+                                        {permissions[22] ? <Link to={`/editar-curso/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-edit"></i></div></Link> : ''}
+                                        {permissions[70] ? <Link to={`/editar-contenido-curso/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar contenido"><i className="la la-list-ol"></i></div></Link> : ''}
                                         <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">
                                             <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
                                         </div>
