@@ -15,6 +15,7 @@ import PaginaDashboardCursos from './components/PaginaDashboardCursos';
 import PaginaCrearCurso from './components/PaginaCrearCurso';
 import PaginaEditarCurso from './components/PaginaEditarCurso';
 import PaginaEditarContenidoCurso from './components/PaginaEditarContenidoCurso';
+import PaginaEditarCursoVideoPreview from './components/PaginaEditarCursoVideoPreview';
 
 import Pagina404 from './components/Pagina404';
 
@@ -60,6 +61,7 @@ const Rutas = () => {
                 <Route path="/crear-curso" element={<ProtectedRoute permiso={validarPermisos([21])} ><PaginaCrearCurso/></ProtectedRoute>} />
                 <Route path="/editar-curso/:id" element={<ProtectedRoute permiso={validarPermisos([22])} ><PaginaEditarCurso/></ProtectedRoute>} />
                 <Route path="/editar-contenido-curso/:id" element={<ProtectedRoute permiso={validarPermisos([70])} ><PaginaEditarContenidoCurso/></ProtectedRoute>} />
+                <Route path="/editar-video-preview-curso/:id" element={<ProtectedRoute permiso={validarPermisos([67])} ><PaginaEditarCursoVideoPreview/></ProtectedRoute>} />
                 <Route exact path="/" element={<Pagina404/>} />          
                 <Route path="*" component={<Pagina404/>} />
             </Routes>            

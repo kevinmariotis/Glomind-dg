@@ -428,8 +428,9 @@ function FormularioEditarCurso() {
         />
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
-                <div className="dashboard-heading mb-5">
-                    <h3 className="fs-22 font-weight-semi-bold">Editar curso</h3>
+                <div className="dashboard-heading mb-5">                    
+                    <h3 className="fs-22 font-weight-semi-bold">{nombre}</h3>
+                    <span>Configuración del curso</span>
                 </div>
                 <form action="#">
                     <div className="card card-item">

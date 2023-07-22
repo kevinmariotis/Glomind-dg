@@ -1,12 +1,16 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
-import Select from 'react-select';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
+import VideoPicker from './VideoPicker';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 import DashboardFooter from './DashboardFooter';
 
 function FormularioEditarContenidoCurso() {
@@ -14,25 +18,30 @@ function FormularioEditarContenidoCurso() {
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const { id } = useParams();
     const {jwt, nombres, permissions} = useContext(AuthContext);
+    const [nombre, setNombre] = useState('');    
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
     const [popUpConfirmarBorrarSeccion, setPopupConfirmarBorrarSeccion] = useState({mostrar:false, titulo:'', contenido:'', id_categoria:''});    
     const [popUpConfirmarBorrarContenido, setPopupConfirmarBorrarContenido] = useState({mostrar:false, titulo:'', contenido:'', id_contenido:''});    
+    const [popUpVideo, setPopupVideo] = useState({mostrar:false, titulo:'', contenido:''});    
+    const [posterVistaPrevia, setPosterVistaPrevia] = useState('');    
     const [contenido, setContenido] = useState({});        
     const [mostrarPopUpCrearSeccion, setMostrarPopUpCrearSeccion] = useState(false);                    
     const [mostrarPopUpEditarSeccion, setMostrarPopUpEditarSeccion] = useState(false);                    
     const [mostrarPopUpAgregarContenido, setMostrarPopUpAgregarContenido] = useState(false);
+    const [mostrarPopUpAgregarVideo, setMostrarPopUpAgregarVideo] = useState(false);
     const [nombreSeccion, setNombreSeccion] = useState('');
     const [idSeccionEditando, setIdSeccionEditando] = useState(-1);
-            
+    const [idSeccionAgregarContenido, setIdSeccionAgregarContenido] = useState(-1);
+    
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
     
     useEffect(() => {           
         window.scrollTo(0, 0);
         obtenerDatosServidor();        
     }, []);
-          
+         
     const handleNombreChange = (event) => { setNombre(event.target.value);    };      
-    
+        
     //Estados de los errores de campos
     const camposErrores = {
         'imagen':[],        
@@ -64,6 +73,13 @@ function FormularioEditarContenidoCurso() {
         setPopup({...popUp, mostrar:false});
     };
 
+    const handleFuncionAceptarPopUpVideo = () => {        
+        setPopupVideo({...popUp, mostrar:false});
+    };
+    const handleFuncionCerrarPopUpVideo = () => {        
+        setPopupVideo({...popUp, mostrar:false});
+    };
+
 
     const handleAbrirCrearSeccion = (event) => {         
         event.preventDefault();
@@ -82,7 +98,8 @@ function FormularioEditarContenidoCurso() {
             const opciones = {
                 method: 'GET',
                 headers: headers,
-            };            
+            }; 
+
             const response = await fetch(`${urlBaseApi}/api/curso/getcontenidos/${id}`, opciones);            
             if (response.ok){   
                 const datos = await response.json();                   
@@ -90,7 +107,16 @@ function FormularioEditarContenidoCurso() {
             } else {     
                 const datos = await response.json();            
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
-            }     
+            }   
+
+            const response2 = await fetch(`${urlBaseApi}/api/curso/informacionBasica/${id}`, opciones);            
+            if (response2.ok){
+                const datos2 = await response2.json();
+                setNombre(datos2.nombre);                
+            } else {     
+                const datos2 = await response2.json();            
+                mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {});                    
+            }  
                      
         }catch(error){
             // Manejar el caso de error en la solicitud
@@ -235,8 +261,7 @@ function FormularioEditarContenidoCurso() {
             console.error('Error de conexión:', error);
         }
     }
-
-    
+        
     const handleEditarSeccion = (event, id_categoria, nombre_actual) => {         
         event.preventDefault();
         setNombreSeccion(nombre_actual);
@@ -273,7 +298,52 @@ function FormularioEditarContenidoCurso() {
             console.error('Error de conexión:', error);
         }
     }  
+    
+    const handleAgregarContenido = (event, id_categoria) => {         
+        event.preventDefault();        
+        setIdSeccionAgregarContenido(id_categoria);
+        setMostrarPopUpAgregarContenido(true);
+    }
+
+    const handleAgregarVideo = (event) => {         
+        event.preventDefault();               
+        setMostrarPopUpAgregarContenido(false); 
+        setMostrarPopUpAgregarVideo(true);
+    }
+    
+    const handleSeleccionarVideo = async (id_video) => {        
+        const formData = new FormData();        
+        formData.append('id_curso', id);   
+        formData.append('id_categoria', idSeccionAgregarContenido);
+        formData.append('tipo_contenido', 1);
+        formData.append('id_tipo_contenido', id_video);        
+        formData.append('porcentaje_en_total_curso', 0);
+               
+        const opciones = {
+            method: 'POST',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: formData
+        };
         
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/cursocontenido`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if (response.ok){                  
+                obtenerDatosServidor();
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {titulo:'', contenido:''});
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    };
+
+
     return (
         <>
         {mostrarSpinner && <Spinner />}
@@ -307,6 +377,19 @@ function FormularioEditarContenidoCurso() {
             funcionCerrar={handleFuncionCerrarPopUpConfirmarBorrarContenido}
             textoCerrar="Cancelar"
         />
+        <Modal show={popUpVideo.mostrar} size="xx" onHide={handleFuncionCerrarPopUpVideo} backdrop="static" keyboard={false} animation={false} centered>
+            {(popUpVideo.titulo!='') && <Modal.Header>
+                <Modal.Title>{popUpVideo.titulo}</Modal.Title>                   
+            </Modal.Header>}
+            <Modal.Body>   
+                <video controls crossOrigin="true" playsInline poster={`${posterVistaPrevia!='' ? `${urlBaseApi}/${posterVistaPrevia}` : `${urlBase}/images/pattern.png` }`} id="player" style={{'width':'100%'}}>                                
+                    <source src={`${urlBaseApi}/${popUpVideo.contenido}`} type="video/mp4"/>                                
+                </video>
+            </Modal.Body>
+            <Modal.Footer>                
+                <Button variant="secondary" onClick={handleFuncionCerrarPopUpVideo}>Cerrar</Button>
+            </Modal.Footer>
+        </Modal>
         {mostrarPopUpCrearSeccion && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -351,16 +434,40 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
+        {mostrarPopUpAgregarContenido && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal3" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="comprarModalTitle">Agregar contenido</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">
+                        <div className="form-group">
+                            <label className="label-text">Qué deseas agregar?</label>  <br/>
+                            <button className="btn theme-btn" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>&nbsp;
+                            <button className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Examen</button>                            
+                        </div>
+                    </div>
+                    <div className="modal-footer border-top-gray">                        
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setMostrarPopUpAgregarContenido(false); }}> Cancelar </button>
+                    </div>
+                </div>
+            </div>
+        </div>}
+        {mostrarPopUpAgregarVideo && <VideoPicker funcionMostrarPopUp={setMostrarPopUpAgregarVideo} funcionSetVideoSeleccionado={handleSeleccionarVideo} />}
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">
-                    <h3 className="fs-22 font-weight-semi-bold">Editar contenido del curso</h3>
+                    <h3 className="fs-22 font-weight-semi-bold">{nombre!='' ? nombre : <Skeleton width={'30%'}/> }</h3>
+                    <span>{nombre!='' ? 'Editar contenido del curso' : <Skeleton width={'20%'}/> }</span>
+                    
                 </div>
                 <form action="#">    
                     {Object.keys(contenido).map((key) => (                
                         <div className="card card-item" key={`contenido-cat-${contenido[key].id_categoria}`}>
                             <div className="card-body">
-                                <h3 className="fs-22 font-weight-semi-bold pb-2">{contenido[key].nombre} {contenido[key].id_categoria} {permissions[25] ? <div onClick={event=>{ handleEditarSeccion(event, contenido[key].id_categoria, contenido[key].nombre); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar sección"><i className="la la-edit"></i></div> : ''} {(contenido[key].curso_contenido.length==0 && permissions[25]) ? <div onClick={event => { handleBorrarCategoria(event, contenido[key].id_categoria); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}</h3>                            
+                                <h3 className="fs-22 font-weight-semi-bold pb-2">{contenido[key].nombre} {permissions[25] ? <div onClick={event=>{ handleEditarSeccion(event, contenido[key].id_categoria, contenido[key].nombre); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar sección"><i className="la la-edit"></i></div> : ''} {(contenido[key].curso_contenido.length==0 && permissions[25]) ? <div onClick={event => { handleBorrarCategoria(event, contenido[key].id_categoria); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}</h3>                            
                                 <div className="divider"><span></span></div>
                                 <div className="row">                                                                
                                     <div className="col-lg-12">
@@ -370,12 +477,12 @@ function FormularioEditarContenidoCurso() {
                                                     <div className="course-item-content-wrap">
                                                         <div className="custom-control custom-checkbox media media-card">                                                                                                                                                                            
                                                             {tema.tipo_contenido==1 ? 
-                                                                <Link to="/" className="media-img" style={{ height: 'auto' }}>
-                                                                    {tema.imagen_preview_pequena && tema.imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${tema.imagen_preview_pequena}`} alt={tema.nombre} /> : <img src="images/course-no-image.png" alt={tema.nombre} /> }
-                                                                </Link> : ''}                                                                            
+                                                                <div className="media-img" style={{ height: 'auto' }}>
+                                                                    {tema.imagen_preview_pequena && tema.imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${tema.imagen_preview_pequena}`} alt={tema.nombre} onClick={()=>{ setPosterVistaPrevia(tema.imagen_preview_pequena); setPopupVideo({...popUpVideo, mostrar:true, 'contenido':tema.video_grande}); }} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={tema.nombre} /> }
+                                                                </div> : ''}                                                                            
                                                         </div>
                                                         <div className="course-item-content">
-                                                            <h4 className="fs-15">{tema.nombre} {tema.id_contenido} - {tema.posicion}</h4>
+                                                            <h4 className="fs-15">{tema.nombre}</h4>
                                                             <div className="courser-item-meta-wrap">
                                                                 {tema.tipo_contenido==1 ? <p className="course-item-meta"><i className="la la-play-circle"></i>{tema.cantidad_horas_de_video}</p> : ''}
                                                             </div>
@@ -388,7 +495,7 @@ function FormularioEditarContenidoCurso() {
                                              )}
                                         </ul>                                          
                                         <div className="course-submit-btn-box pb-4">
-                                            <button className="btn theme-btn" type="submit" onClick={event => handleAbrirCrearSeccion(event)}><i className="la la-plus mr-2"></i>Agregar actividad o recurso</button>
+                                            <button className="btn theme-btn" type="submit" onClick={event=>{ handleAgregarContenido(event, contenido[key].id_categoria); }}><i className="la la-plus mr-2"></i>Agregar contenido</button>
                                         </div>
                                     </div>                                    
                                 </div>
