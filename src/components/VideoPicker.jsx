@@ -29,10 +29,7 @@ function VideoPicker({funcionMostrarPopUp, funcionSetVideoSeleccionado}) {
         event.preventDefault();   
         setPalabraBuscar(event.target.value);
     };
-
-    const handleFuncionAceptarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
-    };
+    
     const handleFuncionCerrarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };

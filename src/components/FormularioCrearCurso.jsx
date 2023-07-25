@@ -252,8 +252,7 @@ function FormularioCrearCurso() {
         formData.append('examenes_solo_pago', examenesSoloPago);                
         formData.append('precio_adicional_examenes', precioAdicionalExamenes);                
         formData.append('certificado_solo_pago', certificadoSoloPago);                
-        formData.append('precio_adicional_certificado', precioAdicionalCertificado);                               
-        formData.append('id_video_preview', '0');        
+        formData.append('precio_adicional_certificado', precioAdicionalCertificado);                                       
         formData.append('estado', estado);
 
         if(selectedImage!=null){

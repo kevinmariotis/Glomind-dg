@@ -24,7 +24,7 @@ function TarjetaCursoAdmin(
         return (<div className="col-lg-4 responsive-column-half">
                     <div className="card card-item">
                         <div className="card-image">
-                            <Link to={`${urlBase}/vercurso/${url_amigable}`} className="d-block">
+                            <Link to={`${urlBase}/play/${url_amigable}`} className="d-block">
                                 <img className="card-img-top" src={imagen!='/images/img8.jpg' ? urlBaseApi+'/'+imagen : imagen} alt="Card image cap" />
                                 <div className="play-button">
                                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="-307.4 338.8 91.8 91.8">                                                          
@@ -36,7 +36,7 @@ function TarjetaCursoAdmin(
                             </Link>
                         </div>
                         <div className="card-body">
-                            <h5 className="card-title"><Link to={`${urlBase}/vercurso/${url_amigable}`}>{nombre}</Link></h5>
+                            <h5 className="card-title"><Link to={`${urlBase}/play/${url_amigable}`}>{nombre}</Link></h5>
                             {instructor!='' && <p className="card-text lh-22 pt-2"><Link to={`${urlBase}/instructor/${id_instructor}`}>{instructor}</Link><span>{descripcion_instructor!='' ? ', ':''} {descripcion_instructor}</span></p>}                            
                             <div className="my-course-progress-bar-wrap d-flex align-items-center pt-3">
                                 <p className="skillbar-title">Complete:</p>

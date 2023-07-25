@@ -27,7 +27,7 @@ function FormularioDashboardCursos() {
 
     useEffect(() => {         
         obtenerDatosCursos();
-    }, [palabraBuscar]);
+    }, [paginaNavegacion, palabraBuscar]);
 
     const handleFuncionAceptarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
@@ -96,7 +96,7 @@ function FormularioDashboardCursos() {
                         <h3 className="fs-22 font-weight-semi-bold">Cursos del sistema</h3>                        
                     </div>                    
                     <div className="btn-box pt-30px">
-                        {permissions[21] && <Link to="/crear-curso" className="btn theme-btn"><i className="la la-plus mr-2"></i> Crear curso</Link>}
+                        {permissions[21] && <Link to="/curso/crear" className="btn theme-btn"><i className="la la-plus mr-2"></i> Crear curso</Link>}
                     </div>
                 </div>
                 <div className="row">
@@ -154,9 +154,10 @@ function FormularioDashboardCursos() {
                                     <p className="card-price text-black font-weight-bold">{cursos[key].precio_actual} {cursos[key].precio_anterior!=0 && <span className="before-price font-weight-medium">{cursos[key].precio_anterior}</span>}</p>
                                     <div className="card-action-wrap pl-3">
                                         <a href="course-details.html" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="View"><i className="la la-eye"></i></a>
-                                        {permissions[22] ? <Link to={`/editar-curso/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
-                                        {permissions[70] ? <Link to={`/editar-contenido-curso/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar contenido"><i className="la la-list-ol"></i></div></Link> : ''}
-                                        {permissions[67] ? <Link to={`/editar-video-preview-curso/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar video preview de cursonido"><i className="la la-video-camera"></i></div></Link> : ''}
+                                        {permissions[22] ? <Link to={`/curso/editar/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
+                                        {permissions[70] ? <Link to={`/curso/contenido/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar contenido"><i className="la la-list-ol"></i></div></Link> : ''}
+                                        {permissions[67] ? <Link to={`/curso/videopreview/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar video preview de curso"><i className="la la-video-camera"></i></div></Link> : ''}
+                                        {permissions[66] ? <Link to={`/curso/imagen/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar imagen del curso"><i className="la la-image"></i></div></Link> : ''}
                                         <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">
                                             <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
                                         </div>

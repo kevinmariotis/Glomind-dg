@@ -1,14 +1,12 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useDropzone } from 'react-dropzone';
-import Select from 'react-select';
+import { useParams } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
 import VideoPicker from './VideoPicker';
-import TarjetaCursoAdmin from './TarjetaCursoAdmin';
-import Paginador from './Paginador';
 import Popup from './Popup';
 import DashboardFooter from './DashboardFooter';
 
@@ -18,6 +16,7 @@ function FormularioEditarCursoVideoPreview() {
     const { id } = useParams();
     const {jwt, permissions} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
+    const [popUpVistaPrevia, setPopupVistaPrevia] = useState({mostrar:false, titulo:'', contenido:''});    
         
     const [nombre, setNombre] = useState('');    
     const [idVideoPreview, setIdVideoPreview] = useState(0);    
@@ -61,6 +60,10 @@ function FormularioEditarCursoVideoPreview() {
     const handleFuncionCerrarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };
+
+    const handleFuncionCerrarPopUpVistaPrevia = () => {        
+        setPopupVistaPrevia({...popUp, mostrar:false});
+    };
                 
     const obtenerDatosServidor = async () => {                  
         const headers = {
@@ -95,7 +98,7 @@ function FormularioEditarCursoVideoPreview() {
         reiniciarErrorCampoGlobal();
                        
         const raw = {            
-            'id_video_preview': idVideoPequenoPreview,            
+            'id_video_preview': idVideoPreview+'',            
         };
                             
         const opciones = {
@@ -112,7 +115,7 @@ function FormularioEditarCursoVideoPreview() {
             setMostrarSpinner(false);
             const datos = await response.json();            
             if (response.ok){    
-                setPopup({mostrar:true, titulo:'Listo', contenido:'Curso guardado satisfactoriamente'});
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Cambios guardados correctamente.'});
             } else {
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Revisar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
             }                
@@ -121,13 +124,45 @@ function FormularioEditarCursoVideoPreview() {
         }
 
     }
-    
+        
+    const handleQuitarVideo = (event) => {         
+        event.preventDefault();                       
+        setIdVideoPreview('0');                                
+        setUrlVideoPreview('');
+        setCoverVideoPreview('');
+        setNombreVideoPreview('');
+        setDuracionNombreVideoPreview('');
+    }
+
     const handleAgregarVideo = (event) => {         
         event.preventDefault();                       
         setMostrarPopUpAgregarVideo(true);
     }
-    const handleSeleccionarVideo = async (id_video) => {        
-        setIdVideoPreview(id_video);
+    const handleSeleccionarVideo = async (id_video) => {
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };            
+            const response = await fetch(`${urlBaseApi}/api/curso/informacionvideo/${id_video}`, opciones);            
+            const datos = await response.json();   
+            if (response.ok){                             
+                setIdVideoPreview(id_video);                                
+                setUrlVideoPreview((datos.video_preview!=null && datos.video_preview!='') ? datos.video_preview : datos.video_grande);
+                setCoverVideoPreview(datos.imagen_preview_pequena);
+                setNombreVideoPreview(datos.nombre);
+                setDuracionNombreVideoPreview(datos.duracion_hms);
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
+            }     
+                     
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }        
     };
     
 
@@ -145,6 +180,19 @@ function FormularioEditarCursoVideoPreview() {
             textoCerrar="Aceptar"
         />
         {mostrarPopUpAgregarVideo && <VideoPicker funcionMostrarPopUp={setMostrarPopUpAgregarVideo} funcionSetVideoSeleccionado={handleSeleccionarVideo} />}
+        <Modal show={popUpVistaPrevia.mostrar} size="xx" onHide={handleFuncionCerrarPopUpVistaPrevia} backdrop="static" keyboard={false} animation={false} centered>
+            {(popUpVistaPrevia.titulo!='') && <Modal.Header>
+                <Modal.Title>{popUpVistaPrevia.titulo}</Modal.Title>                   
+            </Modal.Header>}
+            <Modal.Body>   
+                <video controls crossOrigin="true" playsInline poster={`${coverVideoPreview!='' ? `${urlBaseApi}/${coverVideoPreview}` : `${urlBase}/images/pattern.png` }`} id="player" style={{'width':'100%'}}>                                
+                    <source src={`${urlBaseApi}/${popUpVistaPrevia.contenido}`} type="video/mp4"/>                                
+                </video>
+            </Modal.Body>
+            <Modal.Footer>                
+                <Button variant="secondary" onClick={handleFuncionCerrarPopUpVistaPrevia}>Cerrar</Button>
+            </Modal.Footer>
+        </Modal>
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
@@ -154,7 +202,7 @@ function FormularioEditarCursoVideoPreview() {
                 <form action="#">                                                                                
                     {permissions[67] ? <div className="card card-item">
                         <div className="card-body">
-                            <h3 className="fs-22 font-weight-semi-bold pb-2">Video de vista previa</h3>
+                            <h3 className="fs-22 font-weight-semi-bold pb-2">Video de vista previa del curso</h3>
                             <div className="divider"><span></span></div>
                             <div className="row">                                                                
                                 <div className="col-lg-12">
@@ -163,9 +211,9 @@ function FormularioEditarCursoVideoPreview() {
 
                                         {nombreVideoPreview!='' ?
                                         <div className="course-item-content-wrap">
-                                            <div className="custom-control custom-checkbox media media-card">                                                                                                                                                                                                                            
-                                                <div className="media-img" style={{ height: 'auto' }}>
-                                                    {coverVideoPreview && coverVideoPreview!='' ? <img src={`${urlBaseApi}/${coverVideoPreview}`} alt={tema.nombre} onClick={()=>{ setPopupVideo({...popUpVideo, mostrar:true, 'contenido':urlVideoPreview}); }} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={nombreVideoPreview} /> }
+                                            <div className="form-group media media-card">                                                                                                                                                                                                                
+                                                <div className="media-img" style={{ height: 'auto', width:'160px' }}>
+                                                    {coverVideoPreview && coverVideoPreview!='' ? <img src={`${urlBaseApi}/${coverVideoPreview}`} alt={nombreVideoPreview} onClick={()=>{ setPopupVistaPrevia({...popUpVistaPrevia, mostrar:true, 'contenido':urlVideoPreview}); }} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={nombreVideoPreview} /> }
                                                 </div>
                                             </div>
                                             <div className="course-item-content">
@@ -175,9 +223,10 @@ function FormularioEditarCursoVideoPreview() {
                                                 </div>
                                             </div>
                                         </div> : 'No tiene video de preview'}
-
+                                
                                         <div className="form-group">                                            
-                                            <button className="btn theme-btn" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>&nbsp;                                            
+                                            <button className="btn theme-btn" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>&nbsp;
+                                            {nombreVideoPreview!='' ? <button className="btn theme-btn" type="button" onClick={handleQuitarVideo} ><i className="la la-trash mr-2"></i>Quitar</button> : ''}
                                         </div>
 
                                         {erroresCampos['id_video_preview'].length > 0 && (<SpamError mensaje={erroresCampos['id_video_preview']} />)}

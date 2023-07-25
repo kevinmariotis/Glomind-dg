@@ -44,8 +44,8 @@ function HeaderTop() {
                         <ul className="generic-list-item d-flex flex-wrap align-items-center fs-14 border-left border-left-gray pl-3 ml-3">
                             {!authenticated && <li className="d-flex align-items-center pr-3 mr-3 border-right border-right-gray"><i className="la la-sign-in mr-1"></i><Link to="/login">Iniciar sesión</Link></li>}
                             {!authenticated && <li className="d-flex align-items-center"><i className="la la-user mr-1"></i><Link to="/signup">Registarme</Link></li>}
-                            {authenticated && <li className="d-flex align-items-center"><Link to="/cursos-matriculados">Mis cursos</Link></li>}
-                            {authenticated && <li className="d-flex align-items-center">&nbsp;&nbsp;|&nbsp;&nbsp;<i className="la la-user mr-1"></i><Link to="/cursos-matriculados">{nombres}</Link></li>}                            
+                            {authenticated && <li className="d-flex align-items-center"><Link to="/cursos/matriculados">Mis cursos</Link></li>}
+                            {authenticated && <li className="d-flex align-items-center">&nbsp;&nbsp;|&nbsp;&nbsp;<i className="la la-user mr-1"></i><Link to="/cursos/matriculados">{nombres}</Link></li>}                            
                         </ul>
                     </div>
                 </div>

@@ -16,6 +16,8 @@ import PaginaCrearCurso from './components/PaginaCrearCurso';
 import PaginaEditarCurso from './components/PaginaEditarCurso';
 import PaginaEditarContenidoCurso from './components/PaginaEditarContenidoCurso';
 import PaginaEditarCursoVideoPreview from './components/PaginaEditarCursoVideoPreview';
+import PaginaEditarCursoImagen from './components/PaginaEditarCursoImagen';
+import PaginaDashboardVideo from './components/PaginaDashboardVideo';
 
 import Pagina404 from './components/Pagina404';
 
@@ -44,24 +46,24 @@ const Rutas = () => {
                 <Route path="/cursos" element={<ProtectedRoute permiso={validarPermisos([20, 21, 22])} ><PaginaDashboardCursos/></ProtectedRoute>} />
                 <Route path="/curso/favoritos" element={<Pagina404/>} />
                 <Route path="/curso/comprados" element={<Pagina404/>} />          
-                <Route path="/curso/:url_amigable" element={<PaginaDetallesDeCurso/>} />                      
-                <Route path="/curso" element={<Pagina404/>} />
+                <Route path="/curso/:url_amigable" element={<PaginaDetallesDeCurso/>} />                                      
                 <Route path="/categoria/:url_amigable" element={<PaginaCategoriaNavegacion/>} />          
                 <Route path="/carrito/finalizadas" element={<Pagina404/>} />          
                 <Route path="/carrito/checkout" element={<ProtectedRoute permiso={authenticated} ><PaginaCheckout/></ProtectedRoute>} />          
                 <Route path="/carrito" element={<ProtectedRoute permiso={authenticated} ><PaginaCarrito/></ProtectedRoute>} />
                 <Route path="/factura/:id" element={<Pagina404/>} />          
                 <Route path="/video/:id" element={<Pagina404/>} />          
-                <Route path="/video" element={<Pagina404/>} />          
+                <Route path="/video" element={<ProtectedRoute permiso={validarPermisos([26, 27, 28])} ><PaginaDashboardVideo/></ProtectedRoute>} />          
                 <Route path="/examen/:id" element={<Pagina404/>} />          
                 <Route path="/examen" element={<Pagina404/>} />
                 <Route path="/permisos" element={<Pagina404/>} />
                 <Route path="/home" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardHome/></ProtectedRoute>} />
-                <Route path="/cursos-matriculados" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardEnroledCourses/></ProtectedRoute>} />
-                <Route path="/crear-curso" element={<ProtectedRoute permiso={validarPermisos([21])} ><PaginaCrearCurso/></ProtectedRoute>} />
-                <Route path="/editar-curso/:id" element={<ProtectedRoute permiso={validarPermisos([22])} ><PaginaEditarCurso/></ProtectedRoute>} />
-                <Route path="/editar-contenido-curso/:id" element={<ProtectedRoute permiso={validarPermisos([70])} ><PaginaEditarContenidoCurso/></ProtectedRoute>} />
-                <Route path="/editar-video-preview-curso/:id" element={<ProtectedRoute permiso={validarPermisos([67])} ><PaginaEditarCursoVideoPreview/></ProtectedRoute>} />
+                <Route path="/cursos/matriculados" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardEnroledCourses/></ProtectedRoute>} />
+                <Route path="/curso/crear" element={<ProtectedRoute permiso={validarPermisos([21])} ><PaginaCrearCurso/></ProtectedRoute>} />
+                <Route path="/curso/editar/:id" element={<ProtectedRoute permiso={validarPermisos([22])} ><PaginaEditarCurso/></ProtectedRoute>} />
+                <Route path="/curso/contenido/:id" element={<ProtectedRoute permiso={validarPermisos([70])} ><PaginaEditarContenidoCurso/></ProtectedRoute>} />
+                <Route path="/curso/videopreview/:id" element={<ProtectedRoute permiso={validarPermisos([67])} ><PaginaEditarCursoVideoPreview/></ProtectedRoute>} />
+                <Route path="/curso/imagen/:id" element={<ProtectedRoute permiso={validarPermisos([66])} ><PaginaEditarCursoImagen/></ProtectedRoute>} />                
                 <Route exact path="/" element={<Pagina404/>} />          
                 <Route path="*" component={<Pagina404/>} />
             </Routes>            

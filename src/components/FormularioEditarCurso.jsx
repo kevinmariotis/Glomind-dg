@@ -179,12 +179,14 @@ function FormularioEditarCurso() {
         const headers = {
             'Authorization':`Bearer ${jwt}`,
         }        
-        try {            
+        try { 
+            setMostrarSpinner(true);           
             const opciones = {
                 method: 'GET',
                 headers: headers,
             };            
             const response = await fetch(`${urlBaseApi}/api/curso/${id}`, opciones);            
+            setMostrarSpinner(false);
             if (response.ok){   
                 const datos = await response.json();   
                 setNombre(datos.curso.nombre);
@@ -259,12 +261,11 @@ function FormularioEditarCurso() {
                 method: 'GET',
                 headers: headers,
             };
-            setMostrarSpinner(true);
-            
+                        
             //buscamos los datos de los cursos a mostrar
-            setMostrarSpinner(true);
+            //setMostrarSpinner(true);
             const response2 = await fetch(`${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${id_padre}/1`, opciones);
-            setMostrarSpinner(false);
+            //setMostrarSpinner(false);
             if (response2.ok){   
                 const datos2 = await response2.json();   
                 setCategorias(datos2);                
@@ -340,9 +341,7 @@ function FormularioEditarCurso() {
             'examenes_solo_pago' : examenesSoloPago.toString(),
             'precio_adicional_examenes' : precioAdicionalExamenes.toString(),
             'certificado_solo_pago': certificadoSoloPago.toString(),
-            'precio_adicional_certificado': precioAdicionalCertificado.toString(),
-            'id_video_grande' : '0',
-            'id_video_pequeno' : '0',
+            'precio_adicional_certificado': precioAdicionalCertificado.toString(),            
             'estado' : estado.toString(),
             'desc_que_aprenderas' : queaprenderasx,
             'desc_requerimientos' : requerimientosx,

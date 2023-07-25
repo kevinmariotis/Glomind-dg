@@ -182,11 +182,11 @@ function DashboardHeader() {
                                                         {Object.keys(misCursos).length>0 && <ul className="cart-dropdown-menu after-none">
                                                             {Object.keys(misCursos).slice(0, 3).map((key) => (
                                                                 <li key={misCursos[key].id+'mis-cursos'} className="media media-card">
-                                                                    <Link to={`/vercurso/${misCursos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
+                                                                    <Link to={`/play/${misCursos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
                                                                         {misCursos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${misCursos[key].imagen_pequena}`} alt={misCursos[key].nombre} /> : <img src="images/course-no-image.png" alt={misCursos[key].nombre} /> }
                                                                     </Link>
                                                                     <div className="media-body">
-                                                                        <h5><Link to={`/vercurso/${misCursos[key].url_amigable}`}>{misCursos[key].nombre}</Link></h5>
+                                                                        <h5><Link to={`/play/${misCursos[key].url_amigable}`}>{misCursos[key].nombre}</Link></h5>
                                                                         <div className="skillbar-box pt-3">
                                                                             <div className="skillbar skillbar-skillbar" data-percent="36%">
                                                                                 <div className="skillbar-bar skillbar--bar bg-1" style={{width:`${misCursos[key].porcentaje_progreso}%`}}></div>
@@ -196,7 +196,7 @@ function DashboardHeader() {
                                                                 </li>
                                                              ))}                                                                 
                                                             {Object.keys(misCursos).length>3 && <li key="vertodoscursos" >
-                                                                <Link to="/cursos-matriculados" className="btn theme-btn w-100">Ver todos mis cursos <i className="la la-arrow-right icon ml-1"></i></Link>
+                                                                <Link to="/cursos/matriculados" className="btn theme-btn w-100">Ver todos mis cursos <i className="la la-arrow-right icon ml-1"></i></Link>
                                                             </li>}
                                                         </ul>}
                                                     </li>
@@ -251,8 +251,8 @@ function DashboardHeader() {
                                                             {Object.keys(favoritos).slice(0, 3).map((key) => (
                                                                 <li key={`´productos-favoritos-${key}`}>
                                                                     <div className="media media-card">
-                                                                        <Link to={`/curso/${favoritos[key].url_amigable}`} className="media-img">
-                                                                            <img className="mr-3" src={`${urlBase}/images/small-img.jpg`} alt="Cart image" />
+                                                                        <Link to={`/curso/${favoritos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>                                                                            
+                                                                            {favoritos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${favoritos[key].imagen_pequena}`} alt={favoritos[key].nombre} className="mr-3" /> : <img src={`${urlBase}/images/small-img.jpg`} alt={favoritos[key].nombre} className="mr-3" /> }
                                                                         </Link>
                                                                         <div className="media-body">
                                                                             <h5><Link to={`/curso/${favoritos[key].url_amigable}`}>{favoritos[key].nombre}</Link></h5>
@@ -366,7 +366,7 @@ function DashboardHeader() {
                                                             <li>
                                                                 <ul className="generic-list-item">
                                                                     <li>
-                                                                        <Link to="/cursos-matriculados">
+                                                                        <Link to="/cursos/matriculados">
                                                                             <i className="la la-file-video-o mr-1"></i> Mis cursos matriculados
                                                                         </Link>
                                                                     </li>
