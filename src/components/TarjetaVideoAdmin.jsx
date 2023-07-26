@@ -11,11 +11,13 @@ function TarjetaVideoAdmin(
         imagen_pequena='/images/img8.jpg',   
         duracion='00:00:00',
         videogrande='',
-        permisoEditar=false
+        ancho='',
+        alto='',
+        permisoEditar=false,
     }) {        
         const urlBase = import.meta.env.VITE_URL_BASE;    
         const urlBaseApi = import.meta.env.VITE_URL_BASE_API;    
-        const [popUp, setPopup] = useState({mostrar:false, titulo:'Vista previa', contenido:''});            
+        const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});            
         const [posterVistaPrevia, setPosterVistaPrevia] = useState('');    
 
         const handleFuncionCerrarPopUp = () => {        
@@ -54,7 +56,7 @@ function TarjetaVideoAdmin(
                             </div>
                             <div className="card-body">
                                 <h5 className="card-title"><Link to={`${urlBase}/video/${idvideo}`}>{nombre}</Link></h5>                                                        
-                                <p className="card-text lh-22 pt-2"><span>{duracion}</span></p>
+                                <p className="card-text lh-22 pt-2"><span>{duracion}</span> {(ancho!='' && alto!='') ? `(${ancho} x ${alto})`: ''}</p>                                
                                 <div className="rating-wrap d-flex align-items-center justify-content-between pt-3">                                
                                     {permisoEditar && <Link to={`${urlBase}/video/editar/${idvideo}`} className="btn theme-btn theme-btn-sm theme-btn-transparent" data-toggle="modal" data-target="#ratingModal"><i className="la la-gear"></i> Editar</Link>}
                                 </div>

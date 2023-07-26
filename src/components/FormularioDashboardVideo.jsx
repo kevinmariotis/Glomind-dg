@@ -93,7 +93,7 @@ function FormularioDashboardVideo() {
                         <h3 className="fs-22 font-weight-semi-bold">Videos del sistema</h3>                        
                     </div>                    
                     <div className="btn-box pt-30px">
-                        {permissions[21] && <Link to="/video/crear" className="btn theme-btn"><i className="la la-plus mr-2"></i> Subir nuevo video</Link>}
+                        {permissions[27] && <Link to="/video/crear" className="btn theme-btn"><i className="la la-plus mr-2"></i> Subir nuevo video</Link>}
                     </div>
                 </div>
                 <div className="row">
@@ -115,11 +115,13 @@ function FormularioDashboardVideo() {
                             imagen_pequena={videos[key].imagen_preview_pequena}
                             duracion={videos[key].duracion_hms}
                             videogrande={videos[key].video_grande}
-                            permisoEditar={permissions[28]}
+                            ancho={videos[key].ancho}
+                            alto={videos[key].alto}
+                            permisoEditar={permissions[28]}                            
                         />
                     ))}                       
                 </div>
-                <Paginador elemetosTotales={totalVideos} elementosPorPagina={15} paginaActual={paginaNavegacion} callbackCambioPagina={setPaginaNavegacion} />
+                <Paginador elemetosTotales={totalVideos} elementosPorPagina={16} paginaActual={paginaNavegacion} callbackCambioPagina={setPaginaNavegacion} />
                 <DashboardFooter />
             </div>
         </div>

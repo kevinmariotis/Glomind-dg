@@ -39,7 +39,7 @@ function TarjetaCursoAdmin(
                             <h5 className="card-title"><Link to={`${urlBase}/play/${url_amigable}`}>{nombre}</Link></h5>
                             {instructor!='' && <p className="card-text lh-22 pt-2"><Link to={`${urlBase}/instructor/${id_instructor}`}>{instructor}</Link><span>{descripcion_instructor!='' ? ', ':''} {descripcion_instructor}</span></p>}                            
                             <div className="my-course-progress-bar-wrap d-flex align-items-center pt-3">
-                                <p className="skillbar-title">Complete:</p>
+                                <p className="skillbar-title">Completado:</p>
                                 <div className="skillbar-box">
                                     <div className="skillbar skillbar-skillbar-2" data-percent={`${porcentaje_progreso}%`}>
                                         <div className="skillbar-bar skillbar--bar-2 bg-1" style={{width:`${porcentaje_progreso}%`}}></div>

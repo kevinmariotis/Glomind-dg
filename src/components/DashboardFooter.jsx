@@ -6,7 +6,7 @@ function DashboardFooter() {
   return (
     <div className="row align-items-center dashboard-copyright-content pb-4">
         <div className="col-lg-6">
-            <p className="copy-desc">&copy; 2023 MyEdu. Derechos reservados. por <a href="https://www.americana.edu.co/" target="_blank">Institución Universitaria Americana</a></p>
+            <p className="copy-desc">&copy; 2023 Prisma. Derechos reservados. por <a href="https://www.americana.edu.co/" target="_blank">Institución Universitaria Americana</a></p>
         </div>
         <div className="col-lg-6">
             <ul className="generic-list-item d-flex flex-wrap align-items-center fs-14 justify-content-end">

@@ -18,6 +18,8 @@ import PaginaEditarContenidoCurso from './components/PaginaEditarContenidoCurso'
 import PaginaEditarCursoVideoPreview from './components/PaginaEditarCursoVideoPreview';
 import PaginaEditarCursoImagen from './components/PaginaEditarCursoImagen';
 import PaginaDashboardVideo from './components/PaginaDashboardVideo';
+import PaginaCrearVideo from './components/PaginaCrearVideo';
+import PaginaEditarVideo from './components/PaginaEditarVideo';
 
 import Pagina404 from './components/Pagina404';
 
@@ -52,6 +54,8 @@ const Rutas = () => {
                 <Route path="/carrito/checkout" element={<ProtectedRoute permiso={authenticated} ><PaginaCheckout/></ProtectedRoute>} />          
                 <Route path="/carrito" element={<ProtectedRoute permiso={authenticated} ><PaginaCarrito/></ProtectedRoute>} />
                 <Route path="/factura/:id" element={<Pagina404/>} />          
+                <Route path="/video/crear" element={<ProtectedRoute permiso={validarPermisos([27])} ><PaginaCrearVideo/></ProtectedRoute>} />          
+                <Route path="/video/editar/:id" element={<ProtectedRoute permiso={validarPermisos([28])} ><PaginaEditarVideo/></ProtectedRoute>} />                          
                 <Route path="/video/:id" element={<Pagina404/>} />          
                 <Route path="/video" element={<ProtectedRoute permiso={validarPermisos([26, 27, 28])} ><PaginaDashboardVideo/></ProtectedRoute>} />          
                 <Route path="/examen/:id" element={<Pagina404/>} />          
