@@ -14,6 +14,7 @@ function TarjetaVideoAdmin(
         ancho='',
         alto='',
         permisoEditar=false,
+        asignado=-1,
     }) {        
         const urlBase = import.meta.env.VITE_URL_BASE;    
         const urlBaseApi = import.meta.env.VITE_URL_BASE_API;    
@@ -52,10 +53,13 @@ function TarjetaVideoAdmin(
                                             </g>
                                         </svg>
                                     </div>
+                                    <div className="course-badge-labels">
+                                        {asignado>0 && <div className="course-badge green">Asignado</div>}
+                                    </div>
                                 </div>
                             </div>
                             <div className="card-body">
-                                <h5 className="card-title"><Link to={`${urlBase}/video/${idvideo}`}>{nombre}</Link></h5>                                                        
+                                <h5 className="card-title"><div onClick={()=>{ setPosterVistaPrevia(imagen_grande); setPopup({...popUp, mostrar:true, 'contenido':videogrande}); }} style={{cursor:'pointer'}}>{nombre}</div></h5>                                                        
                                 <p className="card-text lh-22 pt-2"><span>{duracion}</span> {(ancho!='' && alto!='') ? `(${ancho} x ${alto})`: ''}</p>                                
                                 <div className="rating-wrap d-flex align-items-center justify-content-between pt-3">                                
                                     {permisoEditar && <Link to={`${urlBase}/video/editar/${idvideo}`} className="btn theme-btn theme-btn-sm theme-btn-transparent" data-toggle="modal" data-target="#ratingModal"><i className="la la-gear"></i> Editar</Link>}

@@ -72,7 +72,8 @@ function FormularioDashboardCursos() {
     };
 
     const nivelHabilidad = ['', 'Básico', 'Intermedio', 'Avanzado'];
-    
+    const permisoEditarCursoContenido = (permissions[29] || permissions[25] || permissions[24]) ? 1 : 0;
+
     return (
         <>
         {mostrarSpinner && <Spinner />}
@@ -155,7 +156,7 @@ function FormularioDashboardCursos() {
                                     <div className="card-action-wrap pl-3">
                                         <a href="course-details.html" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="View"><i className="la la-eye"></i></a>
                                         {permissions[22] ? <Link to={`/curso/editar/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
-                                        {permissions[70] ? <Link to={`/curso/contenido/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar contenido"><i className="la la-list-ol"></i></div></Link> : ''}
+                                        {permisoEditarCursoContenido ? <Link to={`/curso/contenido/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar contenido"><i className="la la-list-ol"></i></div></Link> : ''}
                                         {permissions[67] ? <Link to={`/curso/videopreview/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar video preview de curso"><i className="la la-video-camera"></i></div></Link> : ''}
                                         {permissions[66] ? <Link to={`/curso/imagen/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar imagen del curso"><i className="la la-image"></i></div></Link> : ''}
                                         <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">

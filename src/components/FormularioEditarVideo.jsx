@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { AuthContext } from '../AuthContext';
-import { mensajesDeError } from './utils';
+import { mensajesDeError, convertirSegundosAHorasMinutosSegundos } from './utils';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
@@ -19,26 +19,40 @@ function FormularioEditarVideo() {
     const [popUpSubida, setPopupSubida] = useState({mostrar:false, titulo:'', contenido:''});        
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [progress, setProgress] = useState(0);
+    const [deshabilitarRange, setDeshabilitarRange] = useState(false);    
+    const [rangoSeleccionado, setRangoSeleccionado] = useState(-1);    
+    const [rangoSeleccionadoConvertido, setRangoSeleccionadoConvertido] = useState('No cambiar la actual');
+    const [imagenMiniaturaSeleccionada, setImagenMiniaturaSeleccionada] = useState(`${urlBase}/images/course-no-image.png`);
+    const [mostrarVentanaCrearSegmento, setMostrarVentanaCrearSegmento] = useState(false);
+    const [tieneSegmentosDesactivados, setTieneSegmentosDesactivados] = useState(false);
     
+
     const [nombre, setNombre] = useState('');    
     const [descripcion, setDescripcion] = useState([]);
     const [duracion, setDuracion] = useState('');
+    const [duracionSegundos, setDuracionSegundos] = useState(0);
     const [videoActual, setVideoActual] = useState('');
     const [videoImagenVistaPrevia, setVideoImagenVistaPrevia] = useState('');
     const [popUpVistaPrevia, setPopupVistaPrevia] = useState({mostrar:false, titulo:'', contenido:''});    
-    
+    const [segmentos, setSegmentos] = useState({});    
+    const [nombreSegmento, setNombreSegmento] = useState('');    
+    const [segundoSegmento, setSegundoSegmento] = useState('');    
+    const [rangoSeleccionadoSegmento, setRangoSeleccionadoSegmento] = useState(0);
+    const [rangoSeleccionadoConvertidoSegmento, setRangoSeleccionadoConvertidoSegmento] = useState(0);
+
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
     
     useEffect(() => {           
         window.scrollTo(0, 0);
-        obtenerDatosServidor();        
+        obtenerDatosServidor();                
     }, []);
               
     //Estados de los errores de campos
     const camposErrores = {        
         'nombre':[],        
         'descripcion':[],        
-        'video_grande':[],                
+        'video_grande':[],
+        'segundo_inicio':[],        
     }    
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
@@ -59,7 +73,7 @@ function FormularioEditarVideo() {
           
     const handleNombreChange = (event) => { setNombre(event.target.value);    };  
     const handleDescripcionChange = (event) => { setDescripcion(event.target.value);    };      
-
+    
     const handleFuncionAceptarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };
@@ -70,6 +84,10 @@ function FormularioEditarVideo() {
     const onDrop = (acceptedFiles) => {
         // Lógica para procesar los archivos aceptados
         setSelectedVideo(acceptedFiles[0]);
+        setDeshabilitarRange(acceptedFiles[0]==null ? false : true);
+        setRangoSeleccionado(acceptedFiles[0]==null ? rangoSeleccionado : -1);
+        setRangoSeleccionadoConvertido(acceptedFiles[0]==null ? rangoSeleccionadoConvertido : 'No cambiar la actual');
+        setImagenMiniaturaSeleccionada(acceptedFiles[0]==null ? imagenMiniaturaSeleccionada : `${urlBase}/images/course-no-image.png`);
     };
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         onDrop,
@@ -104,6 +122,15 @@ function FormularioEditarVideo() {
                 setVideoActual(datos.video_grande);
                 setVideoImagenVistaPrevia(datos.imagen_preview_pequena);
                 setDuracion(datos.duracion_hms);
+                setDuracionSegundos(datos.duracion);                
+                setDeshabilitarRange(false);
+                setSegmentos(datos.segmentos);
+                setTieneSegmentosDesactivados(false);
+                datos.segmentos.forEach((element) => {
+                    if(element.estado==0){
+                        setTieneSegmentosDesactivados(true);                        
+                    }
+                }); 
             } else {                     
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
             }     
@@ -169,40 +196,199 @@ function FormularioEditarVideo() {
     const handleActualizarCurso = async () => {
         reiniciarErrorCampoGlobal();
         setProgress(0);
-        const raw = {
-            'nombre': nombre.toString(),            
-            'descripcion': descripcion.toString(),
-        };
-                            
-        const opciones = {
-            method: 'PUT',
-            headers: {
-                'Authorization' : `Bearer ${jwt}`
-            },
-            body: JSON.stringify(raw),
-        };
-        
-        try {                
-            const response = await fetch(`${urlBaseApi}/api/video/${id}`, opciones);            
-            const datos = await response.json();            
-            if (response.ok){   
+        if(permissions[28]==1){
+            const raw = {
+                'nombre': nombre.toString(),            
+                'descripcion': descripcion.toString(),
+            };
+                                
+            const opciones = {
+                method: 'PUT',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: JSON.stringify(raw),
+            };
+            
+            try {                
+                const response = await fetch(`${urlBaseApi}/api/video/${id}`, opciones);            
+                const datos = await response.json();            
+                if (response.ok){   
+                    if(rangoSeleccionado!=-1){
+                        handleActualizarMinuaturaSegundo();
+                    }else{    
+                        setPopupSubida({...popUpSubida, mostrar:false});
+                        setPopup({mostrar:true, titulo:'Listo', contenido:'Video actualizado satisfactoriamente'});                    
+                        obtenerDatosServidor();                                
+                        return;
+                    }                
+                } else {
+                    setPopupSubida({...popUpSubida, mostrar:false});     
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Revisar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
+                }                
+            }catch (error) {
                 setPopupSubida({...popUpSubida, mostrar:false});
-                setPopup({mostrar:true, titulo:'Listo', contenido:'Video actualizado satisfactoriamente'});                    
-                obtenerDatosServidor();                                
-                return;
-            } else {
-                setPopupSubida({...popUpSubida, mostrar:false});     
-                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Revisar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
-            }                
-        }catch (error) {
-            setPopupSubida({...popUpSubida, mostrar:false});
-            console.error('Error de conexión:', error);
+                console.error('Error de conexión:', error);
+            }
+        }else{
+            handleActualizarMinuaturaSegundo();
         }
+    }
 
+    const handleActualizarMinuaturaSegundo = async () => {
+        reiniciarErrorCampoGlobal();                      
+        if(rangoSeleccionado!=-1){
+            const opciones = {
+                method: 'GET',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                }
+            };
+            
+            try {                
+                const response = await fetch(`${urlBaseApi}/api/video/generarVistaPrevia/${id}/${rangoSeleccionado}`, opciones);
+                const datos = await response.json();            
+                if (response.ok){   
+                    setPopupSubida({...popUpSubida, mostrar:false});
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Video actualizado satisfactoriamente'});
+                    obtenerDatosServidor();                                                    
+                } else {
+                    setPopupSubida({...popUpSubida, mostrar:false});     
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Revisar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
+                }
+                return;
+            }catch (error) {
+                setPopupSubida({...popUpSubida, mostrar:false});
+                console.error('Error de conexión:', error);
+            }
+        }else{
+            setPopupSubida({...popUpSubida, mostrar:false});
+            setPopup({mostrar:true, titulo:'Listo', contenido:'Video actualizado satisfactoriamente'});
+            obtenerDatosServidor();
+        }
     }
 
     const handleFuncionCerrarPopUpVistaPrevia = () => {        
         setPopupVistaPrevia({...popUpVistaPrevia, mostrar:false});
+    };
+
+    const handleRangoSeleccionado = (event) => {                        
+        setRangoSeleccionado(event.target.value);
+        if(event.target.value!=-1){
+            const duracion_hms = convertirSegundosAHorasMinutosSegundos(event.target.value);
+            setRangoSeleccionadoConvertido(duracion_hms.horas+':'+duracion_hms.minutos+':'+duracion_hms.segundos);
+        }else{
+            setRangoSeleccionadoConvertido('No cambiar la actual');
+            setImagenMiniaturaSeleccionada(`${urlBase}/images/course-no-image.png`);
+        }                
+    };
+    
+    const handleRangoSoltado = async (event) => {                
+        //console.log("Rango soltado ", event.target.value);        
+        if(event.target.value!=-1){
+            setMostrarSpinner(true);
+            setDeshabilitarRange(true);
+            const headers = {
+                'Authorization':`Bearer ${jwt}`,
+            }        
+            try {            
+                const opciones = {
+                    method: 'GET',
+                    headers: headers,
+                };            
+                const response = await fetch(`${urlBaseApi}/api/video/generarVistaPrevia/${id}/${event.target.value}/true`, opciones);            
+                setMostrarSpinner(false);
+                setDeshabilitarRange(false);
+                const datos = await response.blob();                   
+                if (response.ok){ 
+                    const imageUrl = URL.createObjectURL(datos);                     
+                    setImagenMiniaturaSeleccionada(`${imageUrl}`);
+                } else {                     
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
+                }     
+                        
+            }catch(error){
+                // Manejar el caso de error en la solicitud
+                console.error('Error en la solicitud al servidor', error);
+            }
+        }
+    };
+    
+    const handleAgregarMarcador = (event) => { 
+        event.preventDefault();
+        reiniciarErrorCampoGlobal();     
+        setMostrarVentanaCrearSegmento(true);
+    };
+    const handleFuncionCerrarPopUpCrearSegmento = (event) => { 
+        setMostrarVentanaCrearSegmento(false);
+    };    
+    const handleRangoSeleccionadoSegmento = (event) => {                        
+        setRangoSeleccionadoSegmento(event.target.value);        
+        const duracion_hms = convertirSegundosAHorasMinutosSegundos(event.target.value);
+        setRangoSeleccionadoConvertidoSegmento(duracion_hms.horas+':'+duracion_hms.minutos+':'+duracion_hms.segundos);        
+    };
+    const handleNombreSegmentoChange = (event) => { setNombreSegmento(event.target.value);    };      
+    
+    const handleCrearSegmento = async (event) => {         
+        event.preventDefault();
+        setMostrarSpinner(true);        
+                
+        try {            
+            const formData = new FormData();        
+            formData.append('id_video', id);
+            formData.append('nombre', nombreSegmento);           
+            formData.append('segundo_inicio', rangoSeleccionadoSegmento);        
+
+            const opciones = {
+                method: 'POST',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: formData
+            };
+            const response = await fetch(`${urlBaseApi}/api/videosegmento`, opciones);            
+            setMostrarSpinner(false);            
+            const datos = await response.json();
+            if (response.ok){ 
+                setMostrarVentanaCrearSegmento(false);
+                setNombreSegmento('');
+                setRangoSeleccionadoSegmento(0);
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Marcador Creado.'});
+                obtenerDatosServidor();
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
+            }     
+                    
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+    const handleBorrarMarcador = async (id_video_segmento) => {         
+        setMostrarSpinner(true);        
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'DELETE',
+                headers: headers,
+            };            
+            const response = await fetch(`${urlBaseApi}/api/videosegmento/${id_video_segmento}`, opciones);            
+            setMostrarSpinner(false);            
+            const datos = await response.blob();                   
+            if (response.ok){ 
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Marcador borrado.'});
+                setSegmentos((prevData) => prevData.filter((item) => item.id !== id_video_segmento));                
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
+            }     
+                    
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
     };
 
     return (
@@ -228,7 +414,7 @@ function FormularioEditarVideo() {
             funcionCerrar={handleFuncionCerrarPopUp}
             textoCerrar="Aceptar"
         />    
-        <Modal show={popUpVistaPrevia.mostrar} size="xx" onHide={handleFuncionCerrarPopUpVistaPrevia} backdrop="static" keyboard={false} animation={false} centered>
+        <Modal show={popUpVistaPrevia.mostrar} size="xx" onHide={handleFuncionCerrarPopUpVistaPrevia} backdrop="static" keyboard={true} animation={false} centered>
             {(popUpVistaPrevia.titulo!='') && <Modal.Header>
                 <Modal.Title>{popUpVistaPrevia.titulo}</Modal.Title>                   
             </Modal.Header>}
@@ -240,14 +426,43 @@ function FormularioEditarVideo() {
             <Modal.Footer>                
                 <Button variant="secondary" onClick={handleFuncionCerrarPopUpVistaPrevia}>Cerrar</Button>
             </Modal.Footer>
-        </Modal> 
+        </Modal>
+        <Modal show={mostrarVentanaCrearSegmento} size="lg" onHide={handleFuncionCerrarPopUpCrearSegmento} backdrop="static" keyboard={true} animation={false} centered>
+            <Modal.Header>
+                <Modal.Title>Crear Marcador</Modal.Title>                   
+            </Modal.Header>
+            <Modal.Body>   
+                <div className="row">                                
+                    <div className="col-lg-12">
+                        <div className="form-group">
+                            <label className="label-text">Nombre</label>
+                            <input onChange={handleNombreSegmentoChange} className="form-control form--control pl-3" type="text" name="nombre_segmento" maxLength="64" value={nombreSegmento} placeholder="Ej: Qué es el dom?" />
+                            {erroresCampos['nombre'].length > 0 && (<SpamError mensaje={erroresCampos['nombre']} />)}
+                        </div>
+                    </div>                                
+                    <div className="col-lg-12">
+                        <div className="form-group">
+                            <label className="label-text">Seleccione el minuto/segundo de inicio del marcador</label>
+                            <div className="course-item-content-wrap"></div>
+                            <p className="course-item-meta"><i className="la la-play-circle"></i>{rangoSeleccionadoConvertidoSegmento}</p>
+                            <input type="range" min="0" max={duracionSegundos} value={rangoSeleccionadoSegmento} onChange={handleRangoSeleccionadoSegmento} className="form-range" id="customRange1" style={{width:'100%'}}></input>
+                            {erroresCampos['segundo_inicio'].length > 0 && (<SpamError mensaje={erroresCampos['segundo_inicio']} />)}
+                        </div>
+                    </div>                                
+                </div>
+            </Modal.Body>
+            <Modal.Footer>                
+                <Button variant="primary" onClick={handleCrearSegmento}>Guardar</Button>
+                <Button variant="secondary" onClick={handleFuncionCerrarPopUpCrearSegmento}>Cancelar</Button>
+            </Modal.Footer>
+        </Modal>
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
                     <h3 className="fs-22 font-weight-semi-bold">Editar video</h3>                    
                 </div>
                 <form action="#">                      
-                    <div className="card card-item">
+                    {permissions[28] ? <div className="card card-item">
                         <div className="card-body">
                             <h3 className="fs-22 font-weight-semi-bold pb-2">General</h3>
                             <div className="divider"><span></span></div>
@@ -265,11 +480,11 @@ function FormularioEditarVideo() {
                                         <textarea value={descripcion} onChange={handleDescripcionChange} className="form-control form--control user-text-editor pl-3" name="descripcion" ></textarea>
                                         {erroresCampos['descripcion'].length > 0 && (<SpamError mensaje={erroresCampos['descripcion']} />)}
                                     </div>
-                                </div>
+                                </div>                                
                             </div>
                         </div>
-                    </div>        
-                    <div className="card card-item">
+                    </div> : ''} 
+                    {permissions[71] ? <div className="card card-item">
                         <div className="card-body">
                             <h3 className="fs-22 font-weight-semi-bold pb-2">Adjuntar video</h3>
                             <div className="divider"><span></span></div>
@@ -290,11 +505,9 @@ function FormularioEditarVideo() {
                                                 </div>
                                             </div> : 'No tiene video de preview'
                                         }
-
-
                                         <div {...getRootProps()}>                                            
                                             <input {...getInputProps()} className="multi file-upload-input" />
-                                            <span className="file-upload-text"><i className="la la-cloud-upload mr-2 fs-18"></i>Seleccona o arrastra el nuevo video que reemplaza a este aquí (opcional).</span>
+                                            <span className="file-upload-text"><i className="la la-cloud-upload mr-2 fs-18"></i>Selecciona o arrastra el nuevo video que reemplaza a este aquí (opcional).</span>
                                         </div>
                                         <ul>{fileList}</ul>                                        
                                         {erroresCampos['video_grande'].length > 0 && (<SpamError mensaje={erroresCampos['video_grande']} />)}                                                                                                                
@@ -302,12 +515,90 @@ function FormularioEditarVideo() {
                                 </div>
                             </div>
                         </div>
-                    </div>                   
+                    </div>: ''}                   
+                    {permissions[28] ? <div className="card card-item">
+                        <div className="card-body">
+                            <h3 className="fs-22 font-weight-semi-bold pb-2">Marcadores</h3>
+                            <div className="divider"><span></span></div>
+                            <div className="row">                                
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        {tieneSegmentosDesactivados && <span className="badge badge-warning">Los marcadores se desactivaron debido a que el video fue reemplazado por otro y posiblemente los marcadores no concidan, por favor revisar los marcadores.</span>}
+                                        <div className="table-responsive">
+                                            <table className="table generic-table">
+                                                <thead>
+                                                <tr>                                                    
+                                                    <th scope="col">Inicio tiempo</th>
+                                                    <th scope="col">Nombre</th>
+                                                    <th scope="col">Estado</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody >
+                                                    {Object.keys(segmentos).map((key) => (
+                                                        <tr key={`segmento-seleccion-${segmentos[key].id}`}>                                                            
+                                                            <td>
+                                                                {segmentos[key].segundo_inicio_hms}
+                                                            </td>
+                                                            <td>
+                                                                {segmentos[key].nombre}
+                                                            </td>                                                            
+                                                            <td>
+                                                                {(segmentos[key].estado==1) ? 'Activado' : <span className="badge badge-danger">Desactivado</span>}
+                                                                {segmentos[key].estado==0 ? <>&nbsp;<button type="button"  onClick={() => { handleBorrarMarcador(segmentos[key].id) } } className="icon-element icon-element-xs shadow-sm border-0" data-toggle="tooltip" data-placement="top" title="Activar"><i className="la la-check"></i></button></> : ''}
+                                                            </td>                                                            
+                                                            <td>
+                                                                <button type="button"  onClick={() => { handleBorrarMarcador(segmentos[key].id) } } className="icon-element icon-element-xs shadow-sm border-0" data-toggle="tooltip" data-placement="top" title="Seleccionar">
+                                                                    <i className="la la-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))}                                
+                                                </tbody>
+                                            </table>                            
+                                        </div>
+                                        <div className="course-submit-btn-box pb-4">
+                                            <button className="btn theme-btn" type="submit" onClick={event=>{ handleAgregarMarcador(event); }}><i className="la la-plus mr-2"></i>Agregar marcador</button>
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> : ''}
+                    {permissions[72] ? <div className="card card-item">
+                        <div className="card-body">
+                            <h3 className="fs-22 font-weight-semi-bold pb-2">Imagen miniatura</h3>
+                            <div className="divider"><span></span></div>
+                            <div className="row">                                                                
+                                <div className="col-lg-12">
+                                    <div className="form-group mb-0">                                        
+                                        <label htmlFor="customRange1" className="form-label">Escoger imagen de miniatura</label>
+                                        <div className="course-item-content-wrap">
+                                            <div className="form-group media media-card">                                                                                                                                                                                                                
+                                                <div className="media-img" style={{ height: 'auto', width:'160px' }}>
+                                                    <img src={`${imagenMiniaturaSeleccionada}`} alt={nombre} />
+                                                </div>
+                                            </div>
+                                            <div className="course-item-content">                                                    
+                                                <div className="courser-item-meta-wrap">
+                                                    <p className="course-item-meta"><i className="la la-play-circle"></i>{rangoSeleccionadoConvertido}</p>
+                                                </div>
+                                            </div>
+
+                                        </div>    
+                                        <input disabled={deshabilitarRange} type="range" min="-1" max={duracionSegundos-1} value={rangoSeleccionado} onChange={handleRangoSeleccionado} onMouseUp={handleRangoSoltado} onTouchEnd={handleRangoSoltado} onKeyUp={handleRangoSoltado} className="form-range" id="customRange1" style={{width:'50%'}}></input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>: ''}                         
                     <div className="course-submit-btn-box pb-4">
                         <button className="btn theme-btn" type="submit" onClick={handleSubirVideo}>Guardar cambios</button>
                     </div>
                 </form>
-                <DashboardFooter />
+                <DashboardFooter />                
             </div>
         </div>
         </>

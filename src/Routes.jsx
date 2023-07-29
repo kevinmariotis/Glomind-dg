@@ -55,7 +55,7 @@ const Rutas = () => {
                 <Route path="/carrito" element={<ProtectedRoute permiso={authenticated} ><PaginaCarrito/></ProtectedRoute>} />
                 <Route path="/factura/:id" element={<Pagina404/>} />          
                 <Route path="/video/crear" element={<ProtectedRoute permiso={validarPermisos([27])} ><PaginaCrearVideo/></ProtectedRoute>} />          
-                <Route path="/video/editar/:id" element={<ProtectedRoute permiso={validarPermisos([28])} ><PaginaEditarVideo/></ProtectedRoute>} />                          
+                <Route path="/video/editar/:id" element={<ProtectedRoute permiso={validarPermisos([28, 71, 72])} ><PaginaEditarVideo/></ProtectedRoute>} />                          
                 <Route path="/video/:id" element={<Pagina404/>} />          
                 <Route path="/video" element={<ProtectedRoute permiso={validarPermisos([26, 27, 28])} ><PaginaDashboardVideo/></ProtectedRoute>} />          
                 <Route path="/examen/:id" element={<Pagina404/>} />          
@@ -65,7 +65,7 @@ const Rutas = () => {
                 <Route path="/cursos/matriculados" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardEnroledCourses/></ProtectedRoute>} />
                 <Route path="/curso/crear" element={<ProtectedRoute permiso={validarPermisos([21])} ><PaginaCrearCurso/></ProtectedRoute>} />
                 <Route path="/curso/editar/:id" element={<ProtectedRoute permiso={validarPermisos([22])} ><PaginaEditarCurso/></ProtectedRoute>} />
-                <Route path="/curso/contenido/:id" element={<ProtectedRoute permiso={validarPermisos([70])} ><PaginaEditarContenidoCurso/></ProtectedRoute>} />
+                <Route path="/curso/contenido/:id" element={<ProtectedRoute permiso={validarPermisos([29, 25, 24])} ><PaginaEditarContenidoCurso/></ProtectedRoute>} />
                 <Route path="/curso/videopreview/:id" element={<ProtectedRoute permiso={validarPermisos([67])} ><PaginaEditarCursoVideoPreview/></ProtectedRoute>} />
                 <Route path="/curso/imagen/:id" element={<ProtectedRoute permiso={validarPermisos([66])} ><PaginaEditarCursoImagen/></ProtectedRoute>} />                
                 <Route exact path="/" element={<Pagina404/>} />          

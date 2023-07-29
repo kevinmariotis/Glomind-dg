@@ -494,9 +494,9 @@ function FormularioEditarContenidoCurso() {
                                                 </li>
                                              )}
                                         </ul>                                          
-                                        <div className="course-submit-btn-box pb-4">
+                                        {permissions[29] ? <div className="course-submit-btn-box pb-4">
                                             <button className="btn theme-btn" type="submit" onClick={event=>{ handleAgregarContenido(event, contenido[key].id_categoria); }}><i className="la la-plus mr-2"></i>Agregar contenido</button>
-                                        </div>
+                                        </div>: ''}
                                     </div>                                    
                                 </div>
                             </div>

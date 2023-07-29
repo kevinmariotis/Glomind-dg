@@ -67,9 +67,9 @@ function FormularioDashboardVideo() {
             console.error('Error en la solicitud al servidor', error);
         }
     };
-
-    const nivelHabilidad = ['', 'Básico', 'Intermedio', 'Avanzado'];
     
+    const permisoEditar = (permissions[28] || permissions[71] || permissions[72]) ? 1 : 0;
+
     return (
         <>
         {mostrarSpinner && <Spinner />}
@@ -117,7 +117,8 @@ function FormularioDashboardVideo() {
                             videogrande={videos[key].video_grande}
                             ancho={videos[key].ancho}
                             alto={videos[key].alto}
-                            permisoEditar={permissions[28]}                            
+                            permisoEditar={permisoEditar}                            
+                            asignado={videos[key].asignado} 
                         />
                     ))}                       
                 </div>

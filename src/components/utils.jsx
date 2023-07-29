@@ -47,3 +47,19 @@
         }
 
     };
+
+    export const convertirSegundosAHorasMinutosSegundos = (segundos) => {
+        const horas = Math.floor(segundos / 3600);
+        const minutos = Math.floor((segundos % 3600) / 60);
+        const segundosRestantes = segundos % 60;
+      
+        // Función para formatear los números a dos dígitos con cero antepuesto
+        const formatearNumero = (numero) => numero.toString().padStart(2, '0');
+      
+        return {
+            horas: formatearNumero(horas),
+            minutos: formatearNumero(minutos),
+            segundos: formatearNumero(segundosRestantes),
+        };
+    };
+      
