@@ -446,7 +446,7 @@ function FormularioEditarContenidoCurso() {
                         <div className="form-group">
                             <label className="label-text">Qué deseas agregar?</label>  <br/>
                             <button className="btn theme-btn" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>&nbsp;
-                            <button className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Examen</button>                            
+                            {permissions[46] ? <Link to={`${urlBase}/examen/crear/${id}/${idSeccionAgregarContenido}`} className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Examen</Link> : ''}
                         </div>
                     </div>
                     <div className="modal-footer border-top-gray">                        
@@ -471,29 +471,51 @@ function FormularioEditarContenidoCurso() {
                                 <div className="divider"><span></span></div>
                                 <div className="row">                                                                
                                     <div className="col-lg-12">
-                                        <ul className="curriculum-sidebar-list">
-                                            {contenido[key].curso_contenido.map((tema) => 
-                                                <li className="course-item-link active" key={`cotenido-${tema.id_contenido}`}>
-                                                    <div className="course-item-content-wrap">
-                                                        <div className="custom-control custom-checkbox media media-card">                                                                                                                                                                            
-                                                            {tema.tipo_contenido==1 ? 
-                                                                <div className="media-img" style={{ height: 'auto' }}>
-                                                                    {tema.imagen_preview_pequena && tema.imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${tema.imagen_preview_pequena}`} alt={tema.nombre} onClick={()=>{ setPosterVistaPrevia(tema.imagen_preview_pequena); setPopupVideo({...popUpVideo, mostrar:true, 'contenido':tema.video_grande}); }} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={tema.nombre} /> }
-                                                                </div> : ''}                                                                            
-                                                        </div>
-                                                        <div className="course-item-content">
-                                                            <h4 className="fs-15">{tema.nombre}</h4>
-                                                            <div className="courser-item-meta-wrap">
-                                                                {tema.tipo_contenido==1 ? <p className="course-item-meta"><i className="la la-play-circle"></i>{tema.cantidad_horas_de_video}</p> : ''}
-                                                            </div>
-                                                            {permissions[29] ? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Subir" onClick={event => handleMoverContenido(event, tema.id_contenido, '1')} ><i className="la la-sort-up"></i></a> : ''}
-                                                            {permissions[29] ? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Bajar" onClick={event => handleMoverContenido(event, tema.id_contenido, '2')}><i className="la la-sort-down"></i></a> : ''}
-                                                            {permissions[29] ? <div onClick={event => { handleBorrarContenido(event, tema.id_contenido); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                             )}
-                                        </ul>                                          
+                                        <div className="table-responsive">
+                                            <table className="table generic-table">
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col">Vista Previa</th>
+                                                    <th scope="col">Nombre</th>
+                                                    <th scope="col">Porcentaje en curso</th>
+                                                    <th scope="col">Descripción</th>                                
+                                                    <th scope="col"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody >
+                                                    {contenido[key].curso_contenido.map((tema) => 
+                                                        <tr key={`contenido-x-${key}`}>
+                                                            <th scope="row">
+                                                                <div className="custom-control custom-checkbox media media-card">                                                                                                                                                                            
+                                                                    {tema.tipo_contenido==1 ? 
+                                                                        <div className="media-img" style={{ height: 'auto' }}>
+                                                                            {tema.imagen_preview_pequena && tema.imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${tema.imagen_preview_pequena}`} alt={tema.nombre} onClick={()=>{ setPosterVistaPrevia(tema.imagen_preview_pequena); setPopupVideo({...popUpVideo, mostrar:true, 'contenido':tema.video_grande}); }} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={tema.nombre} /> }
+                                                                        </div> : ''}                                                                            
+                                                                </div>
+                                                            </th>
+                                                            <td>
+                                                                {tema.nombre}
+                                                            </td>
+                                                            <td>
+                                                                {tema.porcentaje_en_total_curso!=0 ? `${tema.porcentaje_en_total_curso}%` : ''}
+                                                            </td>
+                                                            <td>
+                                                                <div className="courser-item-meta-wrap">
+                                                                    {tema.tipo_contenido==1 ? <p className="course-item-meta"><i className="la la-play-circle"></i>{tema.cantidad_horas_de_video}</p> : ''}
+                                                                </div>
+                                                            </td>                                        
+                                                            <td>                                                                
+                                                                {permissions[29] ? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Subir" onClick={event => handleMoverContenido(event, tema.id_contenido, '1')} title="Subir"><i className="la la-sort-up"></i></a> : ''}
+                                                                {permissions[29] ? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Bajar" onClick={event => handleMoverContenido(event, tema.id_contenido, '2')} title="Bajar"><i className="la la-sort-down"></i></a> : ''}
+                                                                {permissions[29] ? <div onClick={event => { handleBorrarContenido(event, tema.id_contenido); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}
+
+                                                                {(tema.tipo_contenido==2 && permissions[47]) ? <Link to={`/examen/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
+                                                            </td>
+                                                        </tr>
+                                                    )}                                
+                                                </tbody>
+                                            </table>                            
+                                        </div>                            
                                         {permissions[29] ? <div className="course-submit-btn-box pb-4">
                                             <button className="btn theme-btn" type="submit" onClick={event=>{ handleAgregarContenido(event, contenido[key].id_categoria); }}><i className="la la-plus mr-2"></i>Agregar contenido</button>
                                         </div>: ''}

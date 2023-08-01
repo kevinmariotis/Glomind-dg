@@ -15,6 +15,7 @@ function TarjetaVideoAdmin(
         alto='',
         permisoEditar=false,
         asignado=-1,
+        segmentos=0,
     }) {        
         const urlBase = import.meta.env.VITE_URL_BASE;    
         const urlBaseApi = import.meta.env.VITE_URL_BASE_API;    
@@ -55,6 +56,7 @@ function TarjetaVideoAdmin(
                                     </div>
                                     <div className="course-badge-labels">
                                         {asignado>0 && <div className="course-badge green">Asignado</div>}
+                                        {segmentos>0 && <div className="course-badge blue">Marcadores</div>}
                                     </div>
                                 </div>
                             </div>

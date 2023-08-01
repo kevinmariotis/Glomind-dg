@@ -119,6 +119,7 @@ function FormularioDashboardVideo() {
                             alto={videos[key].alto}
                             permisoEditar={permisoEditar}                            
                             asignado={videos[key].asignado} 
+                            segmentos={videos[key].segmentos} 
                         />
                     ))}                       
                 </div>

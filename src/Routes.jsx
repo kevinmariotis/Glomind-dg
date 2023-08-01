@@ -20,6 +20,8 @@ import PaginaEditarCursoImagen from './components/PaginaEditarCursoImagen';
 import PaginaDashboardVideo from './components/PaginaDashboardVideo';
 import PaginaCrearVideo from './components/PaginaCrearVideo';
 import PaginaEditarVideo from './components/PaginaEditarVideo';
+import PaginaCrearExamen from './components/PaginaCrearExamen';
+import PaginaEditarExamen from './components/PaginaEditarExamen';
 
 import Pagina404 from './components/Pagina404';
 
@@ -55,10 +57,12 @@ const Rutas = () => {
                 <Route path="/carrito" element={<ProtectedRoute permiso={authenticated} ><PaginaCarrito/></ProtectedRoute>} />
                 <Route path="/factura/:id" element={<Pagina404/>} />          
                 <Route path="/video/crear" element={<ProtectedRoute permiso={validarPermisos([27])} ><PaginaCrearVideo/></ProtectedRoute>} />          
-                <Route path="/video/editar/:id" element={<ProtectedRoute permiso={validarPermisos([28, 71, 72])} ><PaginaEditarVideo/></ProtectedRoute>} />                          
+                <Route path="/video/editar/:id" element={<ProtectedRoute permiso={validarPermisos([28, 70, 71, 72])} ><PaginaEditarVideo/></ProtectedRoute>} />                          
                 <Route path="/video/:id" element={<Pagina404/>} />          
                 <Route path="/video" element={<ProtectedRoute permiso={validarPermisos([26, 27, 28])} ><PaginaDashboardVideo/></ProtectedRoute>} />          
-                <Route path="/examen/:id" element={<Pagina404/>} />          
+                <Route path="/examen/crear/:id_curso?/:id_categoria?" element={<ProtectedRoute permiso={validarPermisos([46])} ><PaginaCrearExamen/></ProtectedRoute>} />
+                <Route path="/examen/editar/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamen/></ProtectedRoute>} />
+                <Route path="/examen/:id" element={<Pagina404/>} />                          
                 <Route path="/examen" element={<Pagina404/>} />
                 <Route path="/permisos" element={<Pagina404/>} />
                 <Route path="/home" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardHome/></ProtectedRoute>} />

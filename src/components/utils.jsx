@@ -40,7 +40,7 @@
             //recopilamos y mostramos cualquien mensaje de error que haya llegado en un popup            
             Object.entries(errores).forEach(([clave, mensajes]) => {                                        
                 mensajes.forEach((mensaje) => {
-                    setPopPup({mostrar:true, titulo:'Mensaje', contenido:mensaje+'.'});
+                    setPopPup({mostrar:true, titulo:'Mensaje', contenido:mensaje});
                 });
             });    
             //fin de recopirar y mostrar cualquier mensaje de error
@@ -52,8 +52,7 @@
         const horas = Math.floor(segundos / 3600);
         const minutos = Math.floor((segundos % 3600) / 60);
         const segundosRestantes = segundos % 60;
-      
-        // Función para formatear los números a dos dígitos con cero antepuesto
+              
         const formatearNumero = (numero) => numero.toString().padStart(2, '0');
       
         return {
@@ -62,4 +61,25 @@
             segundos: formatearNumero(segundosRestantes),
         };
     };
+
+    /*
+        Convierte horas y minutos a segundos
+    */
+    export const calcularSegundosDeHorasMinutos = (horas, minutos) => {   
+        const horas_int = parseInt(horas);
+        const minutos_int = parseInt(minutos);        
+        
+        if (!Number.isInteger(horas_int) || !Number.isInteger(minutos_int) || horas_int < 0 || minutos_int < 0) {
+            //throw new Error('Los parámetros deben ser números enteros positivos.');
+            return -1;
+        }else{
+            
+            const segundosHoras = horas_int * 3600; // 1 hora = 3600 segundos
+            const segundosMinutos = minutos_int * 60; // 1 minuto = 60 segundos
+                
+            const totalSegundos = segundosHoras + segundosMinutos;
+    
+            return totalSegundos;
+        }
+    }
       

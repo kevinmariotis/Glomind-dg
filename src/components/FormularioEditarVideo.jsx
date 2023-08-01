@@ -25,6 +25,7 @@ function FormularioEditarVideo() {
     const [imagenMiniaturaSeleccionada, setImagenMiniaturaSeleccionada] = useState(`${urlBase}/images/course-no-image.png`);
     const [mostrarVentanaCrearSegmento, setMostrarVentanaCrearSegmento] = useState(false);
     const [tieneSegmentosDesactivados, setTieneSegmentosDesactivados] = useState(false);
+    const [editarMarcador, setEditarMarcador] = useState(0);
     
 
     const [nombre, setNombre] = useState('');    
@@ -318,6 +319,10 @@ function FormularioEditarVideo() {
         event.preventDefault();
         reiniciarErrorCampoGlobal();     
         setMostrarVentanaCrearSegmento(true);
+        setEditarMarcador(0);
+        setNombreSegmento('');
+        setRangoSeleccionadoSegmento(0);
+        setRangoSeleccionadoConvertidoSegmento('00:00:00');
     };
     const handleFuncionCerrarPopUpCrearSegmento = (event) => { 
         setMostrarVentanaCrearSegmento(false);
@@ -325,35 +330,84 @@ function FormularioEditarVideo() {
     const handleRangoSeleccionadoSegmento = (event) => {                        
         setRangoSeleccionadoSegmento(event.target.value);        
         const duracion_hms = convertirSegundosAHorasMinutosSegundos(event.target.value);
-        setRangoSeleccionadoConvertidoSegmento(duracion_hms.horas+':'+duracion_hms.minutos+':'+duracion_hms.segundos);        
+        setRangoSeleccionadoConvertidoSegmento(duracion_hms.horas+':'+duracion_hms.minutos+':'+duracion_hms.segundos);
     };
     const handleNombreSegmentoChange = (event) => { setNombreSegmento(event.target.value);    };      
-    
+        
+    const handleEditarMarcador = (id_segmento, nombre, segundo_inicio) => {             
+        reiniciarErrorCampoGlobal();     
+        setMostrarVentanaCrearSegmento(true);
+        setEditarMarcador(id_segmento);
+        setNombreSegmento(nombre);
+        setRangoSeleccionadoSegmento(segundo_inicio.toString());
+        const duracion_hms = convertirSegundosAHorasMinutosSegundos(segundo_inicio);
+        setRangoSeleccionadoConvertidoSegmento(duracion_hms.horas+':'+duracion_hms.minutos+':'+duracion_hms.segundos);
+    };      
+
     const handleCrearSegmento = async (event) => {         
         event.preventDefault();
+        if(editarMarcador==0){
+            setMostrarSpinner(true);        
+                    
+            try {            
+                const formData = new FormData();        
+                formData.append('id_video', id);
+                formData.append('nombre', nombreSegmento);           
+                formData.append('segundo_inicio', rangoSeleccionadoSegmento);        
+
+                const opciones = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization' : `Bearer ${jwt}`
+                    },
+                    body: formData
+                };
+                const response = await fetch(`${urlBaseApi}/api/videosegmento`, opciones);            
+                setMostrarSpinner(false);            
+                const datos = await response.json();
+                if (response.ok){ 
+                    setMostrarVentanaCrearSegmento(false);
+                    setNombreSegmento('');
+                    setRangoSeleccionadoSegmento(0);
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Marcador Creado.'});
+                    obtenerDatosServidor();
+                } else {                     
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
+                }     
+                        
+            }catch(error){
+                // Manejar el caso de error en la solicitud
+                console.error('Error en la solicitud al servidor', error);
+            }
+        }else{
+            handleEditarSegmento();
+        }
+    };
+
+    const handleEditarSegmento = async () => {
         setMostrarSpinner(true);        
                 
         try {            
-            const formData = new FormData();        
-            formData.append('id_video', id);
-            formData.append('nombre', nombreSegmento);           
-            formData.append('segundo_inicio', rangoSeleccionadoSegmento);        
-
+            const raw = {
+                'nombre' : nombreSegmento,                        
+                'segundo_inicio' : rangoSeleccionadoSegmento,
+            }; 
             const opciones = {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Authorization' : `Bearer ${jwt}`
                 },
-                body: formData
+                body: JSON.stringify(raw),
             };
-            const response = await fetch(`${urlBaseApi}/api/videosegmento`, opciones);            
+            
+            const response = await fetch(`${urlBaseApi}/api/videosegmento/${editarMarcador}`, opciones);            
             setMostrarSpinner(false);            
             const datos = await response.json();
             if (response.ok){ 
                 setMostrarVentanaCrearSegmento(false);
                 setNombreSegmento('');
                 setRangoSeleccionadoSegmento(0);
-                setPopup({mostrar:true, titulo:'Listo', contenido:'Marcador Creado.'});
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Marcador Guardado.'});
                 obtenerDatosServidor();
             } else {                     
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
@@ -429,7 +483,7 @@ function FormularioEditarVideo() {
         </Modal>
         <Modal show={mostrarVentanaCrearSegmento} size="lg" onHide={handleFuncionCerrarPopUpCrearSegmento} backdrop="static" keyboard={true} animation={false} centered>
             <Modal.Header>
-                <Modal.Title>Crear Marcador</Modal.Title>                   
+                <Modal.Title>{editarMarcador==0 ? 'Crear Marcador' : 'Editar Marcador'}</Modal.Title>                   
             </Modal.Header>
             <Modal.Body>   
                 <div className="row">                                
@@ -516,7 +570,7 @@ function FormularioEditarVideo() {
                             </div>
                         </div>
                     </div>: ''}                   
-                    {permissions[28] ? <div className="card card-item">
+                    {permissions[70] ? <div className="card card-item">
                         <div className="card-body">
                             <h3 className="fs-22 font-weight-semi-bold pb-2">Marcadores</h3>
                             <div className="divider"><span></span></div>
@@ -545,7 +599,7 @@ function FormularioEditarVideo() {
                                                             </td>                                                            
                                                             <td>
                                                                 {(segmentos[key].estado==1) ? 'Activado' : <span className="badge badge-danger">Desactivado</span>}
-                                                                {segmentos[key].estado==0 ? <>&nbsp;<button type="button"  onClick={() => { handleBorrarMarcador(segmentos[key].id) } } className="icon-element icon-element-xs shadow-sm border-0" data-toggle="tooltip" data-placement="top" title="Activar"><i className="la la-check"></i></button></> : ''}
+                                                                &nbsp;<button type="button"  onClick={() => { handleEditarMarcador(segmentos[key].id, segmentos[key].nombre, segmentos[key].segundo_inicio) } } className="icon-element icon-element-xs shadow-sm border-0" data-toggle="tooltip" data-placement="top" title="Activar"><i className="la la-gear"></i></button>
                                                             </td>                                                            
                                                             <td>
                                                                 <button type="button"  onClick={() => { handleBorrarMarcador(segmentos[key].id) } } className="icon-element icon-element-xs shadow-sm border-0" data-toggle="tooltip" data-placement="top" title="Seleccionar">
