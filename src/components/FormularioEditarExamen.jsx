@@ -89,11 +89,11 @@ function FormularioEditarExamen() {
         setPopup({...popUp, mostrar:false});
     };
     
-    const handleFuncionAceptarPopUpCreado = () => { 
+    const handleFuncionHuecoPreguntas = () => { 
         if (typeof id_curso !== 'undefined') {
-            navigate(`/examen/editarpreguntas/${idExamenCreado}/${id_curso}`); 
+            navigate(`/examen/huecopreguntas/${id}/${id_curso}`); 
         }else{
-            navigate(`/examen/editarpreguntas/${idExamenCreado}`); 
+            navigate(`/examen/huecopreguntas/${id}`); 
         }               
     };
 
@@ -214,11 +214,10 @@ function FormularioEditarExamen() {
             <div className="container-fluid">
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
                     <div className="media media-card align-items-center">                        
-                        <h3 className="fs-22 font-weight-semi-bold">Editar examen</h3>                        
-                    </div>                    
-                    <div className="btn-box pt-30px">
                     {typeof id_curso !== 'undefined' ? <Link to={`/curso/contenido/${id_curso}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link> : ''}
-                    &nbsp;<Link to={`/examen/editarpreguntas/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar preguntas"><i className="la la-list-ol"></i></div></Link>
+                        &nbsp;<h3 className="fs-22 font-weight-semi-bold">Editar examen</h3>                        
+                    </div>                    
+                    <div className="btn-box pt-30px">                                        
                     </div>
                 </div>                
                 <form action="#">                      

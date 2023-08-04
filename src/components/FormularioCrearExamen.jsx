@@ -99,9 +99,9 @@ function FormularioCrearExamen() {
     
     const handleFuncionAceptarPopUpCreado = () => { 
         if (typeof id_curso !== 'undefined' && typeof id_categoria !== 'undefined') {
-            navigate(`/examen/editarpreguntas/${idExamenCreado}/${id_curso}/${id_categoria}`); 
+            navigate(`/examen/huecopreguntas/${idExamenCreado}/${id_curso}/${id_categoria}`); 
         }else{
-            navigate(`/examen/editarpreguntas/${idExamenCreado}`); 
+            navigate(`/examen/huecopreguntas/${idExamenCreado}`); 
         }               
     };
 

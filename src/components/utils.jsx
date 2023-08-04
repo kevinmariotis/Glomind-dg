@@ -82,4 +82,24 @@
             return totalSegundos;
         }
     }
+
+    export const cortarCadenaPorCaracter = (parrafo, caracter = '.', despues_de_x_caracteres = 200) => {
+        if (parrafo.length > despues_de_x_caracteres) {
+            const corte = parrafo.indexOf(caracter, despues_de_x_caracteres);
+            if (corte !== -1) {
+                const parrafoCortado = parrafo.substring(0, corte + 1);
+                return parrafoCortado;
+            } else {
+                return parrafo;
+            }
+        } else {
+            return parrafo;
+        }
+    }      
+      
+      
+      
+      
+      
+      
       

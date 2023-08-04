@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
@@ -16,9 +16,11 @@ import DashboardFooter from './DashboardFooter';
 function FormularioEditarContenidoCurso() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
-    const { id } = useParams();
+    const navigate = useNavigate(); 
+    const { id } = useParams();    
     const {jwt, nombres, permissions} = useContext(AuthContext);
     const [nombre, setNombre] = useState('');    
+    const [examenesSoloPago, setExamenesSoloPago] = useState(0);        
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
     const [popUpConfirmarBorrarSeccion, setPopupConfirmarBorrarSeccion] = useState({mostrar:false, titulo:'', contenido:'', id_categoria:''});    
     const [popUpConfirmarBorrarContenido, setPopupConfirmarBorrarContenido] = useState({mostrar:false, titulo:'', contenido:'', id_contenido:''});    
@@ -112,7 +114,8 @@ function FormularioEditarContenidoCurso() {
             const response2 = await fetch(`${urlBaseApi}/api/curso/informacionBasica/${id}`, opciones);            
             if (response2.ok){
                 const datos2 = await response2.json();
-                setNombre(datos2.nombre);                
+                setNombre(datos2.nombre);
+                setExamenesSoloPago(datos2.examenes_solo_pago);
             } else {     
                 const datos2 = await response2.json();            
                 mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {});                    
@@ -343,6 +346,13 @@ function FormularioEditarContenidoCurso() {
         }
     };
 
+    const handleFuncionHuecoPreguntas = (id_examen) => { 
+        if (typeof id !== 'undefined') {
+            navigate(`/examen/huecopreguntas/${id_examen}/${id}`); 
+        }else{
+            navigate(`/examen/huecopreguntas/${id_examen}`); 
+        }               
+    };
 
     return (
         <>
@@ -502,6 +512,11 @@ function FormularioEditarContenidoCurso() {
                                                             <td>
                                                                 <div className="courser-item-meta-wrap">
                                                                     {tema.tipo_contenido==1 ? <p className="course-item-meta"><i className="la la-play-circle"></i>{tema.cantidad_horas_de_video}</p> : ''}
+                                                                    {(tema.tipo_contenido==2 && tema.tipo==1) ? 'Básico, o control de aprendizaje' : ''}
+                                                                    {(tema.tipo_contenido==2 && tema.tipo==2) ? 'Nivel medio' : ''}
+                                                                    {(tema.tipo_contenido==2 && tema.tipo==3) ? 'Nivel Avanzado' : ''}
+                                                                    {(tema.tipo_contenido==2 && examenesSoloPago==1) ? ' (Pago)' : ''}
+                                                                    
                                                                 </div>
                                                             </td>                                        
                                                             <td>                                                                
@@ -510,6 +525,7 @@ function FormularioEditarContenidoCurso() {
                                                                 {permissions[29] ? <div onClick={event => { handleBorrarContenido(event, tema.id_contenido); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}
 
                                                                 {(tema.tipo_contenido==2 && permissions[47]) ? <Link to={`/examen/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
+                                                                {(tema.tipo_contenido==2 && permissions[47]) ? <div onClick={() => { handleFuncionHuecoPreguntas(tema.id_tipo_contenido) } } className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar preguntas"><i className="la la-list-ol"></i></div> : ''}
                                                             </td>
                                                         </tr>
                                                     )}                                
