@@ -269,7 +269,7 @@ function FormularioDashboardHuecoPreguntas() {
     }
     
     const tipo_preguntas = {
-        '1':'Única Selección',
+        '1':'Múltiples opciones única respuesta',
         '2':'Falso o verdadero',
     }
 
@@ -430,7 +430,7 @@ function FormularioDashboardHuecoPreguntas() {
                     </div>
                     <div className="card card-item">
                         <div className="card-body">
-                            <h3 className="fs-22 font-weight-semi-bold pb-2">Banco de preguntas</h3>
+                            <h3 className="fs-22 font-weight-semi-bold pb-2">Banco de preguntas del examen</h3>
                             <div className="divider"><span></span></div>
                             <div className="row">                                
                                 <div className="col-lg-12">                                     
@@ -438,9 +438,9 @@ function FormularioDashboardHuecoPreguntas() {
                                         <table className="table generic-table">
                                             <thead>
                                             <tr>               
-                                                <th scope="col">Agrupación</th>
-                                                <th scope="col">Tipo</th>
                                                 <th scope="col">Pregunta</th>
+                                                <th scope="col">Pertenece a la agrupación</th>
+                                                <th scope="col">Tipo</th>                                                
                                                 <th scope="col"></th>
                                             </tr>
                                             </thead>
@@ -448,18 +448,18 @@ function FormularioDashboardHuecoPreguntas() {
                                                 {preguntas.map((tema) => 
                                                     <tr key={`contenido-x-${tema.id}`}>
                                                         <th scope="row">
-                                                            {tema.pregunta_fija==0 ? <span style={{border: '1px dotted white', padding: '5px', borderRadius: '5px'}}>{tema.agrupacion}</span> : <div className="course-badge sky-blue">Fija</div>}
-                                                        </th>
-                                                        <th scope="row">
-                                                            {tipo_preguntas[tema.tipo_pregunta]}
-                                                        </th>
-                                                        <th scope="row">
                                                             {cortarCadenaPorCaracter(tema.texto_pregunta, '.', 10).split('<br />').map((line, index) => (
                                                                 <span style={{ fontStyle: 'italic' }}>{line}<br /></span>                                                                
                                                             ))}
                                                         </th>
-                                                        <td>                                                                
-                                                            <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Configurar"><i className="la la-gear"></i></div>
+                                                        <th scope="row">
+                                                            {tema.pregunta_fija==0 ? <span style={{border: '1px dotted white', padding: '5px', borderRadius: '5px'}}>{tema.agrupacion}</span> : <div className="course-badge sky-blue">Fija</div>}
+                                                        </th>
+                                                        <th scope="row">
+                                                            {tipo_preguntas[tema.tipo_pregunta]}
+                                                        </th>                                                        
+                                                        <td>   
+                                                            {tema.tipo_pregunta==1 ? <Link to={`${urlBase}/examen/editarpregunta/seleccion_multiple_unica_respuesta/${id}/${tema.id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Configurar"><i className="la la-gear"></i></Link> : ''}                                                                                                                         
                                                             <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar">
                                                                 <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
                                                             </div>

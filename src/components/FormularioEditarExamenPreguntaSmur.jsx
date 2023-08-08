@@ -7,21 +7,18 @@ import SpamError from './SpamError';
 import Popup from './Popup';
 import DashboardFooter from './DashboardFooter';
 
-function FormularioCrearExamenPreguntaSmur() {
+function FormularioEditarExamenPreguntaSmur() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const navigate = useNavigate(); 
     const {jwt, permissions} = useContext(AuthContext);
-    const { id, id_curso } = useParams();
+    const { id, id_examen_pregunta, id_curso } = useParams();
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});                    
-
+    
     const [pregunta, setPregunta] = useState('');    
     const [agrupacion, setAgrupacion] = useState(-1);    
-    const [opciones, setOpciones] = useState([
-        { respuesta: '', porcentaje: -1 },
-        { respuesta: '', porcentaje: -1 },
-        { respuesta: '', porcentaje: -1 },
-    ]);        
+    const [opciones, setOpciones] = useState([]);        
+    const [idPreguntaFija, setIdPreguntaFija] = useState(0);        
     
     const [agrupaciones, setAgrupaciones] = useState({});        
     const [nombreexamen, setNombreExamen] = useState('');
@@ -35,6 +32,7 @@ function FormularioCrearExamenPreguntaSmur() {
     //Estados de los errores de campos
     const camposErrores = {        
         'texto_pregunta':[],
+        'error_general':[],
         'id_agrupacion':[], 
         'tipo_pregunta':[],         
         'pregunta_opcion.0':[], 
@@ -106,7 +104,7 @@ function FormularioCrearExamenPreguntaSmur() {
     const handleAgregarOpcion = (event) => {
         if(opciones.length<16){
             event.preventDefault();        
-            setOpciones([...opciones, { respuesta: '', porcentaje: -1 }]);
+            setOpciones([...opciones, { id: 0, respuesta: '', porcentaje: -1 }]);
         }
     };
 
@@ -138,7 +136,45 @@ function FormularioCrearExamenPreguntaSmur() {
             const datos = await response.json();   
             if (response.ok){     
                 setAgrupaciones(datos.agrupaciones);                
-                setNombreExamen(datos.nombre_examen);                
+                setNombreExamen(datos.nombre_examen);
+
+                
+                const response2 = await fetch(`${urlBaseApi}/api/examenpregunta/${id_examen_pregunta}`, opciones);
+                setMostrarSpinner(false);
+                const datos2 = await response2.json();   
+                if (response.ok){
+                      
+                    if(datos2.pregunta.id_examen==id){
+                        const desc_array = datos2.pregunta.texto_pregunta.split("<br />");
+                        let desc = '';                
+                        desc_array.forEach((element) => {
+                            desc = (desc!='') ? desc+='\n'+element : desc=element;
+                        });
+                        setPregunta(desc);
+                        if(datos2.pregunta.pregunta_fija==1){
+                            setIdPreguntaFija(datos2.pregunta.id_agrupacion);                            
+                        }else{
+                            setIdPreguntaFija(0);
+                        }
+                        setAgrupacion(datos2.pregunta.id_agrupacion);                        
+                        let nuevas_opciones = [];
+                        datos2.opciones.forEach(function(element){     
+                            const desc_array = element.texto_opcion.split("<br />");
+                            desc = '';                
+                            desc_array.forEach((element) => {
+                                desc = (desc!='') ? desc+='\n'+element : desc=element;
+                            });                   
+                            nuevas_opciones.push({ id: element.id, respuesta: desc, porcentaje: element.porcentaje_puntuacion });
+                        });
+                        setOpciones(nuevas_opciones);
+                    }else{
+                        setPopup({mostrar:true, titulo:'Error', contenido:'El examen no corresponde a la pregunta.'});
+                    }
+                }else{
+                    mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {}, false, {'titulo': '', 'contenido': ''});
+                }    
+
+
             } else {                     
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
             }     
@@ -149,43 +185,40 @@ function FormularioCrearExamenPreguntaSmur() {
         }
     };
 
-    const handleCrearPregunta = async (event) => {
+    const handleEditarPregunta = async (event) => {
         event.preventDefault();
         reiniciarErrorCampoGlobal();
-                
-        const formData = new FormData();               
-        formData.append('id_agrupacion', agrupacion.toString());
-        formData.append('tipo_pregunta', 1);
-        formData.append('texto_pregunta', pregunta);
+        
+        const raw = {
+            'id_agrupacion': agrupacion.toString(),   
+            'texto_pregunta': pregunta,   
+        };
         if(agrupacion=='0'){
-            formData.append('id_examen', id);
+            raw.id_examen = id;            
         }
         if(typeof id_curso !== 'undefined'){
-            formData.append('id_curso', id_curso);
+            raw.id_curso = id_curso;        
         }
-        opciones.forEach((item)=>{
-            formData.append('pregunta_opcion[]', item.respuesta);
-            formData.append('porcentaje_opcion[]', item.porcentaje);
-        });
-        
+        raw.id_opcion = opciones.map(item => item.id.toString());  
+        raw.pregunta_opcion = opciones.map(item => item.respuesta);  
+        raw.porcentaje_opcion = opciones.map(item => item.porcentaje);  
+               
         const opcionesx = {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Authorization' : `Bearer ${jwt}`
             },
-            body: formData
+            body: JSON.stringify(raw),
         };
         
         try {
             setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/examenpregunta/crearpreguntacompleta/1`, opcionesx);
+            const response = await fetch(`${urlBaseApi}/api/examenpregunta/editarpreguntacompleta/${id_examen_pregunta}`, opcionesx);
             setMostrarSpinner(false);
             const datos = await response.json();            
             if (response.ok){   
-                setPopup({mostrar:true, titulo:'Listo', contenido:'Pregunta creada correctamente.'});
-                setOpciones([]);
-                setPregunta([]);
-                setAgrupacion(-1);                
+                obtenerDatosServidor();
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Pregunta guardada correctamente.'});                
                 return;
             } else {
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Error al crear el examen', 'contenido': 'Revise los errores en el formulario.'});
@@ -216,7 +249,7 @@ function FormularioCrearExamenPreguntaSmur() {
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">                
                     <div className="media media-card align-items-center">                        
                         {typeof id_curso !== 'undefined' ? <Link to={`/examen/huecopreguntas/${id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link> : ''}                        
-                        &nbsp;<h3 className="fs-22 font-weight-semi-bold">Nueva pregunta de selección múltiple con única respuesta</h3>
+                        &nbsp;<h3 className="fs-22 font-weight-semi-bold">Editar pregunta de selección múltiple con única respuesta</h3>
                         <h5>&nbsp;|&nbsp;{nombreexamen}</h5>
                     </div>                                        
                     <div className="btn-box pt-30px">                                        
@@ -234,7 +267,7 @@ function FormularioCrearExamenPreguntaSmur() {
                                         <label className="label-text">A que agrupación pertenecerá esta pregunta?</label>                                        
                                         <select onChange={handleAgrupacionChange} value={agrupacion} name="id_agrupacion" className="form-control select-dark">
                                             <option value=""> -- Seleccione --</option>
-                                            <option value="0"> -- Pregunta fija -- </option>
+                                            <option value={idPreguntaFija}> -- Pregunta fija -- </option>
                                             {Object.keys(agrupaciones).map((key) => (
                                                 <option key={`agru-sel-${agrupaciones[key].id}`} value={agrupaciones[key].id}>{agrupaciones[key].nombre}</option>
                                             ))}
@@ -291,8 +324,9 @@ function FormularioCrearExamenPreguntaSmur() {
                             <button className="btn theme-btn" style={{marginTop:'20px'}} type="submit" onClick={handleAgregarOpcion}><i className="la la-plus mr-2"></i> Agregar opción</button>
                         </div>
                     </div>                   
-                    <div className="course-submit-btn-box pb-4">                        
-                        <button className="btn theme-btn" type="submit" onClick={handleCrearPregunta}>Crear pregunta</button>                        
+                    <div className="course-submit-btn-box pb-4">  
+                        {erroresCampos['error_general'].length > 0 && (<SpamError mensaje={erroresCampos['error_general']} />)}                      
+                        <button className="btn theme-btn" type="submit" onClick={handleEditarPregunta}>Guardar cambios</button>                        
                     </div>
                 </form>
                 <DashboardFooter />
@@ -302,4 +336,4 @@ function FormularioCrearExamenPreguntaSmur() {
     )
 }
 
-export default FormularioCrearExamenPreguntaSmur;
+export default FormularioEditarExamenPreguntaSmur;
