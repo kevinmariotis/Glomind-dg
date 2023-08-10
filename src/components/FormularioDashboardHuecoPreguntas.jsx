@@ -16,13 +16,20 @@ function FormularioDashboardHuecoPreguntas() {
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});                    
     const [PopUpAgrupacion, setPopUpAgrupacion] = useState({mostrar:false, titulo:'', contenido:''});                    
     const [popUpCrearPregunta, setPopUpCrearPregunta] = useState(false);
+    const [popUpCrearHuecoPregunta, setPopUpCrearHuecoPregunta] = useState(false);
+    const [popUpConfirmar, setPopupConfirmar] = useState({mostrar:false, titulo:'', contenido:'', data:-1, tipo:''});
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
     const [mostrarMensaje100, setMostrarMensaje100] = useState(false);    
     const [editandoIdAgrupacion, setEditandoIdAgrupacion] = useState(-1);        
-    
+    const [editandoIdHuecoPregunta, setEditandoIdHuecoPregunta] = useState(-1);        
+    const [porcentajeValor, setPorcentajeValor] = useState(0);
+    const [agrupacionPreguntaFija, setAgrupacionPreguntaFija] = useState(-1);    
+
     const [huecos, setHuecos] = useState([]);    
     const [agrupaciones, setAgrupaciones] = useState([]);    
     const [preguntas, setPreguntas] = useState([]);    
+    const [preguntasDisponibles, setPreguntasDisponibles] = useState([]);
+    const [agrupacionesDisponibles, setAgrupacionesDisponibles] = useState([]);
            
     const [nombreAgrupacion, setNombreAgrupacion] = useState('');    
     
@@ -37,6 +44,9 @@ function FormularioDashboardHuecoPreguntas() {
     const camposErrores = {        
         'nombre':[],
         'id_examen_agrupacion_preguntas':[],
+        'id_examen_agrupacion':[],        
+        'id_examen_hueco_pregunta':[],        
+        'porcentaje_valor':[],                
     }    
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
@@ -62,23 +72,41 @@ function FormularioDashboardHuecoPreguntas() {
         setPopup({...popUp, mostrar:false});
     };
 
+    const handleFuncionCerrarPopUpConfirmar = () => {        
+        setPopupConfirmar({...popUp, mostrar:false});
+    };
+    const handlePopUpConfirmarBorrarExamenPregunta = (id_examen_pregunta) => {      
+        setPopupConfirmar({mostrar:true, titulo:'Confirmar', contenido:'Confirma borrar esta pregunta?', tipo:'pregunta', data:id_examen_pregunta});
+    }
+    const handlePopUpConfirmarBorrarHuecoPregunta = (id_hueco_pregunta) => {      
+        setPopupConfirmar({mostrar:true, titulo:'Confirmar', contenido:'Confirma borrar esta pregunta del examen?', tipo:'hueco', data:id_hueco_pregunta});
+    }
     
     const handleAgregarHuecoPregunta = (event) => {        
         event.preventDefault();
+        reiniciarErrorCampoGlobal();  
+        setPorcentajeValor(-1);
+        setEditandoIdHuecoPregunta(-1);
+        setPopUpCrearHuecoPregunta(true);
+        obtenerDatosFormularioHueco();
     };    
     const handleAgregarAgrupacion = (event) => {        
         event.preventDefault();
         setNombreAgrupacion('');
         setEditandoIdAgrupacion(-1);
         setPopUpAgrupacion({...PopUpAgrupacion, mostrar:true});        
-    };    
+    }; 
+    
+
     const handleAgregarPregunta = (event) => {        
         event.preventDefault();
         setPopUpCrearPregunta(true);
     };
     
     const handleSetNombreAgrupacion = (event) => {  setNombreAgrupacion(event.target.value); };
-         
+    const handlePorcentajeValor = (event) => { setPorcentajeValor(event.target.value);    };
+    const handleAgrupacionPreguntaFija = (event) => { setAgrupacionPreguntaFija(event.target.value);    };
+    
     const handleClickEditarAgrupacion = (data) => {
         setEditandoIdAgrupacion(data.id_agrupacion);
 
@@ -86,6 +114,14 @@ function FormularioDashboardHuecoPreguntas() {
         setPopUpAgrupacion({...PopUpAgrupacion, mostrar:true});
                 
         //console.log("editando agrupacion ", data.id_agrupacion);
+    };
+
+    const handleEditarHuecoPregunta = (data) => {
+        obtenerDatosFormularioHueco();                     
+        setEditandoIdHuecoPregunta(data.id_hueco_pregunta);
+        setAgrupacionPreguntaFija(data.id_examen_agrupacion);        
+        setPorcentajeValor(data.porcentaje_valor);
+        setPopUpCrearHuecoPregunta(true);          
     };
 
     const obtenerDatosServidor = async () => {
@@ -168,7 +204,111 @@ function FormularioDashboardHuecoPreguntas() {
         }
     };
 
+    const obtenerDatosFormularioHueco = async () => {
+        setMostrarSpinner(true);
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }  
+        //obtenemos los huecos de pregunta de este examen      
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };            
+                                               
+            const response = await fetch(`${urlBaseApi}/api/examenhuecopregunta/getFormularioCrear/${id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`, opciones);            
+            setMostrarSpinner(false);
+            const datos = await response.json();   
+            if (response.ok){                                     
+                setAgrupacionesDisponibles(datos.agrupaciones);
+                setPreguntasDisponibles(datos.preguntas_fijas);
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
+            }     
+                     
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }        
+    };
     
+    const handleGuardarEditarHueco = async (event) => {
+        event.preventDefault();      
+        reiniciarErrorCampoGlobal();  
+        if(editandoIdHuecoPregunta==-1){
+            const formData = new FormData();                            
+            formData.append('id_examen', id);
+            formData.append('id_examen_agrupacion', agrupacionPreguntaFija);        
+            formData.append('porcentaje_valor', porcentajeValor);
+            if (typeof id_curso !== 'undefined'){
+                formData.append('id_curso', id_curso);
+            }        
+                    
+            const opciones = {
+                method: 'POST',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: formData
+            };
+            
+            try {
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/examenhuecopregunta`, opciones);
+                setMostrarSpinner(false);
+                const datos = await response.json();                            
+                if (response.ok){                       
+                    setPopUpCrearHuecoPregunta(false);
+                    setEditandoIdHuecoPregunta(-1);                    
+                    setPorcentajeValor(0);
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Pregunta Fija o Agrupación establecida en el examen.'});
+                    obtenerDatosServidor();
+                    return;
+                } else {                                
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+                }                
+            }catch (error) {
+                console.error('Error de conexión:', error);
+            }
+        }else{
+            const raw = {           
+                'id_examen_agrupacion': agrupacionPreguntaFija.toString(),
+                'porcentaje_valor': porcentajeValor,
+            };                    
+            if (typeof id_curso !== 'undefined') {
+                raw.id_curso = id_curso;                
+            }    
+            
+            const opciones = {
+                method: 'PUT',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: JSON.stringify(raw),
+            };
+            
+            try {
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/examenhuecopregunta/${editandoIdHuecoPregunta}`, opciones);
+                setMostrarSpinner(false);
+                const datos = await response.json();                        
+                if(response.ok){
+                    setPopUpCrearHuecoPregunta(false);
+                    setEditandoIdHuecoPregunta(-1);                    
+                    setPorcentajeValor(0);
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Asignación editada.'});
+                    obtenerDatosServidor();
+                    return;
+                } else {
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+                }                
+            }catch (error) {
+                console.error('Error de conexión:', error);
+            }
+
+        }
+    }
+
     const handleGuardarEditarAgrupacion = async (event) => {
         event.preventDefault();      
         reiniciarErrorCampoGlobal();  
@@ -268,10 +408,105 @@ function FormularioDashboardHuecoPreguntas() {
         }
     }
     
+    const handleAceptarConfirmar = async () => {        
+        setPopupConfirmar({...popUp, mostrar:false});
+        switch(popUpConfirmar.tipo){
+            case 'pregunta':
+                handleBorrarPregunta();
+                return;
+            break;
+            case 'hueco':
+                handleBorrarHuecoPregunta();
+                return;
+            break;
+        }
+    }    
+
+    const handleBorrarPregunta = async () => {                
+        const opciones = {
+            method: 'DELETE',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },            
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/examenpregunta/${popUpConfirmar.data}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();                        
+            if(response.ok){                
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Pregunta borrada del banco de pregunta del examen.'});
+                obtenerDatosServidor();
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    };
+
+    const handleBorrarHuecoPregunta = async () => {                
+        const opciones = {
+            method: 'DELETE',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },            
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/examenhuecopregunta/${popUpConfirmar.data}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();                        
+            if(response.ok){                
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Pregunta borrada del examen.'});
+                obtenerDatosServidor();
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    };
+
+    const handleMoverHuecoPregunta = async (event, id_examen_hueco_pregunta, direccion) => {
+        event.preventDefault();                
+        const raw = {
+            'direccion': direccion,                        
+        };                            
+        const opciones = {
+            method: 'PUT',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: JSON.stringify(raw),
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/examenhuecopregunta/mover/${id_examen_hueco_pregunta}`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if (response.ok){    
+                obtenerDatosServidor();
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'No es posible', 'contenido': 'Realizar este movimiento.'});                                                                    
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+
+    }
+
     const tipo_preguntas = {
         '1':'Múltiples opciones única respuesta',
         '2':'Falso o verdadero',
     }
+    const porcentaje_valor = Array.from({ length: 100 }, (_, index) => index + 1);
 
     return (
         <>
@@ -286,25 +521,59 @@ function FormularioDashboardHuecoPreguntas() {
             funcionCerrar={handleFuncionCerrarPopUp}
             textoCerrar="Aceptar"
         />
-        <div className={`modal fade modal-container ${popUpCrearPregunta ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="crearPregunta" tabIndex="-1" role="dialog" aria-labelledby="crearPreguntaTitle" aria-hidden="true">
+        <Popup 
+            mostrarPopup={popUpConfirmar.mostrar} 
+            tamano="xx"
+            tipo={3} 
+            titulo={popUpConfirmar.titulo} 
+            mensaje={popUpConfirmar.contenido} 
+            funcionAceptar={handleAceptarConfirmar} 
+            funcionCerrar={handleFuncionCerrarPopUpConfirmar}
+            textoCerrar="Cancelar"
+            textoAceptar="Borrar"
+        />
+        <div className={`modal fade modal-container ${popUpCrearHuecoPregunta ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="crearHuecoPregunta" tabIndex="-1" role="dialog" aria-labelledby="crearHuecoPregunta" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
                     <div className="modal-header border-bottom-gray">
                         <div className="pr-2">                            
-                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="crearPreguntaTitle">Crear pregunta</h5>
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="crearHuecoPreguntaTitle">{editandoIdHuecoPregunta!=-1 ? 'Editar pregunta establecida' : 'Agregar espacio para pregunta'}</h5>
                         </div>                            
                     </div>
                     <div className="modal-body">
                         <div className="form-group">
-                            <label className="label-text">Seleccione el tipo de pregunta</label><br/><br/>
-                            <Link to={`${urlBase}/examen/crearpregunta/falso_verdadero/${id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`} className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Falso o verdadero</Link>
-                            &nbsp;<Link to={`${urlBase}/examen/crearpregunta/seleccion_multiple_unica_respuesta/${id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`} className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Selección múltiple, única respuesta</Link>
-                            
+                            <label className="label-text">Agrupación o pregunta fija</label>
+                            <select onChange={handleAgrupacionPreguntaFija} value={agrupacionPreguntaFija} name="id_agrupacion_agregar" className="form-control select-dark">
+                                <option value={0}> -- Seleccione --</option>                                            
+                                {agrupacionesDisponibles.map((tema) => (
+                                    <option key={tema.id} value={tema.id}>
+                                        Agrup: {tema.nombre}
+                                    </option>
+                                ))}
+                                {preguntasDisponibles.map((tema) => (
+                                    <option key={tema.id} value={tema.id}>
+                                        P.Fija: {tema.texto_pregunta.length>100 ? tema.texto_pregunta.slice(0, 100).replace(/<br \/>/g, ' ') + "..." : tema.texto_pregunta.replace(/<br \/>/g, ' ')}
+                                    </option>
+                                ))}
+                            </select>
+                            {erroresCampos['id_examen_agrupacion'].length > 0 && (<SpamError mensaje={erroresCampos['id_examen_agrupacion']} />)}
+                        </div>
+                        <div className="form-group">
+                            <label className="label-text">Porcentaje en el examen</label>
+                            <select onChange={handlePorcentajeValor} value={porcentajeValor} name="porcentaje_valor" className="form-control select-dark">
+                                <option value={0}> -- Seleccione --</option>                                            
+                                {porcentaje_valor.map((number) => (
+                                    <option key={number} value={number}>
+                                        {number} %
+                                    </option>
+                                ))}                                            
+                            </select>
+                            {erroresCampos['porcentaje_valor'].length > 0 && (<SpamError mensaje={erroresCampos['porcentaje_valor']} />)}
                         </div>                        
                     </div>
                     <div className="modal-footer border-top-gray">                        
-                        <button type="button" className="btn theme-btn mb-2" onClick={handleGuardarEditarAgrupacion}> Guardar </button>
-                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setPopUpCrearPregunta(false); }}> Cancelar </button>
+                        <button type="button" className="btn theme-btn mb-2" onClick={handleGuardarEditarHueco}> Guardar </button>
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setPopUpCrearHuecoPregunta(false); }}> Cancelar </button>
                     </div>
                 </div>
             </div>
@@ -327,6 +596,28 @@ function FormularioDashboardHuecoPreguntas() {
                     <div className="modal-footer border-top-gray">                        
                         <button type="button" className="btn theme-btn mb-2" onClick={handleGuardarEditarAgrupacion}> Guardar </button>
                         <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setPopUpAgrupacion({...PopUpAgrupacion, mostrar:false}); }}> Cancelar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className={`modal fade modal-container ${popUpCrearPregunta ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="crearPregunta" tabIndex="-1" role="dialog" aria-labelledby="crearPreguntaTitle" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="crearPreguntaTitle">Crear pregunta</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">
+                        <div className="form-group">
+                            <label className="label-text">Seleccione el tipo de pregunta</label><br/><br/>
+                            <Link to={`${urlBase}/examen/crearpregunta/falso_verdadero/${id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`} className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Falso o verdadero</Link>
+                            &nbsp;<Link to={`${urlBase}/examen/crearpregunta/seleccion_multiple_unica_respuesta/${id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`} className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Selección múltiple, única respuesta</Link>
+                            
+                        </div>                        
+                    </div>
+                    <div className="modal-footer border-top-gray">                                                
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setPopUpCrearPregunta(false); }}> Cancelar </button>
                     </div>
                 </div>
             </div>
@@ -365,7 +656,7 @@ function FormularioDashboardHuecoPreguntas() {
                                                 {huecos.map((tema) => 
                                                     <tr key={`contenido-x-${tema.id}`}>
                                                         <th scope="row">
-                                                            {tema.posicion}
+                                                            {tema.posicion+1}
                                                         </th>
                                                         <th scope="row">
                                                             {tema.pregunta_fija==1 ? <div className="course-badge sky-blue">Fija</div>: 'Aleatoria'}
@@ -376,9 +667,12 @@ function FormularioDashboardHuecoPreguntas() {
                                                         <td>
                                                             {tema.porcentaje_valor}%
                                                         </td>                                                                                                        
-                                                        <td>                                                                
-                                                            <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Configurar"><i className="la la-gear"></i></div>
-                                                            <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar">
+                                                        <td>    
+                                                            <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Subir" onClick={event => handleMoverHuecoPregunta(event, tema.id, -1)} title="Subir"><i className="la la-sort-up"></i></a>
+                                                            <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Bajar" onClick={event => handleMoverHuecoPregunta(event, tema.id, 1)} title="Bajar"><i className="la la-sort-down"></i></a>
+
+                                                            <div onClick={()=>{ handleEditarHuecoPregunta({'id_hueco_pregunta':tema.id, 'id_examen_agrupacion':tema.id_agrupacion, 'porcentaje_valor':tema.porcentaje_valor}) }  } className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Configurar"><i className="la la-gear"></i></div>
+                                                            <div onClick={()=>{ handlePopUpConfirmarBorrarHuecoPregunta(tema.id); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar">
                                                                 <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
                                                             </div>
                                                         </td>
@@ -440,6 +734,7 @@ function FormularioDashboardHuecoPreguntas() {
                                             <tr>               
                                                 <th scope="col">Pregunta</th>
                                                 <th scope="col">Pertenece a la agrupación</th>
+                                                <th scope="col">Estado</th>
                                                 <th scope="col">Tipo</th>                                                
                                                 <th scope="col"></th>
                                             </tr>
@@ -456,11 +751,14 @@ function FormularioDashboardHuecoPreguntas() {
                                                             {tema.pregunta_fija==0 ? <span style={{border: '1px dotted white', padding: '5px', borderRadius: '5px'}}>{tema.agrupacion}</span> : <div className="course-badge sky-blue">Fija</div>}
                                                         </th>
                                                         <th scope="row">
+                                                            {tema.estado==1? 'Activado' : 'Desactivado'}
+                                                        </th>
+                                                        <th scope="row">
                                                             {tipo_preguntas[tema.tipo_pregunta]}
                                                         </th>                                                        
                                                         <td>   
                                                             {tema.tipo_pregunta==1 ? <Link to={`${urlBase}/examen/editarpregunta/seleccion_multiple_unica_respuesta/${id}/${tema.id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Configurar"><i className="la la-gear"></i></Link> : ''}                                                                                                                         
-                                                            <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar">
+                                                            <div onClick={()=>{ handlePopUpConfirmarBorrarExamenPregunta(tema.id); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar">
                                                                 <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
                                                             </div>
                                                         </td>

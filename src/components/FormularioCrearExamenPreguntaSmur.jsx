@@ -36,40 +36,14 @@ function FormularioCrearExamenPreguntaSmur() {
     const camposErrores = {        
         'texto_pregunta':[],
         'id_agrupacion':[], 
-        'tipo_pregunta':[],         
-        'pregunta_opcion.0':[], 
-        'pregunta_opcion.1':[], 
-        'pregunta_opcion.2':[], 
-        'pregunta_opcion.3':[], 
-        'pregunta_opcion.4':[], 
-        'pregunta_opcion.5':[], 
-        'pregunta_opcion.6':[], 
-        'pregunta_opcion.7':[], 
-        'pregunta_opcion.8':[], 
-        'pregunta_opcion.9':[], 
-        'pregunta_opcion.10':[], 
-        'pregunta_opcion.11':[], 
-        'pregunta_opcion.12':[], 
-        'pregunta_opcion.13':[], 
-        'pregunta_opcion.14':[], 
-        'pregunta_opcion.15':[], 
-        'porcentaje_opcion.0':[], 
-        'porcentaje_opcion.1':[], 
-        'porcentaje_opcion.2':[], 
-        'porcentaje_opcion.3':[], 
-        'porcentaje_opcion.4':[], 
-        'porcentaje_opcion.5':[], 
-        'porcentaje_opcion.6':[], 
-        'porcentaje_opcion.7':[], 
-        'porcentaje_opcion.8':[], 
-        'porcentaje_opcion.9':[], 
-        'porcentaje_opcion.10':[], 
-        'porcentaje_opcion.11':[], 
-        'porcentaje_opcion.12':[], 
-        'porcentaje_opcion.13':[], 
-        'porcentaje_opcion.14':[], 
-        'porcentaje_opcion.15':[], 
+        'tipo_pregunta':[],      
+        'pregunta_opcion':[],         
     }    
+    for (let i = 0; i <= 15; i++) {
+        camposErrores[`pregunta_opcion.${i}`] = [];
+        camposErrores[`porcentaje_opcion.${i}`] = [];
+    }
+    
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
         if (index in erroresCampos) {
@@ -259,6 +233,7 @@ function FormularioCrearExamenPreguntaSmur() {
                             <h3 className="fs-22 font-weight-semi-bold pb-2">Opciones</h3>
                             <div className="divider"><span></span></div>
                             {erroresCampos['tipo_pregunta'].length > 0 && (<SpamError mensaje={erroresCampos['tipo_pregunta']} />)}
+                            {erroresCampos['pregunta_opcion'].length > 0 && (<SpamError mensaje={erroresCampos['pregunta_opcion']} />)}
                             {opciones.map((opcion, index) => (
                                 <div className="row">    
                                     <div className="col-lg-6">
