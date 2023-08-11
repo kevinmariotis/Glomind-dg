@@ -329,7 +329,7 @@ function FormularioCrearCurso() {
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">
-                    <h3 className="fs-22 font-weight-semi-bold">Crear curso</h3>
+                    <h3 className="fs-22 font-weight-semi-bold"><Link to={`/cursos`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link>&nbsp; Crear curso</h3>
                 </div>
                 <form action="#">
                     <div className="card card-item">

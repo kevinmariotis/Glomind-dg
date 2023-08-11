@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
@@ -150,8 +150,8 @@ function FormularioEditarCursoImagen() {
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
-                    <h3 className="fs-22 font-weight-semi-bold">{nombre}</h3>
-                    <span>Editar imagen del curso</span>
+                    <h3 className="fs-22 font-weight-semi-bold"><Link to={`/cursos`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link>&nbsp;{nombre}</h3>
+                    <span style={{marginLeft:'55px'}}>Editar imagen del curso</span>
                 </div>
                 <form action="#">                                                                                
                     {permissions[66] ? <div className="card card-item">

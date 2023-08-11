@@ -468,9 +468,9 @@ function FormularioEditarContenidoCurso() {
         {mostrarPopUpAgregarVideo && <VideoPicker funcionMostrarPopUp={setMostrarPopUpAgregarVideo} funcionSetVideoSeleccionado={handleSeleccionarVideo} />}
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
-                <div className="dashboard-heading mb-5">
-                    <h3 className="fs-22 font-weight-semi-bold">{nombre!='' ? nombre : <Skeleton width={'30%'}/> }</h3>
-                    <span>{nombre!='' ? 'Editar contenido del curso' : <Skeleton width={'20%'}/> }</span>
+                <div className="dashboard-heading mb-5">                    
+                    <h3 className="fs-22 font-weight-semi-bold"><Link to={`/cursos`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link>&nbsp; {nombre!='' ? nombre : <Skeleton width={'30%'}/> }</h3>
+                    <span style={{marginLeft:'57px'}}>{nombre!='' ? 'Editar contenido del curso' : <Skeleton width={'20%'}/> }</span>
                     
                 </div>
                 <form action="#">    

@@ -99,7 +99,7 @@ function FormularioCrearExamen() {
     
     const handleFuncionAceptarPopUpCreado = () => { 
         if (typeof id_curso !== 'undefined' && typeof id_categoria !== 'undefined') {
-            navigate(`/examen/huecopreguntas/${idExamenCreado}/${id_curso}/${id_categoria}`); 
+            navigate(`/examen/huecopreguntas/${idExamenCreado}/${id_curso}`); 
         }else{
             navigate(`/examen/huecopreguntas/${idExamenCreado}`); 
         }               
@@ -181,11 +181,11 @@ function FormularioCrearExamen() {
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
-                    <div className="media media-card align-items-center">                        
+                    <div className="media media-card align-items-center">     
+                        {typeof id_curso !== 'undefined' ? <><Link to={`/curso/contenido/${id_curso}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link>&nbsp;</> : ''}                   
                         <h3 className="fs-22 font-weight-semi-bold">Crear examen</h3>                        
                     </div>                    
-                    <div className="btn-box pt-30px">
-                    {typeof id_curso !== 'undefined' ? <Link to={`/curso/contenido/${id_curso}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link> : ''}
+                    <div className="btn-box pt-30px">                    
                     </div>
                 </div>                
                 <form action="#">                      

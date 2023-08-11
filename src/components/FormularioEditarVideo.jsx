@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -513,7 +513,7 @@ function FormularioEditarVideo() {
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
-                    <h3 className="fs-22 font-weight-semi-bold">Editar video</h3>                    
+                    <h3 className="fs-22 font-weight-semi-bold"><Link to={`/video`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la lista de videos"><i className="la la-angle-left"></i></div></Link>&nbsp;Editar video</h3>                    
                 </div>
                 <form action="#">                      
                     {permissions[28] ? <div className="card card-item">

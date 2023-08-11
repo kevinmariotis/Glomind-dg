@@ -7,7 +7,7 @@ import SpamError from './SpamError';
 import Popup from './Popup';
 import DashboardFooter from './DashboardFooter';
 
-function FormularioEditarExamenPreguntaSmur() {
+function FormularioEditarExamenPreguntaFv() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const navigate = useNavigate(); 
@@ -17,8 +17,8 @@ function FormularioEditarExamenPreguntaSmur() {
     
     const [pregunta, setPregunta] = useState('');    
     const [agrupacion, setAgrupacion] = useState(-1);    
-    const [estado, setEstado] = useState(0);    
-    const [opciones, setOpciones] = useState([]);        
+    const [estado, setEstado] = useState(0);        
+    const [falsoVerdadero, setFalsoVerdadero] = useState(-1);
     const [idPreguntaFija, setIdPreguntaFija] = useState(0);        
     
     const [agrupaciones, setAgrupaciones] = useState({});        
@@ -37,13 +37,9 @@ function FormularioEditarExamenPreguntaSmur() {
         'id_agrupacion':[], 
         'estado':[], 
         'tipo_pregunta':[],         
-        'id_examen_pregunta':[],
-        'pregunta_opcion':[],         
-    }    
-    for (let i = 0; i <= 15; i++) {
-        camposErrores[`pregunta_opcion.${i}`] = [];
-        camposErrores[`porcentaje_opcion.${i}`] = [];
-    }
+        'respuesta':[],    
+        'id_examen_pregunta':[],    
+    }        
     
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
@@ -64,34 +60,9 @@ function FormularioEditarExamenPreguntaSmur() {
         
     const handlePreguntaChange = (event) => { setPregunta(event.target.value);    };  
     const handleAgrupacionChange = (event) => { setAgrupacion(event.target.value);    };      
-    const handleEstadoChange = (event) => { setEstado(event.target.value);    };          
-
-    const handleOpcionChange = (index, event) => {
-        const newOptions = [...opciones];
-        newOptions[index].respuesta = event.target.value;
-        setOpciones(newOptions);
-    };
-    
-    const handlePorcentajeChange = (index, event) => {
-        const newOptions = [...opciones];
-        newOptions[index].porcentaje = parseInt(event.target.value);
-        setOpciones(newOptions);
-    };
-
-
-    const handleAgregarOpcion = (event) => {
-        if(opciones.length<16){
-            event.preventDefault();        
-            setOpciones([...opciones, { id: 0, respuesta: '', porcentaje: -1 }]);
-        }
-    };
-
-    const handleQuitarOpcion = (index) => {
-        const newOptions = [...opciones];
-        newOptions.splice(index, 1);
-        setOpciones(newOptions);
-    };
-    
+    const handleFalsoVerdaderoChange = (event) => { setFalsoVerdadero(event.target.value);    };          
+    const handleEstadoChange = (event) => { setEstado(event.target.value);    };              
+        
     const handleFuncionAceptarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };
@@ -134,25 +105,22 @@ function FormularioEditarExamenPreguntaSmur() {
                         }else{
                             setIdPreguntaFija(0);
                         }
-                        setAgrupacion(datos2.pregunta.id_agrupacion);                        
-                        let nuevas_opciones = [];
-                        datos2.opciones.forEach(function(element){     
-                            const desc_array = element.texto_opcion.split("<br />");
-                            desc = '';                
-                            desc_array.forEach((element) => {
-                                desc = (desc!='') ? desc+='\n'+element : desc=element;
-                            });                   
-                            nuevas_opciones.push({ id: element.id, respuesta: desc, porcentaje: element.porcentaje_puntuacion });
-                        });
-                        setOpciones(nuevas_opciones);                        
+                        setAgrupacion(datos2.pregunta.id_agrupacion);                                                
+                        datos2.opciones.forEach(function(element){    
+                            if(element.porcentaje_puntuacion==100){
+                                if(element.texto_opcion=='Falso'){
+                                    setFalsoVerdadero(0);
+                                }else{
+                                    setFalsoVerdadero(1);
+                                }
+                            }                            
+                        });                        
                     }else{
                         setPopup({mostrar:true, titulo:'Error', contenido:'El examen no corresponde a la pregunta.'});
                     }
                 }else{
                     mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {}, false, {'titulo': '', 'contenido': ''});
-                }    
-
-
+                }
             } else {                     
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
             }     
@@ -170,6 +138,7 @@ function FormularioEditarExamenPreguntaSmur() {
         const raw = {
             'id_agrupacion': agrupacion.toString(),   
             'texto_pregunta': pregunta,
+            'respuesta': falsoVerdadero,
             'estado': estado,
         };
         if(agrupacion=='0'){
@@ -178,10 +147,7 @@ function FormularioEditarExamenPreguntaSmur() {
         if(typeof id_curso !== 'undefined'){
             raw.id_curso = id_curso;        
         }
-        raw.id_opcion = opciones.map(item => item.id.toString());  
-        raw.pregunta_opcion = opciones.map(item => item.respuesta);  
-        raw.porcentaje_opcion = opciones.map(item => item.porcentaje);  
-               
+                       
         const opcionesx = {
             method: 'PUT',
             headers: {
@@ -228,7 +194,7 @@ function FormularioEditarExamenPreguntaSmur() {
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">                
                     <div className="media media-card align-items-center">                        
                         {typeof id_curso !== 'undefined' ? <Link to={`/examen/huecopreguntas/${id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link> : ''}                        
-                        &nbsp;<h3 className="fs-22 font-weight-semi-bold">Editar pregunta de selección múltiple con única respuesta</h3>
+                        &nbsp;<h3 className="fs-22 font-weight-semi-bold">Editar pregunta de falso o verdadero</h3>
                         <h5>&nbsp;|&nbsp;{nombreexamen}</h5>
                     </div>                                        
                     <div className="btn-box pt-30px">                                        
@@ -264,6 +230,17 @@ function FormularioEditarExamenPreguntaSmur() {
                                 </div>
                                 <div className="col-lg-12">
                                     <div className="form-group">
+                                        <label className="label-text">Falso o verdadero?</label>                                        
+                                        <select onChange={handleFalsoVerdaderoChange} value={falsoVerdadero} name="respuesta" className="form-control select-dark">
+                                            <option value={-1}> -- Seleccione --</option>
+                                            <option value={0}>Falso</option>
+                                            <option value={1}>Verdadero</option>                                            
+                                        </select>
+                                        {erroresCampos['respuesta'].length > 0 && (<SpamError mensaje={erroresCampos['respuesta']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">
                                         <label className="label-text">Estado</label>
                                         <select onChange={handleEstadoChange} value={estado} name="estado" className="form-control select-dark">
                                             <option value="1">Activada</option>
@@ -274,46 +251,7 @@ function FormularioEditarExamenPreguntaSmur() {
                                 </div>
                             </div>
                         </div>
-                    </div> 
-                    <div className="card card-item">
-                        <div className="card-body">
-                            <h3 className="fs-22 font-weight-semi-bold pb-2">Opciones</h3>
-                            <div className="divider"><span></span></div>
-                            {erroresCampos['error_general'].length > 0 && (<SpamError mensaje={erroresCampos['error_general']} />)}                      
-                            {erroresCampos['pregunta_opcion'].length > 0 && (<SpamError mensaje={erroresCampos['pregunta_opcion']} />)}
-                            {erroresCampos['tipo_pregunta'].length > 0 && (<SpamError mensaje={erroresCampos['tipo_pregunta']} />)}                            
-                            {opciones.map((opcion, index) => (
-                                <div className="row">    
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label className="label-text">Opción {index+1}</label>
-                                            <textarea onChange={(e) => handleOpcionChange(index, e)} value={opcion.respuesta} name={`opcion${index}`} className="form-control form--control user-text-editor pl-3" ></textarea>
-                                            {erroresCampos['pregunta_opcion.'+index].length > 0 && (<SpamError mensaje={erroresCampos['pregunta_opcion.'+index]} />)}
-                                        </div>
-                                    </div>                    
-                                    <div className="col-lg-5">
-                                        <div className="form-group">
-                                            <label className="label-text">Calificación</label>                                        
-                                            <select onChange={(e) => handlePorcentajeChange(index, e)} value={opcion.porcentaje} name={`porcentaje${index}`} className="form-control select-dark">
-                                                <option value=""> -- Seleccione --</option>
-                                                <option value="0">Incorrecta</option>
-                                                <option value="100">Correcta</option>
-                                            </select>
-                                            {erroresCampos['porcentaje_opcion.'+index].length > 0 && (<SpamError mensaje={erroresCampos['porcentaje_opcion.'+index]} />)}
-                                        </div>
-                                    </div>  
-                                    <div className="col-lg-1">
-                                    <label className="label-text" style={{visibility:'hidden'}}>Quitar</label><br/>
-                                        <div onClick={() => handleQuitarOpcion(index)} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar">
-                                            <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
-                                        </div>      
-                                    </div>
-                                    
-                                </div>
-                            ))}
-                            <button className="btn theme-btn" style={{marginTop:'20px'}} type="submit" onClick={handleAgregarOpcion}><i className="la la-plus mr-2"></i> Agregar opción</button>
-                        </div>
-                    </div>                   
+                    </div>                                       
                     <div className="course-submit-btn-box pb-4">                          
                         <button className="btn theme-btn" type="submit" onClick={handleEditarPregunta}>Guardar cambios</button>                                                
                     </div>
@@ -325,4 +263,4 @@ function FormularioEditarExamenPreguntaSmur() {
     )
 }
 
-export default FormularioEditarExamenPreguntaSmur;
+export default FormularioEditarExamenPreguntaFv;

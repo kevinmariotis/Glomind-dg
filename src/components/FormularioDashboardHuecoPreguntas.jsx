@@ -436,7 +436,7 @@ function FormularioDashboardHuecoPreguntas() {
             setMostrarSpinner(false);
             const datos = await response.json();                        
             if(response.ok){                
-                setPopup({mostrar:true, titulo:'Listo', contenido:'Pregunta borrada del banco de pregunta del examen.'});
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Pregunta borrada del banco de preguntas del examen.'});
                 obtenerDatosServidor();
                 return;
             } else {
@@ -757,7 +757,8 @@ function FormularioDashboardHuecoPreguntas() {
                                                             {tipo_preguntas[tema.tipo_pregunta]}
                                                         </th>                                                        
                                                         <td>   
-                                                            {tema.tipo_pregunta==1 ? <Link to={`${urlBase}/examen/editarpregunta/seleccion_multiple_unica_respuesta/${id}/${tema.id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Configurar"><i className="la la-gear"></i></Link> : ''}                                                                                                                         
+                                                            {tema.tipo_pregunta==1 ? <Link to={`${urlBase}/examen/editarpregunta/seleccion_multiple_unica_respuesta/${id}/${tema.id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Configurar"><i className="la la-gear"></i></Link> : ''}
+                                                            {tema.tipo_pregunta==2 ? <Link to={`${urlBase}/examen/editarpregunta/falso_verdadero/${id}/${tema.id}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Configurar"><i className="la la-gear"></i></Link> : ''}
                                                             <div onClick={()=>{ handlePopUpConfirmarBorrarExamenPregunta(tema.id); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar">
                                                                 <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
                                                             </div>

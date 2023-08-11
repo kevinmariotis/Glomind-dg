@@ -171,7 +171,7 @@ function TarjetaCurso(
                                 <span className="rating-total pl-1">({reviews_cantidad})</span>
                             </div>
                             <div className="d-flex justify-content-between align-items-center">
-                                <p className="card-price text-black font-weight-bold">{precio_actual} {precio_anterior!=0 && <span className="before-price font-weight-medium">{precio_anterior}</span>}</p>
+                                <p className="card-price text-black font-weight-bold">{precio_actual!=0 ? precio_actual : 'Gratis!'} {precio_anterior!=0 && <span className="before-price font-weight-medium">{precio_anterior}</span>}</p>
                                 {estadoFavorito!=-1 && <div className="icon-element icon-element-sm shadow-sm cursor-pointer" title="Agregar a favoritos" onClick={handleSetFavorito}><i className={`la la-heart${estadoFavorito==0 ? '-o' : '' }`}></i></div>}
                             </div>
                         </div>

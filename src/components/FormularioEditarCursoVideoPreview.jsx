@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { AuthContext } from '../AuthContext';
@@ -196,8 +196,8 @@ function FormularioEditarCursoVideoPreview() {
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
-                    <h3 className="fs-22 font-weight-semi-bold">{nombre}</h3>
-                    <span>Editar video de vista previa del curso</span>
+                    <h3 className="fs-22 font-weight-semi-bold"><Link to={`/cursos`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la lista de cursos"><i className="la la-angle-left"></i></div></Link>&nbsp;{nombre}</h3>
+                    <span style={{marginLeft:'55px'}}>Editar video de vista previa del curso</span>
                 </div>
                 <form action="#">                                                                                
                     {permissions[67] ? <div className="card card-item">

@@ -152,7 +152,7 @@ function FormularioDashboardCursos() {
                                     </li>
                                 </ul>
                                 <div className="d-flex justify-content-between align-items-center">
-                                    <p className="card-price text-black font-weight-bold">{cursos[key].precio_actual} {cursos[key].precio_anterior!=0 && <span className="before-price font-weight-medium">{cursos[key].precio_anterior}</span>}</p>
+                                    <p className="card-price text-black font-weight-bold">{cursos[key].precio_actual!=0 ? cursos[key].precio_actual : 'Gratis!' } {cursos[key].precio_anterior!=0 && <span className="before-price font-weight-medium">{cursos[key].precio_anterior}</span>}</p>
                                     <div className="card-action-wrap pl-3">
                                         <a href="course-details.html" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="View"><i className="la la-eye"></i></a>
                                         {permissions[22] ? <Link to={`/curso/editar/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}

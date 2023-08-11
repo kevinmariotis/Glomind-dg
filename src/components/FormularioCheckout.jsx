@@ -15,7 +15,8 @@ function FormularioCheckout() {
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
     const [popUpVolver, setPopupVolver] = useState({mostrar:false, titulo:'', contenido:''});
     const [popUpConfirmar, setPopupConfirmar] = useState({mostrar:false, titulo:'', contenido:''});
-
+    const [popUpGratis, setPopUpGratis] = useState({mostrar:false, titulo:'', contenido:''});
+    
     const [productos, setProductos] = useState([]);
     const [factura, setFactura] = useState([]);
     const [paises, setPaises] = useState([]);
@@ -106,6 +107,11 @@ function FormularioCheckout() {
         setPopupConfirmar({...popUp, mostrar:false});
     };
 
+    const handleAceptarPopUpGratis = () => {        
+        setPopUpGratis({...popUpGratis, mostrar:false});
+        navigate('/cursos/matriculados');
+    };    
+
     const obtenerDatosDelServidor = async () => {                  
         const headers = {
             'Authorization':`Bearer ${jwt}`,
@@ -188,38 +194,42 @@ function FormularioCheckout() {
             setBotonDesactivadoCheckout(false);
             setMostrarSpinner(false);
             if (response.ok){ 
+                if(datos.gratis==0){
+                    //datos.id_factura; //aqui esta el id de factura
 
-                //datos.id_factura; //aqui esta el id de factura
-
-                //se hace la consulta para obtener el volante de pago
-                setMostrarSpinner(true);
-                const opciones2 = {
-                    method: 'GET',
-                    headers: headers,                   
-                };
-                const response2 = await fetch(`${urlBaseApi}/api/carrito/solicitarVolanteDePago/${datos.id_factura}`, opciones2);
-                setMostrarSpinner(false);
-                if(response2.ok){ 
-                    const datos2 = await response2.json();                                                    
-                    setVolanteAction(datos2.action);
-                    setVolanteMerchantId(datos2.merchantId);
-                    setVolanteAccountId(datos2.accountId);
-                    setVolanteDescription(datos2.description);
-                    setVolanteReferenceCode(datos2.referenceCode);
-                    setVolanteAmount(datos2.amount);
-                    setVolanteTax(datos2.tax);
-                    setVolanteTaxReturnBase(datos2.taxReturnBase);
-                    setVolanteCurrency(datos2.currency);
-                    setVolanteSignature(datos2.signature);
-                    setVolanteTest(datos2.test);
-                    setVolanteBuyerEmail(datos2.buyerEmail);
-                    setVolanteResponseUrl(datos2.responseUrl);
-                    setVolanteConfirmationUrl(datos2.confirmationUrl);                    
+                    //se hace la consulta para obtener el volante de pago
+                    setMostrarSpinner(true);
+                    const opciones2 = {
+                        method: 'GET',
+                        headers: headers,                   
+                    };
+                    const response2 = await fetch(`${urlBaseApi}/api/carrito/solicitarVolanteDePago/${datos.id_factura}`, opciones2);
+                    setMostrarSpinner(false);
+                    if(response2.ok){ 
+                        const datos2 = await response2.json();                                                    
+                        setVolanteAction(datos2.action);
+                        setVolanteMerchantId(datos2.merchantId);
+                        setVolanteAccountId(datos2.accountId);
+                        setVolanteDescription(datos2.description);
+                        setVolanteReferenceCode(datos2.referenceCode);
+                        setVolanteAmount(datos2.amount);
+                        setVolanteTax(datos2.tax);
+                        setVolanteTaxReturnBase(datos2.taxReturnBase);
+                        setVolanteCurrency(datos2.currency);
+                        setVolanteSignature(datos2.signature);
+                        setVolanteTest(datos2.test);
+                        setVolanteBuyerEmail(datos2.buyerEmail);
+                        setVolanteResponseUrl(datos2.responseUrl);
+                        setVolanteConfirmationUrl(datos2.confirmationUrl);                    
+                    }else{
+                        const datos2 = await response2.json();
+                        mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {}); 
+                        const statusCode = response2.status; 
+                    }
                 }else{
-                    const datos2 = await response2.json();
-                    mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {}); 
-                    const statusCode = response2.status; 
-                }                
+                    setCargarContadorCarrito(true);
+                    setPopUpGratis({mostrar:true, titulo:'Listo', contenido:'Los productos ya se encuentran habilitados en tu lista de cursos comprados, al presionar aceptar te llevaremos allá.'});
+                }
             } else {                 
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Rellenar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
             }            
@@ -306,6 +316,17 @@ function FormularioCheckout() {
                 funcionCerrar={handleFuncionCerrarPopUpConfirmar}
                 textoCerrar="Cancelar"
                 textoAceptar="Proceder al pago"
+            />
+            <Popup 
+                mostrarPopup={popUpGratis.mostrar} 
+                tamano="xx"
+                tipo={2} 
+                titulo={popUpGratis.titulo} 
+                mensaje={popUpGratis.contenido} 
+                funcionAceptar={handleAceptarPopUpGratis} 
+                funcionCerrar={handleFuncionCerrarPopUpConfirmar}
+                textoCerrar="Cerrar"
+                textoAceptar="Aceptar"
             />
             <section className="cart-area section--padding">
                 <div className="container">
