@@ -338,6 +338,7 @@ function FormularioEditarExamen() {
                         <button className="btn theme-btn" type="submit" onClick={handleEditarExamen}>Guardar cambios</button>                        
                     </div>
                 </form>
+                <DashboardFooter />
             </div>
         </div>
         </>

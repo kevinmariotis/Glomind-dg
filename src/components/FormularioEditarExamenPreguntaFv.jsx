@@ -138,7 +138,7 @@ function FormularioEditarExamenPreguntaFv() {
         const raw = {
             'id_agrupacion': agrupacion.toString(),   
             'texto_pregunta': pregunta,
-            'respuesta': falsoVerdadero,
+            'respuesta': falsoVerdadero.toString(),
             'estado': estado,
         };
         if(agrupacion=='0'){

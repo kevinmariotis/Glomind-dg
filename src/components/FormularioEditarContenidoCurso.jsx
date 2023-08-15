@@ -2,7 +2,7 @@ import React, {useContext, useState, useEffect} from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { AuthContext } from '../AuthContext';
-import { mensajesDeError } from './utils';
+import { mensajesDeError, cortarCadenaPorCaracter } from './utils';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
@@ -24,7 +24,10 @@ function FormularioEditarContenidoCurso() {
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
     const [popUpConfirmarBorrarSeccion, setPopupConfirmarBorrarSeccion] = useState({mostrar:false, titulo:'', contenido:'', id_categoria:''});    
     const [popUpConfirmarBorrarContenido, setPopupConfirmarBorrarContenido] = useState({mostrar:false, titulo:'', contenido:'', id_contenido:''});    
+    const [popUpConfirmarBorrarDescargable, setPopupConfirmarBorrarDescargable] = useState({mostrar:false, titulo:'', contenido:'', id_descargable:''});    
     const [popUpVideo, setPopupVideo] = useState({mostrar:false, titulo:'', contenido:''});    
+    const [popUpDescargable, setPopupDescargable] = useState({mostrar:false, id_descargable:-1, nombre:'', descripcion:'', archivo_seleccionado:''});    
+    const [popUpListaDescargable, setPopupListaDescargable] = useState({mostrar:false, id_tipo_contenido:-1, tipo_contenido:-1});        
     const [posterVistaPrevia, setPosterVistaPrevia] = useState('');    
     const [contenido, setContenido] = useState({});        
     const [mostrarPopUpCrearSeccion, setMostrarPopUpCrearSeccion] = useState(false);                    
@@ -34,6 +37,7 @@ function FormularioEditarContenidoCurso() {
     const [nombreSeccion, setNombreSeccion] = useState('');
     const [idSeccionEditando, setIdSeccionEditando] = useState(-1);
     const [idSeccionAgregarContenido, setIdSeccionAgregarContenido] = useState(-1);
+    const [listaDescargables, setListaDescargables] = useState([]);
     
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
     
@@ -41,6 +45,12 @@ function FormularioEditarContenidoCurso() {
         window.scrollTo(0, 0);
         obtenerDatosServidor();        
     }, []);
+
+    useEffect(() => {           
+        if(popUpListaDescargable.id_tipo_contenido!=-1){
+            obtenerDatosListaDescargables();
+        }
+    }, [popUpListaDescargable.id_tipo_contenido]);
          
     const handleNombreChange = (event) => { setNombre(event.target.value);    };      
         
@@ -48,6 +58,8 @@ function FormularioEditarContenidoCurso() {
     const camposErrores = {
         'imagen':[],        
         'nombre':[],
+        'descripcion':[],
+        'archivo':[],
     }    
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
@@ -92,6 +104,46 @@ function FormularioEditarContenidoCurso() {
         setMostrarPopUpCrearSeccion(!mostrarPopUpCrearSeccion);                    
     }
 
+    const handleAbrirListaDescargable = (event, props) => {   
+        event.preventDefault();             
+        setPopupListaDescargable({...popUpListaDescargable, mostrar:true, id_tipo_contenido:props.id_tipo_contenido, tipo_contenido:props.tipo_contenido});        
+    }   
+    const handleCerrarListaDescargable = () => {                 
+        setPopupListaDescargable({...popUpListaDescargable, mostrar:false, id_tipo_contenido:-1, tipo_contenido:-1});    
+    }
+    const handleCrearDescargable = () => {                 
+        setPopupListaDescargable({...popUpListaDescargable, mostrar:false});    //aqui estan los datos de hacia donde va el nuevo descargable
+        setPopupDescargable({...popUpDescargable, mostrar:true, id_descargable:-1, nombre:'', descripcion:''});        
+    }
+    const handleCerrarDescargable = (event, props) => {   
+        event.preventDefault();             
+        setPopupDescargable({...popUpDescargable, mostrar:false, id_descargable:-1, nombre:'', descripcion:'', archivo_seleccionado:''});        
+    }
+    const handleEditarDescargable = (event, props) => {                 
+        setPopupListaDescargable({...popUpListaDescargable, mostrar:false});    //aqui estan los datos de hacia donde va el nuevo descargable
+        setPopupDescargable({...popUpDescargable, mostrar:true, id_descargable:props.id_descargable, nombre:props.nombre, descripcion:props.descripcion});                
+    }
+    const handleNombreDescargableChange = (event) => { setPopupDescargable({...popUpDescargable, nombre:event.target.value});  };  
+    const handleDescripcionDescargableChange = (event) => { setPopupDescargable({...popUpDescargable, descripcion:event.target.value});  };  
+    const onDrop = (acceptedFiles) => {
+        // Lógica para procesar los archivos aceptados
+        setPopupDescargable({...popUpDescargable, archivo_seleccionado:acceptedFiles[0]});        
+    };
+    const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+        onDrop,
+        accept: {
+            'application/pdf': ['.pdf'],            
+            'application/zip': ['.zip'],            
+            'application/vnd.rar': ['.rar'],      
+            'application/vnd.ms-excel': ['.xls'],      
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],      
+        }
+    });    
+    /*const fileList = acceptedFiles.map((file, index) => (
+        <li key={`archivo-ajuntado-${index}`}>{file.name}</li>
+    ));*/
+
+
     const obtenerDatosServidor = async () => {                  
         const headers = {
             'Authorization':`Bearer ${jwt}`,
@@ -121,6 +173,40 @@ function FormularioEditarContenidoCurso() {
                 mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {});                    
             }  
                      
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+    const obtenerDatosListaDescargables = async () => {                  
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            }; 
+            setMostrarSpinner(true);
+
+            let url = '';
+            switch(popUpListaDescargable.tipo_contenido){
+                case 1:
+                    url = `${urlBaseApi}/api/video/getDescargables/${popUpListaDescargable.id_tipo_contenido}`;
+                break;
+                case 2:
+                    url = `${urlBaseApi}/api/examen/getDescargables/${popUpListaDescargable.id_tipo_contenido}`;
+                break;
+            }            
+            const response = await fetch(url, opciones);            
+            setMostrarSpinner(false);
+            const datos = await response.json();                   
+            if (response.ok){                   
+                setListaDescargables(datos);
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+            }
         }catch(error){
             // Manejar el caso de error en la solicitud
             console.error('Error en la solicitud al servidor', error);
@@ -258,7 +344,7 @@ function FormularioEditarContenidoCurso() {
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
                 return;
             } else {
-                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});                                                                    
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});                                                                    
             }                
         }catch (error) {
             console.error('Error de conexión:', error);
@@ -346,12 +432,195 @@ function FormularioEditarContenidoCurso() {
         }
     };
 
+    const handleSubirDescargable = async (event) => {
+        event.preventDefault();
+        reiniciarErrorCampoGlobal();
+
+        if(popUpDescargable.archivo_seleccionado!=null){                        
+            setMostrarSpinner(true);
+            const formData = new FormData();            
+            formData.append('id_tipopadre', popUpListaDescargable.tipo_contenido);
+            formData.append('id_padre', popUpListaDescargable.id_tipo_contenido);            
+            formData.append('nombre', popUpDescargable.nombre);
+            formData.append('descripcion', popUpDescargable.descripcion);
+            formData.append('archivo', popUpDescargable.archivo_seleccionado);
+
+            const xhr = new XMLHttpRequest();
+
+            // Escuchamos el evento de progreso para actualizar el estado del progreso.
+            xhr.upload.addEventListener('progress', (event) => {
+            if (event.lengthComputable) {
+                const percentage = (event.loaded / event.total) * 100;
+                //setProgress(percentage.toFixed(0));                
+            }
+            });
+
+            // Evento de finalización de la carga.
+            xhr.onload = () => {    
+                setMostrarSpinner(false);                                                
+                const status = xhr.status;   
+                const datos = JSON.parse(xhr.responseText);                                      
+                if(status>=200 && status<300){                    
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Descargable subido correctamente.'});                    
+                    setPopupDescargable({...popUpDescargable, mostrar:false, nombre:'', descripcion:'', archivo_seleccionado:''});
+                }else{
+                    mensajesDeError(setPopup, status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Error', 'contenido': 'Hubo un error al subir el descargable, revise el formulario.'});
+                }                
+                return;
+            };
+
+            // Evento de error de la carga.
+            xhr.onerror = () => {    
+                setMostrarSpinner(false);                            
+                const status = xhr.status;
+                const datos = JSON.parse(xhr.responseText);
+                mensajesDeError(setPopup, status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Error', 'contenido': 'Hubo un error al subir el descargable, revise el formulario.'});                                                                    
+                return;                
+            };
+
+            // Enviamos la solicitud POST con el archivo.
+            xhr.open('POST', `${urlBaseApi}/api/descargable`, true);
+            xhr.setRequestHeader('Authorization', `Bearer ${jwt}`);
+            xhr.send(formData);
+        }    
+    }
+    const handleEditarDescargableServidor = async () => {
+        if(popUpDescargable.id_descargable!=-1){
+            reiniciarErrorCampoGlobal();         
+            setMostrarSpinner(true);       
+            const raw = {
+                'nombre': popUpDescargable.nombre.toString(),            
+                'descripcion': popUpDescargable.descripcion.toString(),
+            };
+                                
+            const opciones = {
+                method: 'PUT',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: JSON.stringify(raw),
+            };
+            
+            try {                
+                const response = await fetch(`${urlBaseApi}/api/descargable/${popUpDescargable.id_descargable}`, opciones);            
+                const datos = await response.json();
+                if (response.ok){                     
+                    if(popUpDescargable.archivo_seleccionado!=''){
+                        handleSubirArchivoDescargable();
+                    }else{
+                        handleFinalizarEdicionDescargable();
+                    }
+                    return;                              
+                } else {                   
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Revisar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
+                }                
+            }catch (error) {
+                setPopupSubida({...popUpSubida, mostrar:false});
+                console.error('Error de conexión:', error);
+            }
+        }
+    }
+    const handleSubirArchivoDescargable = async () => {               
+        reiniciarErrorCampoGlobal();
+        if(popUpDescargable.archivo_seleccionado!=''){
+                            
+            const formData = new FormData();                        
+            formData.append('archivo', popUpDescargable.archivo_seleccionado);
+
+            const xhr = new XMLHttpRequest();
+
+            // Escuchamos el evento de progreso para actualizar el estado del progreso.
+            xhr.upload.addEventListener('progress', (event) => {
+            if (event.lengthComputable) {
+                const percentage = (event.loaded / event.total) * 100;                   
+            }
+            });
+
+            // Evento de finalización de la carga.
+            xhr.onload = () => {                                                    
+                const status = xhr.status;   
+                const datos = JSON.parse(xhr.responseText);                                      
+                if(status>=200 && status<300){ 
+                    handleFinalizarEdicionDescargable();                                       
+                }else{
+                    mensajesDeError(setPopup, status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+                }                
+                return;
+            };
+
+            // Evento de error de la carga.
+            xhr.onerror = () => {                               
+                const status = xhr.status;
+                const datos = JSON.parse(xhr.responseText);
+                mensajesDeError(setPopup, status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});                                                                    
+                return;                
+            };
+
+            // Enviamos la solicitud POST con el archivo.
+            xhr.open('POST', `${urlBaseApi}/api/descargable/actualizarArchivo/${popUpDescargable.id_descargable}`, true);
+            xhr.setRequestHeader('Authorization', `Bearer ${jwt}`);
+            xhr.send(formData);
+            
+        }else{
+            return;
+        }
+    }
+    const borrarDescargable = async (id_descargable) => {        
+        const opciones = {
+            method: 'DELETE',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },            
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/descargable/${id_descargable}`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if (response.ok){                    
+                //setPopupListaDescargable({...popUpListaDescargable, id_tipo_contenido:-1});                  
+                obtenerDatosListaDescargables();
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});                                                                    
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    }
+    const handleFinalizarEdicionDescargable = () => { 
+        setMostrarSpinner(false);
+        setPopupDescargable({...popUpDescargable, mostrar:false, id_descargable:-1, nombre:'', descripcion:'', archivo_seleccionado:''});                
+        setPopup({mostrar:true, titulo:'Listo', contenido:'Descargable guardado correctamente.'});                        
+        setPopupListaDescargable({...popUpListaDescargable, id_tipo_contenido:-1});                        
+    }
+    const handleBorrarDescargable = (event, id_descargable) => {         
+        event.preventDefault();     
+        setPopupConfirmarBorrarDescargable({mostrar:true, titulo:'Confirmar', contenido:'Confirma que desea borrar el descargable.', id_descargable:id_descargable});   
+    }
+    const handleFuncionCerrarPopUpConfirmarBorrarDescargable = () => {        
+        setPopupConfirmarBorrarDescargable({...popUpConfirmarBorrarDescargable, mostrar:false});
+    };
+    const handleFuncionAceptarPopUpConfirmarBorrarDescargable = () => {        
+        setPopupConfirmarBorrarDescargable({...popUpConfirmarBorrarDescargable, mostrar:false});
+        borrarDescargable(popUpConfirmarBorrarDescargable.id_descargable);
+    };
+
     const handleFuncionHuecoPreguntas = (id_examen) => { 
         if (typeof id !== 'undefined') {
             navigate(`/examen/huecopreguntas/${id_examen}/${id}`); 
         }else{
             navigate(`/examen/huecopreguntas/${id_examen}`); 
         }               
+    };
+
+    const handleDownload = ({ruta_archivo, nombre_archivo}) => {        
+        const link = document.createElement('a');
+        link.href = ruta_archivo;
+        link.target = '_blank'; // Para abrir en una nueva pestaña
+        link.download = nombre_archivo; // Nombre con el que se descargará el archivo
+        link.click();
     };
 
     return (
@@ -387,6 +656,16 @@ function FormularioEditarContenidoCurso() {
             funcionCerrar={handleFuncionCerrarPopUpConfirmarBorrarContenido}
             textoCerrar="Cancelar"
         />
+        <Popup 
+            mostrarPopup={popUpConfirmarBorrarDescargable.mostrar} 
+            tamano="xx"
+            tipo={3} 
+            titulo={popUpConfirmarBorrarDescargable.titulo} 
+            mensaje={popUpConfirmarBorrarDescargable.contenido} 
+            funcionAceptar={handleFuncionAceptarPopUpConfirmarBorrarDescargable} 
+            funcionCerrar={handleFuncionCerrarPopUpConfirmarBorrarDescargable}
+            textoCerrar="Cancelar"
+        />
         <Modal show={popUpVideo.mostrar} size="xx" onHide={handleFuncionCerrarPopUpVideo} backdrop="static" keyboard={false} animation={false} centered>
             {(popUpVideo.titulo!='') && <Modal.Header>
                 <Modal.Title>{popUpVideo.titulo}</Modal.Title>                   
@@ -400,6 +679,101 @@ function FormularioEditarContenidoCurso() {
                 <Button variant="secondary" onClick={handleFuncionCerrarPopUpVideo}>Cerrar</Button>
             </Modal.Footer>
         </Modal>
+        {popUpListaDescargable.mostrar==1 && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="decargableModal" tabIndex="-1" role="dialog" aria-labelledby="decargableModalTitle" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="decargableModalTitle">Descargables</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">                    
+                        <div className="col-lg-12">
+                            <div className="table-responsive">
+                                <table className="table generic-table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Nombre</th>
+                                        <th scope="col">Descripción</th>
+                                        {permissions[36] ? <th scope="col"></th> : ''}
+                                    </tr>
+                                    </thead>
+                                    <tbody >
+                                        {listaDescargables.map((item, index) => (
+                                            <tr key={`descargable-x-${index}`}>
+                                                <th scope="row">
+                                                    <div onClick={()=>{ handleDownload({'ruta_archivo':`${urlBaseApi}/${item.ruta_archivo.replace('public/', '')}`, 'nombre_archivo':'descargable.pdf'}) }} class="icon-element icon-element-sm flex-shrink-0 bg-7 mr-3 text-white" style={{cursor:'pointer'}}>
+                                                        <i class="la la-download"></i>
+                                                    </div> 
+                                                </th>
+                                                <th scope="row">                                                                                                                                                                                                                                                                          
+                                                    {item.nombre}
+                                                </th>
+                                                <th scope="row">                                                                                                                                                                                                                      
+                                                    {cortarCadenaPorCaracter(item.descripcion, '.', 10).split('<br />').map((line, index) => (<span style={{ fontStyle: 'italic' }}>{line}<br /></span> ))}                                                    
+                                                </th>
+                                                {permissions[36] ? <th scope="row">    
+                                                    <div onClick={(event) => { handleEditarDescargable(event, {id_descargable:item.id, nombre:item.nombre, descripcion:item.descripcion}); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div>
+                                                    <div onClick={event => { handleBorrarDescargable(event, item.id); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>
+                                                </th> : ''}
+                                            </tr>
+                                        ))}                                
+                                    </tbody>
+                                </table> 
+                                <button type="button" className="btn theme-btn mb-2" onClick={event => { handleCrearDescargable(event); }}>Nuevo descargable</button>                           
+                            </div>                                                        
+                        </div>
+                    </div>
+                    <div className="modal-footer border-top-gray">                        
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={handleCerrarListaDescargable}> Cerrar </button>
+                    </div>
+                </div>
+            </div>
+        </div>}
+        {popUpDescargable.mostrar==1 && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="decargableModal" tabIndex="-1" role="dialog" aria-labelledby="decargableModalTitle" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="decargableModalTitle">{popUpDescargable.id_descargable!=-1 ? 'Editar descargable' : 'Crear descargable' }</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">
+                        <div className="col-lg-12">
+                            <div className="form-group">
+                                <label className="label-text">Nombre del descargable</label>                                                                    
+                                <input value={popUpDescargable.nombre} onChange={handleNombreDescargableChange} className="form-control form--control pl-3" type="text" name="nombre_descargable" maxLength="64" placeholder="Ej: Plantilla para cálculos" />
+                                {erroresCampos['nombre'].length > 0 && (<SpamError mensaje={erroresCampos['nombre']} />)}                            
+                            </div>
+                        </div>    
+                        <div className="col-lg-12">
+                            <div className="form-group">
+                                <label className="label-text">Descripción</label>
+                                <textarea value={popUpDescargable.descripcion.replace(/<br\s*\/?>/g, '\n')} onChange={handleDescripcionDescargableChange} className="form-control form--control user-text-editor pl-3" name="desc_descargable" ></textarea>
+                                {erroresCampos['descripcion'].length > 0 && (<SpamError mensaje={erroresCampos['descripcion']} />)}
+                            </div>
+                        </div> 
+                        <div className="col-lg-12">
+                            <div className="form-group">
+                                <label className="label-text">Archivo</label>
+                                <div {...getRootProps()}>                                            
+                                    <input {...getInputProps()} className="multi file-upload-input" />
+                                    <span className="file-upload-text"><i className="la la-cloud-upload mr-2 fs-18"></i>Selecciona o arrastra el nuevo video que reemplaza a este aquí (opcional).</span>
+                                </div>
+                                <span>{popUpDescargable.archivo_seleccionado.name}</span>                               
+                                {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
+                            </div>
+                        </div> 
+                        
+                    </div>
+                    <div className="modal-footer border-top-gray">
+                        <button type="button" className="btn theme-btn mb-2" onClick={event => {popUpDescargable.id_descargable!=-1 ? handleEditarDescargableServidor(event) : handleSubirDescargable(event); }}>{popUpDescargable.id_descargable!=-1 ? 'Guardar' : 'Crear'}</button>                             
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={ handleCerrarDescargable}> Cancelar </button>
+                    </div>
+                </div>
+            </div>
+        </div>}
         {mostrarPopUpCrearSeccion && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -486,9 +860,10 @@ function FormularioEditarContenidoCurso() {
                                                 <thead>
                                                 <tr>
                                                     <th scope="col">Vista Previa</th>
-                                                    <th scope="col">Nombre</th>
+                                                    <th scope="col">Nombre</th>                                                    
+                                                    {permissions[34] ? <th scope="col">Descargable</th> : ''}
                                                     <th scope="col">Porcentaje en curso</th>
-                                                    <th scope="col">Descripción</th>                                
+                                                    <th scope="col">Detalle</th>                                
                                                     <th scope="col"></th>
                                                 </tr>
                                                 </thead>
@@ -498,7 +873,7 @@ function FormularioEditarContenidoCurso() {
                                                             <th scope="row">
                                                                 <div className="custom-control custom-checkbox media media-card">                                                                                                                                                                            
                                                                     {tema.tipo_contenido==1 ? 
-                                                                        <div className="media-img" style={{ height: 'auto' }}>
+                                                                        <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
                                                                             {tema.imagen_preview_pequena && tema.imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${tema.imagen_preview_pequena}`} alt={tema.nombre} onClick={()=>{ setPosterVistaPrevia(tema.imagen_preview_pequena); setPopupVideo({...popUpVideo, mostrar:true, 'contenido':tema.video_grande}); }} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={tema.nombre} /> }
                                                                         </div> : ''}                                                                            
                                                                 </div>
@@ -506,6 +881,15 @@ function FormularioEditarContenidoCurso() {
                                                             <td>
                                                                 {tema.nombre}
                                                             </td>
+                                                            {permissions[34] ? 
+                                                                <td>
+                                                                    {tema.descargables.map((descargable) => 
+                                                                        <div onClick={()=>{ handleDownload({'ruta_archivo':`${urlBaseApi}/${descargable.ruta_archivo.replace('public/', '')}`, 'nombre_archivo':'descargable.pdf'}) }} class="icon-element icon-element-sm flex-shrink-0 bg-7 mr-3 text-white" style={{cursor:'pointer'}}>
+                                                                            <i class="la la-download"></i>
+                                                                        </div>                                                                    
+                                                                    )}   
+                                                                </td>
+                                                            : ''}
                                                             <td>
                                                                 {tema.porcentaje_en_total_curso!=0 ? `${tema.porcentaje_en_total_curso}%` : ''}
                                                             </td>
@@ -523,6 +907,7 @@ function FormularioEditarContenidoCurso() {
                                                                 {permissions[29] ? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Subir" onClick={event => handleMoverContenido(event, tema.id_contenido, '1')} title="Subir"><i className="la la-sort-up"></i></a> : ''}
                                                                 {permissions[29] ? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Bajar" onClick={event => handleMoverContenido(event, tema.id_contenido, '2')} title="Bajar"><i className="la la-sort-down"></i></a> : ''}
                                                                 {permissions[29] ? <div onClick={event => { handleBorrarContenido(event, tema.id_contenido); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}
+                                                                {(permissions[35] || permissions[36]) ? <a onClick={(event) => { handleAbrirListaDescargable(event, {id_tipo_contenido:tema.id_tipo_contenido, tipo_contenido:tema.tipo_contenido}) } }  href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Editar descargable" title="Editar descargable"><i className="la la-download"></i></a> : ''}
 
                                                                 {(tema.tipo_contenido==2 && permissions[47]) ? <Link to={`/examen/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
                                                                 {(tema.tipo_contenido==2 && permissions[47]) ? <div onClick={() => { handleFuncionHuecoPreguntas(tema.id_tipo_contenido) } } className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar preguntas"><i className="la la-list-ol"></i></div> : ''}

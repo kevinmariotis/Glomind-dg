@@ -306,6 +306,7 @@ function FormularioCrearExamen() {
                         <button className="btn theme-btn" type="submit" onClick={handleCrearExamen}>Crear examen</button>                        
                     </div>
                 </form>
+                <DashboardFooter />
             </div>
         </div>
         </>
