@@ -32,6 +32,7 @@ function FormularioDetallesDeCurso(){
     const [docenteCursos, setDocenteCursos] = useState([]);
     const [reviews, setReviews] = useState({});    
     const [tieneReviews, setTieneReview] = useState(0);    
+    const [porcentajeProgreso, setPorcentajeProgreso] = useState(-1);    
     const [cursoImagenGrande, setCursoImagenGrande] = useState('images/pattern.png');    
     const [videoVistaPrevia, setVideoVistaPrevia] = useState('');    
     const [videoVistaPreviaImagen, setVideoVistaPreviaImagen] = useState('');    
@@ -131,6 +132,7 @@ function FormularioDetallesDeCurso(){
                 setDocenteDescripcion(datos.curso.docente_descripcion.split("<separador>"));
                 setDocenteCursos(datos.curso.docente_cursos);
                 setTieneReview(datos.curso.tiene_review);
+                setPorcentajeProgreso(datos.curso.porcentaje_progreso);
                 setCursoImagenGrande(datos.curso.imagen_grande);
                 setVideoVistaPrevia(datos.curso.video_vista_previa);
                 setVideoVistaPreviaImagen(datos.curso.video_imagen_vista_previa);                     
@@ -1007,7 +1009,7 @@ function FormularioDetallesDeCurso(){
                                     </div>}
                                 </div>
 
-                                {(authenticated && tieneReviews==0) && <div className="course-overview-card pt-4">
+                                {(authenticated && tieneReviews==0 && porcentajeProgreso>=80) && <div className="course-overview-card pt-4">
                                     <h3 className="fs-24 font-weight-semi-bold pb-4">Agrega una reseña</h3>
                                     <div className="leave-rating-wrap pb-4">
                                         <div className="leave-rating leave--rating">

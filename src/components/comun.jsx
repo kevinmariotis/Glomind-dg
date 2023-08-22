@@ -20,9 +20,9 @@
   }
   
   export const clicBuscarMovil = () =>  {
-      var searchFormToggle = document.querySelector('.search-menu-toggle');
-      var mobileSearchForm = document.querySelector('.mobile-search-form');
-      var bodyOverlay = document.querySelector('.body-overlay');
+      let searchFormToggle = document.querySelector('.search-menu-toggle');
+      let mobileSearchForm = document.querySelector('.mobile-search-form');
+      let bodyOverlay = document.querySelector('.body-overlay');
       
       if(searchFormToggle!=null){
         searchFormToggle.addEventListener('click', function() {
@@ -36,7 +36,7 @@
         });
       }
       /*=========== Mobile search form close ============*/
-      var searchFormClose = document.querySelectorAll('.search-bar-close, .body-overlay');
+      let searchFormClose = document.querySelectorAll('.search-bar-close, .body-overlay');
       if(searchFormClose!=null){
           searchFormClose.forEach(function(element) {
               element.addEventListener('click', function() {
@@ -51,5 +51,59 @@
           });
       }
   }   
+
+  /*
+      Abre o cierra la barra de navegacion del curso cuando se esta en play
+  */
+  export const sideBarAbrirCerrar = () =>  {
+      let courseItemLinks = document.querySelectorAll('.curriculum-sidebar-list > .course-item-link');
+
+      courseItemLinks.forEach(function(link) {
+          link.addEventListener('click', function() {
+              let self = this;
+          
+              self.classList.add('active');
+          
+              let siblings = Array.from(self.parentNode.children).filter(function(element) {
+                return element !== self;
+              });
+          
+              siblings.forEach(function(sibling) {
+                sibling.classList.remove('active');
+              });
+          
+              let lectureViewerTextWrap = document.querySelector('.lecture-viewer-text-wrap');
+          
+              if (self.classList.contains('active-resource')) {
+                lectureViewerTextWrap.classList.add('active');
+              } else {
+                lectureViewerTextWrap.classList.remove('active');
+              }
+          });
+      });
+                
+      //cerrar side bar
+      let sidebarCloseButtons = document.querySelectorAll('.sidebar-close');
+      sidebarCloseButtons.forEach(function(button) {
+          button.addEventListener('click', function() {
+              let elements = document.querySelectorAll('.course-dashboard-sidebar-column, .course-dashboard-column, .sidebar-open');
+              elements.forEach(function(element) {
+                  element.classList.add('active');
+              });
+          });
+      });
+
+      //abrir side bar
+      let sidebarOpenButtons = document.querySelectorAll('.sidebar-open');
+      sidebarOpenButtons.forEach(function(button) {
+          button.addEventListener('click', function() {
+              let elements = document.querySelectorAll('.course-dashboard-sidebar-column, .course-dashboard-column, .sidebar-open');
+              elements.forEach(function(element) {
+                  element.classList.remove('active');
+              });
+          });
+      });
+
+  }  
 
   

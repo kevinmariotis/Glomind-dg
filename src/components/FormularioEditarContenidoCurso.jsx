@@ -463,6 +463,7 @@ function FormularioEditarContenidoCurso() {
                 if(status>=200 && status<300){                    
                     setPopup({mostrar:true, titulo:'Listo', contenido:'Descargable subido correctamente.'});                    
                     setPopupDescargable({...popUpDescargable, mostrar:false, nombre:'', descripcion:'', archivo_seleccionado:''});
+                    obtenerDatosServidor();
                 }else{
                     mensajesDeError(setPopup, status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Error', 'contenido': 'Hubo un error al subir el descargable, revise el formulario.'});
                 }                
@@ -594,6 +595,7 @@ function FormularioEditarContenidoCurso() {
         setPopupDescargable({...popUpDescargable, mostrar:false, id_descargable:-1, nombre:'', descripcion:'', archivo_seleccionado:''});                
         setPopup({mostrar:true, titulo:'Listo', contenido:'Descargable guardado correctamente.'});                        
         setPopupListaDescargable({...popUpListaDescargable, id_tipo_contenido:-1});                        
+        obtenerDatosServidor();
     }
     const handleBorrarDescargable = (event, id_descargable) => {         
         event.preventDefault();     

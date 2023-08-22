@@ -2,6 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './components/App.jsx'
 
+const link = document.createElement('link');
+link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap';
+link.rel = 'stylesheet';
+document.head.appendChild(link);
+
 import './assets/css/animated-headline.css';
 import './assets/css/bootstrap.min.css';
 import './assets/css/bootstrap-select.min.css';

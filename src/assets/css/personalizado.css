@@ -51,3 +51,33 @@
   .menu-wrapper form {
     width: 950px;   
 }
+
+/*css sugerido en el sito de reac-player para que se ajuste a el wrapper que contiene el player*/
+.react-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/*css para el movimiento del acordeon (inhabilitado por el momento, se dejaria estatico el acordeon)*/
+
+.collapse2.show {
+  max-height: 1000px;
+  transition: max-height 0.35s ease;
+  overflow: hidden;  
+}
+.collapse2 {
+  max-height: 0;
+  transition: max-height 0.35s ease;
+  overflow: hidden;  
+}
+
+.collapsing2 {
+  max-height: 1000px; /* Altura máxima durante la transición */
+  transition: max-height 0.35s ease;
+  
+}
+
+.show.collapse {
+  max-height: 1000px; /* Altura máxima cuando la pestaña está abierta */
+}

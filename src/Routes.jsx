@@ -27,6 +27,7 @@ import PaginaCrearExamenPreguntaSmur from './components/PaginaCrearExamenPregunt
 import PaginaEditarExamenPreguntaSmur from './components/PaginaEditarExamenPreguntaSmur';
 import PaginaCrearExamenPreguntaFv from './components/PaginaCrearExamenPreguntaFv';
 import PaginaEditarExamenPreguntaFv from './components/PaginaEditarExamenPreguntaFv';
+import PaginaPlay from './components/PaginaPlay';
 
 import Pagina404 from './components/Pagina404';
 
@@ -82,6 +83,7 @@ const Rutas = () => {
                 <Route path="/curso/contenido/:id" element={<ProtectedRoute permiso={validarPermisos([29, 25, 24])} ><PaginaEditarContenidoCurso/></ProtectedRoute>} />
                 <Route path="/curso/videopreview/:id" element={<ProtectedRoute permiso={validarPermisos([67])} ><PaginaEditarCursoVideoPreview/></ProtectedRoute>} />
                 <Route path="/curso/imagen/:id" element={<ProtectedRoute permiso={validarPermisos([66])} ><PaginaEditarCursoImagen/></ProtectedRoute>} />                
+                <Route path="/play/:url_amigable" element={<ProtectedRoute permiso={authenticated} ><PaginaPlay/></ProtectedRoute>} />                
                 <Route exact path="/" element={<Pagina404/>} />          
                 <Route path="*" component={<Pagina404/>} />
             </Routes>            

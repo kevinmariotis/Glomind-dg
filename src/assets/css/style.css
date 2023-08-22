@@ -2496,15 +2496,15 @@ div.datedropper .picker .pick-lg-b li {
     .leave-rating label:hover::before {
       color: #F68A03; }
     .leave-rating label:nth-of-type(5):hover ~ .rating-result-text::before {
-      content: "Awful!"; }
+      content: "Horrible!"; }
     .leave-rating label:nth-of-type(4):hover ~ .rating-result-text::before {
-      content: "Poor!"; }
+      content: "Pobre!"; }
     .leave-rating label:nth-of-type(3):hover ~ .rating-result-text::before {
-      content: "Average!"; }
+      content: "Aceptable!"; }
     .leave-rating label:nth-of-type(2):hover ~ .rating-result-text::before {
-      content: "Good!"; }
+      content: "Bueno!"; }
     .leave-rating label:nth-of-type(1):hover ~ .rating-result-text::before {
-      content: "Amazing!!"; }
+      content: "Excelente!!"; }
 
 /*======= leave--rating =======*/
 .leave--rating {
@@ -2522,7 +2522,7 @@ div.datedropper .picker .pick-lg-b li {
   width: 100%;
   bottom: 100%; }
   .rating-result-text::before {
-    content: "Select Rating"; }
+    content: "Selecciona tu calificación"; }
 
 /*==== category-item =====*/
 .category-item {
