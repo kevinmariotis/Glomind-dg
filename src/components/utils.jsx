@@ -29,6 +29,13 @@
                     document.location.reload();
                 }, 3000);
             break;
+            case 403:       //no permitido
+                if(Object.entries(errores).length>0){
+                    mostrar_errores_data = true;
+                }else{
+                    setPopPup({mostrar:true, titulo:'No permitido', contenido:'No tienes acceso al recurso solicitado.'});                
+                }
+            break;
             case 404:       //no encontrado
                 setPopPup({mostrar:true, titulo:'No encontrado', contenido:'El recurso no ha sido encontrado.'});                
             break;

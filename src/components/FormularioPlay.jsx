@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import ReactPlayer from 'react-player'
 
 import FormularioPlayHeader from './FormularioPlayHeader';
+import VideoPlayerPrisma from './VideoPlayerPrisma';
 import { AuthContext } from '../AuthContext';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
@@ -15,18 +15,19 @@ function FormularioPlay() {
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
     const { url_amigable } = useParams();
     const navigate = useNavigate();            
-    const {jwt, authenticated, setCargarContadorCarrito} = useContext(AuthContext);
+    const {jwt, esMovil} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
     const [mostrarSpinner, setMostrarSpinner] = useState(false);  
 
     const [dataCurso, setDataCurso] = useState({id:-1, nombre:'', favorito:-1, archivado:-1, porcentaje_progreso:-1});     //se accede por ejmplo: dataCurso.favorito
     const [contenido, setContenido] = useState([]);  
+    const [dataContenidoViendo, setDataContenidoViendo] = useState([]);  
       
     const [contenidoActivado, setContenidoActivado] = useState(-1);  //el contenido que se está viendo
+    const [contenidoActivadoAnterior, setContenidoActivadoAnterior] = useState(-1);  //el contenido anterior que estaba viendo, por si acaso hay que volver a señalarlo.
     const [pestanaActivada, setPestanaActivada] = useState(2);  //pestañas que estan debajo del video
-
-    //const videoRef = useRef(null); // Crear una referencia
-
+    const [cargarActividadActual, setCargarActividadActual] = useState(false);
+            
     useEffect(() => {    
         window.scrollTo(0, 0);
         sideBarAbrirCerrar();
@@ -35,10 +36,21 @@ function FormularioPlay() {
 
     useEffect(() => {    
         if(dataCurso.id!=-1){
-            obtenerContenidos();        
+            obtenerContenidos({activar_actividad_actual:true});        
         }        
     }, [dataCurso.id]);
+
+    useEffect(() => {    
+        if(cargarActividadActual){
+            actividadActual();
+        }        
+    }, [contenido]);
    
+    useEffect(() => {    
+        mostrarContenido();
+    }, [dataContenidoViendo]);
+    
+
     //pestañas que estan debajo del video
     const handleCambiarPestana = (event, numero) =>{    
         event.preventDefault();   
@@ -74,7 +86,7 @@ function FormularioPlay() {
                 }
                 if(dataCurso.id==datos.curso.id){
                     setMostrarSpinner(false);
-                }
+                }                
             } else {                
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
             }            
@@ -84,7 +96,7 @@ function FormularioPlay() {
         }
     };
 
-    const obtenerContenidos = async () => {                  
+    const obtenerContenidos = async ({activar_actividad_actual=false}) => {                  
         const headers = {
             'Authorization':`Bearer ${jwt}`,
         }        
@@ -99,6 +111,9 @@ function FormularioPlay() {
             const datos = await response.json();
             if (response.ok){                                                                               
                 setContenido(datos);
+                if(activar_actividad_actual){
+                    setCargarActividadActual(true);
+                }
             } else {                
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
             }            
@@ -109,35 +124,98 @@ function FormularioPlay() {
     };
 
     /*
-        Obtiene el recurso que intenta abrir
+        Determina cual es la actividad actual y la abre, segun si se es secuencial el curso o no
     */
-    const verContenido = async (id_contenido) => {                  
-        const headers = {
-            'Authorization':`Bearer ${jwt}`,
-        }        
-        try {            
-            const opciones = {
-                method: 'GET',
-                headers: headers,
-            };
-            setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/cursocontenido/${id_contenido}`, opciones);
-            setMostrarSpinner(false);
-            const datos = await response.json();
-            if (response.ok){
+    const actividadActual = async () => {          
+        let id_contenido_actual = -1;
+        let nombre_contenido_actual = '';
+        contenido.forEach((categoria) => {
+            //console.log("esta es ua categoria ", categoria.nombre);
+            categoria.curso_contenido.forEach((contenido) => {
+                if(contenido.estado_consumo==0 && id_contenido_actual==-1){
+                    id_contenido_actual = contenido.id_contenido;
+                    nombre_contenido_actual = contenido.nombre;
+                }
+                //console.log("contenido ", contenido.nombre);
+            });            
+        });
+        console.log("contenido actual: ", nombre_contenido_actual);
+        if(id_contenido_actual!=-1){
+            cargarContenidoEspecifico(id_contenido_actual);
+        }else{
+            if(contenido.length>0){
+                //ojo aqui el mensaje debe ser personalizado si gano el curso un mensaje de lo contrario mostrar que debe superar los examenes para poder dar finalizado satisfactoriamente el curso.
+                setPopup({mostrar:true, titulo:'Felicitaciones', contenido:'Has llegado al final del curso.'});
+            }
+        }
+    };    
 
-
-
-                //setContenido(datos);
-            } else {                
-                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
-            }            
-        }catch(error){
-            // Manejar el caso de error en la solicitud
-            console.error('Error en la solicitud al servidor', error);
+    /*
+        Obtiene el recurso que intenta abrir y lo coloca en un estado
+    */
+    const cargarContenidoEspecifico = async (id_contenido) => {                  
+        if(contenidoActivado!=id_contenido){
+            const headers = {
+                'Authorization':`Bearer ${jwt}`,
+            }        
+            try { 
+                setContenidoActivadoAnterior(contenidoActivado);
+                setContenidoActivado(id_contenido);
+                const opciones = {
+                    method: 'GET',
+                    headers: headers,
+                };
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/cursocontenido/${id_contenido}`, opciones);
+                setMostrarSpinner(false);
+                const datos = await response.json();
+                if (response.ok){                
+                    setDataContenidoViendo(datos);                                
+                } else {                
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+                    setContenidoActivado(contenidoActivadoAnterior);
+                }            
+            }catch(error){
+                // Manejar el caso de error en la solicitud
+                console.error('Error en la solicitud al servidor', error);
+            }
         }
     };
+          
+    const handleActualizaPosicionActualVideo = async (posicion_acutal) => {                                
+        console.log("posicion a grabar ", posicion_acutal);
+        const raw = {           
+            'puntuacion': posicion_acutal.toString(),                        
+        };
+        const opciones = {
+            method: 'PUT',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: JSON.stringify(raw),
+        };        
+        try {            
+            const response = await fetch(`${urlBaseApi}/api/cursocontenidoconsumo/${contenidoActivado}`, opciones);            
+            const datos = await response.json();                        
+            if (response.ok){                                
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    }
+
+
+    /*
+        Muestra el contenido cargado con la funcion cargarContenidoEspecifico
+    */
+    const mostrarContenido = () => {
         
+        console.log("data del contenido que está viendo ", dataContenidoViendo);
+    }     
+
     //manejo del acordeon
     const [activeTab, setActiveTab] = useState(null);
 
@@ -158,7 +236,7 @@ function FormularioPlay() {
             }, 350); // Desactivar "collapsing" después de 0.35 segundos
         }
     };
-
+    
     return (        
         <>
             {mostrarSpinner && <Spinner />}
@@ -180,12 +258,16 @@ function FormularioPlay() {
                         <div className="course-dashboard-column">
                             <div className="lecture-viewer-container">
                                 <div className="lecture-video-item" style={{position:'relative', paddingTop:'56.25%'}}> {/* (9 / 16) * 100 = 56.25 */}
-                                    <ReactPlayer                                        
-                                        className='react-player'
-                                        url='https://www.youtube.com/watch?v=Y6aMwTS0EVM'
-                                        width='100%'
-                                        height='100%'
-                                    />                                
+                                    {dataContenidoViendo.tipo_contenido==1 ?                                         
+                                        <VideoPlayerPrisma
+                                            url_video={`${urlBaseApi}/${esMovil ? dataContenidoViendo.video_pequeno!=null ? dataContenidoViendo.video_pequeno : dataContenidoViendo.video_grande : dataContenidoViendo.video_grande }`}
+                                            url_imagen_preview={`${urlBaseApi}/${dataContenidoViendo.imagen_preview_grande}`}
+                                            posision_actual={parseInt(dataContenidoViendo.consumo_puntuacion)}                                            
+                                            estado_consumo={dataContenidoViendo.consumo_estado}
+                                            funcion_reportar_posicion_actual = {handleActualizaPosicionActualVideo}                                            
+                                        />                                                          
+                                        : ''
+                                    }                                    
                                 </div>
                                 <div className="lecture-viewer-text-wrap">
                                     <div className="lecture-viewer-text-content custom-scrollbar-styled">
@@ -376,7 +458,7 @@ function FormularioPlay() {
                                                                             <input type="checkbox" className="custom-control-input" id={`courseCheckbox${parseInt(key)+1}`} required />
                                                                             <label className="custom-control-label custom--control-label" for={`courseCheckbox${parseInt(key)+1}`}></label>
                                                                         </div>
-                                                                        <div className="course-item-content">
+                                                                        <div className="course-item-content" onClick={()=>{ cargarContenidoEspecifico(categoria.curso_contenido[key].id_contenido) }}>
                                                                             <h4 className="fs-15">{parseInt(key) + 1}. {categoria.curso_contenido[key].nombre}</h4>
                                                                             <div className="courser-item-meta-wrap">
                                                                                 <p className="course-item-meta">

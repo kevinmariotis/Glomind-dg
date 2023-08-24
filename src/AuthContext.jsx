@@ -8,7 +8,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {    
     const [authenticated, setAuthenticated] = useState(false);
     const [permissions, setPermissions] = useState([]);
-    const [temaActual, setTemaActual] = useState(0);    //1 'light-theme', 0 'dark-theme'
+    const [temaActual, setTemaActual] = useState(0);    //1 'light-theme', 0 'dark-theme'    
+    const [esMovil, setEsMovil] = useState(false);
     const [cargarContadorCarrito, setCargarContadorCarrito] = useState(true);   //setCargarContadorCarrito debe ser usado por cualquier parte del programa para dar la orden de que se recarge el contador de items en el carrito
     const [nombres, setNombres] = useState('');
     const [correo, setCorreo] = useState('');
@@ -94,6 +95,12 @@ export const AuthProvider = ({ children }) => {
 
         }
 
+        const checkMobile = () => {
+            const mobileBreakpoint = 992; // Establece el ancho de pantalla a partir del cual considerar como dispositivo móvil, tomado de la pantalla principal del curso al momomento de hacer resize.
+            setEsMovil(window.innerWidth < mobileBreakpoint);
+        };
+        
+        checkMobile();
         cargarUsuario();
 
         return () => {
@@ -102,7 +109,7 @@ export const AuthProvider = ({ children }) => {
     }, []);           
        
     return (
-        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, correo, imagen_pequena, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual}}>
+        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, correo, imagen_pequena, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual, esMovil}}>
             {children}
         </AuthContext.Provider> : <LoadingAnimation />}</>
     );

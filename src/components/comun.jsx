@@ -62,14 +62,14 @@
           link.addEventListener('click', function() {
               let self = this;
           
-              self.classList.add('active');
+              //self.classList.add('active');
           
               let siblings = Array.from(self.parentNode.children).filter(function(element) {
                 return element !== self;
               });
           
               siblings.forEach(function(sibling) {
-                sibling.classList.remove('active');
+                //sibling.classList.remove('active');
               });
           
               let lectureViewerTextWrap = document.querySelector('.lecture-viewer-text-wrap');
