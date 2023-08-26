@@ -341,7 +341,7 @@ function FormularioDashboardHuecoPreguntas() {
                     obtenerDatosServidor();
                     return;
                 } else {
-                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
                 }                
             }catch (error) {
                 console.error('Error de conexión:', error);

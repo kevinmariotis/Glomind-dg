@@ -13,10 +13,11 @@ import { sideBarAbrirCerrar } from './comun';
 
 function FormularioPlay() {        
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
+    const urlBase = import.meta.env.VITE_URL_BASE;  
     const { url_amigable } = useParams();
     const navigate = useNavigate();            
     const {jwt, esMovil} = useContext(AuthContext);
-    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
+    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
     const [mostrarSpinner, setMostrarSpinner] = useState(false);  
 
     const [dataCurso, setDataCurso] = useState({id:-1, nombre:'', favorito:-1, archivado:-1, porcentaje_progreso:-1});     //se accede por ejmplo: dataCurso.favorito
@@ -46,11 +47,7 @@ function FormularioPlay() {
         }        
     }, [contenido]);
    
-    useEffect(() => {    
-        mostrarContenido();
-    }, [dataContenidoViendo]);
-    
-
+        
     //pestañas que estan debajo del video
     const handleCambiarPestana = (event, numero) =>{    
         event.preventDefault();   
@@ -58,11 +55,21 @@ function FormularioPlay() {
     };
 
 
-    const handleFuncionAceptarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+    const handleFuncionAceptarPopUp = () => {                
+        switch(popUp.data_switch){
+            case 'abrir_examen':
+                navigate(`/examen/presentacion/${popUp.data_id}/${dataCurso.id}`);
+            break;
+        }
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
     };
     const handleFuncionCerrarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        switch(popUp.data_switch){
+            case 'abrir_examen':
+                setContenidoActivado(-1);
+            break;
+        }
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
     };
     
     const obtenerDatosDelServidor = async () => {                  
@@ -129,19 +136,16 @@ function FormularioPlay() {
     const actividadActual = async () => {          
         let id_contenido_actual = -1;
         let nombre_contenido_actual = '';
-        contenido.forEach((categoria) => {
-            //console.log("esta es ua categoria ", categoria.nombre);
+        contenido.forEach((categoria) => {            
             categoria.curso_contenido.forEach((contenido) => {
                 if(contenido.estado_consumo==0 && id_contenido_actual==-1){
                     id_contenido_actual = contenido.id_contenido;
                     nombre_contenido_actual = contenido.nombre;
                 }
-                //console.log("contenido ", contenido.nombre);
             });            
-        });
-        console.log("contenido actual: ", nombre_contenido_actual);
+        });        
         if(id_contenido_actual!=-1){
-            cargarContenidoEspecifico(id_contenido_actual);
+            cargarContenidoEspecifico(id_contenido_actual, true);
         }else{
             if(contenido.length>0){
                 //ojo aqui el mensaje debe ser personalizado si gano el curso un mensaje de lo contrario mostrar que debe superar los examenes para poder dar finalizado satisfactoriamente el curso.
@@ -153,7 +157,7 @@ function FormularioPlay() {
     /*
         Obtiene el recurso que intenta abrir y lo coloca en un estado
     */
-    const cargarContenidoEspecifico = async (id_contenido) => {                  
+    const cargarContenidoEspecifico = async (id_contenido, preguntar_abrir=false) => {                  
         if(contenidoActivado!=id_contenido){
             const headers = {
                 'Authorization':`Bearer ${jwt}`,
@@ -169,8 +173,19 @@ function FormularioPlay() {
                 const response = await fetch(`${urlBaseApi}/api/cursocontenido/${id_contenido}`, opciones);
                 setMostrarSpinner(false);
                 const datos = await response.json();
-                if (response.ok){                
-                    setDataContenidoViendo(datos);                                
+                if (response.ok){             
+                    switch(datos.tipo_contenido){
+                        case 2:
+                            if(preguntar_abrir){
+                                setPopup({...popUp, mostrar:true, tipo:3, titulo:'Abrir siguiente actividad?', contenido:`Desea abrir la actividad: <span style="font-style: italic;">${datos.nombre}</span>?`, data_switch:'abrir_examen', data_id:datos.id});
+                            }else{
+                                navigate(`/examen/presentacion/${datos.id}/${dataCurso.id}`);
+                            }
+                        break;
+                        default:
+                            setDataContenidoViendo(datos);                                
+                        break;
+                    }                                        
                 } else {                
                     mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
                     setContenidoActivado(contenidoActivadoAnterior);
@@ -182,8 +197,7 @@ function FormularioPlay() {
         }
     };
           
-    const handleActualizaPosicionActualVideo = async (posicion_acutal) => {                                
-        console.log("posicion a grabar ", posicion_acutal);
+    const handleActualizaPosicionActualVideo = async (posicion_acutal) => {                                        
         const raw = {           
             'puntuacion': posicion_acutal.toString(),                        
         };
@@ -207,15 +221,33 @@ function FormularioPlay() {
         }
     }
 
-
-    /*
-        Muestra el contenido cargado con la funcion cargarContenidoEspecifico
-    */
-    const mostrarContenido = () => {
+    const handleActualizaEstadoConsumoVideo = async () => {        
+        if(dataContenidoViendo.consumo_estado==0){            
+            const raw = {           
+                'estado': 1,
+            };
+            const opciones = {
+                method: 'PUT',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: JSON.stringify(raw),
+            };        
+            try {            
+                const response = await fetch(`${urlBaseApi}/api/cursocontenidoconsumo/${contenidoActivado}`, opciones);            
+                const datos = await response.json();                        
+                if (response.ok){   
+                    obtenerContenidos({activar_actividad_actual:true});                             
+                    return;
+                } else {
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+                }                
+            }catch (error) {
+                console.error('Error de conexión:', error);
+            }
+        }
+    }
         
-        console.log("data del contenido que está viendo ", dataContenidoViendo);
-    }     
-
     //manejo del acordeon
     const [activeTab, setActiveTab] = useState(null);
 
@@ -243,12 +275,12 @@ function FormularioPlay() {
             <Popup 
                 mostrarPopup={popUp.mostrar} 
                 tamano="xx"
-                tipo={2} 
+                tipo={popUp.tipo} 
                 titulo={popUp.titulo} 
                 mensaje={popUp.contenido} 
                 funcionAceptar={handleFuncionAceptarPopUp} 
                 funcionCerrar={handleFuncionCerrarPopUp}
-                textoCerrar="Aceptar"
+                textoCerrar="Cerrar"
             />
             <FormularioPlayHeader id_curso={dataCurso.id} nombre_curso={dataCurso.nombre} favorito={dataCurso.favorito} archivado={dataCurso.archivado} tiene_review={dataCurso.tiene_review} porcentaje_progreso={dataCurso.porcentaje_progreso} callBackFavoritoCambiado={obtenerDatosDelServidor}/>
             
@@ -265,6 +297,7 @@ function FormularioPlay() {
                                             posision_actual={parseInt(dataContenidoViendo.consumo_puntuacion)}                                            
                                             estado_consumo={dataContenidoViendo.consumo_estado}
                                             funcion_reportar_posicion_actual = {handleActualizaPosicionActualVideo}                                            
+                                            funcion_reportar_visto_completo = {handleActualizaEstadoConsumoVideo}                                            
                                         />                                                          
                                         : ''
                                     }                                    
@@ -365,10 +398,18 @@ function FormularioPlay() {
                                                                             <li className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
                                                                                 <div className="course-item-content-wrap">
                                                                                     <div className="custom-control custom-checkbox">
-                                                                                        <input type="checkbox" className="custom-control-input" id={`mobileCourseCheckbox${parseInt(key)+1}`} required />
+                                                                                        <input type="checkbox" className="custom-control-input" id={`mobileCourseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`} required />
                                                                                         <label className="custom-control-label custom--control-label" for={`mobileCourseCheckbox${parseInt(key)+1}`}></label>
                                                                                     </div>
-                                                                                    <div className="course-item-content">
+                                                                                    <div className="course-item-content" onClick={()=>{ cargarContenidoEspecifico(categoria.curso_contenido[key].id_contenido, false) }}>
+
+                                                                                        <div className="custom-control custom-checkbox media media-card" style={{float:'left'}}>                                                                                                                                                                            
+                                                                                            {categoria.curso_contenido[key].tipo_contenido==1 ? 
+                                                                                                <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
+                                                                                                    {categoria.curso_contenido[key].imagen_preview_pequena && categoria.curso_contenido[key].imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].imagen_preview_pequena}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
+                                                                                                </div> : ''}                                                                            
+                                                                                        </div>
+
                                                                                         <h4 className="fs-15">{parseInt(key)+1}. {categoria.curso_contenido[key].nombre}</h4>
                                                                                         <div className="courser-item-meta-wrap">
                                                                                             <p className="course-item-meta">
@@ -455,10 +496,18 @@ function FormularioPlay() {
                                                                 <li className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
                                                                     <div className="course-item-content-wrap">
                                                                         <div className="custom-control custom-checkbox">
-                                                                            <input type="checkbox" className="custom-control-input" id={`courseCheckbox${parseInt(key)+1}`} required />
+                                                                            <input type="checkbox" className="custom-control-input" id={`courseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`} required />
                                                                             <label className="custom-control-label custom--control-label" for={`courseCheckbox${parseInt(key)+1}`}></label>
                                                                         </div>
                                                                         <div className="course-item-content" onClick={()=>{ cargarContenidoEspecifico(categoria.curso_contenido[key].id_contenido) }}>
+
+                                                                            <div className="custom-control custom-checkbox media media-card" style={{float:'left'}}>                                                                                                                                                                            
+                                                                                {categoria.curso_contenido[key].tipo_contenido==1 ? 
+                                                                                    <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
+                                                                                        {categoria.curso_contenido[key].imagen_preview_pequena && categoria.curso_contenido[key].imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].imagen_preview_pequena}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
+                                                                                    </div> : ''}                                                                            
+                                                                            </div>
+
                                                                             <h4 className="fs-15">{parseInt(key) + 1}. {categoria.curso_contenido[key].nombre}</h4>
                                                                             <div className="courser-item-meta-wrap">
                                                                                 <p className="course-item-meta">
@@ -495,6 +544,7 @@ function FormularioPlay() {
                                                                                     </div>
                                                                                 }
                                                                             </div>
+                                                                            
                                                                         </div>
                                                                     </div>
                                                                 </li>

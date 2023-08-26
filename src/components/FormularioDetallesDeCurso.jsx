@@ -8,6 +8,7 @@ import TarjetaCursoHorizontal from './TarjetaCursoHorizontal';
 import Popup from './Popup';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
+import VideoPlayerPrisma from './VideoPlayerPrisma';
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -653,10 +654,12 @@ function FormularioDetallesDeCurso(){
                                 <span aria-hidden="true" className="la la-times"></span>
                             </button>
                         </div>
-                        <div className="modal-body">
-                            <video controls crossOrigin="true" playsInline poster={`${videoVistaPreviaImagen!='' ? `${urlBaseApi}/${videoVistaPreviaImagen}` : `${urlBase}/images/pattern.png` }`} id="player" style={{'width':'100%'}}>                                
-                                <source src={`${urlBaseApi}/${videoVistaPrevia}`} type="video/mp4"/>                                
-                            </video>
+                        <div className="modal-body" style={{paddingTop:'56.25%'}}>                            
+                            <VideoPlayerPrisma
+                                url_video={`${urlBaseApi}/${videoVistaPrevia}`}
+                                url_imagen_preview={`${videoVistaPreviaImagen!='' ? `${urlBaseApi}/${videoVistaPreviaImagen}` : `${urlBase}/images/pattern.png` }`}                                                                                                
+                                mostrar_controles={false}
+                            />
                         </div>
                     </div>
                 </div>
@@ -1063,7 +1066,7 @@ function FormularioDetallesDeCurso(){
                                         </div>}
                                         <div className="preview-course-feature-content pt-40px">
                                             <p className="d-flex align-items-center pb-2">
-                                                <span className="fs-35 font-weight-semi-bold text-black">${datos.precio_actual}</span>
+                                                <span className="fs-35 font-weight-semi-bold text-black">{datos.precio_actual!=0 ? `$${datos.precio_actual}` : ``}</span>
                                                 {datos.precio_anterior!=0 && <><span className="before-price mx-1">${datos.precio_anterior}</span>
                                                 <span className="price-discount">-{datos.porcentaje_descuento}%</span></>}
                                             </p>

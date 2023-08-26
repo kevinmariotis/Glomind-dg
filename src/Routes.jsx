@@ -28,6 +28,7 @@ import PaginaEditarExamenPreguntaSmur from './components/PaginaEditarExamenPregu
 import PaginaCrearExamenPreguntaFv from './components/PaginaCrearExamenPreguntaFv';
 import PaginaEditarExamenPreguntaFv from './components/PaginaEditarExamenPreguntaFv';
 import PaginaPlay from './components/PaginaPlay';
+import PaginaExamenPresentacion from './components/PaginaExamenPresentacion';
 
 import Pagina404 from './components/Pagina404';
 
@@ -74,6 +75,7 @@ const Rutas = () => {
                 <Route path="examen/editarpregunta/seleccion_multiple_unica_respuesta/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamenPreguntaSmur/></ProtectedRoute>} />
                 <Route path="examen/crearpregunta/falso_verdadero/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaCrearExamenPreguntaFv/></ProtectedRoute>} />
                 <Route path="examen/editarpregunta/falso_verdadero/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamenPreguntaFv/></ProtectedRoute>} />
+                <Route path="examen/presentacion/:id_examen/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenPresentacion/></ProtectedRoute>} />                
                 <Route path="/examen/:id" element={<Pagina404/>} />                          
                 <Route path="/examen" element={<Pagina404/>} />
                 <Route path="/permisos" element={<Pagina404/>} />

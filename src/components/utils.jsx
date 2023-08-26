@@ -55,19 +55,23 @@
 
     };
 
-    export const convertirSegundosAHorasMinutosSegundos = (segundos) => {
+    export const convertirSegundosAHorasMinutosSegundos = (segundos, directo=false) => {
         const horas = Math.floor(segundos / 3600);
         const minutos = Math.floor((segundos % 3600) / 60);
         const segundosRestantes = segundos % 60;
               
         const formatearNumero = (numero) => numero.toString().padStart(2, '0');
-      
-        return {
-            horas: formatearNumero(horas),
-            minutos: formatearNumero(minutos),
-            segundos: formatearNumero(segundosRestantes),
-        };
+        if(directo){
+            return formatearNumero(horas)!='00' ? formatearNumero(horas)+':'+formatearNumero(minutos)+':'+formatearNumero(segundosRestantes) : minutos+':'+formatearNumero(segundosRestantes);
+        }else{
+            return {
+                horas: formatearNumero(horas),
+                minutos: formatearNumero(minutos),
+                segundos: formatearNumero(segundosRestantes),
+            };
+        }
     };
+    
 
     /*
         Convierte horas y minutos a segundos

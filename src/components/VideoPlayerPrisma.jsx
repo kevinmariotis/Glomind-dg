@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ReactPlayer from 'react-player'
 import { mensajesDeError, convertirSegundosAHorasMinutosSegundos } from './utils';
 
-function VideoPlayerPrisma({url_video='', url_imagen_preview='', posision_actual=0, estado_consumo=0, funcion_reportar_posicion_actual=false}) {
+function VideoPlayerPrisma({url_video='', url_imagen_preview='', mostrar_controles=true, posision_actual=0, estado_consumo=0, funcion_reportar_posicion_actual=false, funcion_reportar_visto_completo=false}) {
            
     const playerRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);    
@@ -17,32 +17,49 @@ function VideoPlayerPrisma({url_video='', url_imagen_preview='', posision_actual
     const [posicionActualEstablecida, setPosicionActualEstablecida] = useState(false);            
     const [preguntarContinuar, setPreguntarContinuar] = useState(false);
     const [iniciarDesdeUltimaPosicion, setIniciarDesdeUltimaPosicion] = useState(false);
+    const [volume, setVolume] = useState(1);    
+    const [soloVolumen, setSoloVolumen] = useState(false);   
 
-    useEffect(() => {    
-        if(posision_actual!=0 && playedMaximo==0){            
+    useEffect(() => {  
+
+        setPlayedMaximo(0);  
+        setIniciarDesdeUltimaPosicion(false);
+        setPosicionActualEstablecida(false);
+        setPlayed(0);
+        setDuration(0);
+        playerRef.current.seekTo(0);
+        
+        if(!mostrar_controles){
+            setSoloVolumen(true);
+        }
+
+        if(posision_actual!=0){            //&& playedMaximo==0
             setPlayedMaximo(posision_actual);
+            console.log("played maximo", posision_actual);
             if(estado_consumo==0){
                 setPreguntarContinuar(true);
             }else{
                 setPosicionActualEstablecida(true);     //se evita que se coloque la posicion actual, al haberlo terminado todo puede empezar desde el comienzo y seleccionar el segmento deseado.
             }
         }
-    }, []);
+    }, [url_video]);
+
+    useEffect(() => {
+        handleOnStart();        
+    }, [iniciarDesdeUltimaPosicion]);     
 
     useEffect(() => {   
-        if(playedMaximo!=0) {
-            console.log("nuevo played maximo ", playedMaximo);
+        if(playedMaximo!=0) {            
             if(playedMaximo % 10 === 0){
                 if(funcion_reportar_posicion_actual!==false && playedMaximo>posision_actual){
-                    funcion_reportar_posicion_actual(playedMaximo);
-                    //console.log("reportar nueva posicion: ", playedMaximo);
+                    funcion_reportar_posicion_actual(playedMaximo);                    
                 }
             }
         }
     }, [playedMaximo]);
 
     useEffect(() => {                 
-        const areaButtons = document.querySelectorAll('.area-button');
+        const areaButtons = document.querySelectorAll('.area-button, .video-info');
         if (areaButtons && controlsVisible) {  
             areaButtons.forEach(areaButton => {
                 areaButton.addEventListener('mousemove', handleShowPlayButton);
@@ -68,33 +85,35 @@ function VideoPlayerPrisma({url_video='', url_imagen_preview='', posision_actual
         setShowPlayButton(false);        
     };
 
-    const handleOnStart = () => {        
+    const handleOnStart = () => {         
         if(posision_actual!=0 && isPlaying===true && posicionActualEstablecida===false && iniciarDesdeUltimaPosicion){            
             playerRef.current.seekTo(posision_actual);                                    
-        }
-        setPosicionActualEstablecida(true);
+            setPosicionActualEstablecida(true);
+        }    
     };
 
     const handlePlayPause = () => {        
-        setIsPlaying(!isPlaying);
-        setControlsVisible(true);
+        setIsPlaying(!isPlaying);           
+        setControlsVisible(true);        
     };
         
     const handleSeekBackward = () => {
-        const currentTime = playerRef.current.getCurrentTime();        
-        playerRef.current.seekTo(currentTime - 10);
-        
-        setShowAnimationAtrasar(true);
-        setTimeout(() => setShowAnimationAtrasar(false), 1000);
-
+        if(!soloVolumen){
+            const currentTime = playerRef.current.getCurrentTime();        
+            playerRef.current.seekTo(currentTime - 10);
+            
+            setShowAnimationAtrasar(true);
+            setTimeout(() => setShowAnimationAtrasar(false), 1000);
+        }
     };
 
-    const handleSeekForward = () => {
+    const handleSeekForward = () => {        
         const currentTime = playerRef.current.getCurrentTime();
-        playerRef.current.seekTo(currentTime + 10);
-        
-        setShowAnimationAdelantar(true);
-        setTimeout(() => setShowAnimationAdelantar(false), 1000);
+        if(currentTime + 10 <= playedMaximo && !soloVolumen){            
+            playerRef.current.seekTo(currentTime + 10);        
+            setShowAnimationAdelantar(true);
+            setTimeout(() => setShowAnimationAdelantar(false), 1000);
+        }
     };
 
     const handleFullscreen = () => {
@@ -127,9 +146,21 @@ function VideoPlayerPrisma({url_video='', url_imagen_preview='', posision_actual
 
     const handleContinuarUltimaPosicion = () => {
         setIniciarDesdeUltimaPosicion(true);
-        setPreguntarContinuar(false);        
+        setPreguntarContinuar(false);    
     };
-            
+
+    const handleOnEnded = () => {
+        setShowPlayButton(true); 
+        setIsPlaying(false);
+        if(funcion_reportar_visto_completo!=false){
+            funcion_reportar_visto_completo();
+        }
+    };
+        
+    const handleVolumeChange = (e) => {
+        setVolume(parseFloat(e.target.value));
+    };
+    
     return (
         <>
             <ReactPlayer   
@@ -137,7 +168,8 @@ function VideoPlayerPrisma({url_video='', url_imagen_preview='', posision_actual
                 className='react-player'
                 url={url_video}
                 width='100%'
-                height='100%'            
+                height='100%' 
+                volume={volume}           
                 light={<img src={url_imagen_preview} style={{width:'100%'}} alt='Minuatura' />}
                 controls={false}
                 playing={isPlaying}
@@ -145,45 +177,56 @@ function VideoPlayerPrisma({url_video='', url_imagen_preview='', posision_actual
                 onClick={handlePlayPause}
                 onProgress={handleProgress}
                 onDuration={handleDuration}
+                onEnded={handleOnEnded}
                 onPlay={() => setShowPlayButton(false)}
-                onPause={() => { setShowPlayButton(true); setIsPlaying(false); } }
-                onEnded={() => () => { setShowPlayButton(true); setIsPlaying(false); }}                
+                onPause={() => { setShowPlayButton(true); setIsPlaying(false); } }                
             />
             {controlsVisible && (
                 <>
                     <div className="area-button play-pause-area" onClick={handlePlayPause}>
-                        <div className="transparent-button" style={{display:`${showPlayButton ? '' : 'none'}`}}>
+                        <div className="transparent-button" style={{display:`${showPlayButton && !soloVolumen ? '' : 'none'}`}}>
                             <i className={`${isPlaying ? 'la la-pause' : 'la la-play' }`}></i>
                         </div>
                     </div>
                     <div className="area-button seek-backward-area" onDoubleClick={handleSeekBackward}>
-                        <div className="transparent-button" style={{display:`${showPlayButton ? '' : 'none'}`}} onClick={handleSeekBackward}>
+                        <div className="transparent-button" style={{display:`${showPlayButton && !soloVolumen ? '' : 'none'}`}} onClick={handleSeekBackward}>
                             <i className="la la-backward"></i>
                         </div>
                         {showAnimationAtrasar && (
-                            <div className="animation-overlay">- 10 seg</div>
+                            <div className="animation-overlay" style={{marginTop:'-60px'}}>- 10 seg</div>
                         )} 
                     </div>
                     <div className="area-button seek-forward-area" onDoubleClick={handleSeekForward}>
-                        <div className="transparent-button" style={{display:`${showPlayButton ? '' : 'none'}`}} onClick={handleSeekForward}>
+                        <div className="transparent-button" style={{display:`${showPlayButton && !soloVolumen ? '' : 'none'}`}} onClick={handleSeekForward}>
                             <i className="la la-forward"></i>
                         </div>
                         {showAnimationAdelantar && (
-                            <div className="animation-overlay">+ 10 seg</div>
+                            <div className="animation-overlay" style={{marginTop:'-60px'}}>+ 10 seg</div>
                         )} 
                     </div>
                     <div className="area-button fullscreen-area" onClick={handleFullscreen}>
-                        <div className="transparent-button" style={{display:`${showPlayButton ? '' : 'none'}`, fontSize:'24px'}}>
+                        <div className="transparent-button" style={{display:`${showPlayButton && !soloVolumen ? '' : 'none'}`, fontSize:'24px'}}>
                             <i className="la la-arrows"></i>
                         </div>
                     </div>  
-                    <div className="video-info" style={{display:`${showPlayButton ? '' : 'none'}`}}>
-                        <span>{`${
-                            convertirSegundosAHorasMinutosSegundos(Math.floor(played * duration)).horas+':'+convertirSegundosAHorasMinutosSegundos(Math.floor(played * duration)).minutos+':'+convertirSegundosAHorasMinutosSegundos(Math.floor(played * duration)).segundos
+                    <div className="video-info" >
+                        <i style={{fontSize:'24px', display:`${showPlayButton ? '' : 'none'}`}} className="la la-volume-up"></i>
+                        <input
+                            type="range"
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            value={volume}
+                            className="volume-slider transparent-button"
+                            onChange={handleVolumeChange}
+                            style={{display:`${showPlayButton ? '' : 'none'}`}}
+                        />&nbsp;&nbsp;
+                        <span style={{display:`${showPlayButton && !soloVolumen ? '' : 'none'}`}}>{`${
+                            convertirSegundosAHorasMinutosSegundos(Math.floor(played * duration), true)
                         } / ${
-                            convertirSegundosAHorasMinutosSegundos(Math.floor(duration)).horas+':'+convertirSegundosAHorasMinutosSegundos(Math.floor(duration)).minutos+':'+convertirSegundosAHorasMinutosSegundos(Math.floor(duration)).segundos
+                            convertirSegundosAHorasMinutosSegundos(Math.floor(duration), true)
                         }`}</span>
-                    </div>
+                    </div>                    
                 </> 
             )}
             {preguntarContinuar && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="decargableModal" tabIndex="-1" role="dialog" aria-labelledby="decargableModalTitle" aria-hidden="true">

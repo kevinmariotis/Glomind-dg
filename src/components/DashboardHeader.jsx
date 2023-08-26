@@ -5,7 +5,7 @@ import { mensajesDeError } from './utils';
 import Popup from './Popup';
 
 
-function DashboardHeader() {  
+function DashboardHeader({expandir_ancho=false}) {  
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
     const {jwt, cargarContadorCarrito, setCargarContadorCarrito, authenticated, nombres, correo, imagen_pequena, temaActual, setTemaActual} = useContext(AuthContext);
@@ -144,7 +144,7 @@ function DashboardHeader() {
                 textoCerrar="Aceptar"
             />
         <header className="header-menu-area">
-            <div className="header-menu-content dashboard-menu-content pr-30px pl-30px bg-white shadow-sm">
+            <div className={`header-menu-content ${!expandir_ancho && 'dashboard-menu-content' } pr-30px pl-30px bg-white shadow-sm`}>
                 <div className="container-fluid">
                     <div className="main-menu-content">
                         <div className="row align-items-center">
