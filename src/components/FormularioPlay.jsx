@@ -60,6 +60,9 @@ function FormularioPlay() {
             case 'abrir_examen':
                 navigate(`/examen/presentacion/${popUp.data_id}/${dataCurso.id}`);
             break;
+            case 'abrir_intento':
+                navigate(`/examen/intento/${popUp.data_id}/${dataCurso.id}`);
+            break;
         }
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
     };
@@ -177,9 +180,13 @@ function FormularioPlay() {
                     switch(datos.tipo_contenido){
                         case 2:
                             if(preguntar_abrir){
-                                setPopup({...popUp, mostrar:true, tipo:3, titulo:'Abrir siguiente actividad?', contenido:`Desea abrir la actividad: <span style="font-style: italic;">${datos.nombre}</span>?`, data_switch:'abrir_examen', data_id:datos.id});
+                                setPopup({...popUp, mostrar:true, tipo:3, titulo:datos.id_examen_intento_abierto!=-1 ? 'Continuar intento?' :'Abrir siguiente actividad?', contenido:datos.id_examen_intento_abierto!=-1 ? `Desea continuar con el intento de <span style="font-style: italic;">${datos.nombre}</span>?` : `Desea abrir la actividad: <span style="font-style: italic;">${datos.nombre}</span>?`, data_switch:datos.id_examen_intento_abierto!=-1 ? 'abrir_intento' : 'abrir_examen', data_id: datos.id_examen_intento_abierto!=-1 ? datos.id_examen_intento_abierto : datos.id});
                             }else{
-                                navigate(`/examen/presentacion/${datos.id}/${dataCurso.id}`);
+                                if(datos.id_examen_intento_abierto!=-1){
+                                    navigate(`/examen/intento/${datos.id_examen_intento_abierto}/${dataCurso.id}`);
+                                }else{
+                                    navigate(`/examen/presentacion/${datos.id}/${dataCurso.id}`);
+                                }
                             }
                         break;
                         default:

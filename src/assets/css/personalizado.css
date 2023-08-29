@@ -289,3 +289,14 @@
 .show.collapse {
   max-height: 1000px; /* Altura máxima cuando la pestaña está abierta */
 }
+
+
+/* Personalizar la lista de preguntas de un examen para que no esten cerca una a las otras */
+.list_preguntas {
+    list-style: none;
+    padding: 0;
+}
+
+.list_preguntas li a {
+    margin-right: 40px; /* Ajusta el valor según el espacio que desees */
+}

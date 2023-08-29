@@ -1,19 +1,19 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError, convertirSegundosAHorasMinutosSegundos } from './utils';
 import Spinner from './Spinner';
-import TarjetaCursoAdmin from './TarjetaCursoAdmin';
-import Paginador from './Paginador';
 import Popup from './Popup';
-import DashboardFooter from './DashboardFooter';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 function FormularioExamenPresentacion() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
+    const navigate = useNavigate(); 
     const { id_examen, id_curso } = useParams();
     const {jwt} = useContext(AuthContext);
-    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
+    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
     
     const [examen, setExamen] = useState({tiempo:0, cantidad_preguntas:0, tipo:0, intentos:'', descripcion:'', mejor_intento:'', peor_intento:'', promedio_intentos:'', promedio_global:'', intentos_realizados:''});
     const [curso, setCurso] = useState({nombre:'', instructor:'', url_amigable:'', imagen_pequena:null});
@@ -27,10 +27,15 @@ function FormularioExamenPresentacion() {
     }, []);
     
     const handleFuncionAceptarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        switch(popUp.data_switch){
+            case 'iniciar_intento':
+                iniciarIntento();
+            break;
+        }
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
     };
     const handleFuncionCerrarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
     };
     
     const obtenerDatosDelServidor = async () => {                  
@@ -46,8 +51,12 @@ function FormularioExamenPresentacion() {
             const response = await fetch(`${urlBaseApi}/api/examen/${id_examen}/${id_curso}`, opciones);
             setMostrarSpinner(false);
             const datos = await response.json();   
-            if (response.ok){                                           
-                setExamen(datos);                       
+            if (response.ok){                                                           
+                if(datos.id_examen_intento_abierto!=-1){
+                    navigate(`/examen/intento/${datos.id_examen_intento_abierto}/${id_curso}`);
+                }else{
+                    setExamen(datos);   
+                }
             } else {                      
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
             }            
@@ -78,19 +87,52 @@ function FormularioExamenPresentacion() {
             console.error('Error en la solicitud al servidor', error);
         }
     };
+
+    const iniciarIntento = async () => {                          
+        try {            
+            const formData = new FormData();               
+            formData.append('id_examen', id_examen);
+            formData.append('id_curso', id_curso);
+                                    
+            const opciones = {
+                method: 'POST',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: formData
+            };
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/examenintento`, opciones);            
+            setMostrarSpinner(false);
+            const datos = await response.json();   
+            if (response.ok){                                                           
+                navigate(`/examen/intento/${datos.id_intento}/${id_curso}`);
+            } else {                      
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+            }            
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
     
+    const handleConfirmarIntento = (event) => {        
+        event.preventDefault(); 
+        setPopup({mostrar:true, titulo:'Confirmar', tipo:3, contenido:'Confirma que desea iniciar un intento?', data_switch:'iniciar_intento'});
+    };
+
     return (
         <>
             {mostrarSpinner && <Spinner />}
             <Popup 
                 mostrarPopup={popUp.mostrar} 
                 tamano="xx"
-                tipo={2} 
+                tipo={popUp.tipo} 
                 titulo={popUp.titulo} 
                 mensaje={popUp.contenido} 
                 funcionAceptar={handleFuncionAceptarPopUp} 
                 funcionCerrar={handleFuncionCerrarPopUp}
-                textoCerrar="Aceptar"
+                textoCerrar="Cerrar"
             />
             <section className="breadcrumb-area">
                 <div className="bg-white py-3 pattern-bg" style={{zIndex:'0'}}>
@@ -101,12 +143,15 @@ function FormularioExamenPresentacion() {
                                 <li>
                                     <div className="d-flex align-items-center">
                                         <div className="media media-card">
-                                        <Link to={`/play/${curso.url_amigable}`} className="media-img" style={{ height: 'auto' }}>
-                                            {curso.imagen_pequena!=null ? <img src={`${urlBaseApi}/${curso.imagen_pequena}`} alt={curso.nombre} /> : <img src="images/course-no-image.png" alt={curso.nombre} /> }
-                                        </Link>
+                                        {curso.url_amigable=='' ? <Skeleton width={82} height={48} /> : 
+                                            <Link to={`/play/${curso.url_amigable}`} className="media-img" style={{ height: 'auto' }}>
+                                                {curso.imagen_pequena!=null ? <img src={`${urlBaseApi}/${curso.imagen_pequena}`} alt={curso.nombre} /> : <img src="images/course-no-image.png" alt={curso.nombre} /> }
+                                            </Link>
+                                        }
                                         </div>
                                         <p>
-                                            <Link to={`/play/${curso.url_amigable}`}>{curso.nombre}</Link><span className="d-block fs-13">{curso.instructor}</span>
+                                            {curso.nombre=='' ?  <Skeleton width={300}  style={{marginLeft: '15px'}} /> : <Link to={`/play/${curso.url_amigable}`}>{curso.nombre}</Link>}
+                                            {curso.nombre=='' ? <Skeleton width={150}  style={{marginLeft: '15px'}} /> : <span className="d-block fs-13">{curso.instructor}</span>}
                                         </p>
                                     </div>
                                 </li>
@@ -114,19 +159,23 @@ function FormularioExamenPresentacion() {
                         </div>
                     </div>
                 </div>  
-
-
                 <div class="pt-60px pb-60px">
                     <div class="container">                    
                         <div class="breadcrumb-content pt-40px">
                             <div class="section-heading">
                                 <h2 class="section__title fs-30 pb-2">Descripción del examen</h2>
-                                <p class="section__desc">{examen.descripcion.split('<br />').map((line, index) => (<span>{line}<br /></span> ))}</p>
+                                {examen.descripcion=='' ? 
+                                    <>
+                                        <Skeleton width={'60%'} height={20} />
+                                        <Skeleton width={'55%'} height={20}  />
+                                        <Skeleton width={'45%'} height={20}  />
+                                    </>
+                                    : <p class="section__desc">{examen.descripcion.split('<br />').map((line, index) => (<span>{line}<br /></span> ))}</p>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>    
-
                 <div className="bg-dark pt-60px pb-60px">
                     <div className="container">                        
                         <div className="row">
@@ -157,11 +206,7 @@ function FormularioExamenPresentacion() {
                         </div>
                     </div>
                 </div>
-            </section>   
-
-            
-            
-
+            </section>                           
             <section className="quiz-ans-wrap pt-80px pb-80px">
                 <div className="container">                   
                     <div className="section-heading text-center">
@@ -194,7 +239,7 @@ function FormularioExamenPresentacion() {
                         </div>
                         <div className="col-12">
                             <div className="click-to-start-btn-box text-center pt-3">
-                                <a href="#" className="btn theme-btn">Click para iniciar el examen</a>
+                                <button className="btn theme-btn" onClick={handleConfirmarIntento}>Click para iniciar un intento</button>
                             </div>
                         </div>
                     </div>
