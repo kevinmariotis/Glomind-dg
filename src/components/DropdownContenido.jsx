@@ -81,8 +81,8 @@ function DropdownContenido({data={}}) {
                     <i className="la la-folder-open mr-1"></i> Recursos<i className="la la-angle-down ml-1"></i>
                 </a>
                 <div className={`dropdown-menu dropdown-menu-right ${isOpen ? 'show' : ''}`}>
-                    {Object.keys(data).map((key) => (
-                        <div className="dropdown-item" style={{cursor:'pointer'}} onClick={() => handleItemClick(data[key])}>
+                    {Object.keys(data).map((key, index) => (
+                        <div key={`drop-key-contenido-${index}`} className="dropdown-item" style={{cursor:'pointer'}} onClick={() => handleItemClick(data[key])}>
                             {data[key].nombre}.{data[key].ruta_archivo.split('.').pop()}
                         </div>
                     ))}

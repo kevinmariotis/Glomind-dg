@@ -705,8 +705,8 @@ function FormularioEditarContenidoCurso() {
                                         {listaDescargables.map((item, index) => (
                                             <tr key={`descargable-x-${index}`}>
                                                 <th scope="row">
-                                                    <div onClick={()=>{ handleDownload({'ruta_archivo':`${urlBaseApi}/${item.ruta_archivo.replace('public/', '')}`, 'nombre_archivo':'descargable.pdf'}) }} class="icon-element icon-element-sm flex-shrink-0 bg-7 mr-3 text-white" style={{cursor:'pointer'}}>
-                                                        <i class="la la-download"></i>
+                                                    <div onClick={()=>{ handleDownload({'ruta_archivo':`${urlBaseApi}/${item.ruta_archivo.replace('public/', '')}`, 'nombre_archivo':'descargable.pdf'}) }} className="icon-element icon-element-sm flex-shrink-0 bg-7 mr-3 text-white" style={{cursor:'pointer'}}>
+                                                        <i className="la la-download"></i>
                                                     </div> 
                                                 </th>
                                                 <th scope="row">                                                                                                                                                                                                                                                                          
@@ -886,8 +886,8 @@ function FormularioEditarContenidoCurso() {
                                                             {permissions[34] ? 
                                                                 <td>
                                                                     {tema.descargables.map((descargable) => 
-                                                                        <div onClick={()=>{ handleDownload({'ruta_archivo':`${urlBaseApi}/${descargable.ruta_archivo.replace('public/', '')}`, 'nombre_archivo':'descargable.pdf'}) }} class="icon-element icon-element-sm flex-shrink-0 bg-7 mr-3 text-white" style={{cursor:'pointer'}}>
-                                                                            <i class="la la-download"></i>
+                                                                        <div onClick={()=>{ handleDownload({'ruta_archivo':`${urlBaseApi}/${descargable.ruta_archivo.replace('public/', '')}`, 'nombre_archivo':'descargable.pdf'}) }} className="icon-element icon-element-sm flex-shrink-0 bg-7 mr-3 text-white" style={{cursor:'pointer'}}>
+                                                                            <i className="la la-download"></i>
                                                                         </div>                                                                    
                                                                     )}   
                                                                 </td>

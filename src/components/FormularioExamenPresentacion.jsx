@@ -159,18 +159,18 @@ function FormularioExamenPresentacion() {
                         </div>
                     </div>
                 </div>  
-                <div class="pt-60px pb-60px">
-                    <div class="container">                    
-                        <div class="breadcrumb-content pt-40px">
-                            <div class="section-heading">
-                                <h2 class="section__title fs-30 pb-2">Descripción del examen</h2>
+                <div className="pt-60px pb-60px">
+                    <div className="container">                    
+                        <div className="breadcrumb-content pt-40px">
+                            <div className="section-heading">
+                                <h2 className="section__title fs-30 pb-2">Descripción del examen</h2>
                                 {examen.descripcion=='' ? 
                                     <>
                                         <Skeleton width={'60%'} height={20} />
                                         <Skeleton width={'55%'} height={20}  />
                                         <Skeleton width={'45%'} height={20}  />
                                     </>
-                                    : <p class="section__desc">{examen.descripcion.split('<br />').map((line, index) => (<span>{line}<br /></span> ))}</p>
+                                    : <p className="section__desc">{examen.descripcion.split('<br />').map((line, index) => (<span>{line}<br /></span> ))}</p>
                                 }
                             </div>
                         </div>

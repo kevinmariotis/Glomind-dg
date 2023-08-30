@@ -640,7 +640,7 @@ function FormularioDashboardHuecoPreguntas() {
                             <div className="divider"><span></span></div>
                             <div className="row">                                
                                 <div className="col-lg-12"> 
-                                    {mostrarMensaje100 ? <div class="alert alert-warning" role="alert">La suma de los porcentajes de todas las preguntas deben dar 100%</div> : ''}
+                                    {mostrarMensaje100 ? <div className="alert alert-warning" role="alert">La suma de los porcentajes de todas las preguntas deben dar 100%</div> : ''}
                                     <div className="table-responsive">
                                         <table className="table generic-table">
                                             <thead>

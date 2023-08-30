@@ -41,12 +41,12 @@ function Dropdown({data=[]}) {
 
     return (
         <div ref={dropdownRef} className={`dropdown ${isOpen ? 'show' : ''}`}>            
-            <a onClick={handleToggle}  aria-expanded={isOpen ? 'true' : 'false'} class="action-btn" href="#" role="button" data-toggle="dropdown" aria-haspopup="true">
-                <i class="la la-ellipsis-v"></i>
+            <a onClick={handleToggle}  aria-expanded={isOpen ? 'true' : 'false'} className="action-btn" href="#" role="button" data-toggle="dropdown" aria-haspopup="true">
+                <i className="la la-ellipsis-v"></i>
             </a>
             <div className={`dropdown-menu dropdown-menu-right ${isOpen ? 'show' : ''}`} aria-labelledby="dropdownButton">
-                {data.map((item) =>
-                    <div className="dropdown-item" style={{cursor:'pointer'}} onClick={() => handleItemClick(item)}>{item.nombre}</div>
+                {data.map((item, index) =>
+                    <div key={`drop-key-${index}`} className="dropdown-item" style={{cursor:'pointer'}} onClick={() => handleItemClick(item)}>{item.nombre}</div>
                 )}                                
             </div>
         </div>

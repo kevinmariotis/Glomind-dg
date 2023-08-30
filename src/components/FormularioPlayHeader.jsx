@@ -186,7 +186,7 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                 funcionCerrar={handleFuncionCerrarPopUp}
                 textoCerrar="Aceptar"
             />
-            <div className={`modal fade modal-container ${mostrarModalRating ? 'show':''}`} id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalTitle" aria-hidden="true">
+            <div className={`modal fade modal-container ${mostrarModalRating ? 'show':''}`} id="ratingModal" tabIndex="-1" role="dialog" aria-labelledby="ratingModalTitle" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
                         <div className="modal-header border-bottom-gray">
@@ -203,15 +203,15 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                             {tiene_review==0 ?                        
                                 <><div className="leave-rating mt-5">                                  
                                     <input type="radio" name='rate' id="star5"/>
-                                    <label for="star5" className="fs-45" data-valor="5" onClick={handleCalificacionResena}></label>
+                                    <label htmlFor="star5" className="fs-45" data-valor="5" onClick={handleCalificacionResena}></label>
                                     <input type="radio" name='rate' id="star4"/>
-                                    <label for="star4" className="fs-45" data-valor="4" onClick={handleCalificacionResena}></label>
+                                    <label htmlFor="star4" className="fs-45" data-valor="4" onClick={handleCalificacionResena}></label>
                                     <input type="radio" name='rate' id="star3"/>
-                                    <label for="star3" className="fs-45" data-valor="3" onClick={handleCalificacionResena}></label>
+                                    <label htmlFor="star3" className="fs-45" data-valor="3" onClick={handleCalificacionResena}></label>
                                     <input type="radio" name='rate' id="star2"/>
-                                    <label for="star2" className="fs-45" data-valor="2" onClick={handleCalificacionResena}></label>
+                                    <label htmlFor="star2" className="fs-45" data-valor="2" onClick={handleCalificacionResena}></label>
                                     <input type="radio" name='rate' id="star1"/>
-                                    <label for="star1" className="fs-45" data-valor="1" onClick={handleCalificacionResena}></label>
+                                    <label htmlFor="star1" className="fs-45" data-valor="1" onClick={handleCalificacionResena}></label>
                                     <div className="rating-result-text fs-20 pb-4"></div>                                
                                     <br></br><br></br>{erroresCampos['calificacion'].length > 0 ? <SpamError mensaje={erroresCampos['calificacion']} /> : 'nada'}
                                 </div>                            
@@ -239,12 +239,12 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                             <div className="logo-box logo--box">
                                 <div className="theme-picker d-flex align-items-center">
                                     <button className="theme-picker-btn dark-mode-btn" title="Dark mode">
-                                        <svg className="svg-icon-color-white" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg className="svg-icon-color-white" viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                                         </svg>
                                     </button>
                                     <button className="theme-picker-btn light-mode-btn" title="Light mode">
-                                        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                             <circle cx="12" cy="12" r="5"></circle>
                                             <line x1="12" y1="1" x2="12" y2="3"></line>
                                             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -264,12 +264,12 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                             <div className="menu-wrapper ml-auto">
                                 <div className="theme-picker d-flex align-items-center mr-3">
                                     <button onClick={handleThemeToggle} className="theme-picker-btn dark-mode-btn" title="Dark mode">
-                                        <svg className="svg-icon-color-white" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg className="svg-icon-color-white" viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                                         </svg>
                                     </button>
                                     <button onClick={handleThemeToggle} className="theme-picker-btn light-mode-btn" title="Light mode">
-                                        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                             <circle cx="12" cy="12" r="5"></circle>
                                             <line x1="12" y1="1" x2="12" y2="3"></line>
                                             <line x1="12" y1="21" x2="12" y2="23"></line>
