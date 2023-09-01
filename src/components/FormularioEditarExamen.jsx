@@ -20,6 +20,7 @@ function FormularioEditarExamen() {
     const [dejarAvanzarSiFallido, setDejarAvanzarSiFallido] = useState('');    
     const [intentos, setIntentos] = useState(0);
     const [tipo, setTipo] = useState("");
+    const [politicaDeRetroalimentacion, setPoliticaDeRetroalimentacion] = useState("");
     const [porcentajeEnTotalCurso, setPorcentajeEnTotalCurso] = useState(0);
     
     const [hora, setHora] = useState("");
@@ -39,7 +40,8 @@ function FormularioEditarExamen() {
             setHora(0);
             setMinuto(0);
             setPorcentajeEnTotalCurso(0);
-            setBloquearTiempo(true);            
+            setBloquearTiempo(true);   
+            setPoliticaDeRetroalimentacion(1);         
         }else{
             setBloquearTiempo(false);
         }
@@ -55,6 +57,7 @@ function FormularioEditarExamen() {
         'tipo':[],
         'nota':[],
         'porcentaje_en_total_curso':[],        
+        'politica_retroalimentacion':[],        
     }    
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
@@ -80,6 +83,7 @@ function FormularioEditarExamen() {
     const handleMinutoChange = (event) => { setMinuto(event.target.value);    };  
     const handleIntentosChange = (event) => { setIntentos(event.target.value);    };  
     const handleTipoChange = (event) => { setTipo(event.target.value);    };  
+    const handlePoliticaRetroalimentacionChange = (event) => { setPoliticaDeRetroalimentacion(event.target.value);    };  
     const handlePorcentajeEnTotalCurso = (event) => { setPorcentajeEnTotalCurso(event.target.value);    };  
 
     const handleFuncionAceptarPopUp = () => {        
@@ -127,6 +131,7 @@ function FormularioEditarExamen() {
                 setNombre(datos.nombre);
                 setDescripcion(desc);
                 setTipo(datos.tipo);
+                setPoliticaDeRetroalimentacion(datos.politica_retroalimentacion);
                 setDejarAvanzarSiFallido(datos.dejar_avanzar_si_fallido);
                 setIntentos(datos.intentos);
                 const tiempo = convertirSegundosAHorasMinutosSegundos(datos.tiempo);
@@ -155,6 +160,7 @@ function FormularioEditarExamen() {
             'nombre': nombre.toString(),            
             'descripcion': descripcion.toString(),            
             'tipo': tipo,
+            'politica_retroalimentacion':politicaDeRetroalimentacion,
             'tiempo': tiempo,
             'intentos': intentos,
         };
@@ -250,6 +256,18 @@ function FormularioEditarExamen() {
                                             <option value="3">Nivel Avanzado (Certificación, Pago o no según configuración del curso)</option>
                                         </select>                                        
                                         {erroresCampos['tipo'].length > 0 && (<SpamError mensaje={erroresCampos['tipo']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label className="label-text">Política de retroalimentación</label>
+                                        <select onChange={handlePoliticaRetroalimentacionChange} value={politicaDeRetroalimentacion} disabled={bloquearTiempo} name="politica_retroalimentacion" className="form-control select-dark">
+                                            <option value=""> -- Seleccione --</option>                                            
+                                            <option value="0">No se muestra retroalimentaciones y respuestas correctas o incorrectas</option>
+                                            <option value="1">Si se muestra retroalimentaciones y respuestas correctas o incorrectas en cada intento</option>
+                                            <option value="2">Se muestran las retroalimentaciones y respuestas correctas o incorrectas cuando consuma todos los intentos.</option>
+                                        </select>                                        
+                                        {erroresCampos['politica_retroalimentacion'].length > 0 && (<SpamError mensaje={erroresCampos['politica_retroalimentacion']} />)}
                                     </div>
                                 </div>
                                 {(typeof id_curso !== 'undefined') ? 

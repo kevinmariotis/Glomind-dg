@@ -1,10 +1,11 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import Skeleton from 'react-loading-skeleton'
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError, convertirSegundosAHorasMinutosSegundos } from './utils';
 import Spinner from './Spinner';
 import Popup from './Popup';
-import Skeleton from 'react-loading-skeleton'
+import CompaniasAliadas from './CompaniasAliadas';
 import 'react-loading-skeleton/dist/skeleton.css'
 
 function FormularioExamenPresentacion() {
@@ -240,35 +241,13 @@ function FormularioExamenPresentacion() {
                         <div className="col-12">
                             <div className="click-to-start-btn-box text-center pt-3">
                                 <button className="btn theme-btn" onClick={handleConfirmarIntento}>Click para iniciar un intento</button>
+                                &nbsp;<Link to={`/examen/historial/${id_examen}/${id_curso}`} className="btn theme-btn theme-btn-transparent mr-2">Historial</Link>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>            
-            <section className="cta-area py-5 position-relative overflow-hidden bg-gray">
-                <span className="stroke-shape stroke-shape-1"></span>
-                <span className="stroke-shape stroke-shape-2"></span>
-                <span className="stroke-shape stroke-shape-3"></span>
-                <span className="stroke-shape stroke-shape-4"></span>
-                <span className="stroke-shape stroke-shape-5"></span>
-                <span className="stroke-shape stroke-shape-6"></span>
-                <div className="container">
-                    <div className="row align-items-center">
-                        <div className="col-lg-6">
-                            <div className="cta-content-wrap">
-                                <h3 className="fs-20 font-weight-semi-bold lh-28">Top companies choose <a href="#" className="text-color hover-underline">Aduca for Business</a> to build in-demand career skills.</h3>
-                            </div>
-                        </div>
-                        <div className="col-lg-6">
-                            <div className="client-logo-wrap text-right">
-                                <a href="#" className="client-logo-item client--logo-item-2 pr-3"><img src="images/sponsor-img.png" alt="brand image" /></a>
-                                <a href="#" className="client-logo-item client--logo-item-2 pr-3"><img src="images/sponsor-img2.png" alt="brand image" /></a>
-                                <a href="#" className="client-logo-item client--logo-item-2 pr-3"><img src="images/sponsor-img3.png" alt="brand image" /></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <CompaniasAliadas />
         </>
     )
 }

@@ -10,7 +10,7 @@ import DashboardFooter from './DashboardFooter';
 function FormularioDashboardEnroledCourses() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
-    const {jwt, nombres} = useContext(AuthContext);
+    const {jwt, nombres, imagen_pequena} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
     const [pestanaActivada, setPestanaActivada] = useState(1);
     const [datosUsuario, setDatosUsuario] = useState({docente_rating:99.9});
@@ -129,7 +129,7 @@ function FormularioDashboardEnroledCourses() {
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
                     <div className="media media-card align-items-center">
                         <div className="media-img media--img media-img-md rounded-full">
-                            <img className="rounded-full" src={datosUsuario.imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${datosUsuario.imagen_pequena}`} alt="Student thumbnail image" />
+                            <img className="rounded-full" src={imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Foto del usuario" />
                         </div>
                         <div className="media-body">
                             <h2 className="section__title fs-30">{nombres}</h2>

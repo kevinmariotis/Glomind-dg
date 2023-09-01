@@ -30,6 +30,8 @@ import PaginaEditarExamenPreguntaFv from './components/PaginaEditarExamenPregunt
 import PaginaPlay from './components/PaginaPlay';
 import PaginaExamenPresentacion from './components/PaginaExamenPresentacion';
 import PaginaExamenIntento from './components/PaginaExamenIntento';
+import PaginaExamenIntentoResultados from './components/PaginaExamenIntentoResultados';
+import PaginaExamenHistorial from './components/PaginaExamenHistorial';
 
 import Pagina404 from './components/Pagina404';
 
@@ -72,12 +74,14 @@ const Rutas = () => {
                 <Route path="/examen/crear/:id_curso?/:id_categoria?" element={<ProtectedRoute permiso={validarPermisos([46])} ><PaginaCrearExamen/></ProtectedRoute>} />
                 <Route path="/examen/huecopreguntas/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaDashboardHuecoPreguntas/></ProtectedRoute>} />
                 <Route path="/examen/editar/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamen/></ProtectedRoute>} />
-                <Route path="examen/crearpregunta/seleccion_multiple_unica_respuesta/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaCrearExamenPreguntaSmur/></ProtectedRoute>} />
-                <Route path="examen/editarpregunta/seleccion_multiple_unica_respuesta/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamenPreguntaSmur/></ProtectedRoute>} />
-                <Route path="examen/crearpregunta/falso_verdadero/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaCrearExamenPreguntaFv/></ProtectedRoute>} />
-                <Route path="examen/editarpregunta/falso_verdadero/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamenPreguntaFv/></ProtectedRoute>} />
-                <Route path="examen/presentacion/:id_examen/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenPresentacion/></ProtectedRoute>} />                
-                <Route path="examen/intento/:id_examen_intento/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenIntento/></ProtectedRoute>} />                                
+                <Route path="/examen/crearpregunta/seleccion_multiple_unica_respuesta/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaCrearExamenPreguntaSmur/></ProtectedRoute>} />
+                <Route path="/examen/editarpregunta/seleccion_multiple_unica_respuesta/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamenPreguntaSmur/></ProtectedRoute>} />
+                <Route path="/examen/crearpregunta/falso_verdadero/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaCrearExamenPreguntaFv/></ProtectedRoute>} />
+                <Route path="/examen/editarpregunta/falso_verdadero/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamenPreguntaFv/></ProtectedRoute>} />
+                <Route path="/examen/presentacion/:id_examen/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenPresentacion/></ProtectedRoute>} />                
+                <Route path="/examen/intento/:id_examen_intento/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenIntento/></ProtectedRoute>} />                                
+                <Route path="/examen/resultados/:id_examen_intento/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenIntentoResultados/></ProtectedRoute>} />
+                <Route path="/examen/historial/:id_examen/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenHistorial/></ProtectedRoute>} />
                 <Route path="/examen/:id" element={<Pagina404/>} />                          
                 <Route path="/examen" element={<Pagina404/>} />
                 <Route path="/permisos" element={<Pagina404/>} />

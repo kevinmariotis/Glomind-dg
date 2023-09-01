@@ -16,6 +16,8 @@ function FormularioEditarExamenPreguntaSmur() {
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});                    
     
     const [pregunta, setPregunta] = useState('');    
+    const [retroalimentacionAfirmativa, setRetroalimentacionAfirmativa] = useState('');    
+    const [retroalimentacionNegativa, setRetroalimentacionNegativa] = useState(''); 
     const [agrupacion, setAgrupacion] = useState(-1);    
     const [estado, setEstado] = useState(0);    
     const [opciones, setOpciones] = useState([]);        
@@ -33,6 +35,8 @@ function FormularioEditarExamenPreguntaSmur() {
     //Estados de los errores de campos
     const camposErrores = {        
         'texto_pregunta':[],
+        'texto_retro_afirmativa':[],
+        'texto_retro_negativa':[],    
         'error_general':[],
         'id_agrupacion':[], 
         'estado':[], 
@@ -63,6 +67,8 @@ function FormularioEditarExamenPreguntaSmur() {
     };
         
     const handlePreguntaChange = (event) => { setPregunta(event.target.value);    };  
+    const handleRetroAfirmativaChange = (event) => { setRetroalimentacionAfirmativa(event.target.value);    };  
+    const handleRetroNevativaChange = (event) => { setRetroalimentacionNegativa(event.target.value);    };  
     const handleAgrupacionChange = (event) => { setAgrupacion(event.target.value);    };      
     const handleEstadoChange = (event) => { setEstado(event.target.value);    };          
 
@@ -128,6 +134,21 @@ function FormularioEditarExamenPreguntaSmur() {
                             desc = (desc!='') ? desc+='\n'+element : desc=element;
                         });
                         setPregunta(desc);
+
+                        const desc2_array = datos2.pregunta.texto_retro_afirmativa.split("<br />");
+                        let desc2 = '';                
+                        desc2_array.forEach((element) => {
+                            desc2 = (desc2!='') ? desc2+='\n'+element : desc2=element;
+                        });
+                        setRetroalimentacionAfirmativa(desc2);
+
+                        const desc3_array = datos2.pregunta.texto_retro_negativa.split("<br />");
+                        let desc3 = '';                
+                        desc3_array.forEach((element) => {
+                            desc3 = (desc3!='') ? desc3+='\n'+element : desc3=element;
+                        });
+                        setRetroalimentacionNegativa(desc3);
+
                         setEstado(datos2.pregunta.estado);
                         if(datos2.pregunta.pregunta_fija==1){
                             setIdPreguntaFija(datos2.pregunta.id_agrupacion);                            
@@ -170,6 +191,8 @@ function FormularioEditarExamenPreguntaSmur() {
         const raw = {
             'id_agrupacion': agrupacion.toString(),   
             'texto_pregunta': pregunta,
+            'texto_retro_afirmativa': retroalimentacionAfirmativa,
+            'texto_retro_negativa': retroalimentacionNegativa,
             'estado': estado,
         };
         if(agrupacion=='0'){
@@ -260,6 +283,20 @@ function FormularioEditarExamenPreguntaSmur() {
                                         <label className="label-text">Pregunta</label>
                                         <textarea onChange={handlePreguntaChange} value={pregunta} name="pregunta" className="form-control form--control user-text-editor pl-3" ></textarea>
                                         {erroresCampos['texto_pregunta'].length > 0 && (<SpamError mensaje={erroresCampos['texto_pregunta']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label className="label-text">Retroalimentación al contestar correctramente</label>
+                                        <textarea onChange={handleRetroAfirmativaChange} value={retroalimentacionAfirmativa} name="texto_retro_afirmativa" className="form-control form--control user-text-editor pl-3" ></textarea>
+                                        {erroresCampos['texto_retro_afirmativa'].length > 0 && (<SpamError mensaje={erroresCampos['texto_retro_afirmativa']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label className="label-text">Retroalimentación al contestar incorrectamente</label>
+                                        <textarea onChange={handleRetroNevativaChange} value={retroalimentacionNegativa} name="texto_retro_negativa" className="form-control form--control user-text-editor pl-3" ></textarea>
+                                        {erroresCampos['texto_retro_negativa'].length > 0 && (<SpamError mensaje={erroresCampos['texto_retro_negativa']} />)}
                                     </div>
                                 </div>
                                 <div className="col-lg-12">

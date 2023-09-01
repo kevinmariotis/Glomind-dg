@@ -16,6 +16,8 @@ function FormularioCrearExamenPreguntaFv() {
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});                    
 
     const [pregunta, setPregunta] = useState('');    
+    const [retroalimentacionAfirmativa, setRetroalimentacionAfirmativa] = useState('');    
+    const [retroalimentacionNegativa, setRetroalimentacionNegativa] = useState('');    
     const [agrupacion, setAgrupacion] = useState(-1);    
     const [falsoVerdadero, setFalsoVerdadero] = useState(-1);        
    
@@ -31,6 +33,8 @@ function FormularioCrearExamenPreguntaFv() {
     //Estados de los errores de campos
     const camposErrores = {        
         'texto_pregunta':[],
+        'texto_retro_afirmativa':[],
+        'texto_retro_negativa':[],   
         'id_agrupacion':[], 
         'tipo_pregunta':[],      
         'respuesta':[],         
@@ -54,6 +58,8 @@ function FormularioCrearExamenPreguntaFv() {
     };
         
     const handlePreguntaChange = (event) => { setPregunta(event.target.value);    };  
+    const handleRetroAfirmativaChange = (event) => { setRetroalimentacionAfirmativa(event.target.value);    };  
+    const handleRetroNevativaChange = (event) => { setRetroalimentacionNegativa(event.target.value);    };  
     const handleAgrupacionChange = (event) => { setAgrupacion(event.target.value);    };      
     const handleFalsoVerdaderoChange = (event) => { setFalsoVerdadero(event.target.value);    };      
             
@@ -98,6 +104,8 @@ function FormularioCrearExamenPreguntaFv() {
         formData.append('id_agrupacion', agrupacion.toString());
         formData.append('tipo_pregunta', 2);
         formData.append('texto_pregunta', pregunta);
+        formData.append('texto_retro_afirmativa', retroalimentacionAfirmativa);
+        formData.append('texto_retro_negativa', retroalimentacionNegativa);
         formData.append('respuesta', falsoVerdadero);
         if(agrupacion=='0'){
             formData.append('id_examen', id);
@@ -183,6 +191,20 @@ function FormularioCrearExamenPreguntaFv() {
                                         <label className="label-text">Pregunta</label>
                                         <textarea onChange={handlePreguntaChange} value={pregunta} name="pregunta" className="form-control form--control user-text-editor pl-3" ></textarea>
                                         {erroresCampos['texto_pregunta'].length > 0 && (<SpamError mensaje={erroresCampos['texto_pregunta']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label className="label-text">Retroalimentación al contestar correctramente</label>
+                                        <textarea onChange={handleRetroAfirmativaChange} value={retroalimentacionAfirmativa} name="texto_retro_afirmativa" className="form-control form--control user-text-editor pl-3" ></textarea>
+                                        {erroresCampos['texto_retro_afirmativa'].length > 0 && (<SpamError mensaje={erroresCampos['texto_retro_afirmativa']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label className="label-text">Retroalimentación al contestar incorrectamente</label>
+                                        <textarea onChange={handleRetroNevativaChange} value={retroalimentacionNegativa} name="texto_retro_negativa" className="form-control form--control user-text-editor pl-3" ></textarea>
+                                        {erroresCampos['texto_retro_negativa'].length > 0 && (<SpamError mensaje={erroresCampos['texto_retro_negativa']} />)}
                                     </div>
                                 </div>
                                 <div className="col-lg-12">

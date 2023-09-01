@@ -58,10 +58,12 @@ function FormularioPlay() {
     const handleFuncionAceptarPopUp = () => {                
         switch(popUp.data_switch){
             case 'abrir_examen':
-                navigate(`/examen/presentacion/${popUp.data_id}/${dataCurso.id}`);
+                //navigate(`/examen/presentacion/${popUp.data_id}/${dataCurso.id}`);
+                cargarContenidoEspecifico(popUp.data_id, false, true);
             break;
             case 'abrir_intento':
-                navigate(`/examen/intento/${popUp.data_id}/${dataCurso.id}`);
+                cargarContenidoEspecifico(popUp.data_id, false, true);
+                //navigate(`/examen/intento/${popUp.data_id}/${dataCurso.id}`);
             break;
         }
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
@@ -160,8 +162,8 @@ function FormularioPlay() {
     /*
         Obtiene el recurso que intenta abrir y lo coloca en un estado
     */
-    const cargarContenidoEspecifico = async (id_contenido, preguntar_abrir=false) => {                  
-        if(contenidoActivado!=id_contenido){
+    const cargarContenidoEspecifico = async (id_contenido, preguntar_abrir=false, ignorar_iguales=false) => {                  
+        if( (!ignorar_iguales && contenidoActivado!=id_contenido) || ignorar_iguales){
             const headers = {
                 'Authorization':`Bearer ${jwt}`,
             }        
@@ -172,20 +174,25 @@ function FormularioPlay() {
                     method: 'GET',
                     headers: headers,
                 };
-                setMostrarSpinner(true);
+                //setMostrarSpinner(true);
                 const response = await fetch(`${urlBaseApi}/api/cursocontenido/${id_contenido}`, opciones);
-                setMostrarSpinner(false);
+                //setMostrarSpinner(false);
                 const datos = await response.json();
                 if (response.ok){             
                     switch(datos.tipo_contenido){
                         case 2:
                             if(preguntar_abrir){
-                                setPopup({...popUp, mostrar:true, tipo:3, titulo:datos.id_examen_intento_abierto!=-1 ? 'Continuar intento?' :'Abrir siguiente actividad?', contenido:datos.id_examen_intento_abierto!=-1 ? `Desea continuar con el intento de <span style="font-style: italic;">${datos.nombre}</span>?` : `Desea abrir la actividad: <span style="font-style: italic;">${datos.nombre}</span>?`, data_switch:datos.id_examen_intento_abierto!=-1 ? 'abrir_intento' : 'abrir_examen', data_id: datos.id_examen_intento_abierto!=-1 ? datos.id_examen_intento_abierto : datos.id});
+                                setPopup({...popUp, mostrar:true, tipo:3, titulo:datos.id_examen_intento_abierto!=-1 ? 'Continuar intento?' :'Abrir siguiente actividad?', contenido:datos.id_examen_intento_abierto!=-1 ? `Desea continuar con el intento de <span style="font-style: italic;">${datos.nombre}</span>?` : `Desea abrir la actividad: <span style="font-style: italic;">${datos.nombre}</span>?`, data_switch:datos.id_examen_intento_abierto!=-1 ? 'abrir_intento' : 'abrir_examen', data_id: id_contenido});
                             }else{
                                 if(datos.id_examen_intento_abierto!=-1){
                                     navigate(`/examen/intento/${datos.id_examen_intento_abierto}/${dataCurso.id}`);
                                 }else{
-                                    navigate(`/examen/presentacion/${datos.id}/${dataCurso.id}`);
+                                    //si es de tipo 1 se crea un intento, de lo contrario se envia a la presentacion del examen.
+                                    if(datos.tipo!=1){
+                                        navigate(`/examen/presentacion/${datos.id}/${dataCurso.id}`);
+                                    }else{
+                                        iniciarIntentoExamen(datos.id, dataCurso.id);
+                                    }
                                 }
                             }
                         break;
@@ -203,7 +210,39 @@ function FormularioPlay() {
             }
         }
     };
-          
+     
+    /*
+        Sirve para iniciar un intento automaticamente cuando se intentan abrir examenes tipo basico, el cual no requiere de que se muestre la pantalla de presentacion, pero si requiere que el intento esté habilitado.
+        Esta funcion fue copiada de ExamenPresentacion.jsx "iniciarIntento".
+    */
+    const iniciarIntentoExamen = async (id_examen, id_curso) => {                          
+        try {            
+            const formData = new FormData();               
+            formData.append('id_examen', id_examen);
+            formData.append('id_curso', id_curso);
+                                    
+            const opciones = {
+                method: 'POST',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: formData
+            };            
+            const response = await fetch(`${urlBaseApi}/api/examenintento`, opciones);
+            const datos = await response.json();   
+            if (response.ok){                                                           
+                navigate(`/examen/intento/${datos.id_intento}/${id_curso}`);
+            } else {        
+                setContenidoActivado(contenidoActivado);              
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+            }            
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+    
+    
     const handleActualizaPosicionActualVideo = async (posicion_acutal) => {                                        
         const raw = {           
             'puntuacion': posicion_acutal.toString(),                        
@@ -386,7 +425,7 @@ function FormularioPlay() {
                                             <div className="mobile-course-menu pt-4">
                                                 <div className="accordion generic-accordion generic--accordion" id="mobileCourseAccordionCourseExample">
                                                     {contenido.map((categoria, index) => (
-                                                        <div className="card">
+                                                        <div key={`seccion-contenidos-movil-${index}`} className="card">
                                                             <div className="card-header" id={`mobileCourseHeading${parseInt(index)+1}`}>
                                                                 <button onClick={() => toggleTab(index)} aria-expanded={activeTab === index} className="btn btn-link" type="button" data-toggle="collapse" data-target={`#mobileCourseCollapse${parseInt(index)+1}`}  aria-controls={`mobileCourseCollapse${parseInt(index)+1}`}>
                                                                     <i className="la la-angle-down" style={{display:'none'}}></i>
@@ -402,11 +441,11 @@ function FormularioPlay() {
                                                                 <div className="card-body p-0">
                                                                     <ul className="curriculum-sidebar-list">
                                                                         {Object.keys(categoria.curso_contenido).map((key) => (
-                                                                            <li className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
+                                                                            <li key={`contenido-mobil-${key}`} className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
                                                                                 <div className="course-item-content-wrap">
                                                                                     <div className="custom-control custom-checkbox">
-                                                                                        <input type="checkbox" className="custom-control-input" id={`mobileCourseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`} required />
-                                                                                        <label className="custom-control-label custom--control-label" for={`mobileCourseCheckbox${parseInt(key)+1}`}></label>
+                                                                                        <input onChange={()=>{}} type="checkbox" className="custom-control-input" id={`mobileCourseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`}  />
+                                                                                        <label className="custom-control-label custom--control-label" htmlFor={`mobileCourseCheckbox${parseInt(key)+1}`}></label>
                                                                                     </div>
                                                                                     <div className="course-item-content" onClick={()=>{ cargarContenidoEspecifico(categoria.curso_contenido[key].id_contenido, false) }}>
 
@@ -448,7 +487,7 @@ function FormularioPlay() {
                                                                                                 }    
                                                                                             </p>                                                                                            
                                                                                             {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&
-                                                                                                <div className="generic-action-wrap">
+                                                                                                <div key={`drop-contenido-mobil-${categoria.curso_contenido[key].id_contenido}-${key}`} className="generic-action-wrap">
                                                                                                     <DropdownContenido data={categoria.curso_contenido[key].descargables} />
                                                                                                 </div>
                                                                                             }
@@ -484,7 +523,7 @@ function FormularioPlay() {
                                 <div className="course-dashboard-side-content">
                                     <div className="accordion generic-accordion generic--accordion" id="accordionCourseExample">
                                         {contenido.map((categoria, index) => (
-                                            <div className="card"> 
+                                            <div key={`seccion-contenidos-desktop-${index}`}  className="card"> 
                                                 <div className="card-header" id={`heading${parseInt(index)+1}`}>
                                                     <button aria-expanded={activeTab === index} onClick={() => toggleTab(index)} className={`btn btn-link ${activeTab !== index ? 'collapsed' : ''}`} type="button" data-toggle="collapse" data-target={`#collapse${parseInt(index)+1}`} aria-controls={`collapse${parseInt(index)+1}`}>
                                                         <i className="la la-angle-down" style={{display:'none'}}></i>
@@ -500,11 +539,11 @@ function FormularioPlay() {
                                                     <div className="card-body p-0">
                                                         <ul className="curriculum-sidebar-list">
                                                             {Object.keys(categoria.curso_contenido).map((key) => (
-                                                                <li className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
+                                                                <li key={`contenido-desktop-${key}`} className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
                                                                     <div className="course-item-content-wrap">
                                                                         <div className="custom-control custom-checkbox">
-                                                                            <input type="checkbox" className="custom-control-input" id={`courseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`} required />
-                                                                            <label className="custom-control-label custom--control-label" for={`courseCheckbox${parseInt(key)+1}`}></label>
+                                                                            <input onChange={()=>{}} type="checkbox" className="custom-control-input" id={`courseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`} required />
+                                                                            <label className="custom-control-label custom--control-label" htmlFor={`courseCheckbox${parseInt(key)+1}`}></label>
                                                                         </div>
                                                                         <div className="course-item-content" onClick={()=>{ cargarContenidoEspecifico(categoria.curso_contenido[key].id_contenido) }}>
 
@@ -546,7 +585,7 @@ function FormularioPlay() {
                                                                                     }                                                                                        
                                                                                 </p>
                                                                                 {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&
-                                                                                    <div className="generic-action-wrap">
+                                                                                    <div key={`drop-contenido-desktop-${categoria.curso_contenido[key].id_contenido}-${key}`} className="generic-action-wrap">
                                                                                         <DropdownContenido data={categoria.curso_contenido[key].descargables} />
                                                                                     </div>
                                                                                 }

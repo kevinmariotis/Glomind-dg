@@ -1,11 +1,12 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import CountdownClock from "react-countdown-clock";
+import Skeleton from 'react-loading-skeleton'
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError, convertirSegundosAHorasMinutosSegundos } from './utils';
 import Spinner from './Spinner';
 import Popup from './Popup';
-import Skeleton from 'react-loading-skeleton'
+import CompaniasAliadas from './CompaniasAliadas';
 import 'react-loading-skeleton/dist/skeleton.css'
 
 function FormularioExamenIntento() {
@@ -33,13 +34,26 @@ function FormularioExamenIntento() {
         if(configuracion.cerrado_por_tiempo==1){
             handleTiempoTerminado();
         }else{            
-            if(configuracion.fecha_hora_fin!==null){
-                navigate(`/examen/presentacion/${configuracion.id_examen}/${id_curso}`);
+            if(configuracion.fecha_hora_fin!==null && popUp.data_switch!='tiempo_terminado'){
+                navigate(`/examen/resultados/${id_examen_intento}/${id_curso}`);
+                /*if(configuracion.tipo_examen!=1){
+                    navigate(`/examen/presentacion/${configuracion.id_examen}/${id_curso}`);
+                }else{
+                    navigate(`/examen/resultados/${id_examen_intento}/${id_curso}`);
+                }*/
             }
         }
     }, [configuracion]);
 
     useEffect(() => {    
+        if(verificarTodasRespondidas()){
+            if(configuracion.tipo_examen!=1){
+                handleConfirmarEnviarIntentoPorCompletado();
+            }
+        }
+    }, [preguntas]);
+    
+    const verificarTodasRespondidas = () => {
         if(Object.keys(preguntas).length>0){
             let respondidas = 0;
             {Object.keys(preguntas).map((key) => {               
@@ -48,15 +62,23 @@ function FormularioExamenIntento() {
                 }
             })} 
             if(respondidas==Object.keys(preguntas).length){
-                handleConfirmarEnviarIntentoPorCompletado();
+                return true;
+            }else{
+                return false;
             }
         }
-    }, [preguntas]);
-    
+        return false;
+    }     
+
     const handleFuncionAceptarPopUp = () => {        
         switch(popUp.data_switch){
             case 'tiempo_terminado':
-                navigate(`/examen/presentacion/${configuracion.id_examen}/${id_curso}`);
+                navigate(`/examen/resultados/${id_examen_intento}/${id_curso}`);
+                /*if(configuracion.tipo_examen!=1){
+                    navigate(`/examen/presentacion/${configuracion.id_examen}/${id_curso}`);
+                }else{
+                    navigate(`/examen/resultados/${id_examen_intento}/${id_curso}`);
+                } */   
             break;
             case 'enviar_respuestas':
                 handleCerrarIntento(false);
@@ -193,7 +215,16 @@ function FormularioExamenIntento() {
 
     const handleConfirmarEnviarIntento = (event) => {        
         event.preventDefault(); 
-        setPopup({mostrar:true, titulo:'Confirmar', tipo:3, contenido:'Confirma que desea enviar las respuestas?', data_switch:'enviar_respuestas'});
+        if(configuracion.tipo_examen!=1){             
+            setPopup({mostrar:true, titulo:'Confirmar', tipo:3, contenido:'Confirma que desea enviar las respuestas?', data_switch:'enviar_respuestas'});
+        }else{
+            //debe haber respondido todas
+            if(verificarTodasRespondidas()){
+                handleCerrarIntento(false);
+            }else{
+                setPopup({mostrar:true, titulo:'Señala tu respuesta', tipo:2, contenido:'Falta alguna respuesta por señalar.', data_switch:''});
+            }
+        }
     };
 
     const handleConfirmarEnviarIntentoPorCompletado = () => {                
@@ -266,13 +297,13 @@ function FormularioExamenIntento() {
                         </div>}
                     </div>
                 </div>
-                {preguntaActual!=-1 && Object.keys(preguntas).length>1 ? <div className="quiz-action-nav bg-white py-3 shadow-sm">
+                {preguntaActual!=-1 ? <div className="quiz-action-nav bg-white py-3 shadow-sm">
                     <div className="container">
                         <div className="quiz-action-content d-flex flex-wrap align-items-center justify-content-between">
                             <ul className="quiz-nav d-flex align-items-center">
-                                <li>
-                                    {preguntaActual!=-1 ? <><i className="la la-sliders fs-17 mr-2"></i>Esta pregunta aquivale al {preguntas[preguntaActual].porcentaje_puntuacion}% del examen</> : ''}                                    
-                                </li>
+                                {Object.keys(preguntas).length>1 && <li>
+                                    {preguntaActual!=-1 ? <><i className="la la-sliders fs-17 mr-2"></i>Esta pregunta aquivale al {preguntas[preguntaActual].porcentaje_puntuacion}% {configuracion.tipo_examen!=1 ? 'del examen' : 'de la actividad'} </> : ''}                                    
+                                </li>}
                                 <li>
                                     {preguntaActual!=-1 ? <button onClick={e => handleConfirmarEnviarIntento(event) } href="#" className="btn theme-btn theme-btn-transparent mr-2">Terminar intento</button> : ''}
                                 </li>
@@ -329,30 +360,7 @@ function FormularioExamenIntento() {
                     </div>
                 </div>
             </section>            
-            <section className="cta-area py-5 position-relative overflow-hidden bg-gray">
-                <span className="stroke-shape stroke-shape-1"></span>
-                <span className="stroke-shape stroke-shape-2"></span>
-                <span className="stroke-shape stroke-shape-3"></span>
-                <span className="stroke-shape stroke-shape-4"></span>
-                <span className="stroke-shape stroke-shape-5"></span>
-                <span className="stroke-shape stroke-shape-6"></span>
-                <div className="container">
-                    <div className="row align-items-center">
-                        <div className="col-lg-6">
-                            <div className="cta-content-wrap">
-                                <h3 className="fs-20 font-weight-semi-bold lh-28">Top companies choose <a href="#" className="text-color hover-underline">Aduca for Business</a> to build in-demand career skills.</h3>
-                            </div>
-                        </div>
-                        <div className="col-lg-6">
-                            <div className="client-logo-wrap text-right">
-                                <a href="#" className="client-logo-item client--logo-item-2 pr-3"><img src="images/sponsor-img.png" alt="brand image" /></a>
-                                <a href="#" className="client-logo-item client--logo-item-2 pr-3"><img src="images/sponsor-img2.png" alt="brand image" /></a>
-                                <a href="#" className="client-logo-item client--logo-item-2 pr-3"><img src="images/sponsor-img3.png" alt="brand image" /></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <CompaniasAliadas />
         </>
     )
 }

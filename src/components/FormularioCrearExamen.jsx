@@ -22,6 +22,7 @@ function FormularioCrearExamen() {
     const [dejarAvanzarSiFallido, setDejarAvanzarSiFallido] = useState('');    
     const [intentos, setIntentos] = useState(0);
     const [tipo, setTipo] = useState("");
+    const [politicaDeRetroalimentacion, setPoliticaDeRetroalimentacion] = useState("");
     const [porcentajeEnTotalCurso, setPorcentajeEnTotalCurso] = useState(0);
     
     const [hora, setHora] = useState("");
@@ -41,6 +42,7 @@ function FormularioCrearExamen() {
             setMinuto(0);
             setPorcentajeEnTotalCurso(0);
             setBloquearTiempo(true);
+            setPoliticaDeRetroalimentacion(1);
         }else{
             setBloquearTiempo(false);
         }
@@ -63,6 +65,7 @@ function FormularioCrearExamen() {
         'tipo':[],
         'nota':[],
         'porcentaje_en_total_curso':[],        
+        'politica_retroalimentacion':[],                
     }    
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
@@ -88,6 +91,7 @@ function FormularioCrearExamen() {
     const handleMinutoChange = (event) => { setMinuto(event.target.value);    };  
     const handleIntentosChange = (event) => { setIntentos(event.target.value);    };  
     const handleTipoChange = (event) => { setTipo(event.target.value);    };  
+    const handlePoliticaRetroalimentacionChange = (event) => { setPoliticaDeRetroalimentacion(event.target.value);    };  
     const handlePorcentajeEnTotalCurso = (event) => { setPorcentajeEnTotalCurso(event.target.value);    };  
 
     const handleFuncionAceptarPopUp = () => {        
@@ -116,6 +120,7 @@ function FormularioCrearExamen() {
         formData.append('nombre', nombre);
         formData.append('descripcion', descripcion);
         formData.append('tipo', tipo);
+        formData.append('politica_retroalimentacion', politicaDeRetroalimentacion);
         formData.append('tiempo', tiempo);
         formData.append('intentos', intentos);
         //formData.append('dejar_avanzar_si_fallido', dejarAvanzarSiFallido);
@@ -218,6 +223,18 @@ function FormularioCrearExamen() {
                                             <option value="3">Nivel Avanzado (Certificación, Pago o no según configuración del curso)</option>
                                         </select>                                        
                                         {erroresCampos['tipo'].length > 0 && (<SpamError mensaje={erroresCampos['tipo']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label className="label-text">Política de retroalimentación</label>
+                                        <select onChange={handlePoliticaRetroalimentacionChange} value={politicaDeRetroalimentacion} disabled={bloquearTiempo} name="politica_retroalimentacion" className="form-control select-dark">
+                                            <option value=""> -- Seleccione --</option>                                            
+                                            <option value="0">No se muestra retroalimentaciones y respuestas correctas o incorrectas</option>
+                                            <option value="1">Si se muestra retroalimentaciones y respuestas correctas o incorrectas en cada intento</option>
+                                            <option value="2">Se muestran las retroalimentaciones y respuestas correctas o incorrectas cuando consuma todos los intentos.</option>
+                                        </select>                                        
+                                        {erroresCampos['politica_retroalimentacion'].length > 0 && (<SpamError mensaje={erroresCampos['politica_retroalimentacion']} />)}
                                     </div>
                                 </div>
                                 {(typeof id_curso !== 'undefined' && typeof id_categoria !== 'undefined') ? 
