@@ -2,10 +2,11 @@ import React, {useContext, useState, useEffect} from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton'
 import { AuthContext } from '../AuthContext';
-import { mensajesDeError, convertirSegundosAHorasMinutosSegundos } from './utils';
+import { mensajesDeError } from './utils';
 import Spinner from './Spinner';
 import Popup from './Popup';
 import CompaniasAliadas from './CompaniasAliadas';
+import Paginador from './Paginador';
 import 'react-loading-skeleton/dist/skeleton.css'
 
 function FormularioExamenHistorial() {
@@ -16,16 +17,25 @@ function FormularioExamenHistorial() {
     const {jwt, nombres, imagen_pequena} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
     
-    const [examen, setExamen] = useState({tiempo:0, cantidad_preguntas:0, tipo:0, intentos:'', descripcion:'', mejor_intento:'', peor_intento:'', promedio_intentos:'', promedio_global:'', intentos_realizados:''});
-    const [curso, setCurso] = useState({nombre:'', instructor:'', url_amigable:'', imagen_pequena:null});
+    const [intentos, setIntentos] = useState({});
+    const [examen, setExamen] = useState({nombre:'', tipo:1});
+    const [pagina, setPagina] = useState(1);
+    const [elementosTotales, setElementosTotales] = useState(0);
+    const [buscarPorNombre, setBuscarPorNombre] = useState('');
+    const [curso, setCurso] = useState({nombre:'', instructor:'', url_amigable:'', imagen_pequena:null, es_docente:0});
     
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
 
     useEffect(() => {           
-        window.scrollTo(0, 0);    
-        obtenerDatosDelServidor();
+        window.scrollTo(0, 0);            
         obtenerDatosCurso();
     }, []);
+
+    useEffect(() => {
+        if(curso.nombre!=''){
+            obtenerDatosDelServidor();
+        }
+    }, [curso, buscarPorNombre]);
     
     const handleFuncionAceptarPopUp = () => {                
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
@@ -34,6 +44,10 @@ function FormularioExamenHistorial() {
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
     };
     
+    const handleBusquedaPorNombre = (event) => {    
+        setBuscarPorNombre(event.target.value);
+    };
+
     const obtenerDatosDelServidor = async () => {                  
         const headers = {
             'Authorization':`Bearer ${jwt}`,
@@ -44,15 +58,13 @@ function FormularioExamenHistorial() {
                 headers: headers,
             };
             setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/examen/${id_examen}/${id_curso}`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/examen/getResultadosIntentos/${id_examen}/${id_curso}/${pagina}${curso.es_docente==1 ? '/-1' : ''}/${buscarPorNombre}`, opciones);
             setMostrarSpinner(false);
             const datos = await response.json();   
-            if (response.ok){                                                           
-                if(datos.id_examen_intento_abierto!=-1){
-                    navigate(`/examen/intento/${datos.id_examen_intento_abierto}/${id_curso}`);
-                }else{
-                    setExamen(datos);   
-                }
+            if (response.ok){  
+                setExamen(datos.examen);
+                setIntentos(datos.intentos);                
+                setElementosTotales(datos.elementos_totales);
             } else {                      
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
             }            
@@ -102,11 +114,11 @@ function FormularioExamenHistorial() {
                     <div className="breadcrumb-content">
                         <div className="media media-card align-items-center">
                             <div className="media-img media--img media-img-md rounded-full">                                
-                                <img className="rounded-full" src={imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Foto del estudiante" />
+                                <img className="rounded-full" src={imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Foto del usuario" />
                             </div>
                             <div className="media-body">
                                 <h2 className="section__title fs-30">{nombres}</h2>
-                                <span className="d-block lh-18 pt-1">Estudiante</span>
+                                <span className="d-block lh-18 pt-1">{curso.es_docente==1 ? 'Instructor' : 'Estudiante' }</span>
                             </div>
                         </div>
                     </div>
@@ -138,59 +150,44 @@ function FormularioExamenHistorial() {
             </section>
             <section className="breadcrumb-area">
                 <div className="pt-60px pb-60px">
-                    <div className="container">                    
-                        
-                        
-                        <div class="quiz-result-item mb-5">
-                            <ul class="quiz-nav pb-4">
+                    <div className="container">                                                                    
+                        <div className="quiz-result-item mb-5">
+                            <ul className="quiz-nav pb-4">
                                 <li>
-                                    <div class="d-flex align-items-center">
+                                    <div className="d-flex align-items-center">
                                         <a href="course-details.html">
-                                            <img src="images/angular.png" alt="" class="w-50px" />
+                                            <img src="images/angular.png" alt="" className="w-50px" />
                                         </a>
                                         <p>
-                                            <a href="course-details.html" class="fs-22 font-weight-semi-bold">Angular Fundamentals</a><span class="d-block pt-1">View Course</span>
+                                            <Link  to={`/examen/presentacion/${id_examen}/${id_curso}`}className="fs-22 font-weight-semi-bold">{examen.nombre}</Link><span className="d-block pt-1">{examen.tipo==1 ? 'Actividad' : 'Examen'}</span>
                                         </p>
                                     </div>
                                 </li>
                             </ul>
-                            <div class="list-group">
-                                <a href="student-quiz-result-details.html" class="list-group-item list-group-item-action d-flex">
-                                    <div class="flex-grow-1">
-                                        <h5 class="fs-16">Fundamentals of Working with Angular</h5>
-                                        <small class="text-muted">14 min ago</small>
+                            {curso.es_docente==1 && <div className="d-flex flex-wrap align-items-center pb-4">
+                                <form method="post" className="mr-3 flex-grow-1">
+                                    <div className="form-group">
+                                        <input onKeyUp={handleBusquedaPorNombre} className="form-control form--control pl-3" type="text" name="buscar_por_nombre" placeholder="Buscar por nombre" maxLength="64" />
+                                        <span className="la la-search search-icon"></span>
                                     </div>
-                                    <div class="text-center">
-                                        <span class="d-block lh-20 font-weight-semi-bold mb-n1">4.8</span>
-                                        <small class="text-uppercase text-muted">score</small>
-                                    </div>
-                                </a>
-                                <a href="student-quiz-result-details.html" class="list-group-item list-group-item-action d-flex">
-                                    <div class="flex-grow-1">
-                                        <h5 class="fs-16">Working with the Angular CLI</h5>
-                                        <small class="text-muted">14 min ago</small>
-                                    </div>
-                                    <div class="text-center">
-                                        <span class="d-block lh-20 font-weight-semi-bold mb-n1">4.8</span>
-                                        <small class="text-uppercase text-muted">score</small>
-                                    </div>
-                                </a>
-                                <a href="student-quiz-result-details.html" class="list-group-item list-group-item-action d-flex">
-                                    <div class="flex-grow-1">
-                                        <h5 class="fs-16">Understanding Dependency Injection</h5>
-                                        <small class="text-muted">14 min ago</small>
-                                    </div>
-                                    <div class="text-center">
-                                        <span class="d-block lh-20 font-weight-semi-bold mb-n1">4.8</span>
-                                        <small class="text-uppercase text-muted">score</small>
-                                    </div>
-                                </a>
-
-                            </div>
+                                </form>                            
+                            </div>}         
+                            {Object.keys(intentos).map((key) => (
+                                <div key={`intento-item-${key}`} className="list-group">
+                                    <Link to={`/examen/resultados/${intentos[key].id}/${id_curso}`} className="list-group-item list-group-item-action d-flex">
+                                        <div className="flex-grow-1">
+                                            <h5 className="fs-16">{intentos[key].nombres} {intentos[key].apellidos}</h5>
+                                            <small className="text-muted">{intentos[key].fecha_hora_fin_formateada}</small>
+                                        </div>
+                                        <div className="text-center">
+                                            <span className="d-block lh-20 font-weight-semi-bold mb-n1">{intentos[key].calificacion}</span>
+                                            <small className="text-uppercase text-muted">puntuación</small>
+                                        </div>
+                                    </Link>                                
+                                </div>
+                            ))}
+                            <Paginador elemetosTotales={elementosTotales} elementosPorPagina={100} paginaActual={pagina} callbackCambioPagina={setPagina} />
                         </div>
-
-
-
                     </div>
                 </div>                    
             </section>                                       

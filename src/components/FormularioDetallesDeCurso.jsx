@@ -744,7 +744,7 @@ function FormularioDetallesDeCurso(){
                                     </ul>
                                 </div>}
                                 <div className="course-overview-card border border-gray p-4 rounded">
-                                    <h3 className="fs-20 font-weight-semi-bold">Las mejores empresas confían en Nombre empresa</h3>                                    
+                                    <h3 className="fs-20 font-weight-semi-bold">Las mejores empresas confían en Prisma</h3>                                    
                                     <div className="pb-3">
                                         <img width="85" className="mr-3" src={`${urlBase}/images/sponsor-img.png`} alt="Logo de empresa"/>
                                         <img width="80" className="mr-3" src={`${urlBase}/images/sponsor-img2.png`} alt="Logo de empresa"/>

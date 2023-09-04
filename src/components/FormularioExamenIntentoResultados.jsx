@@ -19,7 +19,7 @@ function FormularioExamenIntentoResultados() {
         
     const [configuracion, setConfiguracion] = useState({fecha_hora_fin_formateada:'', duracion_realizacion:'', calificacion:'', mostrar_retroalimentacion:0, politica_retroalimentacion:0});
     const [preguntas, setPreguntas] = useState({});
-    const [curso, setCurso] = useState({nombre:'', instructor:'', url_amigable:'', imagen_pequena:null});    
+    const [curso, setCurso] = useState({nombre:'', instructor:'', url_amigable:'', imagen_pequena:null, es_docente:0});    
 
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
 
@@ -34,6 +34,9 @@ function FormularioExamenIntentoResultados() {
         switch(popUp.data_switch){
             case 'iniciar_intento':
                 iniciarIntento();
+            break;
+            case 'borrar_intento':
+                borrarIntento();
             break;
         }              
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
@@ -120,11 +123,43 @@ function FormularioExamenIntentoResultados() {
         }
     };
 
+    const borrarIntento = async () => {                  
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'DELETE',
+                headers: headers,
+            };            
+            const response = await fetch(`${urlBaseApi}/api/examenintento/${id_examen_intento}`, opciones);            
+            const datos = await response.json();   
+            if (response.ok){                                           
+                navigate(`/examen/historial/${configuracion.id_examen}/${id_curso}`);
+            } else {                      
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+            }            
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
     const handleConfirmarIntento = (event) => {        
         event.preventDefault(); 
         setPopup({mostrar:true, titulo:'Confirmar', tipo:3, contenido:'Confirma que desea iniciar un intento?', data_switch:'iniciar_intento'});
     };
 
+    const handleVerHistorial = (event) => {
+        event.preventDefault(); 
+        navigate(`/examen/historial/${configuracion.id_examen}/${id_curso}`);
+    };
+
+    const handleBorrarIntento = (event) => {
+        event.preventDefault(); 
+        setPopup({mostrar:true, titulo:'Confirmar', tipo:3, contenido:'Confirma que desea borrar este intento?', data_switch:'borrar_intento'});
+    };
+    
     const nivelHabilidad = ['', 'Actividad', 'Intermedio', 'Avanzado'];
     const abecedario = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -175,7 +210,7 @@ function FormularioExamenIntentoResultados() {
                             </div>
                             <div className="breadcrumb-btn-box pt-30px">
                                 <button onClick={handleConfirmarIntento} className="btn theme-btn theme-btn-transparent text-white-50 mr-2 mb-2">Reintentar</button>
-                                <button className="btn theme-btn theme-btn-transparent text-white-50 mb-2">Ver historial</button>
+                                <button onClick={handleVerHistorial} className="btn theme-btn theme-btn-transparent text-white-50 mb-2">Ver historial</button>
                             </div>
                         </div>
                     </div>
@@ -187,6 +222,7 @@ function FormularioExamenIntentoResultados() {
                                 <li>{configuracion.calificacion>=3 ? <i className="la la-check-circle fs-17 mr-2"></i> : <i className="la la-close fs-17 mr-2"></i>}{configuracion.calificacion}/5.0 Puntuación</li>
                                 <li><i className="la la-clock fs-17 mr-2"></i>{configuracion.duracion_realizacion}</li>
                                 <li><i className="la la-bar-chart fs-17 mr-2"></i>{nivelHabilidad[configuracion.tipo_examen]}</li>
+                                {curso.es_docente==1 && <li><button onClick={handleBorrarIntento} className="btn theme-btn theme-btn-transparent text-white-50 mb-2"> Borrar intento</button></li>}                                
                             </ul>
                         </div>
                     </div>

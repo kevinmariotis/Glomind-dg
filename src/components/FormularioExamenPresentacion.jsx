@@ -16,7 +16,7 @@ function FormularioExamenPresentacion() {
     const {jwt} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
     
-    const [examen, setExamen] = useState({tiempo:0, cantidad_preguntas:0, tipo:0, intentos:'', descripcion:'', mejor_intento:'', peor_intento:'', promedio_intentos:'', promedio_global:'', intentos_realizados:''});
+    const [examen, setExamen] = useState({tiempo:0, cantidad_preguntas:0, tipo:0, intentos:'', nombre:'', descripcion:'', mejor_intento:'', peor_intento:'', promedio_intentos:'', promedio_global:'', intentos_realizados:''});
     const [curso, setCurso] = useState({nombre:'', instructor:'', url_amigable:'', imagen_pequena:null});
     
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
@@ -164,7 +164,7 @@ function FormularioExamenPresentacion() {
                     <div className="container">                    
                         <div className="breadcrumb-content pt-40px">
                             <div className="section-heading">
-                                <h2 className="section__title fs-30 pb-2">Descripción del examen</h2>
+                                <h2 className="section__title fs-30 pb-2"><i className="la la-pencil-square-o mr-2"></i>{examen.nombre}</h2>
                                 {examen.descripcion=='' ? 
                                     <>
                                         <Skeleton width={'60%'} height={20} />

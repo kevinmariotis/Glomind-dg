@@ -57,13 +57,11 @@ function FormularioPlay() {
 
     const handleFuncionAceptarPopUp = () => {                
         switch(popUp.data_switch){
-            case 'abrir_examen':
-                //navigate(`/examen/presentacion/${popUp.data_id}/${dataCurso.id}`);
+            case 'abrir_examen':                
                 cargarContenidoEspecifico(popUp.data_id, false, true);
             break;
             case 'abrir_intento':
-                cargarContenidoEspecifico(popUp.data_id, false, true);
-                //navigate(`/examen/intento/${popUp.data_id}/${dataCurso.id}`);
+                cargarContenidoEspecifico(popUp.data_id, false, true);                
             break;
         }
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
