@@ -10,6 +10,7 @@ import Popup from './Popup';
 import { mensajesDeError } from './utils';
 import DropdownContenido from './DropdownContenido';
 import HiloComentarios from './HiloComentarios';
+import HiloAnuncio from './HiloAnuncio';
 import { sideBarAbrirCerrar } from './comun';
 
 function FormularioPlay() {        
@@ -34,10 +35,7 @@ function FormularioPlay() {
     const [contenidoActivadoAnterior, setContenidoActivadoAnterior] = useState(-1);  //el contenido anterior que estaba viendo, por si acaso hay que volver a señalarlo.
     const [pestanaActivada, setPestanaActivada] = useState(3);  //pestañas que estan debajo del video
     const [cargarActividadActual, setCargarActividadActual] = useState(false);
-    
-    const [tipoPreguntaCurso, setTipoPreguntaCurso] = useState(-1);
-    const [nuevaPregunta, setNuevaPregunta] = useState('');
-
+        
     const refBloqueDescripcion = useRef(null);
     const refHiloComentarios = useRef(null);    
 
@@ -427,11 +425,11 @@ function FormularioPlay() {
                                                 Contenido del curso
                                             </a>
                                         </li>                                                                           
-                                        <li className="nav-item">
+                                        {dataCurso.instructor!='' ? <li className="nav-item">
                                             <a onClick={(event)=>{ handleCambiarPestana(event, 4); }} className={`nav-link ${pestanaActivada==4 ? 'active': ''}`} id="announcements-tab" data-toggle="tab" href="#announcements" role="tab" aria-controls="announcements" aria-selected="false">
                                                 Anuncios
                                             </a>
-                                        </li>
+                                        </li> : ''}
                                         <li className="nav-item">
                                             <a onClick={(event)=>{ handleCambiarPestana(event, 2); }} className={`nav-link ${pestanaActivada==2 ? 'active': ''}`} id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">
                                                 Vista general
@@ -654,7 +652,10 @@ function FormularioPlay() {
                                         <div className={`tab-pane fade show ${pestanaActivada==3 ? 'active': ''}`} id="question-and-ans" role="tabpanel" aria-labelledby="question-and-ans-tab">                                                                                        
                                             {dataCurso.id!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={tipoContenidoHilo} /> : ''}                                            
                                         </div>
-
+                                        
+                                        {dataCurso.instructor!='' ? <div className={`tab-pane fade show ${pestanaActivada==4 ? 'active': ''}`} id="announcements" role="tabpanel" aria-labelledby="announcements-tab">
+                                            {dataCurso.id!=-1 ? <HiloAnuncio id_hilo={dataCurso.id_anuncios_hilo} id_objeto_enlace={dataCurso.id} tipo_objeto_enlace={1} es_creador={dataCurso.es_docente} /> : ''}                                            
+                                        </div>: ''}
 
                                     </div>    
                                 </div>

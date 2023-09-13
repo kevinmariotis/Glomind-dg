@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from 'react';
+import React, { useState, useRef, useContext, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
@@ -18,10 +18,24 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
     const [opcionesDeFiltradoActivado, setOpcionesDeFiltradoActivado] = useState(false);
 
     const [dataComentariosHilo, setDataComentariosHilo] = useState({});  
+    const [cantidadComentarios, setCantidadComentarios] = useState(0);
     const [idComentarioHijosViendo, setIdComentarioHijosViendo] = useState(0);
     const [dataComentariosHijos, setDataComentariosHijos] = useState({});
     const [nuevaPregunta, setNuevaPregunta] = useState('');
+
+    const [pagina, setPagina] = useState(1);
     
+    const [ordenarPor, setOrdenarPor] = useState('comentario.puntuacion-desc');
+    const [filtrarPorPreguntasQueSigo, setFiltrarPorPreguntasQueSigo] = useState(false);
+    const [filtrarPorPreguntasQueHice, setFiltrarPorPreguntasQueHice] = useState(false);
+    const [filtrarPorPreguntasSinRespuesta, setFiltrarPorPreguntasSinRespuesta] = useState(false);
+    
+    //interval para manejar la busqueda de comentarios en lapsos de tiempo
+    const [buscarComentario, setBuscarComentario] = useState('');
+    const intervalRef = useRef(null);
+    const latest_ultimo_comentario_escrito = useRef('');
+    const latest_comentario_seleccionado = useRef(buscarComentario);
+        
     //Estados de los errores de campos
     const camposErrores = {        
         'texto':[],
@@ -46,21 +60,67 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
     };
     
     useEffect(() => {    
-        if(id_hilo!=-1){
-            reiniciarEstados();
-            cargarHiloComentarios(id_hilo);
+        if(id_hilo!=0){
+            reiniciarEstados();                        
+            cargarHiloComentarios(id_hilo, true);            
         }else{
             setDataComentariosHilo({});
-        }
+        }        
     }, [id_hilo]);
 
+    useEffect(() => {        
+        if (!intervalRef.current) {            
+            intervalRef.current = setInterval(() => {                
+                chekearCambiosBusquedaNombre();                
+            }, 1500);
+        }else{
+            return () => { clearInterval(intervalRef.current); }
+        } 
+    }, []);
+        
+    useEffect(() => { 
+        if(id_hilo!=0){            
+            if(pagina==-1){
+                cargarHiloComentarios(id_hilo, true);             //activado
+            }
+            setPagina(-1);
+        }    
+    }, [ordenarPor, filtrarPorPreguntasQueSigo, filtrarPorPreguntasQueHice, filtrarPorPreguntasSinRespuesta]);
+
+    useEffect(() => { 
+        if(id_hilo!=0){            
+            setDataComentariosHilo({});
+            if(pagina==-1){
+                cargarHiloComentarios(id_hilo, true);                        //activado
+            }    
+            setPagina(-1);            
+        }    
+    }, [buscarComentario]);
+
+    useEffect(() => {                 
+        if(id_hilo!=0){       //ojo con esto que lo acabamos de pone: pagina!=1            
+            let reiniciar_data = pagina<0 ? true : false;            
+            cargarHiloComentarios(id_hilo, reiniciar_data);
+        }    
+    }, [pagina]);
+
     useEffect(() => {            
-        if(idComentarioHijosViendo!=0){            
-            console.log("viendo comentario ", idComentarioHijosViendo);
+        if(idComentarioHijosViendo!=0){
             cargarRespuestasComentario(idComentarioHijosViendo);
             reiniciarErrorCampoGlobal();
         }
     }, [idComentarioHijosViendo]);
+
+    /*establece lo que se habia escrito en el campo buscar cuando se regresa a la pagina principal de los comentarios*/
+    useEffect(() => {            
+        if(seccionActivada==1){            
+            const inputElement = document.getElementById(`buscar_comentarios_${id_hilo}`); // Reemplaza 'miInput' con el ID real de tu input
+            if (inputElement) {                
+                inputElement.value = latest_ultimo_comentario_escrito.current;                
+            }
+        }
+    }, [seccionActivada]);
+     
     
     const handleFuncionAceptarPopUp = () => {                        
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
@@ -69,7 +129,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
     };
 
-    const cargarHiloComentarios = async (id_comentario_hilo) => {                  
+    const cargarHiloComentarios = async (id_comentario_hilo, reiniciar_data=false) => {                  
         const headers = {
             'Authorization':`Bearer ${jwt}`,
         }        
@@ -78,12 +138,59 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                 method: 'GET',
                 headers: headers,
             };
+            
+            let opciones_filtrado = '';
+            if(filtrarPorPreguntasQueSigo){
+                opciones_filtrado = 'comentarios_siguiendo';
+            }
+            if(filtrarPorPreguntasQueHice){
+                if(opciones_filtrado!=''){ opciones_filtrado+=','; }
+                opciones_filtrado = 'comentarios_propios';
+            }
+            if(filtrarPorPreguntasSinRespuesta){
+                if(opciones_filtrado!=''){ opciones_filtrado+=','; }
+                opciones_filtrado = 'comentarios_sin_respuesta';
+            }
+            opciones_filtrado = opciones_filtrado=='' ? 'none' : opciones_filtrado;            
             //setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/comentariohilo/${id_comentario_hilo}`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/comentariohilo/${id_comentario_hilo}/${Math.abs(pagina)}/${ordenarPor}/${opciones_filtrado}${buscarComentario!='' ? '/'+buscarComentario : ''}`, opciones);
             //setMostrarSpinner(false);
             const datos = await response.json();
-            if (response.ok){                                                                               
-                setDataComentariosHilo(datos);                
+            if (response.ok){                     
+                //introducimos los nuevos datos evitando que se repitan
+                if(!reiniciar_data){
+                    //introducimos los nuevos datos evitando que se repitan
+                    const mergedJson = { ...dataComentariosHilo };
+                    Object.keys(datos.comentarios).forEach((key) => {      
+                        let encontrado = false;                  
+                        const id_ingresando = datos.comentarios[key].id;
+                        Object.keys(dataComentariosHilo).forEach((key2) => {
+                            if(dataComentariosHilo[key].id==id_ingresando){
+                                encontrado = true;
+                            }
+                        });
+                        if(!encontrado){
+                            //buscamos el nuevo indice
+                            let currentIndex = key;
+                            while (mergedJson[currentIndex] !== undefined) {
+                                currentIndex++;
+                            }
+                            datos.comentarios[key].update = 0;
+                            mergedJson[currentIndex] = datos.comentarios[key];
+                        }                        
+                    });
+                    setDataComentariosHilo(mergedJson);                    
+                }else{    
+                    const mergedJson = {};  
+                    Object.keys(datos.comentarios).forEach((key) => {
+                        datos.comentarios[key].update = 1;
+                        mergedJson[key] = datos.comentarios[key];
+                    });
+                    setDataComentariosHilo(mergedJson);                    
+                }    
+                
+                
+                setCantidadComentarios(datos.cantidad_comentarios[0]);
             } else {  
                 setDataComentariosHilo({});
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
@@ -93,21 +200,18 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
             console.error('Error en la solicitud al servidor', error);
         }
     };
-    
+        
     const handleCrearPregunta  = async (event) => {                
         event.preventDefault();           
         try {            
-            const formData = new FormData();               
-            console.log("tipo_objeto_enlace", tipo_objeto_enlace);
-            console.log("id_objeto_enlace", id_objeto_enlace);
+            const formData = new FormData();                           
             formData.append('tipo_objeto_enlace', tipo_objeto_enlace);
             formData.append('id_objeto_enlace', id_objeto_enlace);
             formData.append('texto', nuevaPregunta);
             if(idComentarioHijosViendo!=0){
                 formData.append('id_comentario_padre', idComentarioHijosViendo);
             }
-            //formData.append('id_comentario_padre', 0);
-            console.log("aaa");
+            //formData.append('id_comentario_padre', 0);            
             const opciones = {
                 method: 'POST',
                 headers: {
@@ -123,7 +227,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                 setSeccionActivada(1);                
                 setNuevaPregunta('');
                 setIdComentarioHijosViendo(0);
-                setPopup({mostrar:true, titulo:'Listo', contenido:'Tu pregunta ha sido publicada.'});
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Tu pregunta ha sido publicada.'});                
                 cargarHiloComentarios(id_hilo);
             } else {
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
@@ -134,7 +238,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
         }
 
     };
-
+    
     const votarPorComentario  = async (id_comentario) => {        
         try {                                                          
             const opciones = {
@@ -148,7 +252,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                 const response = await fetch(`${urlBaseApi}/api/comentario/votar/${id_comentario}`, opciones);
                 setMostrarSpinner(false);
                 const datos = await response.json();            
-                if (response.ok){    
+                if (response.ok){                        
                     cargarHiloComentarios(id_hilo);
                     return;
                 } else {
@@ -162,7 +266,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
             console.error('Error en la solicitud al servidor', error);
         }
     };
-
+    
     const seguirComentario  = async (id_comentario, seguir) => {        
         try {                                                          
             const opciones = {
@@ -182,7 +286,8 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                     }else{
                         setPopup({mostrar:true, titulo:'Listo', contenido:'Ya no estás siguiendo este hilo.'});
                     }
-                    cargarHiloComentarios(id_hilo);
+                    //cargarHiloComentarios(id_hilo, true);                    
+                    marcarComoSiguiendo(id_comentario, seguir);
                     return;
                 } else {
                     mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
@@ -196,6 +301,16 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
         }
     };
 
+    const marcarComoSiguiendo = (id_comentario, seguir) => {
+        const mergedJson = { ...dataComentariosHilo };   
+        Object.keys(mergedJson).forEach((key) => {                                
+            if (mergedJson[key].id==id_comentario) {                
+                mergedJson[key].siguiendo = seguir;
+            }
+        });
+        setDataComentariosHilo(mergedJson);        
+    }
+    
     const cargarRespuestasComentario = async (id_comentario_padre) => {
         const headers = {
             'Authorization':`Bearer ${jwt}`,
@@ -223,25 +338,62 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
 
     };
     
-    const handleCambiarSeccion  = (event, id_seccion) => {
+    const handleCambiarSeccion = (event, id_seccion) => {
         event.preventDefault();        
         setNuevaPregunta('');
         setSeccionActivada(id_seccion);
         setIdComentarioHijosViendo(0);
-        reiniciarErrorCampoGlobal();
-        console.log("cambiando a seccion ", id_seccion);
+        reiniciarErrorCampoGlobal();            
     };
 
-    const handleEscribirPregunta  = (event) => {                        
+    const handleEscribirPregunta = (event) => {                        
         setNuevaPregunta(event.target.value); 
     };
     
+    const handleBuscarComentario = (event) => {                                
+        latest_ultimo_comentario_escrito.current = event.target.value;        
+    };    
+
+    const chekearCambiosBusquedaNombre = useCallback(() => {
+        if(latest_ultimo_comentario_escrito.current!=latest_comentario_seleccionado.current){                    
+            setBuscarComentario(latest_ultimo_comentario_escrito.current);                          
+            latest_comentario_seleccionado.current = latest_ultimo_comentario_escrito.current;     
+            //setDataComentariosHilo({});           
+            if(pagina==-1){     //ojo pruebas
+                cargarHiloComentarios(id_hilo, true);   //ojo pruebas
+            }
+            setPagina(-1);
+        }                                                    
+    }, []);
+
+    const handleOrdenarPorChange = (event) => { setOrdenarPor(event.target.value);    }; 
+    const handleFiltrarPorPreguntasQueSigo = (event) => {                        
+        const { checked } = event.target;
+        setFiltrarPorPreguntasQueSigo(checked ? true: false);        
+    };
+    const handleFiltrarPorPreguntasQueHice = (event) => {                        
+        const { checked } = event.target;
+        setFiltrarPorPreguntasQueHice(checked ? true: false);        
+    };
+    const handleFiltrarPorPreguntasSinRespuesta = (event) => {                        
+        const { checked } = event.target;
+        setFiltrarPorPreguntasSinRespuesta(checked ? true: false);        
+    };
+    
+    const handleCargarMasComentarios = () => {                
+        setPagina(Math.abs(pagina)+1);        
+    };
+
     const reiniciarEstados  = () => {
         setSeccionActivada(1);
-        setDataComentariosHilo({})
+        setPagina(1);
+        setDataComentariosHilo({});
         setIdComentarioHijosViendo(0);
-        setDataComentariosHijos();
-        setNuevaPregunta('')
+        setDataComentariosHijos({});
+        setNuevaPregunta('');
+        setBuscarComentario('');
+        latest_ultimo_comentario_escrito.current = '';
+        latest_comentario_seleccionado.current = '';
     };
     return (
         <>
@@ -373,18 +525,18 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                     <div className="lecture-overview-item">
                         <form method="post">
                             <div className="input-group mb-3">
-                                <input className="form-control form--control form--control-gray pl-3" type="text" name="search" placeholder="Search all course questions" />
+                                <input onChange={handleBuscarComentario} className="form-control form--control form--control-gray pl-3" type="text" name="buscar_comentario" id={`buscar_comentarios_${id_hilo}`} placeholder="Buscar comentarios" />
                                 <div className="input-group-append">
-                                    <button className="btn theme-btn"><i className="la la-search search-icon"></i></button>
+                                    <div className="btn theme-btn"><i className="la la-search search-icon"></i></div>
                                 </div>
                             </div>
                         </form>
                         <div className="question-overview-filter-wrap d-flex align-items-center">
                             <div className="question-overview-filter-item">
                                 <div className="select-container w-100">
-                                    <select className="form-control select-dark">
-                                        <option value="puntuacion">Ordenar por Los más votados</option>
-                                        <option value="created_at">Ordenar por Los más recientes</option>
+                                    <select onChange={handleOrdenarPorChange} value={ordenarPor} className="form-control select-dark">
+                                        <option value="comentario.puntuacion-desc">Ordenar por Los más votados</option>
+                                        <option value="comentario.created_at-desc">Ordenar por Los más recientes</option>
                                     </select>
                                 </div>
                             </div>
@@ -397,25 +549,25 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                         <div className="dropdown-menu" style={{display:opcionesDeFiltradoActivado ? 'block' : 'none'}}>
                                             <div className="dropdown-item">
                                                 <div className="custom-control custom-checkbox fs-15">
-                                                    <input type="checkbox" className="custom-control-input" id="questionsCheckbox" required />
+                                                    <input onChange={handleFiltrarPorPreguntasQueSigo} checked={filtrarPorPreguntasQueSigo} type="checkbox" className="custom-control-input" id="questionsCheckbox" required />
                                                     <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox">
-                                                        Questions I'm following
+                                                        Comentarios que sigo
                                                     </label>
                                                 </div>
                                             </div>
                                             <div className="dropdown-item">
                                                 <div className="custom-control custom-checkbox fs-15">
-                                                    <input type="checkbox" className="custom-control-input" id="questionsCheckbox2" required />
+                                                    <input onChange={handleFiltrarPorPreguntasQueHice} checked={filtrarPorPreguntasQueHice} type="checkbox" className="custom-control-input" id="questionsCheckbox2" required />
                                                     <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox2">
-                                                        Questions I asked
+                                                        Comentarios que hice
                                                     </label>
                                                 </div>
                                             </div>
                                             <div className="dropdown-item">
                                                 <div className="custom-control custom-checkbox fs-15">
-                                                    <input type="checkbox" className="custom-control-input" id="questionsCheckbox3" required />
+                                                    <input onChange={handleFiltrarPorPreguntasSinRespuesta} checked={filtrarPorPreguntasSinRespuesta} type="checkbox" className="custom-control-input" id="questionsCheckbox3" required />
                                                     <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox3">
-                                                    Questions without responses
+                                                        Comentarios sin respuesta
                                                     </label>
                                                 </div>
                                             </div>
@@ -427,7 +579,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                     </div>
                     <div className="lecture-overview-item">
                         <div className="question-overview-result-header d-flex align-items-center justify-content-between">
-                            <h3 className="fs-17 font-weight-semi-bold">{Object.keys(dataComentariosHilo).length} preguntas / aportes</h3>
+                            <h3 className="fs-17 font-weight-semi-bold">{cantidadComentarios} comentarios / preguntas</h3>
                             <button onClick={event => handleCambiarSeccion(event, 2)} className="btn theme-btn theme-btn-sm theme-btn-transparent ask-new-question-btn">Nueva pregunta</button>
                         </div>
                     </div>
@@ -467,9 +619,11 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                 </div>                                                            
                             </div>
                         ))}
-                        <div className="question-btn-box pt-35px text-center">
-                            <button className="btn theme-btn theme-btn-transparent w-100" type="button">See More</button>
-                        </div>
+                        {Object.keys(dataComentariosHilo).length<cantidadComentarios && 
+                            <div className="question-btn-box pt-35px text-center">
+                                <button onClick={handleCargarMasComentarios} className="btn theme-btn theme-btn-transparent w-100" type="button">Ver más comentarios</button>
+                            </div>
+                        }
                     </div>
                 </div>: ''}
             </div>
