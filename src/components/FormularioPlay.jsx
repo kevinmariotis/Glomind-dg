@@ -346,6 +346,40 @@ function FormularioPlay() {
             refBloqueDescripcion.current.scrollIntoView({ behavior: 'smooth' });
         }
     };
+    
+    const handleGenerarCertificado = async () => {        
+        if((parseFloat(dataCurso.nota_minima_superado)==0 &&  dataCurso.porcentaje_progreso==100) || (parseFloat(dataCurso.nota_minima_superado)>0 && parseFloat(dataCurso.calificacion_curso)>=parseFloat(dataCurso.nota_minima_superado))){            
+            const headers = {
+                'Authorization':`Bearer ${jwt}`,
+            }        
+            try {                           
+                const opciones = {
+                    method: 'GET',
+                    headers: headers,
+                };
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/curso/getCertificado/${dataCurso.id}`, opciones);
+                setMostrarSpinner(false);
+                const datos = await response.json();
+                if (response.ok){                                                                               
+                    
+                } else {                
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
+                }            
+            }catch(error){
+                // Manejar el caso de error en la solicitud
+                console.error('Error en la solicitud al servidor', error);
+            }
+        }else{
+            if(parseFloat(dataCurso.nota_minima_superado)==0 && dataCurso.porcentaje_progreso<100){
+                setPopup({mostrar:true, titulo:'Debe completar al curso al 100%', contenido:'Para descargar el certificado debes completar el curso al 100%.'});
+            }else{
+                if(parseFloat(dataCurso.nota_minima_superado)>0 && parseFloat(dataCurso.calificacion_curso)<parseFloat(dataCurso.nota_minima_superado)){
+                    setPopup({mostrar:true, titulo:'Debe al alcanzar una nota especifica', contenido:`Para descargar el certificado debes alcanzar una nota global en el curso de ${dataCurso.nota_minima_superado}, actualmente tu nota es ${dataCurso.calificacion_curso}.`});
+                }
+            }
+        }
+    };
 
     const nivelHabilidad = ['', 'Básico', 'Intermedio', 'Avanzado'];
          
@@ -568,7 +602,7 @@ function FormularioPlay() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {dataCurso.expedir_certificado==1 && ((dataCurso.certificado_solo_pago==1 && dataCurso.curso_comprado_previamente==1) || (dataCurso.certificado_solo_pago==0)) ? <><div className="section-block"></div>
+                                                {dataCurso.expedir_certificado==1 && ((dataCurso.certificado_solo_pago==1 && dataCurso.curso_certificado_comprado_previamente==1) || (dataCurso.certificado_solo_pago==0)) ? <><div className="section-block"></div>
                                                 <div className="lecture-overview-item">
                                                     <div className="lecture-overview-stats-wrap d-flex">
                                                         <div className="lecture-overview-stats-item">
@@ -576,7 +610,7 @@ function FormularioPlay() {
                                                         </div>
                                                         <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
                                                             <p className="pb-3">Obtén el certificado de Prisma completando el curso</p>
-                                                            <a href="#" className="btn theme-btn theme-btn-transparent">Certificado Prisma</a>
+                                                            <button type="button" onClick={handleGenerarCertificado} className="btn theme-btn theme-btn-transparent">Descargar certificado</button>
                                                         </div>
                                                     </div>
                                                 </div></> : ''}
