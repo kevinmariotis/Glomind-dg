@@ -44,6 +44,10 @@ function FormularioEditarCurso() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [imagenActual, setImagenActual] = useState('');
 
+    const [searchValueCertificado, setSearchValueCertificado] = useState('');
+    const [optionsCertificado, setOptionsCertificado] = useState([]);
+    const [idCertificado, setIdCertificado] = useState(null);
+    
     const [queAprenderas, setQueAprenderas] = useState([]);
     const [requierimientos, setRequerimientos] = useState([]);
         
@@ -61,11 +65,18 @@ function FormularioEditarCurso() {
         } 
     }, [searchValueInstructor]);            
 
+    useEffect(() => {         
+        if(searchValueCertificado!=''){
+            obtenerDatosCertificado();       
+        } 
+    }, [searchValueCertificado]);      
+
     const handleNombreChange = (event) => { setNombre(event.target.value);    };  
     const handleCodigoChange = (event) => { setCodigo(event.target.value);    };  
     const handleNivelChange = (event) => { setNivel(event.target.value);    };  
     const handlePromocionadoChange = (event) => { setPromocionado(event.target.value);    };  
     const handleExpedirCertiticadoChange = (event) => { setExpedirCertificado(event.target.value);    };  
+    const handleIdCertificadoChange = (event) => { setIdCertificado(event.target.value);    };      
     const handleNotaMinimaSuperadoChange = (event) => { setNotaMinimaSuperado(event.target.value);    };  
     const handleEstadoChange = (event) => { setEstado(event.target.value);    };  
     const handlePrecioActualChange = (event) => { setPrecioActual(event.target.value);    };  
@@ -93,6 +104,7 @@ function FormularioEditarCurso() {
         'certificado_solo_pago':[],
         'precio_adicional_certificado':[],
         'id_instructor':[],
+        'id_certificado':[],
         'desc_general':[],
         'desc_que_aprenderas':[],
         'desc_requerimientos':[],
@@ -130,6 +142,10 @@ function FormularioEditarCurso() {
 
     const handleInputChangeInstructor = (newValue) => {        
         setSearchValueInstructor(newValue);                        
+    };
+
+    const handleInputChangeCertificado = (newValue) => {        
+        setSearchValueCertificado(newValue);                        
     };
 
     const addQueAprenderas = (event) => {
@@ -193,7 +209,7 @@ function FormularioEditarCurso() {
                 setCodigo(datos.curso.codigo);
                 setNivel(datos.curso.nivel);
                 setPromocionado(datos.curso.promocionado);
-                setExpedirCertificado(datos.curso.expedir_certificado);
+                setExpedirCertificado(datos.curso.expedir_certificado);                
                 setNotaMinimaSuperado(datos.curso.nota_minima_superado);
                 setEstado(datos.curso.estado);
                 setPrecioActual(datos.curso.precio_actual.replace(/\D/g, ''));
@@ -208,7 +224,11 @@ function FormularioEditarCurso() {
                     setInstructorSeleccionado({value:datos.curso.id_instructor, label:datos.curso.instructor});
                     setOptionsInstructor([{'value':datos.curso.id_instructor, 'label':datos.curso.instructor}]);
                 }
-                
+                if(datos.curso.id_certificado!==null){                    
+                    setIdCertificado({value:datos.curso.id_certificado, label:`${datos.curso.certificado_nombre} (${datos.curso.id_certificado})`});
+                    setOptionsCertificado([{'value':datos.curso.id_certificado, 'label':`${datos.curso.certificado_nombre} (${datos.curso.id_certificado})`}]);                    
+                }    
+
                 let queaprenderasx = datos.curso.desc_que_aprenderas.split("<separador>");
                 queaprenderasx.forEach(function(element) {                    
                     setQueAprenderas((estadoActual) => {                        
@@ -308,6 +328,34 @@ function FormularioEditarCurso() {
         }
     };
 
+    const obtenerDatosCertificado = async () => {                  
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };            
+            const response2 = await fetch(`${urlBaseApi}/api/curso/buscarcertificado/${searchValueCertificado}/1`, opciones);            
+            if (response2.ok){   
+                const datos2 = await response2.json();   
+                let opciones = [];
+                datos2.forEach(function(element) {
+                    opciones.push({'value':element.id, 'label':element.nombre+' ('+element.id+')'});
+                });                
+                setOptionsCertificado(opciones);
+            } else {     
+                const datos2 = await response2.json();            
+                mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {});                    
+            }     
+                     
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
     const handleActualizarCurso = async (event) => {
         event.preventDefault();
         reiniciarErrorCampoGlobal();
@@ -331,6 +379,7 @@ function FormularioEditarCurso() {
             'nivel' : nivel.toString(),
             'promocionado' : promocionado.toString(),
             'id_instructor' : instructorSeleccionado!=null ? instructorSeleccionado.value.toString() : '0',
+            'id_certificado' : idCertificado!=null ? idCertificado.value.toString() : '0',
             'precio_anterior' : precioAnterior.toString(),
             'precio_actual' : precioActual.toString(),
             'id_categoria' : categoriaSeleccionada.id.toString(),
@@ -520,6 +569,43 @@ function FormularioEditarCurso() {
                                             <option value="0">No disponible para comprar</option>
                                         </select>
                                         {erroresCampos['estado'].length > 0 && (<SpamError mensaje={erroresCampos['estado']} />)}
+                                    </div>
+                                </div> : ''}
+                                {permissions[74] ? <div className="col-lg-6">
+                                    <div className="form-group">
+                                        <label className="label-text">Certificado</label>
+                                        <input type="hidden" name="id_certificado" />                                        
+                                        <Select
+                                            name="certificado"
+                                            value={idCertificado}
+                                            onChange={(selectedOption) => setIdCertificado(selectedOption)}
+                                            onInputChange={handleInputChangeCertificado}
+                                            options={optionsCertificado}
+                                            isClearable
+                                            isSearchable
+                                            styles={{
+                                                control: (provided) => ({
+                                                    ...provided,
+                                                    backgroundColor: '#333',
+                                                    borderColor: '#666',
+                                                    color: '#fff',
+                                                }),
+                                                option: (provided, state) => ({
+                                                    ...provided,
+                                                    backgroundColor: state.isSelected ? '#444' : '#333',
+                                                    color: state.isSelected ? '#fff' : '#ccc',
+                                                }),
+                                                singleValue: (provided) => ({
+                                                    ...provided,
+                                                    color: '#fff',
+                                                }),
+                                                input: (provided) => ({
+                                                    ...provided,
+                                                    color: '#fff', // Asegura que el color del texto sea blanco
+                                                }),
+                                              }}
+                                        />
+                                        {erroresCampos['id_certificado'].length > 0 && (<SpamError mensaje={erroresCampos['id_certificado']} />)}
                                     </div>
                                 </div> : ''}
                             </div>

@@ -113,9 +113,9 @@ function FormularioDashboardCursos() {
                     {Object.keys(cursos).map((key) => (
                         <div key={cursos[key].id} className="card card-item card-item-list-layout">
                             <div className="card-image">
-                                <a href="course-details.html" className="d-block">
+                                <div className="d-block">
                                     <img className="card-img-top" src={cursos[key].imagen_pequena!='' ? urlBaseApi+'/'+cursos[key].imagen_pequena : 'images/img8.jpg'} alt="Card image cap" />
-                                </a>
+                                </div>
                                 <div className="course-badge-labels">
                                     {cursos[key].bestseller==1 && <div className="course-badge">Más vendidos</div>}
                                     {cursos[key].promocionado==1 && <div className="course-badge red">Promocionado</div>}
@@ -126,7 +126,7 @@ function FormularioDashboardCursos() {
                             </div>
                             <div className="card-body">
                                 <h6 className="ribbon ribbon-blue-bg fs-14 mb-3">{nivelHabilidad[cursos[key].nivel]}</h6>
-                                <h5 className="card-title"><a href="course-details.html">{cursos[key].nombre}</a></h5>
+                                <h5 className="card-title">{cursos[key].nombre}</h5>
                                 {cursos[key].id_instructor!=0 && <p className="card-text"><a href="teacher-detail.html">{cursos[key].instructor}</a></p>}
                                 <div className="rating-wrap d-flex align-items-center py-2">
                                     <div className="review-stars">
