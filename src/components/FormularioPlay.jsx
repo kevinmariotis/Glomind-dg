@@ -358,11 +358,17 @@ function FormularioPlay() {
                     headers: headers,
                 };
                 setMostrarSpinner(true);
-                const response = await fetch(`${urlBaseApi}/api/curso/getCertificado/${dataCurso.id}`, opciones);
+                const response = await fetch(`${urlBaseApi}/api/certificado/generar/${dataCurso.id}`, opciones);
                 setMostrarSpinner(false);
-                const datos = await response.json();
-                if (response.ok){                                                                               
-                    
+                const datos = await response.blob();
+                if (response.ok){                                                                                                                       
+                    const blob = new Blob([datos], { type: 'application/pdf' });                    
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `certificado_${dataCurso.id}.pdf`;                    
+                    document.body.appendChild(link);
+                    link.click();
+                    setPopup({mostrar:true, titulo:'Mensaje', contenido:'El certificado está siendo descargado, por favor revise su carpeta de descargas.'});
                 } else {                
                     mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
                 }            

@@ -11,8 +11,7 @@ function PaginaRegistrarse() {
 
     return (
         <>              
-            <Header/>
-            <BreadCrumbArea nombreseccion="Registrarse" breadCrumbData={breadCrumb}/>
+            <Header/>            
             <FormularioRegistrarse />
             <FooterArea />
         </>    );

@@ -10,8 +10,7 @@ function PaginaIniciarSesion() {
 
     return (        
         <>              
-            <Header/>
-            <BreadCrumbArea nombreseccion="Iniciar sesión" breadCrumbData={breadCrumb}/>
+            <Header/>            
             <FormularioIniciarSesion/>
             <FooterArea />
         </>    );
