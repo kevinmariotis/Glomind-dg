@@ -325,14 +325,14 @@ function DashboardHeader({expandir_ancho=false}) {
                                                     <li>
                                                         <div className="shop-cart-btn">
                                                             <div className="avatar-xs">
-                                                                <img className="rounded-full img-fluid" src={imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Avatar image" />
+                                                                <img className="rounded-full img-fluid" src={imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Avatar image" />
                                                             </div>
                                                             <span className="dot-status bg-1"></span>
                                                         </div>
                                                         <ul className="cart-dropdown-menu after-none p-0 notification-dropdown-menu">
                                                             <li className="menu-heading-block d-flex align-items-center">
                                                                 <a href="teacher-detail.html" className="avatar-sm flex-shrink-0 d-block">
-                                                                    <img className="rounded-full img-fluid" src={imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Avatar image" />
+                                                                    <img className="rounded-full img-fluid" src={imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Avatar image" />
                                                                 </a>
                                                                 <div className="ml-2">
                                                                     <h4><a href="teacher-detail.html" className="text-black">{nombres}</a></h4>

@@ -295,7 +295,7 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
                         <div className="lecture-overview-item">                            
                             <div className="media media-card align-items-center">
                                 <Link to={`${urlBase}/perfil/${dataComentariosHilo[key].id_usuario}`} className="media-img d-block rounded-full avatar-md">
-                                    <img src={dataComentariosHilo[key].imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHilo[key].imagen_pequena}`} alt="Instructor avatar" className="rounded-full" />
+                                    <img src={dataComentariosHilo[key].imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHilo[key].imagen_pequena}`} alt="Instructor avatar" className="rounded-full" />
                                 </Link>
                                 <div className="media-body">
                                     <h5 className="pb-1"><Link to={`${urlBase}/perfil/${dataComentariosHilo[key].id_usuario}`}>{dataComentariosHilo[key].nombres}</Link></h5>
@@ -316,7 +316,7 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
                                     {Object.keys(dataComentariosHijos).map((key2) => (
                                         <div className="media media-card mb-3 border-bottom border-bottom-gray pb-3">
                                             <div className="media-img rounded-full avatar-sm flex-shrink-0">
-                                                <img src={dataComentariosHijos[key2].imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHijos[key2].imagen_pequena}`} alt="Avatar de usuario" className="rounded-full" />
+                                                <img src={dataComentariosHijos[key2].imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHijos[key2].imagen_pequena}`} alt="Avatar de usuario" className="rounded-full" />
                                             </div>
                                             <div className="media-body">
                                                 <div className="announcement-meta fs-15 lh-20">

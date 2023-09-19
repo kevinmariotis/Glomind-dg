@@ -114,7 +114,7 @@ function FormularioExamenHistorial() {
                     <div className="breadcrumb-content">
                         <div className="media media-card align-items-center">
                             <div className="media-img media--img media-img-md rounded-full">                                
-                                <img className="rounded-full" src={imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Foto del usuario" />
+                                <img className="rounded-full" src={imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Foto del usuario" />
                             </div>
                             <div className="media-body">
                                 <h2 className="section__title fs-30">{nombres}</h2>

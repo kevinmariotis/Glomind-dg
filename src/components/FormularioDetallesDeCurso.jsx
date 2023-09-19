@@ -848,7 +848,7 @@ function FormularioDetallesDeCurso(){
                                         <div className="media media-card">
                                             <div className="instructor-img">
                                                 <a href="teacher-detail.html" className="media-img d-block">
-                                                    <img className="lazy" src={datos.instructor_imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${datos.instructor_imagen_pequena}`} data-src={`${urlBase}/images/avatar_docente.jpg`} alt="Avatar image" />
+                                                    <img className="lazy" src={datos.instructor_imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${datos.instructor_imagen_pequena}`} data-src={`${urlBase}/images/avatar_docente.jpg`} alt="Avatar image" />
                                                 </a>
                                                 <ul className="generic-list-item pt-3">
                                                     <li><i className="la la-star mr-2 text-color-3"></i> {datos.instructor_rating} Calificación del instructor</li>

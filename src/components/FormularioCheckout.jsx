@@ -26,6 +26,7 @@ function FormularioCheckout() {
     const [formApellidos, setFormApellidos] = useState('');
     const [formEmail, setFormEmail] = useState('');
     const [formCedula, setFormCedula] = useState('');
+    const [formTelefono, setFormTelefono] = useState('');
     const [formIdPais, setFormIdPais] = useState('');
     const [formIdDepartamento, setFormIdDepartamento] = useState('');
     const [formCiudad, setFormCiudad] = useState('');
@@ -58,6 +59,7 @@ function FormularioCheckout() {
         'id_departamento':[],
         'ciudad':[],
         'identificacion':[],        
+        'telefono':[],        
         'direccion':[],    
     }    
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
@@ -135,11 +137,12 @@ function FormularioCheckout() {
                         setFormNombres(datos2.usuario.nombres);
                         setFormApellidos(datos2.usuario.apellidos);
                         setFormEmail(datos2.usuario.email);
-                        setFormCedula(datos2.usuario.identificacion);
+                        setFormCedula(datos2.usuario.identificacion!=null ? datos2.usuario.identificacion : '');
+                        setFormTelefono(datos2.usuario.telefono!=null ? datos2.usuario.telefono : '');
                         setFormIdPais(datos2.usuario.id_pais);
                         setFormIdDepartamento(datos2.usuario.id_departamento);
                         setPaises(datos2.paises);   
-                        setFormCiudad(datos2.usuario.ciudad);                  
+                        setFormCiudad(datos2.usuario.ciudad!=null ? datos2.usuario.ciudad : '');                  
                         getDepartamentos(datos2.usuario.id_pais).then(datos => {
                             setDepartamentos(datos);
                         });
@@ -174,6 +177,7 @@ function FormularioCheckout() {
         formData.append('apellidos', formApellidos);
         formData.append('email', formEmail);        
         formData.append('identificacion', formCedula);
+        formData.append('telefono', formTelefono);
         formData.append('id_pais', formIdPais);
         formData.append('id_departamento', formIdDepartamento);        
         formData.append('ciudad', formCiudad);
@@ -361,11 +365,18 @@ function FormularioCheckout() {
                                                 {erroresCampos['email'].length > 0 && (<SpamError mensaje={erroresCampos['email']} />)}
                                             </div>
                                         </div>
-                                        <div className="input-box col-lg-12">
+                                        <div className="input-box col-lg-6">
                                             <label className="label-text">Cédula / Identificación</label>
                                             <div className="form-group">
                                                 <input onChange={(event)=>{ setFormCedula(event.target.value); }} value={formCedula}  id="indentificacion" maxLength="20" className="form-control form--control" type="text" name="identificacion" />
                                                 {erroresCampos['identificacion'].length > 0 && (<SpamError mensaje={erroresCampos['identificacion']} />)}
+                                            </div>
+                                        </div>                                                                          
+                                        <div className="input-box col-lg-6">
+                                            <label className="label-text">Teléfono</label>
+                                            <div className="form-group">
+                                                <input onChange={(event)=>{ setFormTelefono(event.target.value); }} value={formTelefono}  id="telefono" maxLength="10" className="form-control form--control" type="text" name="telefono" />
+                                                {erroresCampos['telefono'].length > 0 && (<SpamError mensaje={erroresCampos['telefono']} />)}
                                             </div>
                                         </div>                                                                          
                                         <div className="input-box col-lg-6">

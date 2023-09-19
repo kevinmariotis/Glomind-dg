@@ -11,9 +11,7 @@ function FormularioRegistrarse(){
     const {jwt, temaActual} = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const [datosCargados, setDatosCargados] = useState(false);
-    const [paises, setPaises] = useState([]);
-    const [departamentos, setDepartamentos] = useState([]);
+    const [datosCargados, setDatosCargados] = useState(false);    
     const [contrasenaVisible, setContrasenaVisible] = useState(false);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
     const [popUpErrores, setPopupErrores] = useState({mostrar:false, titulo:'Corrige los campos', contenido:'Algunos campos contienen datos incorrectos o faltantes, por favor corrígelos.'});    
@@ -22,11 +20,8 @@ function FormularioRegistrarse(){
     //estados del formulario    
     const [nombres, setNombres] = useState('');
     const [apellidos, setApellidos] = useState('');
-    const [email, setEmail] = useState('');
-    const [pais, setPais] = useState('');
-    const [departamento, setDepartamento] = useState('');
-    const [ciudad, setCiudad] = useState('');
-    const [identificacion, setIdentificacion] = useState('');
+    const [email, setEmail] = useState('');    
+    const [telefono, setTelefono] = useState('');    
     const [contrasena, setContrasena] = useState('');
     const [promociones, setPromociones] = useState(false);
     const [terminosCondiciones, setTerminosCondiciones] = useState(false);
@@ -38,11 +33,8 @@ function FormularioRegistrarse(){
     const camposErrores = {
         'nombres':[],
         'apellidos':[],
-        'email':[],
-        'id_pais':[],
-        'id_departamento':[],
-        'ciudad':[],
-        'identificacion':[],
+        'email':[],        
+        'telefono':[],        
         'contrasena':[],
         'recibir_promociones':[],
         'g-recaptcha-response':[],
@@ -67,52 +59,18 @@ function FormularioRegistrarse(){
     //fin de los estados de errores de campos
     
     useEffect(() => {    
-        window.scrollTo(0, 0);
-        try{            
-            obtenerDatosInterfaz().then(datos => {
-                setPaises(datos);
-                setDatosCargados(true);
-            });            
-        } catch (error) {
-            console.log(error.message);           
-        }                  
-        return () => {
-            // Limpieza del efecto secundario (opcional)            
-        };
+        window.scrollTo(0, 0);        
+        setDatosCargados(true);
     }, []);
-    
-    const obtenerDatosInterfaz = () => {
-        return new Promise(async (resolve, reject) => {
-            try{                            
-                const opciones = {
-                    method: 'GET',
-                    headers: {                       
-                    }
-                };                                     
-                const response = await fetch(`${urlBaseApi}/api/pais/getTodos`, opciones);
-                const data = await response.json();
-                if (response.status === 200) {                                              
-                    resolve(data);
-                } else {                  
-                    reject(null);
-                }                          
-            }catch(error){
-                console.log("Error al tratar de obtener los paises ", error);
-                //reject(null);
-            }
-        });
-    };
-    
+            
     //handles del formulario
     const handleToggleContrasena = () => {
         setContrasenaVisible(!contrasenaVisible);
     };
     const handleNombresChange = (event) => { console.log("el name es "+event.target.name);  setNombres(event.target.value);    };    
     const handleApellidosChange = (event) => {   setApellidos(event.target.value);    };    
-    const handleEmailChange = (event) => {   setEmail(event.target.value);    };        
-    const handleDepartamentoChange = (event) => {   setDepartamento(event.target.value);    };    
-    const handleIdentificacionChange = (event) => {   setIdentificacion(event.target.value);    };    
-    const handleCiudadChange = (event) => {   setCiudad(event.target.value);    };        
+    const handleEmailChange = (event) => {   setEmail(event.target.value);    };                
+    const handleTelefonoChange = (event) => {   setTelefono(event.target.value);    };        
     const handleContrasenaChange = (event) => {   setContrasena(event.target.value);    };    
     const handlePromociones = (event) => {  setPromociones(event.target.checked);    };    
     const handleTerminosCondiciones = (event) => {  setTerminosCondiciones(event.target.checked);    };    
@@ -132,48 +90,7 @@ function FormularioRegistrarse(){
     const handleFuncionCerrarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };    
-
-    /*Se obtiene los departamentos según el país*/
-    const handleCambiarPais = (event) => {
-        const seleccion = event.target.value;
-        setPais(seleccion);
-        if(seleccion!=''){            
-            try{            
-                getDepartamentos(seleccion).then(datos => {
-                    setDepartamentos(datos);
-                });            
-            } catch (error) {
-                console.log(error.message);           
-            }
-        }else{
-            setDepartamentos([]);
-        }
-    };
-    //fin de handles del formulario
-
-
-    const getDepartamentos = (id_pais) => {
-        return new Promise(async (resolve, reject) => {
-            try{                            
-                const opciones = {
-                    method: 'GET',
-                    headers: {                       
-                    }
-                };                                     
-                const response = await fetch(`${urlBaseApi}/api/pais/getDepartamentos/${id_pais}`, opciones);
-                const data = await response.json();
-                if (response.status === 200) {                                              
-                    resolve(data.departamentos);
-                } else {                  
-                    reject(null);
-                }                          
-            }catch(error){
-                console.log("Error al tratar de obtener los paises ", error);
-                //reject(null);
-            }
-        });
-    };  
-        
+                
     const postData = async (event) => {
         event.preventDefault();
         
@@ -182,11 +99,8 @@ function FormularioRegistrarse(){
         const formData = new FormData();
         formData.append('nombres', nombres);
         formData.append('apellidos', apellidos);
-        formData.append('email', email);        
-        formData.append('identificacion', identificacion);
-        formData.append('id_pais', pais);
-        formData.append('id_departamento', departamento);        
-        formData.append('ciudad', ciudad);
+        formData.append('email', email);                
+        formData.append('telefono', telefono);
         formData.append('contrasena', contrasena);
         formData.append('recibir_promociones', (promociones) ? '1' : '0');
         formData.append('g-recaptcha-response', captchaValue);        
@@ -313,40 +227,12 @@ function FormularioRegistrarse(){
                                                 <span className="la la-user input-icon"></span>
                                                 {erroresCampos['apellidos'].length > 0 && (<SpamError mensaje={erroresCampos['apellidos']} />)}
                                             </div>
-                                        </div>
-                                        
-                                        <div className="input-box form-row">                                
-                                            <div className="form-group col-md-6">
-                                                <input onChange={handleIdentificacionChange} value={identificacion} className="form-control form--control" type="text" name="identificacion" placeholder="Cédula o número de identificación" />
+                                        </div>                                                                                                                                                    
+                                        <div className="input-box form-row">                                                                                                                                               
+                                            <div className="form-group col-md-12">
+                                                <input onChange={handleTelefonoChange} value={telefono} className="form-control form--control" type="text" name="telefono" placeholder="Telefono" />
                                                 <span className="la la-user input-icon"></span>
-                                                {erroresCampos['identificacion'].length > 0 && (<SpamError mensaje={erroresCampos['identificacion']} />)}
-                                            </div>
-                                            <div className="form-group col-md-6">
-                                                <select onChange={handleCambiarPais} className="form-control form--control select-dark" type="text" name="pais">                                                        
-                                                    <option value="">Seleccione País</option>
-                                                    {paises.map((dato, index) => (
-                                                        <option key={dato.id} value={dato.id} >{dato.nombre}</option>
-                                                    ))}
-                                                </select>                                        
-                                                <span className="la la-user input-icon"></span>
-                                                {erroresCampos['id_pais'].length > 0 && (<SpamError mensaje={erroresCampos['id_pais']} />)}
-                                            </div>
-                                        </div>                                                                             
-                                        <div className="input-box form-row">                                                                                                   
-                                            <div className="form-group col-md-6">
-                                                <select onChange={handleDepartamentoChange} className="form-control form--control select-dark" type="text" name="departamento">
-                                                    <option value="" >Seleccione departamento</option>
-                                                    {departamentos.map((dato, index) => (
-                                                        <option key={dato.id} value={dato.id} >{dato.nombre}</option>
-                                                    ))}
-                                                </select>                                        
-                                                <span className="la la-user input-icon"></span>
-                                                {erroresCampos['id_departamento'].length > 0 && (<SpamError mensaje={erroresCampos['id_departamento']} />)}
-                                            </div>
-                                            <div className="form-group col-md-6">
-                                                <input onChange={handleCiudadChange} value={ciudad} className="form-control form--control" type="text" name="ciudad" placeholder="Ciudad" />
-                                                <span className="la la-user input-icon"></span>
-                                                {erroresCampos['ciudad'].length > 0 && (<SpamError mensaje={erroresCampos['ciudad']} />)}
+                                                {erroresCampos['telefono'].length > 0 && (<SpamError mensaje={erroresCampos['telefono']} />)}
                                             </div>
                                         </div>                                       
                                         <div className="input-box">    

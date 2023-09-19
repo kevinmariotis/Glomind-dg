@@ -109,7 +109,7 @@ export const AuthProvider = ({ children }) => {
     }, []);           
        
     return (
-        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, correo, imagen_pequena, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual, esMovil}}>
+        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, correo, imagen_pequena, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual, esMovil, setImagenPequena}}>
             {children}
         </AuthContext.Provider> : <LoadingAnimation />}</>
     );

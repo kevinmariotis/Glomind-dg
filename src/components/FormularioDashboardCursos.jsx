@@ -114,7 +114,7 @@ function FormularioDashboardCursos() {
                         <div key={cursos[key].id} className="card card-item card-item-list-layout">
                             <div className="card-image">
                                 <div className="d-block">
-                                    <img className="card-img-top" src={cursos[key].imagen_pequena!='' ? urlBaseApi+'/'+cursos[key].imagen_pequena : 'images/img8.jpg'} alt="Card image cap" />
+                                    <img className="card-img-top" src={cursos[key].imagen_pequena!=null ? urlBaseApi+'/'+cursos[key].imagen_pequena : 'images/img8.jpg'} alt="Card image cap" />
                                 </div>
                                 <div className="course-badge-labels">
                                     {cursos[key].bestseller==1 && <div className="course-badge">Más vendidos</div>}

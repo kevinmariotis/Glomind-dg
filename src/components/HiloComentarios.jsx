@@ -442,7 +442,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                     <>                                                  
                                         <div className="media media-card border-bottom border-bottom-gray py-4">
                                             <div className="media-img rounded-full flex-shrink-0 avatar-sm">
-                                            <img className="rounded-full" src={dataComentariosHilo[key].imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHilo[key].imagen_pequena}`} data-src={`${urlBase}/images/small-avatar-1.jpg`} alt="Foto del usuario" />
+                                            <img className="rounded-full" src={dataComentariosHilo[key].imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHilo[key].imagen_pequena}`} data-src={`${urlBase}/images/small-avatar-1.jpg`} alt="Foto del usuario" />
                                             </div>
                                             <div className="media-body">
                                                 <div className="d-flex justify-content-between">
@@ -486,7 +486,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                 {Object.keys(dataComentariosHijos).map((key) => (
                                     <div key={`respuesta-key-${dataComentariosHijos[key].id}`} className="media media-card mb-3 border-bottom border-bottom-gray py-4">
                                         <div className="media-img rounded-full avatar-sm flex-shrink-0">
-                                        <img className="rounded-full" src={dataComentariosHijos[key].imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHijos[key].imagen_pequena}`} data-src={`${urlBase}/images/small-avatar-1.jpg`} alt="Foto del usuario" />
+                                        <img className="rounded-full" src={dataComentariosHijos[key].imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHijos[key].imagen_pequena}`} data-src={`${urlBase}/images/small-avatar-1.jpg`} alt="Foto del usuario" />
                                         </div>
                                         <div className="media-body">
                                             <h5 className="fs-16">{dataComentariosHijos[key].nombres}</h5>
@@ -589,7 +589,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                             <div key={`tarjeta-hilo-${dataComentariosHilo[key].id}`} className="question-list-item">
                                 <div className="media media-card border-bottom border-bottom-gray py-4 px-3">
                                     <div className="media-img rounded-full flex-shrink-0 avatar-sm">                                                                        
-                                    <img className="rounded-full" src={dataComentariosHilo[key].imagen_pequena=='' ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHilo[key].imagen_pequena}`} data-src={`${urlBase}/images/small-avatar-1.jpg`} alt="Foto del usuario" />
+                                    <img className="rounded-full" src={dataComentariosHilo[key].imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHilo[key].imagen_pequena}`} data-src={`${urlBase}/images/small-avatar-1.jpg`} alt="Foto del usuario" />
                                     </div>
                                     <div className="media-body">
                                         <div className="d-flex align-items-center justify-content-between">
