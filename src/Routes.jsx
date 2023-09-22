@@ -34,6 +34,8 @@ import PaginaExamenIntentoResultados from './components/PaginaExamenIntentoResul
 import PaginaExamenHistorial from './components/PaginaExamenHistorial';
 import PaginaValidarCertificado from './components/PaginaValidarCertificado';
 import PaginaEditarPerfil from './components/PaginaEditarPerfil';
+import PaginaHistorialDeCompras from './components/PaginaHistorialDeCompras';
+import PaginaFavoritos from './components/PaginaFavoritos';
 
 import Pagina404 from './components/Pagina404';
 
@@ -61,7 +63,7 @@ const Rutas = () => {
                 <Route path="/usuario" element={<Pagina404/>} />                
                 <Route path="/cursos/matriculados" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardEnroledCourses/></ProtectedRoute>} />
                 <Route path="/cursos/:busqueda?" element={<ProtectedRoute permiso={validarPermisos([20, 21, 22])} ><PaginaDashboardCursos/></ProtectedRoute>} />
-                <Route path="/curso/favoritos" element={<Pagina404/>} />
+                <Route path="/cursos/favoritos" element={<ProtectedRoute permiso={authenticated} ><PaginaFavoritos/></ProtectedRoute>} />
                 <Route path="/curso/comprados" element={<Pagina404/>} />          
                 <Route path="/curso/:url_amigable" element={<PaginaDetallesDeCurso/>} />                                      
                 <Route path="/categoria/:url_amigable" element={<PaginaCategoriaNavegacion/>} />          
@@ -96,6 +98,7 @@ const Rutas = () => {
                 <Route path="/play/:url_amigable" element={<ProtectedRoute permiso={authenticated} ><PaginaPlay/></ProtectedRoute>} />                
                 <Route path="/v/:codigo_registro" element={<ProtectedRoute permiso={true} ><PaginaValidarCertificado/></ProtectedRoute>} />                
                 <Route path="/configuracion" element={<ProtectedRoute permiso={authenticated} ><PaginaEditarPerfil/></ProtectedRoute>} />                
+                <Route path="/factura/historial" element={<ProtectedRoute permiso={authenticated} ><PaginaHistorialDeCompras/></ProtectedRoute>} />
                 <Route exact path="/" element={<Pagina404/>} />          
                 <Route path="*" component={<Pagina404/>} />
             </Routes>            

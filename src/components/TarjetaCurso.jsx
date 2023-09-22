@@ -21,6 +21,7 @@ function TarjetaCurso(
         precio_actual=0.00,
         precio_anterior=0.00,
         favorito=-1,
+        col_lg=6,
     }) {
         const {jwt} = useContext(AuthContext);
         const urlBase = import.meta.env.VITE_URL_BASE;    
@@ -143,7 +144,7 @@ function TarjetaCurso(
         };   
 
         //console.log("Este es el favorito ", estadoFavorito);
-        return (<div className="col-lg-6 responsive-column-half">
+        return (<div className={`col-lg-${col_lg} responsive-column-half`}>
                     <div className="card card-item card-preview" data-tooltip-content="#tooltip_content_1">
                         <div className="card-image">
                             <Link to={`${urlBase}/curso/${url_amigable}`} className="d-block">
