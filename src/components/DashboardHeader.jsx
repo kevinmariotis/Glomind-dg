@@ -3,15 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
 import Popup from './Popup';
-
+import Buscador from './Buscador';
 
 function DashboardHeader({expandir_ancho=false}) {  
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, authenticated, nombres, correo, imagen_pequena, temaActual, setTemaActual} = useContext(AuthContext);
+    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, cargarFavoritos, setCargarFavoritos, cargarMisCursos, setCargarMisCursos, authenticated, nombres, correo, imagen_pequena, temaActual, setTemaActual} = useContext(AuthContext);
 
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
-    const [contadorCarrito, setContadorCarrito] = useState({"contador":0, "productos":{},"fechahora":0});
+    const [contadorCarrito, setContadorCarrito] = useState({"contador":0, "productos":{},"fechahora":0});    
     const [misCursos, setMisCursos] = useState({});    
     const [favoritos, setFavoritos] = useState({});
 
@@ -42,16 +42,45 @@ function DashboardHeader({expandir_ancho=false}) {
         }else{            
             setCargarContadorCarrito(true);
         }
-        obtenerFavoritos();
+
+        //miramos si no tiene los datos de favoritos en sessionStorage
+        const contadorfavoritos = sessionStorage.getItem('contadorfavoritos');    
+        if (contadorfavoritos) {   
+            console.log('La lista de favoritos ya existia');
+            setFavoritos(JSON.parse(contadorfavoritos));
+            if(Math.floor(new Date().getTime()/1000)-parseInt(JSON.parse(contadorfavoritos).fechahora)>=3600){                
+                setCargarFavoritos(true);
+            }
+        }else{            
+            setCargarFavoritos(true);
+        }
+
+        //miramos si no tiene los datos de mis-cursos en sessionStorage
+        const contadormiscursos = sessionStorage.getItem('contadormiscursos');    
+        if (contadormiscursos) {   
+            console.log('La lista de mis cursos ya existia');
+            setMisCursos(JSON.parse(contadormiscursos));
+            if(Math.floor(new Date().getTime()/1000)-parseInt(JSON.parse(contadormiscursos).fechahora)>=3600){                
+                setCargarMisCursos(true);
+            }
+        }else{            
+            setCargarMisCursos(true);
+        }
+        
     }, []);
 
     //use efect para cargar los datos contadores del carrito
     useEffect(() => {        
         if(cargarContadorCarrito && authenticated){                                    
-            obtenerDatosCarrito();            
-            obtenerMisCursos();            
+            obtenerDatosCarrito();                                    
         }
-    }, [cargarContadorCarrito, authenticated]);
+        if(cargarFavoritos && authenticated){       
+            obtenerFavoritos();
+        }
+        if(cargarMisCursos && authenticated){
+            obtenerMisCursos();
+        }
+    }, [cargarContadorCarrito, cargarFavoritos, cargarMisCursos, authenticated]);
 
 
     const obtenerDatosCarrito = async () => {
@@ -95,9 +124,15 @@ function DashboardHeader({expandir_ancho=false}) {
             };                                    
             const response = await fetch(`${urlBaseApi}/api/usuario/miscursos/1/1/nombre-asc/3`, opciones);            
             if (response.ok){   
+                console.log('Datos de mis cursos recuperados del servidor:');
                 const datos = await response.json();
                 setMisCursos(datos.cursos);
+
+                sessionStorage.setItem('contadormiscursos', JSON.stringify(datos.cursos));                                
+                setCargarMisCursos(false);
+
             } else {     
+                setCargarMisCursos(false);
                 const datos = await response.json();            
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
             }                          
@@ -119,9 +154,15 @@ function DashboardHeader({expandir_ancho=false}) {
             };                                    
             const response = await fetch(`${urlBaseApi}/api/usuario/getfavoritos/1/2/nombre-asc/3`, opciones);  //favoritos no comprados           
             if (response.ok){   
+                console.log('Datos de favoritos recuperados del servidor:');
                 const datos = await response.json();
                 setFavoritos(datos.cursos);
+
+                sessionStorage.setItem('contadorfavoritos', JSON.stringify(datos.cursos));                                
+                setCargarFavoritos(false);
+
             } else {     
+                setCargarFavoritos(false);
                 const datos = await response2.json();            
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
             }                          
@@ -164,12 +205,7 @@ function DashboardHeader({expandir_ancho=false}) {
                                     </div>
                                 </div>
                                 <div className="menu-wrapper">
-                                    <form method="post" className="mr-auto ml-0">
-                                        <div className="form-group mb-0">
-                                            <input className="form-control form--control form--control-gray pl-3" type="text" name="search" placeholder="Buscar curso" />
-                                            <span className="la la-search search-icon"></span>
-                                        </div>
-                                    </form>
+                                    <Buscador class_name={`mr-auto ml-0`} />
                                     <div className="nav-right-button d-flex align-items-center">
                                         <div className="user-action-wrap d-flex align-items-center">
                                             <div className="shop-cart course-cart pr-3 mr-3 border-right border-right-gray">
@@ -215,7 +251,7 @@ function DashboardHeader({expandir_ancho=false}) {
                                                             {Object.keys(contadorCarrito.productos).slice(0, 3).map((key) => (
                                                                 <li key={`´productos-carrito-${key}`} className="media media-card">
                                                                     <Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
-                                                                        {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} className="mr-3" /> : <img src="images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} className="mr-3" /> }
+                                                                        {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} className="mr-3" /> : <img src="/images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} className="mr-3" /> }
                                                                     </Link>
                                                                     <div className="media-body">
                                                                         <h5><Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`}>{contadorCarrito.productos[key].nombre}</Link></h5>

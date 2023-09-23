@@ -300,3 +300,13 @@
 .list_preguntas li a {
     margin-right: 40px; /* Ajusta el valor según el espacio que desees */
 }
+
+/*estilos del buscador superior*/
+
+.ul_seleccionado {
+  background-color: #ccc;
+  color: #000;
+}
+.light-fondo-li {
+  background-color: #ffffff;  
+}

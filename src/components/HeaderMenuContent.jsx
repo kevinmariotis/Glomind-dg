@@ -4,6 +4,7 @@ import { mensajesDeError } from './utils';
 import Popup from './Popup';
 import { AuthContext } from '../AuthContext';
 import { fijarHeader, clicBuscarMovil } from './comun';
+import Buscador from './Buscador';
 
 function HeaderMenuContent() {
     const [datos, setDatos] = useState({"datos":{},"fechahora":0});
@@ -172,12 +173,7 @@ function HeaderMenuContent() {
                                             </li>
                                         </ul>
                                     </div>
-                                    <form method="post">
-                                        <div className="form-group mb-0">
-                                            <input className="form-control form--control pl-3" type="text" name="search" placeholder="Buscar cursos" />
-                                            <span className="la la-search search-icon"></span>
-                                        </div>
-                                    </form>
+                                    <Buscador />
 
                                     <div className="shop-cart mr-4">
                                         <ul>
@@ -190,7 +186,7 @@ function HeaderMenuContent() {
                                                     {Object.keys(contadorCarrito.productos).slice(0, 3).map((key) => (
                                                         <li key={contadorCarrito.productos[key].id_curso+'tc'+contadorCarrito.productos[key].tipo_compra} className="media media-card">
                                                             <Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
-                                                                {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} /> : <img src="images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} /> }
+                                                                {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} /> : <img src="/images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} /> }
                                                             </Link>
                                                             <div className="media-body">
                                                                 <h5><Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`}>{contadorCarrito.productos[key].nombre}</Link></h5>

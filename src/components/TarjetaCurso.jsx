@@ -23,7 +23,7 @@ function TarjetaCurso(
         favorito=-1,
         col_lg=6,
     }) {
-        const {jwt} = useContext(AuthContext);
+        const {jwt, setCargarFavoritos} = useContext(AuthContext);
         const urlBase = import.meta.env.VITE_URL_BASE;    
         const urlBaseApi = import.meta.env.VITE_URL_BASE_API;    
 
@@ -62,6 +62,7 @@ function TarjetaCurso(
             
                 if (response.ok) {
                     setEstadoFavorito(1);
+                    setCargarFavoritos(true);
                     return;
                 } else {
                     // Obtener el código de error de la respuesta
@@ -110,6 +111,7 @@ function TarjetaCurso(
             
                 if (response.ok) {
                     setEstadoFavorito(0);
+                    setCargarFavoritos(true);
                     return;
                 } else {
                     // Obtener el código de error de la respuesta
@@ -148,7 +150,7 @@ function TarjetaCurso(
                     <div className="card card-item card-preview" data-tooltip-content="#tooltip_content_1">
                         <div className="card-image">
                             <Link to={`${urlBase}/curso/${url_amigable}`} className="d-block">
-                                <img className="card-img-top lazy" src={imagen!='/images/img8.jpg' ? urlBaseApi+'/'+imagen : imagen} data-src={imagen} alt={nombre} />
+                                <img className="card-img-top lazy" src={imagen!='/images/img8.jpg' && imagen!=null ? urlBaseApi+'/'+imagen : '/images/img8.jpg'} data-src={imagen} alt={nombre} />
                             </Link>
                             <div className="course-badge-labels">
                                 {bestseller==1 && <div className="course-badge">Más vendidos</div>}

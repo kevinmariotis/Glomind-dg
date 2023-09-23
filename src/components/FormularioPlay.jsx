@@ -18,7 +18,7 @@ function FormularioPlay() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const { url_amigable } = useParams();
     const navigate = useNavigate();            
-    const {jwt, esMovil} = useContext(AuthContext);
+    const {jwt, esMovil, setCargarMisCursos} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
     const [mostrarSpinner, setMostrarSpinner] = useState(false);  
 
@@ -308,6 +308,7 @@ function FormularioPlay() {
                 const datos = await response.json();                        
                 if (response.ok){   
                     obtenerContenidos({activar_actividad_actual:true});                             
+                    setCargarMisCursos(true);
                     return;
                 } else {
                     mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});

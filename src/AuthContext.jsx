@@ -10,7 +10,9 @@ export const AuthProvider = ({ children }) => {
     const [permissions, setPermissions] = useState([]);
     const [temaActual, setTemaActual] = useState(0);    //1 'light-theme', 0 'dark-theme'    
     const [esMovil, setEsMovil] = useState(false);
-    const [cargarContadorCarrito, setCargarContadorCarrito] = useState(true);   //setCargarContadorCarrito debe ser usado por cualquier parte del programa para dar la orden de que se recarge el contador de items en el carrito
+    const [cargarContadorCarrito, setCargarContadorCarrito] = useState(false);   //setCargarContadorCarrito debe ser usado por cualquier parte del programa para dar la orden de que se recarge el contador de items en el carrito
+    const [cargarFavoritos, setCargarFavoritos] = useState(false);               //setCargarFavoritos debe ser usado por cualquier parte del programa para dar la orden de que se recarge la lista de favoritos del usuario.
+    const [cargarMisCursos, setCargarMisCursos] = useState(false);               //setCargarMisCursos debe ser usado por cualquier parte del programa para dar la orden de que se recarge la lista de los cursos comprados por el usuario.
     const [nombres, setNombres] = useState('');
     const [correo, setCorreo] = useState('');
     const [imagen_pequena, setImagenPequena] = useState('');
@@ -109,7 +111,7 @@ export const AuthProvider = ({ children }) => {
     }, []);           
        
     return (
-        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, correo, imagen_pequena, setJwt, logout, cargarContadorCarrito, setCargarContadorCarrito, temaActual, setTemaActual, esMovil, setImagenPequena}}>
+        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, correo, imagen_pequena, setJwt, logout, cargarContadorCarrito, cargarFavoritos, cargarMisCursos, setCargarContadorCarrito, setCargarFavoritos, setCargarMisCursos, temaActual, setTemaActual, esMovil, setImagenPequena}}>
             {children}
         </AuthContext.Provider> : <LoadingAnimation />}</>
     );

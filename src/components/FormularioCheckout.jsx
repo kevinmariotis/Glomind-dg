@@ -438,7 +438,7 @@ function FormularioCheckout() {
                                         {Object.keys(productos).map((key) => (
                                             <div key={`producto-${productos[key].id_curso}-${productos[key].tipo_compra}`} className="media media-card border-bottom border-bottom-gray pb-3 mb-3">
                                                 <Link to={`/curso/${productos[key].url_amigable}`} className="media-img">
-                                                {productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${productos[key].imagen_pequena}`} style={{ height: 'auto' }} alt="Imagen del curso" /> : <img src="images/small-img.jpg" style={{ height: 'auto' }} alt="Imagen del curso" />}
+                                                {productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${productos[key].imagen_pequena}`} style={{ height: 'auto' }} alt="Imagen del curso" /> : <img src="/images/small-img.jpg" style={{ height: 'auto' }} alt="Imagen del curso" />}
                                                 </Link>
                                                 <div className="media-body">
                                                     <h5 className="fs-15 pb-2"><a href="course-details.html">{productos[key].nombre}</a></h5>

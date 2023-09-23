@@ -22,7 +22,7 @@ function TarjetaCursoHorizontal(
         precio_anterior=0.00,
         favorito=-1,
     }) {
-        const {jwt} = useContext(AuthContext);
+        const {jwt, setCargarFavoritos} = useContext(AuthContext);
         const urlBase = import.meta.env.VITE_URL_BASE;    
         const urlBaseApi = import.meta.env.VITE_URL_BASE_API;    
 
@@ -61,6 +61,7 @@ function TarjetaCursoHorizontal(
             
                 if (response.ok) {
                     setEstadoFavorito(1);
+                    setCargarFavoritos(true);
                     return;
                 } else {
                     // Obtener el código de error de la respuesta
@@ -109,6 +110,7 @@ function TarjetaCursoHorizontal(
             
                 if (response.ok) {
                     setEstadoFavorito(0);
+                    setCargarFavoritos(true);
                     return;
                 } else {
                     // Obtener el código de error de la respuesta

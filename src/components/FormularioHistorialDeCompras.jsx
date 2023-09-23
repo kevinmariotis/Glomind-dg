@@ -263,7 +263,7 @@ function FormularioHistorialDeCompras() {
                                         <th scope="row">
                                             <div className="media media-card align-items-center">
                                                 <Link to={`${urlBase}/curso/${itemsFactura[key].url_amigable}`} className="media-img">
-                                                    <img className="mr-3" src={`${itemsFactura[key].imagen_pequena!=null ? `${urlBaseApi}/${itemsFactura[key].imagen_pequena}` : 'images/small-img.jpg'}`} alt="imagen de producto" />
+                                                    <img className="mr-3" style={{ height: 'auto', cursor:'pointer' }} src={`${itemsFactura[key].imagen_pequena!=null ? `${urlBaseApi}/${itemsFactura[key].imagen_pequena}` : 'images/small-img.jpg'}`} alt="imagen de producto" />
                                                 </Link>
                                                 <div className="media-body">
                                                     <h5 className="fs-15"><Link to={`${urlBase}/curso/${itemsFactura[key].url_amigable}`}>{itemsFactura[key].nombre}</Link></h5>
