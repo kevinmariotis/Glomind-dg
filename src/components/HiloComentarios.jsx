@@ -43,13 +43,13 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
     }        
     
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
-    const setErrorCampoGlobal = (index, newValue) => {       
+    const setErrorCampoGlobal = (index, newValue) => {
         if (index in erroresCampos) {
-            const nuevoObjeto = erroresCampos[index].concat(newValue);            
-            let objeto = erroresCampos;
-            objeto[index] = nuevoObjeto;
+            setErrorCampo((prevState) => ({
+                ...prevState,
+                [index]: [...(prevState[index] || []), newValue],
+            }));
         }
-        setErrorCampo({...erroresCampos});
     };
     const reiniciarErrorCampoGlobal = () => {
         for (let propiedad in erroresCampos) {

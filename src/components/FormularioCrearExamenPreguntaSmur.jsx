@@ -51,10 +51,10 @@ function FormularioCrearExamenPreguntaSmur() {
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
         if (index in erroresCampos) {
-            const nuevoObjeto = erroresCampos[index].concat(newValue);            
-            let objeto = erroresCampos;
-            objeto[index] = nuevoObjeto;        
-            setErrorCampo(objeto);      
+            setErrorCampo((prevState) => ({
+                ...prevState,
+                [index]: [...(prevState[index] || []), newValue],
+            }));
         }
     };
     const reiniciarErrorCampoGlobal = () => {
