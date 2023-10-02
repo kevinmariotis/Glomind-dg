@@ -141,8 +141,12 @@ function FormularioDetallesDeCurso(){
                 setComprarCertificado(datos.curso.certificado_solo_pago==1 ? true : false);                
                 
             } else { 
-                const data = await response.json();               
-                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});
+                const data = await response.json();                                
+                if(data.codigo=='no-disponible'){
+                    navigate(`/`);
+                }else{
+                    mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});
+                }
             }            
         }catch(error){
             // Manejar el caso de error en la solicitud

@@ -9,9 +9,10 @@ import { mensajesDeError } from './utils';
 function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCrumbData, actualizarBreadCrumbImagen}) {
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
+    const navigate = useNavigate();
     const {jwt, authenticated} = useContext(AuthContext);  
-    const { url_amigable } = useParams();
-      
+    const { url_amigable } = useParams();    
+
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
     const [pagina, setPagina] = useState(1);
     const [orderBy, setOrderBy] = useState('precio_actual-asc');    
@@ -195,9 +196,14 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
                     setInstructores(datos.instructores);                    
                 }
                 console.log("cantidad total cursos ",datos.cantidad_total_cursos);
-            } else {   
-                const data = await response.json(); 
-                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                             
+            } else {  
+                const respuesta = await response.json(); 
+                if(respuesta.codigo=='no-disponible'){
+                    navigate(`/`);
+                }else{
+                    const data = await response.json(); 
+                    mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                                                 
+                }
             }            
         }catch(error){
             // Manejar el caso de error en la solicitud

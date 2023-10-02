@@ -234,8 +234,12 @@ function FormularioCheckout() {
                     setCargarContadorCarrito(true);
                     setPopUpGratis({mostrar:true, titulo:'Listo', contenido:'Los productos ya se encuentran habilitados en tu lista de cursos comprados, al presionar aceptar te llevaremos allá.'});
                 }
-            } else {                 
-                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Rellenar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
+            } else {   
+                if(datos.codigo!='no-disponible'){
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Rellenar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});
+                }else{
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+                }
             }            
         }catch(error){
             // Manejar el caso de error en la solicitud

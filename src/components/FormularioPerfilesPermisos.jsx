@@ -606,7 +606,7 @@ function FormularioPerfilesPermisos() {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                            {Object.keys(permisos).slice(2, Object.keys(permisos).length-1).map((key) => (
+                                            {Object.keys(permisos).slice(2, Object.keys(permisos).length).map((key) => (
                                                 <tr key={`fila-permiso-${key}`}>
                                                     <th scope="row" width="15%">{permisos[key]}</th>
                                                     {Object.keys(perfilesConPermisos).map((key2) => (
