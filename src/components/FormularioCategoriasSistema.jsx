@@ -23,7 +23,11 @@ export default function FormularioCategoriasSistema() {
     const [verPopUpCrearCategoria, setVerPopUpCrearCategoria] = useState(false);
     const [verPopUpEditarCategoria, setVerPopUpEditarCategoria] = useState(false);    
     const [verPopUpEditarImagenCategoria, setVerPopUpEditarImagenCategoria] = useState(false);    
+    const [verPopUpEditarTagAgrupacion, setVerPopUpEditarTagAgrupacion] = useState(false);    
+    const [verPopUpEditarTag, setVerPopUpEditarTag] = useState(false);        
+    const [verPopUpCrearTagAgrupacion, setVerPopUpCrearTagAgrupacion] = useState(false);
     const [verPopUpCrearTag, setVerPopUpCrearTag] = useState(false);
+    const [verPopUpBuscarCurso, setVerPopUpBuscarCurso] = useState(false);
     const [pestanaActivada, setPestanaActivada] = useState(1);    
            
     const [formNombre, setFormNombre] = useState('');  
@@ -35,6 +39,13 @@ export default function FormularioCategoriasSistema() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [treeData, setTreeData] = useState([]);
     
+
+    const [tagsAgrupaciones, setTagsAgrupaciones] = useState({});
+    const [tags, setTags] = useState({});
+
+    const [palabraBuscarCurso, setPalabraBuscarCurso] = useState('');
+    const [opcionesCurso, setOpcionesCurso] = useState({});
+
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
     
     useEffect(() => {           
@@ -44,16 +55,32 @@ export default function FormularioCategoriasSistema() {
                 obtenerCategoriasSistema();
             break;
             case 2:
-                obtenerPermisosDePerfiles();
+                obtenerTagsAgrupacion();
+            break;
+            case 3:
+                obtenerTags();
             break;
         }        
     }, [pestanaActivada]);
-           
+    
+    useEffect(() => {   
+        if(palabraBuscarCurso!=''){
+            buscarCursos(formIdCategoriaEditando, 0);
+        }else{           
+            if(formIdCategoriaEditando!=0){
+                buscarCursos(formIdCategoriaEditando, 1);
+            }
+        }        
+    }, [palabraBuscarCurso]);
+
     //Estados de los errores de campos
     const camposErrores = {                               
         'nombre':[],
         'estado':[],
         'imagen':[],
+
+        'buscador':[],    
+        'id_tag_agrupacion':[],
     }    
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
@@ -82,6 +109,12 @@ export default function FormularioCategoriasSistema() {
             case 'borrar-categoria':
                 borrarCategoriaSistema(popUp.data_id);
             break;
+            case 'borrar-tag-agrupacion':
+                borrarTagAgrupacion(popUp.data_id);
+            break;
+            case 'borrar-tag':
+                borrarTag(popUp.data_id);
+            break;            
         }
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
@@ -111,21 +144,7 @@ export default function FormularioCategoriasSistema() {
     const handleEstadoChange = (event) =>{            
         setFormEstado(event.target.value);
     };    
-
-    const handleDelete = (id_categoria) => {
-        /*const deleteIds = [
-          id,
-          ...getDescendants(treeData, id).map((node) => node.id)
-        ];
-        const newTree = treeData.filter((node) => !deleteIds.includes(node.id));
-    
-        setTreeData(newTree);*/
-    };
-
-    const handleEdit = (id_categoria) => {
-
-    }
-    
+        
     const handleClickCrear = (id_categoria_padre, nombre_categoria_padre) => {    
         reiniciarErrorCampoGlobal();
         setFormNombreCategoriaPadre(nombre_categoria_padre);
@@ -144,6 +163,24 @@ export default function FormularioCategoriasSistema() {
                 setFormIdCategoriaEditando(id);
                 setFormEstado(estado);                
             break;
+            case 'tag-agrupacion':
+                setVerPopUpEditarTagAgrupacion(true);
+                setFormNombre(nombre);
+                setFormIdCategoriaEditando(id);
+                setFormEstado(estado);                
+            break;
+            case 'tag':
+                setVerPopUpEditarTag(true);
+                setFormNombre(nombre);
+                setFormIdCategoriaEditando(id);                
+                setFormEstado(estado);                
+            break;
+            case 'tag-asignacion':
+                setVerPopUpBuscarCurso(true);
+                setFormNombre(nombre);
+                setFormIdCategoriaEditando(id);   
+                buscarCursos(id, 1);
+            break;
         }
     }    
 
@@ -158,7 +195,22 @@ export default function FormularioCategoriasSistema() {
         reiniciarErrorCampoGlobal();         
         setPopup({mostrar:true, tipo:3, titulo:'Confirmar', contenido:'Confirma que desea borrar la categorpia '+nombre+'?', data_switch:'borrar-categoria', data_id:id});
     };
+
+    const handleClickBorrarTagAgrupacion = async (id, nombre) => {         
+        reiniciarErrorCampoGlobal();         
+        setPopup({mostrar:true, tipo:3, titulo:'Confirmar', contenido:'Confirma que desea el tag agrupación '+nombre+'?', data_switch:'borrar-tag-agrupacion', data_id:id});
+    };
+
+    const handleClickBorrarTag = async (id, nombre) => {         
+        reiniciarErrorCampoGlobal();         
+        setPopup({mostrar:true, tipo:3, titulo:'Confirmar', contenido:'Confirma que desea el tag '+nombre+'?', data_switch:'borrar-tag', data_id:id});
+    };
     
+    const handleSetPalabraBuscarCurso = (event) => {                
+        event.preventDefault();   
+        setPalabraBuscarCurso(event.target.value);
+    };
+
     const onDrop = (acceptedFiles) => {
         // Lógica para procesar los archivos aceptados
         setSelectedImage(acceptedFiles[0]);
@@ -180,7 +232,7 @@ export default function FormularioCategoriasSistema() {
             'Authorization':`Bearer ${jwt}`,
         }        
         try {   
-            if(permissions[40] || permissions[41] || permissions[42]){
+            if(permissions[14] || permissions[15] || permissions[16]){
                 const opciones = {
                     method: 'GET',
                     headers: headers,
@@ -403,6 +455,347 @@ export default function FormularioCategoriasSistema() {
         }
     }
 
+    const obtenerTagsAgrupacion = async () => {
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {   
+            if(permissions[50] || permissions[51] || permissions[52]){
+                const opciones = {
+                    method: 'GET',
+                    headers: headers,
+                };
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/cursotagagrupacion/getTodos/1`, opciones);
+                setMostrarSpinner(false);
+                if (response.ok){                           
+                    const datos = await response.json();
+                    setTagsAgrupaciones(datos);
+                } else {      
+                    const data = await response.json();          
+                    mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
+                }  
+            }
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+    const crearTagAgrupacion = async (event) => {
+        event.preventDefault();
+        reiniciarErrorCampoGlobal();
+                
+        const formData = new FormData();                    
+        formData.append('nombre', formNombre);
+        formData.append('buscador', formEstado);
+        
+        const opciones = {
+            method: 'POST',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: formData
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/cursotagagrupacion`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if (response.ok){   
+                setFormNombre('');
+                setFormEstado(1);                
+                setVerPopUpCrearTagAgrupacion(false);
+                obtenerTagsAgrupacion();
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Tag Agrupación creado.'});
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    }; 
+    const editarTagAgrupacion = async () => {               
+        const raw = {
+            'nombre': formNombre,
+            'buscador': formEstado.toString(),
+        };                            
+        const opciones = {
+            method: 'PUT',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: JSON.stringify(raw),
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/cursotagagrupacion/${formIdCategoriaEditando}`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if (response.ok){    
+                setFormNombre('');
+                setFormEstado(1);
+                setVerPopUpEditarTagAgrupacion(false);
+                obtenerTagsAgrupacion();
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    }
+    const borrarTagAgrupacion = async (id_tag_agrupacion) => {         
+        setMostrarSpinner(true);        
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'DELETE',
+                headers: headers,
+            };            
+            const response = await fetch(`${urlBaseApi}/api/cursotagagrupacion/${id_tag_agrupacion}`, opciones);            
+            setMostrarSpinner(false);            
+            const datos = await response.json();
+            if (response.ok){ 
+                obtenerTagsAgrupacion();
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Tag agupación borrado.'});
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});
+            }     
+                    
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+
+    const obtenerTags = async () => {
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {   
+            if(permissions[53] || permissions[54] || permissions[55]){
+                const opciones = {
+                    method: 'GET',
+                    headers: headers,
+                };
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/cursotag/getTodos/1`, opciones);
+                setMostrarSpinner(false);
+                if (response.ok){                           
+                    const datos = await response.json();
+                    setTags(datos);
+                } else {      
+                    const data = await response.json();          
+                    mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
+                }  
+            }
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+    const crearTag = async (event) => {
+        event.preventDefault();
+        reiniciarErrorCampoGlobal();
+                
+        const formData = new FormData();                    
+        formData.append('nombre', formNombre);
+        formData.append('id_tag_agrupacion', formEstado);
+        
+        const opciones = {
+            method: 'POST',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: formData
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/cursotag`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if (response.ok){   
+                setFormNombre('');
+                setFormEstado(1);                
+                setVerPopUpCrearTag(false);
+                obtenerTags();
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Tag creado.'});
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    }; 
+    const editarTag = async () => {               
+        const raw = {
+            'nombre': formNombre,
+            'id_tag_agrupacion': formEstado,
+        };                            
+        const opciones = {
+            method: 'PUT',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: JSON.stringify(raw),
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/cursotag/${formIdCategoriaEditando}`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if (response.ok){    
+                setFormNombre('');
+                setFormEstado(1);
+                setVerPopUpEditarTag(false);
+                obtenerTags();
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    }
+    const borrarTag = async (id_tag) => {         
+        setMostrarSpinner(true);        
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'DELETE',
+                headers: headers,
+            };            
+            const response = await fetch(`${urlBaseApi}/api/cursotag/${id_tag}`, opciones);            
+            setMostrarSpinner(false);            
+            const datos = await response.json();
+            if (response.ok){ 
+                obtenerTags();
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Tag borrado.'});
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});
+            }     
+                    
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+    const buscarCursos = async (id_tag, todos_los_cursos) => {                  
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };                        
+            const response = await fetch(`${urlBaseApi}/api/cursotag/buscarCursos/${id_tag}/${todos_los_cursos}/${palabraBuscarCurso}/1`, opciones);
+            if (response.ok){   
+                const datos = await response.json();
+                setOpcionesCurso(datos);
+            } else {     
+                const datos = await response.json();            
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
+            }     
+                     
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+    const agregarCursoTag = async (id_tag, id_curso) => {
+        //event.preventDefault();
+        reiniciarErrorCampoGlobal();
+                
+        const formData = new FormData();     
+        formData.append('id_tag', id_tag);
+        formData.append('id_curso', id_curso);
+        
+        const opciones = {
+            method: 'POST',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: formData
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/cursotagasignacion`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if(palabraBuscarCurso!=''){
+                buscarCursos(formIdCategoriaEditando, 0);
+            }else{
+                buscarCursos(formIdCategoriaEditando, 1);
+            }
+            if (response.ok){                  
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    };    
+
+    const quitarCursoTag = async (id_tag, id_curso) => {  
+                
+        const opciones = {
+            method: 'DELETE',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },            
+        };
+        
+        try {
+            setMostrarSpinner(true); 
+            const response = await fetch(`${urlBaseApi}/api/cursotagasignacion/${id_tag}/${id_curso}`, opciones);
+            const data = await response.json();
+            setMostrarSpinner(false);       //al quitar el spinner se recargan los datos                        
+            if(palabraBuscarCurso!=''){
+                buscarCursos(formIdCategoriaEditando, 0);
+            }else{
+                buscarCursos(formIdCategoriaEditando, 1);
+            }
+            if (response.ok){                                  
+                return;
+            } else {                           
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
+            }            
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }       
+    };
+
+    const handleAsignacionTag = (event, key_curso) => {        
+        const newOpcionesCurso = [...opcionesCurso];        
+        newOpcionesCurso[key_curso].id_tag = !newOpcionesCurso[key_curso].id_tag;            
+        setOpcionesCurso(newOpcionesCurso);
+        //console.log("Editando tag "+formIdCategoriaEditando+" en el curso "+newOpcionesCurso[key_curso].id+" a:"+newOpcionesCurso[key_curso].id_tag);
+        if(event.target.checked){
+            if(permissions[57]){
+                agregarCursoTag(formIdCategoriaEditando, newOpcionesCurso[key_curso].id);
+            }
+        }else{
+            if(permissions[58]){
+                quitarCursoTag(formIdCategoriaEditando, newOpcionesCurso[key_curso].id);
+            }
+        }
+    };
+
     return (
         <>
         {mostrarSpinner && <Spinner />}        
@@ -416,6 +809,58 @@ export default function FormularioCategoriasSistema() {
             funcionCerrar={handleFuncionCerrarPopUp}
             textoCerrar="Cerrar"
         />
+
+        <div className={`modal fade modal-container ${verPopUpBuscarCurso==true ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal3" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="comprarModalTitle">Selecciona los cursos del tag {formNombre}</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">
+                        <div className="form-group">
+                            <label className="label-text">Buscar curso por nombre</label>
+                            <input onChange={handleSetPalabraBuscarCurso} className="form-control form--control pl-3" type="text" name="buscar_curso" maxLength="128" placeholder="Ej: React Avanzazo" />
+                        </div>
+
+                        <div className="table-responsive" style={{ maxHeight: '250px', overflowY:'scroll'}}>
+                            <table className="table generic-table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Sel</th>                                    
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Estado</th>                                         
+                                </tr>
+                                </thead>
+                                <tbody >
+                                    {Object.keys(opcionesCurso).map((key) => (
+                                        <tr key={`curso-seleccion-${opcionesCurso[key].id}`}>
+                                            <td>
+                                                <div class="custom-control custom-checkbox mb-4 fs-15">
+                                                    <input type="checkbox" onClick={(event)=>handleAsignacionTag(event, key)} checked={((opcionesCurso[key].id_tag!==null && opcionesCurso[key].id_tag!==false) || opcionesCurso[key].id_tag===true) ? true : false} />
+                                                </div>
+                                            </td>                                            
+                                            <td>
+                                                {opcionesCurso[key].nombre}
+                                            </td>  
+                                            <td>
+                                                {opcionesCurso[key].estado ? <span className="badge badge-success text-white">Publicado</span>: <span className="badge badge-danger text-white">No publicado</span>}
+                                            </td>                                            
+                                        </tr>
+                                    ))}                                
+                                </tbody>
+                            </table>                            
+                        </div>
+                    </div>
+                    <div className="modal-footer border-top-gray">                        
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setVerPopUpBuscarCurso(false); setPalabraBuscarCurso(''); }}> Cerrar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div className={`modal fade modal-container ${verPopUpCrearCategoria==true ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="asignarPerfil" tabIndex="-1" role="dialog" aria-labelledby="asignarPerfilTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -509,6 +954,134 @@ export default function FormularioCategoriasSistema() {
                 </div>
             </div>
         </div>
+        <div className={`modal fade modal-container ${verPopUpCrearTagAgrupacion==true ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="crearTagAgrupacion" tabIndex="-1" role="dialog" aria-labelledby="asignarPerfilTitle" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="asignarPerfilTitle">Crear Tag Agrupación</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">
+                        <div className="form-group">
+                            <label className="label-text">Nombre</label>
+                            <input onChange={handleNombreChange} value={formNombre} className="form-control form--control pl-3" type="text" name="nombre" maxLength="32" placeholder="" />
+                            {erroresCampos['nombre'].length > 0 && (<SpamError mensaje={erroresCampos['nombre']} />)}
+                        </div>
+                        <div className="form-group">
+                            <label className="label-text">Buscador</label>
+                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className="form-control select-dark">
+                                <option value=""> -- Seleccione --</option>                                            
+                                <option value="1">Si</option>
+                                <option value="0">No</option>
+                            </select>                                        
+                            {erroresCampos['estado'].length > 0 && (<SpamError mensaje={erroresCampos['estado']} />)}
+                        </div>
+                    </div>
+                    <div className="modal-footer border-top-gray">                        
+                        <button type="button" className="btn theme-btn mb-2" onClick={crearTagAgrupacion}> Crear </button>
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setVerPopUpCrearTagAgrupacion(false); }}> Cancelar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className={`modal fade modal-container ${verPopUpEditarTagAgrupacion==true ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="asignarPerfil" tabIndex="-1" role="dialog" aria-labelledby="asignarPerfilTitle" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="asignarPerfilTitle">Editar Tag Agrupación</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">
+                        <div className="form-group">
+                            <label className="label-text">Nombre</label>
+                            <input onChange={handleNombreChange} value={formNombre} className="form-control form--control pl-3" type="text" name="nombre" maxLength="32" placeholder="" />
+                            {erroresCampos['nombre'].length > 0 && (<SpamError mensaje={erroresCampos['nombre']} />)}
+                        </div>                        
+                        <div className="form-group">
+                            <label className="label-text">Mostrar en buscador</label>
+                            <select onChange={handleEstadoChange} value={formEstado} name="buscador" className="form-control select-dark">
+                                <option value=""> -- Seleccione --</option>                                            
+                                <option value="1">Si</option>
+                                <option value="0">No</option>                                
+                            </select>                                        
+                            {erroresCampos['buscador'].length > 0 && (<SpamError mensaje={erroresCampos['buscador']} />)}
+                        </div>
+                        
+                    </div>
+                    <div className="modal-footer border-top-gray">                        
+                        <button type="button" className="btn theme-btn mb-2" onClick={editarTagAgrupacion}> Guardar </button>
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setVerPopUpEditarTagAgrupacion(false); }}> Cancelar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className={`modal fade modal-container ${verPopUpCrearTag==true ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="crearTag" tabIndex="-1" role="dialog" aria-labelledby="crearTag" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="crearTagTitle">Crear Tag</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">
+                        <div className="form-group">
+                            <label className="label-text">Nombre</label>
+                            <input onChange={handleNombreChange} value={formNombre} className="form-control form--control pl-3" type="text" name="nombre" maxLength="32" placeholder="" />
+                            {erroresCampos['nombre'].length > 0 && (<SpamError mensaje={erroresCampos['nombre']} />)}
+                        </div>
+                        <div className="form-group">
+                            <label className="label-text">Agrupación</label>
+                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className="form-control select-dark">
+                                <option value=""> -- Seleccione --</option>
+                                {Object.keys(tagsAgrupaciones).map((key) => (
+                                    <option value={tagsAgrupaciones[key].id}>{tagsAgrupaciones[key].nombre}</option>                                    
+                                ))}
+                            </select>                                        
+                            {erroresCampos['id_tag_agrupacion'].length > 0 && (<SpamError mensaje={erroresCampos['id_tag_agrupacion']} />)}
+                        </div>
+                    </div>
+                    <div className="modal-footer border-top-gray">                        
+                        <button type="button" className="btn theme-btn mb-2" onClick={crearTag}> Crear </button>
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setVerPopUpCrearTag(false); }}> Cancelar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className={`modal fade modal-container ${verPopUpEditarTag==true ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="asignarPerfil" tabIndex="-1" role="dialog" aria-labelledby="asignarPerfilTitle" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="asignarPerfilTitle">Editar Tag</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">
+                        <div className="form-group">
+                            <label className="label-text">Nombre</label>
+                            <input onChange={handleNombreChange} value={formNombre} className="form-control form--control pl-3" type="text" name="nombre" maxLength="32" placeholder="" />
+                            {erroresCampos['nombre'].length > 0 && (<SpamError mensaje={erroresCampos['nombre']} />)}
+                        </div>                        
+                        <div className="form-group">
+                            <label className="label-text">Agrupación</label>
+                            <select onChange={handleEstadoChange} value={formEstado} name="id_tag_agrupacion" className="form-control select-dark">
+                                <option value=""> -- Seleccione --</option>                                            
+                                {Object.keys(tagsAgrupaciones).map((key) => (
+                                    <option value={tagsAgrupaciones[key].id}>{tagsAgrupaciones[key].nombre}</option>                                    
+                                ))}
+                            </select>                                        
+                            {erroresCampos['id_tag_agrupacion'].length > 0 && (<SpamError mensaje={erroresCampos['id_tag_agrupacion']} />)}
+                        </div>
+                        
+                    </div>
+                    <div className="modal-footer border-top-gray">                        
+                        <button type="button" className="btn theme-btn mb-2" onClick={editarTag}> Guardar </button>
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setVerPopUpEditarTag(false); }}> Cancelar </button>
+                    </div>
+                </div>
+            </div>
+        </div>                            
         <div className="dashboard-content-wrap">
             <div className="dashboard-menu-toggler btn theme-btn theme-btn-sm lh-28 theme-btn-transparent mb-4 ml-3">
                 <i className="la la-bars mr-1"></i> Dashboard Nav
@@ -523,11 +1096,16 @@ export default function FormularioCategoriasSistema() {
                             Categorías
                         </a>
                     </li>}
-                    {(permissions[50] || permissions[51] || permissions[52] || permissions[53] || permissions[54] || permissions[55] || permissions[56] || permissions[57] || permissions[58]) && <li className="nav-item">
-                        <a className={`nav-link ${pestanaActivada==2 ? 'active': ''}`} onClick={event =>handleCambiarPestana(event, 2) } id="password-tab" data-toggle="tab" href="#password" role="tab" aria-controls="password" aria-selected="true">
+                    {(permissions[50] || permissions[51] || permissions[52]) && <li className="nav-item">
+                        <a className={`nav-link ${pestanaActivada==2 ? 'active': ''}`} onClick={event =>handleCambiarPestana(event, 2) } id="tags-agrupacion-tab" data-toggle="tab" href="#tags_agrupacion" role="tab" aria-controls="tags_agrupacion" aria-selected="true">
+                            Tags agrupación
+                        </a>
+                    </li>}
+                    {(permissions[53] || permissions[54] || permissions[55]) && <li className="nav-item">
+                        <a className={`nav-link ${pestanaActivada==3 ? 'active': ''}`} onClick={event =>handleCambiarPestana(event, 3) } id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-controls="tags" aria-selected="true">
                             Tags
                         </a>
-                    </li>}                                                     
+                    </li>}
                 </ul>
                 <div className="tab-content" id="myTabContent">
                     <div className={`tab-pane fade ${pestanaActivada==1 ? 'show active': ''}`} id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
@@ -559,25 +1137,94 @@ export default function FormularioCategoriasSistema() {
                             </div>                            
                         </div>
                     </div>
-                    <div className={`tab-pane fade ${pestanaActivada==2 ? 'show active': ''}`} id="password" role="tabpanel" aria-labelledby="password-tab">
+                    <div className={`tab-pane fade ${pestanaActivada==2 ? 'show active': ''}`} id="tags_agrupacion" role="tabpanel" aria-labelledby="tags-agrupacion-tab">
                         <div className="setting-body">
                             <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
                                 <div className="media media-card align-items-center">                        
-                                    <h3 className="fs-17 font-weight-semi-bold">Perfiles y permisos del sistema</h3>                        
+                                    <h3 className="fs-17 font-weight-semi-bold">Tags agrupación</h3>                        
                                 </div>                    
                                 <div className="btn-box pt-30px">
-                                    {permissions[12] && <button onClick={()=>{ setVerPopUpCrearTag(true); }} type="submit" className="btn theme-btn"><i className="la la-plus mr-2"></i> Crear Tag</button>}
+                                    {permissions[51] && <button onClick={()=>{ setVerPopUpCrearTagAgrupacion(true); setFormNombre(''); setFormEstado(-1); reiniciarErrorCampoGlobal(); }} type="submit" className="btn theme-btn"><i className="la la-plus mr-2"></i> Crear Tag Agrupación</button>}
                                 </div>
                             </div>     
                             <div className="col-lg-12">                                     
-                                
-
-
-
+                                <div className="table-responsive">
+                                    <table className="table generic-table">
+                                        <thead>
+                                        <tr>                                                           
+                                            <th scope="col">Nombre</th>                                            
+                                            <th scope="col">Buscador</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody >
+                                            {Object.keys(tagsAgrupaciones).map((key) => (
+                                                <tr key={`tag-agrupacion-${key}-${tagsAgrupaciones[key].id}`}>                                                   
+                                                    <th scope="row" width="40%">
+                                                        {tagsAgrupaciones[key].nombre}
+                                                    </th>
+                                                    <th scope="row" width="40%">
+                                                        {tagsAgrupaciones[key].buscador==1 ? 'Si' : 'No'}
+                                                    </th>
+                                                    <th scope="row" width="15%">
+                                                        {permissions[52] && <div onClick={()=>{ handleClickBorrarTagAgrupacion(tagsAgrupaciones[key].id, tagsAgrupaciones[key].nombre); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                            <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
+                                                        </div>}
+                                                        {permissions[52] ? <div onClick={()=>{ handleClickEditar('tag-agrupacion', tagsAgrupaciones[key].id, tagsAgrupaciones[key].nombre, tagsAgrupaciones[key].buscador); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div> : ''}
+                                                    </th>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>                            
+                                </div>
                             </div>
-
                         </div>
                     </div>                                                           
+                    <div className={`tab-pane fade ${pestanaActivada==3 ? 'show active': ''}`} id="tags" role="tabpanel" aria-labelledby="tags-tab">
+                        <div className="setting-body">
+                            <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
+                                <div className="media media-card align-items-center">                        
+                                    <h3 className="fs-17 font-weight-semi-bold">Tags</h3>                        
+                                </div>                    
+                                <div className="btn-box pt-30px">
+                                    {permissions[54] && <button onClick={()=>{ setVerPopUpCrearTag(true); setFormNombre(''); reiniciarErrorCampoGlobal(); obtenerTagsAgrupacion(); }} type="submit" className="btn theme-btn"><i className="la la-plus mr-2"></i> Crear Tag</button>}
+                                </div>
+                            </div>     
+                            <div className="col-lg-12">                                     
+                                <div className="table-responsive">
+                                    <table className="table generic-table">
+                                        <thead>
+                                        <tr>                                                           
+                                            <th scope="col">Nombre</th>                                            
+                                            <th scope="col">Agrupación</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody >
+                                            {Object.keys(tags).map((key) => (
+                                                <tr key={`tag-agrupacion-${key}-${tags[key].id}`}>                                                   
+                                                    <th scope="row" width="40%">
+                                                        {tags[key].nombre}
+                                                    </th>
+                                                    <th scope="row" width="40%">
+                                                        {tags[key].agrupacion}
+                                                    </th>
+                                                    <th scope="row" width="15%">
+                                                        {permissions[52] && <div onClick={()=>{ handleClickBorrarTag(tags[key].id, tags[key].nombre); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                            <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
+                                                        </div>}
+                                                        {permissions[52] ? <div onClick={()=>{ handleClickEditar('tag', tags[key].id, tags[key].nombre, tags[key].id_tag_agrupacion); obtenerTagsAgrupacion(); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar tag"><i className="la la-gear"></i></div> : ''}
+                                                        {(permissions[56] || permissions[57] || permissions[58]) ? <div onClick={()=>{ handleClickEditar('tag-asignacion', tags[key].id, tags[key].nombre, 0); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar cursos tag"><i className="la la-list-ol"></i></div> : ''}
+                                                    </th>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>                            
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <DashboardFooter />
             </div>

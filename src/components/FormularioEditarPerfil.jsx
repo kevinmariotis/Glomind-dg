@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
@@ -12,6 +12,7 @@ function FormularioCrearVideo() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const {jwt, nombres, setImagenPequena} = useContext(AuthContext);
+    const { id } = useParams();    
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});        
     const [verPopUpEliminarCuenta, setVerPopUpEliminarCuenta] = useState(false);
     const [pestanaActivada, setPestanaActivada] = useState(1);
@@ -149,7 +150,7 @@ function FormularioCrearVideo() {
                 headers: headers,
             };
             setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/usuario`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/usuario/${id!=undefined ? id : ''}`, opciones);
             setMostrarSpinner(false);
             if (response.ok){                           
                 const datos = await response.json();   
@@ -163,7 +164,9 @@ function FormularioCrearVideo() {
                 setFormCiudad(datos.usuario.ciudad);
                 setFormCedula(datos.usuario.identificacion);                
                 setPaises(datos.paises);
-                setImagenPequena(datos.usuario.imagen_pequena);     //Authcontext                
+                if(id==undefined){
+                    setImagenPequena(datos.usuario.imagen_pequena);     //Authcontext                
+                }
                 const biografia_array = datos.usuario.docente_descripcion.split("<separador>");
                 let biografiax = '';                
                 biografia_array.forEach((element) => {
@@ -193,7 +196,7 @@ function FormularioCrearVideo() {
             'nombres': formNombres,
             'apellidos': formApellidos,
             'email': formEmail,            
-            'telefono': formTelefono.toString(),
+            'telefono': formTelefono==null ? '' : formTelefono.toString(),
             'id_pais': formIdPais,
             'id_departamento': formIdDepartamento,
             'ciudad': formCiudad,            
@@ -216,7 +219,7 @@ function FormularioCrearVideo() {
         
         try {
             setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/usuario/0`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/usuario/${id!=undefined ? id : '0'}`, opciones);
             setMostrarSpinner(false);
             const datos = await response.json();            
             if (response.ok){    
@@ -232,7 +235,7 @@ function FormularioCrearVideo() {
                         },
                         body: formData
                     };
-                    const response = await fetch(`${urlBaseApi}/api/usuario/actualizarImagen/0`, opciones);
+                    const response = await fetch(`${urlBaseApi}/api/usuario/actualizarImagen/${id!=undefined ? id : '0'}`, opciones);
                     const datos = await response.json();            
                     setMostrarSpinner(false);
                     if (response.ok){                      
@@ -274,7 +277,7 @@ function FormularioCrearVideo() {
         
         try {
             setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/usuario/cambiarcontrasena/0`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/usuario/cambiarcontrasena/${id!=undefined ? id : '0'}`, opciones);
             setMostrarSpinner(false);
             const datos = await response.json();            
             if (response.ok){   
@@ -307,16 +310,18 @@ function FormularioCrearVideo() {
         };
         
         try {
-            setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/usuario/eliminarCuenta/0`, opciones);
-            setMostrarSpinner(false);
-            const datos = await response.json();            
-            if (response.ok){                   
-                setPopup({mostrar:true, titulo:'Listo', contenido:'Cuenta eliminada correctamente, gracias por usar nuestros servicios.'});
-                return;
-            } else {
-                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Revisar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});
-            }                
+            if(id==undefined){  //bloqueo para solo eliminar su propia cuenta.
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/usuario/eliminarCuenta/0`, opciones);
+                setMostrarSpinner(false);
+                const datos = await response.json();            
+                if (response.ok){                   
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Cuenta eliminada correctamente, gracias por usar nuestros servicios.'});
+                    return;
+                } else {
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Revisar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});
+                }
+            }
         }catch (error) {
             console.error('Error de conexión:', error);
         }
@@ -389,7 +394,7 @@ function FormularioCrearVideo() {
                 <i className="la la-bars mr-1"></i> Dashboard Nav
             </div>
             <div className="container-fluid">
-                <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
+                {id==undefined && <><div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
                     <div className="media media-card align-items-center">
                         <div className="media-img media--img media-img-md rounded-full">
                         <img className="rounded-full" src={datosUsuario.imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${datosUsuario.imagen_pequena}`} alt="Foto del usuario" />
@@ -412,7 +417,7 @@ function FormularioCrearVideo() {
                         </div>
                     </div>                    
                 </div>
-                <div className="section-block mb-5"></div>
+                <div className="section-block mb-5"></div></>}
                 <div className="dashboard-heading mb-5">
                     <h3 className="fs-22 font-weight-semi-bold">Configuración</h3>
                 </div>
@@ -427,11 +432,11 @@ function FormularioCrearVideo() {
                             Contraseña
                         </a>
                     </li>                                  
-                    <li className="nav-item">
+                    {id==undefined && <li className="nav-item">
                         <a className={`nav-link ${pestanaActivada==3 ? 'active': ''}`} onClick={event => handleCambiarPestana(event, 3) } id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account" aria-selected="false">
                             Cuenta
                         </a>
-                    </li>
+                    </li>}
                 </ul>
                 <div className="tab-content" id="myTabContent">
                     <div className={`tab-pane fade ${pestanaActivada==1 ? 'show active': ''}`} id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
@@ -439,7 +444,7 @@ function FormularioCrearVideo() {
                             <h3 className="fs-17 font-weight-semi-bold pb-4">Editar perfil</h3>
                             <div className="media media-card align-items-center">
                                 <div className="media-img media-img-lg mr-4 bg-gray">
-                                    <img className="mr-3" src={datosUsuario.imagen_pequena==null ? `${urlBase}/images/teams11.jpg` : `${urlBaseApi}/${datosUsuario.imagen_pequena}`} alt="Avatar" />
+                                    <img className="mr-3" src={datosUsuario.imagen_pequena==null ? `${urlBase}/images/team11.jpg` : `${urlBaseApi}/${datosUsuario.imagen_pequena}`} alt="Avatar" />
                                 </div>
                                 <div className="media-body">
                                     <div {...getRootProps()}>    
