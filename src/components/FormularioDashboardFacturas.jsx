@@ -8,10 +8,9 @@ import Popup from './Popup';
 import Paginador from './Paginador';
 import DashboardFooter from './DashboardFooter';
 
-function FormularioHistorialDeCompras() {
+function FormularioDashboardFacturas() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
-    const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
-    const { id } = useParams();
+    const urlBaseApi = import.meta.env.VITE_URL_BASE_API;           
     const {jwt, nombres, setImagenPequena} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});        
     const [paginaNavegacion, setPaginaNavegacion] = useState(1);
@@ -24,6 +23,13 @@ function FormularioHistorialDeCompras() {
     const [totalFacturas, setTotalFacturas] = useState(1);
     const [verDetallesId, setVerDetallesId] = useState(-1);
     
+    const [opcionesDeFiltradoActivado, setOpcionesDeFiltradoActivado] = useState(false);
+    const [filtrarPorCarrito, setFiltrarPorCarrito] = useState(false);
+    const [filtrarPorEnProcesoDePago, setFiltrarPorEnProcesoDePago] = useState(false);
+    const [filtrarPorErrorTransaccion, setFiltrarPorErrorTransaccion] = useState(false);
+    const [filtrarPorPagado, setFiltrarPorPagado] = useState(true);
+    const [filtrarPorEsperaRespuestaPasarela, setFiltrarPorEsperaRespuestaPasarela] = useState(false);
+
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
     
     useEffect(() => {           
@@ -34,7 +40,7 @@ function FormularioHistorialDeCompras() {
     useEffect(() => {      
         window.scrollTo(0, 0);   
         obtenerFacturas();
-    }, [paginaNavegacion]);
+    }, [paginaNavegacion, filtrarPorCarrito, filtrarPorEnProcesoDePago, filtrarPorErrorTransaccion, filtrarPorPagado, filtrarPorEsperaRespuestaPasarela]);
 
     useEffect(() => {      
         if(verDetallesId!=-1){
@@ -75,6 +81,29 @@ function FormularioHistorialDeCompras() {
         setPopup({...popUp, mostrar:false});
     };
         
+
+    const handleFiltrarPorCarrito = (event) => {                        
+        const { checked } = event.target;
+        setFiltrarPorCarrito(checked ? true: false);        
+    };
+    const handleFiltrarPorEnProcesoDePago = (event) => {                        
+        const { checked } = event.target;
+        setFiltrarPorEnProcesoDePago(checked ? true: false);        
+    };
+    const handleFiltrarPorErrorTransaccion = (event) => {                        
+        const { checked } = event.target;
+        setFiltrarPorErrorTransaccion(checked ? true: false);        
+    };
+    const handleFiltrarPorPagado = (event) => {                        
+        const { checked } = event.target;
+        setFiltrarPorPagado(checked ? true: false);        
+    };
+    const handleFiltrarPorEsperaRespuestaPasarela = (event) => {                        
+        const { checked } = event.target;
+        setFiltrarPorEsperaRespuestaPasarela(checked ? true: false);        
+    };
+
+
     const obtenerDatosDelServidor = async () => {
         const headers = {
             'Authorization':`Bearer ${jwt}`,
@@ -85,7 +114,7 @@ function FormularioHistorialDeCompras() {
                 headers: headers,
             };
             setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/usuario/${id!=undefined ? id : ''}`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/usuario`, opciones);
             setMostrarSpinner(false);
             if (response.ok){                           
                 const datos = await response.json();   
@@ -104,13 +133,36 @@ function FormularioHistorialDeCompras() {
         const headers = {
             'Authorization':`Bearer ${jwt}`,
         }        
-        try {            
+        try {    
+            
+            let opciones_estado = '';
+            if(filtrarPorCarrito){
+                opciones_estado = '1';
+            }
+            if(filtrarPorEnProcesoDePago){
+                if(opciones_estado!=''){ opciones_estado+=','; }
+                opciones_estado+='2';
+            }
+            if(filtrarPorErrorTransaccion){
+                if(opciones_estado!=''){ opciones_estado+=','; }
+                opciones_estado+='3';
+            }
+            if(filtrarPorPagado){
+                if(opciones_estado!=''){ opciones_estado+=','; }
+                opciones_estado+='4';
+            }
+            if(filtrarPorEsperaRespuestaPasarela){
+                if(opciones_estado!=''){ opciones_estado+=','; }
+                opciones_estado+='7';
+            }
+            opciones_estado = opciones_estado=='' ? 'none' : opciones_estado;
+
             const opciones = {
                 method: 'GET',
                 headers: headers,
             };
             setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/usuario/getHistorialCompras/${id!=undefined ? id : '0'}/${paginaNavegacion}/factura.fecha_factura_generada-desc/none`, opciones);
+            const response = await fetch(`${urlBaseApi}/api/factura/getTodas/${opciones_estado}/${paginaNavegacion}/factura.id-desc/none`, opciones);
             setMostrarSpinner(false);
             if (response.ok){                           
                 const datos = await response.json();   
@@ -154,7 +206,7 @@ function FormularioHistorialDeCompras() {
     };
 
     //2 en proceso de pago, 3 error transaccion, 4 pagado, 7 en espera de la respuesta de la pasarela de pagos
-    const estados = ['', '', 'Esperando pago', 'Error transacción', 'Pagado', '', '', 'Esperando respuesta'];
+    const estados = ['', 'Carrito', 'Esperando pago', 'Error transacción', 'Pagado', '', '', 'Esperando respuesta'];
     const estados_clases = ['', '', 'warning', 'danger', 'success', '', '', 'warning'];
     const descripcion_tipo_compra = ['', 'Acceso a los videos, las descargas, y las actividades que tuviera el curso (No exámenes).', 'Incluye los exámenes que se hacen a lo largo del curso, incluyendo el exámen final.', 'Posibilidad de descargar el certificado en PDF con QR de validación de autenticidad.'];
 
@@ -175,40 +227,75 @@ function FormularioHistorialDeCompras() {
             <div className="dashboard-menu-toggler btn theme-btn theme-btn-sm lh-28 theme-btn-transparent mb-4 ml-3">
                 <i className="la la-bars mr-1"></i> Dashboard Nav
             </div>
-            <div className="container-fluid">
+            <div className="container-fluid">                
+                
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
-                    <div className="media media-card align-items-center">
-                        <div className="media-img media--img media-img-md rounded-full">
-                        <img className="rounded-full" src={datosUsuario.imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${datosUsuario.imagen_pequena}`} alt="Foto del usuario" />
-                        </div>
-                        <div className="media-body">
-                            <h2 className="section__title fs-30">{id!=undefined ? `${datosUsuario.nombres} ${datosUsuario.apellidos}` : nombres }</h2>
-                            <div className="rating-wrap d-flex align-items-center pt-2">
-                                {datosUsuario.docente_reviews>0 && <div className="rating-wrap d-flex align-items-center pt-2">
-                                    <div className="review-stars">
-                                        <span className="rating-number">{datosUsuario.docente_rating}</span>
-                                        <span className="la la-star"></span>
-                                        <span className="la la-star"></span>
-                                        <span className="la la-star"></span>
-                                        <span className="la la-star"></span>
-                                        <span className="la la-star-o"></span>
-                                    </div>
-                                    <span className="rating-total pl-1">({datosUsuario.docente_reviews})</span>
-                                </div>}
-                            </div>
-                        </div>
+                    <div className="media media-card align-items-center">                        
+                        <h3 className="fs-22 font-weight-semi-bold">Compras y facturas</h3>
                     </div>                    
-                </div>
-                <div className="section-block mb-5"></div>
-                {verDetallesId==-1 ? <><div className="dashboard-heading mb-5">
-                    <h3 className="fs-22 font-weight-semi-bold">Historial de compras</h3>
-                </div>
+                    <div className="btn-box pt-300px">         
+                        {verDetallesId==-1 ? 
+                        <div className="question-overview-filter-item">
+                            <div className="generic-action-wrap">
+                                <div className="dropdown">
+                                    <div onClick={e=>setOpcionesDeFiltradoActivado(!opcionesDeFiltradoActivado) }className="btn theme-btn theme-btn-transparent w-100" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Filtrar por&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </div>
+                                    <div className="dropdown-menu" style={{right:0, left:"inherit", display:opcionesDeFiltradoActivado ? 'block' : 'none'}}>
+                                        <div className="dropdown-item">
+                                            <div className="custom-control custom-checkbox fs-15">
+                                                <input onChange={handleFiltrarPorCarrito} checked={filtrarPorCarrito} type="checkbox" className="custom-control-input" id="questionsCheckbox" required />
+                                                <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox">
+                                                    En carrito
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="dropdown-item">
+                                            <div className="custom-control custom-checkbox fs-15">
+                                                <input onChange={handleFiltrarPorEnProcesoDePago} checked={filtrarPorEnProcesoDePago} type="checkbox" className="custom-control-input" id="questionsCheckbox2" required />
+                                                <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox2">
+                                                    En proceso de pago
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="dropdown-item">
+                                            <div className="custom-control custom-checkbox fs-15">
+                                                <input onChange={handleFiltrarPorErrorTransaccion} checked={filtrarPorErrorTransaccion} type="checkbox" className="custom-control-input" id="questionsCheckbox3" required />
+                                                <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox3">
+                                                    Error transacción
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="dropdown-item">
+                                            <div className="custom-control custom-checkbox fs-15">
+                                                <input onChange={handleFiltrarPorPagado} checked={filtrarPorPagado} type="checkbox" className="custom-control-input" id="questionsCheckbox4" required />
+                                                <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox4">
+                                                    Pagado
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="dropdown-item">
+                                            <div className="custom-control custom-checkbox fs-15">
+                                                <input onChange={handleFiltrarPorEsperaRespuestaPasarela} checked={filtrarPorEsperaRespuestaPasarela} type="checkbox" className="custom-control-input" id="questionsCheckbox5" required />
+                                                <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox5">
+                                                    Espera en respuesta de pasarela
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>:''}                      
+                    </div>
+                </div>  
+
+                {verDetallesId==-1 ? <>                
                 <div className="table-responsive mb-5">
                     <table className="table generic-table">
                         <thead>
                         <tr>
                             <th scope="col">ID</th>
-                            <th scope="col">Facturado a</th>
+                            <th scope="col">Usuario</th>
                             <th scope="col">Total</th>
                             <th scope="col">Fecha</th>
                             <th scope="col">Estado</th>
@@ -253,76 +340,71 @@ function FormularioHistorialDeCompras() {
                 : 
                     Object.keys(itemsFactura).length>0 ?
                         <div className="table-responsive mb-5">
-                            <h3 className="fs-18 font-weight-semi-bold pb-4"><a href="#" onClick={() => { handleDetallesIdChange(-1); } }><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la lista de compras"><i className="la la-angle-left"></i></div></a>&nbsp;Detalle de orden</h3>
-
-                                                        
-                            
-                            <div className="col-lg-12">
-                                
-                                    <div className="card-body"></div>
-                                    <form method="post" className="row">
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">Nombres</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{detallesFacturacion.nombres}</span>
-                                            </div>                                            
+                            <h3 className="fs-18 font-weight-semi-bold pb-4"><a href="#" onClick={() => { handleDetallesIdChange(-1); } }><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la lista de compras"><i className="la la-angle-left"></i></div></a>&nbsp;Detalle de orden</h3>                                                                                    
+                            <div className="col-lg-12">                                
+                                <div className="card-body"></div>
+                                <form method="post" className="row">
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Nombres</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{detallesFacturacion.nombres}</span>
+                                        </div>                                            
+                                    </div>
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Apellidos</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{detallesFacturacion.apellidos}</span>
                                         </div>
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">Apellidos</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{detallesFacturacion.apellidos}</span>
-                                            </div>
+                                    </div>
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Correo electrónico</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{detallesFacturacion.email}</span>
                                         </div>
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">Correo electrónico</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{detallesFacturacion.email}</span>
-                                            </div>
+                                    </div>
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Cédula / Identificación</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{detallesFacturacion.identificacion}</span>
                                         </div>
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">Cédula / Identificación</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{detallesFacturacion.identificacion}</span>
-                                            </div>
-                                        </div>                                                                          
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">Teléfono</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{detallesFacturacion.telefono}</span>
-                                            </div>
-                                        </div>                                                                          
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">País</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{detallesFacturacion.pais}</span>
-                                            </div>
+                                    </div>                                                                          
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Teléfono</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{detallesFacturacion.telefono}</span>
                                         </div>
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">Departamento</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{detallesFacturacion.departamento}</span>
-                                            </div>
-                                        </div>                    
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">Ciudad</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{detallesFacturacion.ciudad}</span>
-                                            </div>
+                                    </div>                                                                          
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">País</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{detallesFacturacion.pais}</span>
                                         </div>
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">Dirección</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{detallesFacturacion.direccion}</span>
-                                            </div>
+                                    </div>
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Departamento</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{detallesFacturacion.departamento}</span>
                                         </div>
-                                        <div className="input-box col-lg-6">
-                                            <label className="label-text">Fecha checkout</label>
-                                            <div className="form-group">
-                                                <span class="rating-total pl-1">{totalesFactura.fecha_checkout}</span>
-                                            </div>
+                                    </div>                    
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Ciudad</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{detallesFacturacion.ciudad}</span>
                                         </div>
-                                    </form>                                           
-                                 
+                                    </div>
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Dirección</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{detallesFacturacion.direccion}</span>
+                                        </div>
+                                    </div>
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Fecha checkout</label>
+                                        <div className="form-group">
+                                            <span class="rating-total pl-1">{totalesFactura.fecha_checkout}</span>
+                                        </div>
+                                    </div>
+                                </form>                                                                            
                             </div>
                             <div className="divider"><span></span></div>
                             <table className="table generic-table">
@@ -403,4 +485,4 @@ function FormularioHistorialDeCompras() {
     )
 }
 
-export default FormularioHistorialDeCompras;
+export default FormularioDashboardFacturas;

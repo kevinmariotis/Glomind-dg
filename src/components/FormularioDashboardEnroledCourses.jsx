@@ -81,7 +81,7 @@ function FormularioDashboardEnroledCourses() {
             
             //buscamos los datos de los cursos a mostrar
             setMostrarSpinner(true);
-            const response2 = await fetch(`${urlBaseApi}/api/usuario/miscursos/${paginaNavegacion}/${pestanaActivada}/nombre-asc/3`, opciones);
+            const response2 = await fetch(`${urlBaseApi}/api/usuario/cursos/0/${paginaNavegacion}/${pestanaActivada}/nombre-asc/3`, opciones);
             setMostrarSpinner(false);
             if (response2.ok){   
                     const datos2 = await response2.json();   

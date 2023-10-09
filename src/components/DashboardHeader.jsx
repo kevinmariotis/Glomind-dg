@@ -122,7 +122,7 @@ function DashboardHeader({expandir_ancho=false}) {
                 method: 'GET',
                 headers: headers,
             };                                    
-            const response = await fetch(`${urlBaseApi}/api/usuario/miscursos/1/1/nombre-asc/3`, opciones);            
+            const response = await fetch(`${urlBaseApi}/api/usuario/cursos/0/1/1/nombre-asc/3`, opciones);            
             if (response.ok){   
                 console.log('Datos de mis cursos recuperados del servidor:');
                 const datos = await response.json();

@@ -174,7 +174,7 @@ export default function FormularioDashboardUsuarios() {
                                     <h3 className="fs-17 font-weight-semi-bold">Usuarios en el sistema</h3>                        
                                 </div>                    
                                 <div className="btn-box pt-30px">
-                                    {permissions[41] && <button onClick={()=>{ setVerPopUpAsignarPerfil(true); }} type="submit" className="btn theme-btn"><i className="la la-plus mr-2"></i> Subir usuarios masivamente</button>}
+                                    {permissions[41] && <button style={{display:'none'}} onClick={()=>{ setVerPopUpAsignarPerfil(true); }} type="submit" className="btn theme-btn"><i className="la la-plus mr-2"></i> Subir usuarios masivamente</button>}
                                 </div>
                             </div>                                                        
                             <div className="col-lg-12">     
@@ -218,8 +218,9 @@ export default function FormularioDashboardUsuarios() {
                                                     <th scope="row">
                                                         {usuarios[key].estado==1 ? <span className="badge badge-success text-white">Activo</span>: <span className="badge badge-danger text-white">Suspendido</span>}
                                                     </th>
-                                                    <th scope="row">
-                                                        {permissions[19] && <div onClick={()=>{ navigate(`/usuario/editar/${usuarios[key].id}`); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div>}
+                                                    <th scope="row" width="20%">
+                                                        {permissions[19] ? <div style={{float:'left'}} onClick={()=>{ navigate(`/usuario/editar/${usuarios[key].id}`); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div> : ''}
+                                                        {permissions[76] ? <div onClick={()=>{ navigate(`/factura/historial/${usuarios[key].id}`); }}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Ver compras del usuario"><i className="la la la-shopping-cart"></i></div></div> : ''}
                                                     </th>
                                                 </tr>
                                             ))}

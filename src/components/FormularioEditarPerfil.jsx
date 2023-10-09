@@ -11,7 +11,7 @@ import DashboardFooter from './DashboardFooter';
 function FormularioCrearVideo() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
-    const {jwt, nombres, setImagenPequena} = useContext(AuthContext);
+    const {jwt, nombres, setImagenPequena, permissions} = useContext(AuthContext);
     const { id } = useParams();    
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});        
     const [verPopUpEliminarCuenta, setVerPopUpEliminarCuenta] = useState(false);
@@ -32,6 +32,14 @@ function FormularioCrearVideo() {
     const [formCedula, setFormCedula] = useState('');
     const [formBiografia, setFormBiografia] = useState('');
     const [formRecibirPromociones, setFormRecibirPromociones] = useState(1);    
+    const [formEstado, setFormEstado] = useState(1);    
+
+    const [formProfesion, setFormProfesion] = useState('');
+    const [formFacebook, setFormFacebook] = useState('');
+    const [formTwitter, setFormTwitter] = useState('');
+    const [formInstagram, setFormInstagram] = useState('');
+    const [formLinkedin, setFormLinkedin] = useState('');
+    const [formYoutube, setFormYoutube] = useState('');
 
     const [formContrasenaActual, setFormContrasenaActual] = useState('');    
     const [formNuevaContrasena, setFormNuevaContrasena] = useState('');    
@@ -56,6 +64,14 @@ function FormularioCrearVideo() {
         'ciudad':[],
         'identificacion':[],
         'docente_descripcion':[],
+        'estado':[],
+
+        'profesion':[],
+        'facebook':[],
+        'twitter':[],
+        'instagram':[],
+        'linkedin':[],
+        'youtube':[],
 
         'contrasena_actual':[],
         'nueva_contrasena':[],
@@ -93,6 +109,14 @@ function FormularioCrearVideo() {
     const handleCiudadChange = (event) => {   setFormCiudad(event.target.value);    };
     const handleCedulaChange = (event) => {   setFormCedula(event.target.value);    };
     const handleBiografiaChange = (event) => {   setFormBiografia(event.target.value);    };   
+    const handleEstadoChange = (event) => {   setFormEstado(event.target.value);    };   
+
+    const handleProfesionChange = (event) => {   setFormProfesion(event.target.value);    };   
+    const handleFacebookChange = (event) => {   setFormFacebook(event.target.value);    };   
+    const handleTwitterChange = (event) => {   setFormTwitter(event.target.value);    };   
+    const handleInstagramChange = (event) => {   setFormInstagram(event.target.value);    };   
+    const handleLinkedinChange = (event) => {   setFormLinkedin(event.target.value);    };   
+    const handleYoutubeChange = (event) => {   setFormYoutube(event.target.value);    };   
 
     const handleContrasenActualChange = (event) => {   setFormContrasenaActual(event.target.value);    };   
     const handleNuevaContrasenaChange = (event) => {   setFormNuevaContrasena(event.target.value);    };   
@@ -163,7 +187,14 @@ function FormularioCrearVideo() {
                 setFormIdPais(datos.usuario.id_pais);
                 setFormCiudad(datos.usuario.ciudad);
                 setFormCedula(datos.usuario.identificacion);                
-                setPaises(datos.paises);
+                setFormEstado(datos.usuario.estado);
+                setFormProfesion(datos.usuario.profesion);
+                setFormFacebook(datos.usuario.facebook);
+                setFormTwitter(datos.usuario.twitter);
+                setFormInstagram(datos.usuario.instagram);
+                setFormLinkedin(datos.usuario.linkedin);
+                setFormYoutube(datos.usuario.youtube);
+                setPaises(datos.paises);                
                 if(id==undefined){
                     setImagenPequena(datos.usuario.imagen_pequena);     //Authcontext                
                 }
@@ -199,7 +230,8 @@ function FormularioCrearVideo() {
             'telefono': formTelefono==null ? '' : formTelefono.toString(),
             'id_pais': formIdPais,
             'id_departamento': formIdDepartamento,
-            'ciudad': formCiudad,            
+            'ciudad': formCiudad,    
+            'profesion': formProfesion,
             'recibir_promociones': formRecibirPromociones,
         };
         if(formBiografia!=''){
@@ -208,7 +240,11 @@ function FormularioCrearVideo() {
         if(formCedula!='' && formCedula!=null){
             raw.identificacion = formCedula;
         }
-                            
+        if(id!=undefined && permissions[19]){
+            raw.estado = formEstado;
+        }
+        
+
         const opciones = {
             method: 'PUT',
             headers: {
@@ -252,6 +288,50 @@ function FormularioCrearVideo() {
                 return;
             } else {
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Revisar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }
+    }
+
+    const handleActualizarRedesSociales = async (event) => {
+        event.preventDefault();
+        reiniciarErrorCampoGlobal();        
+        const raw = {}                   
+        if(formFacebook!=null){
+            raw.facebook = formFacebook;
+        }
+        if(formTwitter!=null){
+            raw.twitter = formTwitter;
+        }
+        if(formInstagram!=null){
+            raw.instagram = formInstagram;
+        }
+        if(formLinkedin!=null){
+            raw.linkedin = formLinkedin;
+        }
+        if(formYoutube!=null){
+            raw.youtube = formYoutube;
+        }
+                        
+        const opciones = {
+            method: 'PUT',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: JSON.stringify(raw),
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/usuario/editarRedesSociales/${id!=undefined ? id : '0'}`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if (response.ok){                    
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Redes sociales guardadas satisfactoriamente.'});
+                return;
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
             }                
         }catch (error) {
             console.error('Error de conexión:', error);
@@ -428,6 +508,11 @@ function FormularioCrearVideo() {
                         </a>
                     </li>
                     <li className="nav-item">
+                        <a className={`nav-link ${pestanaActivada==4 ? 'active': ''}`} onClick={event =>{ handleCambiarPestana(event, 4) }} id="edit-redes-tab" data-toggle="tab" href="#edit-redes" role="tab" aria-controls="edit-redes" aria-selected="false">
+                            Redes sociales
+                        </a>
+                    </li>
+                    <li className="nav-item">
                         <a className={`nav-link ${pestanaActivada==2 ? 'active': ''}`} onClick={event =>handleCambiarPestana(event, 2) } id="password-tab" data-toggle="tab" href="#password" role="tab" aria-controls="password" aria-selected="true">
                             Contraseña
                         </a>
@@ -456,6 +541,13 @@ function FormularioCrearVideo() {
                                 </div>
                             </div>
                             <form method="post" className="row pt-40px">
+                                <div className="input-box col-lg-12">
+                                    <label className="label-text">Profesión</label>
+                                    <div className="form-group">
+                                        <input onChange={handleProfesionChange} maxLength={128} className="form-control form--control" type="text" name="text" value={formProfesion} />
+                                        {erroresCampos['profesion'].length > 0 && (<SpamError mensaje={erroresCampos['profesion']} />)}
+                                    </div>
+                                </div>
                                 <div className="input-box col-lg-6">
                                     <label className="label-text">Nombres</label>
                                     <div className="form-group">
@@ -527,7 +619,7 @@ function FormularioCrearVideo() {
                                         <input onChange={handleCedulaChange} maxLength={16} className="form-control form--control" type="text" name="text" value={formCedula} />
                                         {erroresCampos['identificacion'].length > 0 && (<SpamError mensaje={erroresCampos['identificacion']} />)}
                                     </div>
-                                </div>
+                                </div>                                
                                 <div className="input-box col-lg-12">
                                     <label className="label-text">Biografía</label>
                                     <div className="form-group">
@@ -535,12 +627,78 @@ function FormularioCrearVideo() {
                                         {erroresCampos['docente_descripcion'].length > 0 && (<SpamError mensaje={erroresCampos['docente_descripcion']} />)}
                                     </div>
                                 </div>
+                                {(id!=undefined && permissions[19] && formEstado!=3) ?
+                                    <div className="input-box col-lg-6">
+                                        <label className="label-text">Estado</label>
+                                        <div className="form-group">
+                                            <select value={formEstado} onChange={handleEstadoChange} className="form-control form--control select-dark" type="text" name="estado">
+                                                <option value="">Seleccione el estado</option>
+                                                <option value={1} >Activo</option>
+                                                <option value={2} >Suspendido</option>                                                
+                                            </select>
+                                            {erroresCampos['estado'].length > 0 && (<SpamError mensaje={erroresCampos['estado']} />)}
+                                        </div>
+                                    </div>
+                                : ''}
                                 <div className="input-box col-lg-12 py-2">
                                     <button onClick={handleActualizarPerfil} type="submit" className="btn theme-btn">Guardar cambios</button>
                                 </div>
                             </form>
                         </div>
                     </div>
+
+                    
+                    <div className={`tab-pane fade ${pestanaActivada==4 ? 'show active': ''}`} id="edit-reders" role="tabpanel" aria-labelledby="edit-redes-tab">
+                        <div className="setting-body">
+                            <h3 className="fs-17 font-weight-semi-bold pb-4">Editar redes sociales</h3>                            
+                            <form method="post" className="row">
+                                <div className="input-box col-lg-6">
+                                    <label className="label-text">Facebook</label>
+                                    <div className="form-group">
+                                        <input onChange={handleFacebookChange} maxLength={128} className="form-control form--control" type="text" name="text" value={formFacebook} />
+                                        <span className="la la-facebook input-icon"></span>
+                                        {erroresCampos['facebook'].length > 0 && (<SpamError mensaje={erroresCampos['facebook']} />)}
+                                    </div>
+                                </div>
+                                <div className="input-box col-lg-6">
+                                    <label className="label-text">X</label>
+                                    <div className="form-group">
+                                        <input onChange={handleTwitterChange} maxLength={128} className="form-control form--control" type="text" name="text" value={formTwitter} />
+                                        <span className="la la-twitter input-icon"></span>
+                                        {erroresCampos['twitter'].length > 0 && (<SpamError mensaje={erroresCampos['twitter']} />)}
+                                    </div>
+                                </div>                                
+                                <div className="input-box col-lg-6">
+                                    <label className="label-text">Instagram</label>
+                                    <div className="form-group">
+                                        <input onChange={handleInstagramChange} maxLength={128} className="form-control form--control" type="text" name="text" value={formInstagram} />
+                                        <span className="la la-instagram input-icon"></span>
+                                        {erroresCampos['instagram'].length > 0 && (<SpamError mensaje={erroresCampos['instagram']} />)}
+                                    </div>
+                                </div>
+                                <div className="input-box col-lg-6">
+                                    <label className="label-text">Linkedin</label>
+                                    <div className="form-group">
+                                        <input onChange={handleLinkedinChange} maxLength={128} className="form-control form--control" type="text" name="text" value={formLinkedin} />
+                                        <span className="la la-linkedin input-icon"></span>
+                                        {erroresCampos['linkedin'].length > 0 && (<SpamError mensaje={erroresCampos['linkedin']} />)}
+                                    </div>
+                                </div>
+                                <div className="input-box col-lg-6">
+                                    <label className="label-text">Youtube</label>
+                                    <div className="form-group">
+                                        <input onChange={handleYoutubeChange} maxLength={128} className="form-control form--control" type="text" name="text" value={formYoutube} />
+                                        <span className="la la-youtube input-icon"></span>
+                                        {erroresCampos['youtube'].length > 0 && (<SpamError mensaje={erroresCampos['youtube']} />)}
+                                    </div>
+                                </div>
+                                <div className="input-box col-lg-12 py-2">
+                                    <button onClick={handleActualizarRedesSociales} type="submit" className="btn theme-btn">Guardar cambios</button>
+                                </div>
+                            </form>    
+                        </div>
+                    </div>
+
                     <div className={`tab-pane fade ${pestanaActivada==2 ? 'show active': ''}`} id="password" role="tabpanel" aria-labelledby="password-tab">
                         <div className="setting-body">
                             <h3 className="fs-17 font-weight-semi-bold pb-4">Cambiar contraseña</h3>
