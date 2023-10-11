@@ -97,7 +97,7 @@ function FormularioFavoritos() {
                 method: 'GET',
                 headers: headers,
             };                                    
-            const response = await fetch(`${urlBaseApi}/api/usuario/getFavoritos/${paginaNavegacion}/1/nombre-asc/9`, opciones);  //favoritos no comprados           
+            const response = await fetch(`${urlBaseApi}/api/usuario/getFavoritos/0/${paginaNavegacion}/1/nombre-asc/9`, opciones);  //favoritos no comprados           
             if (response.ok){   
                 const datos = await response.json();
                 setFavoritos(datos.cursos);

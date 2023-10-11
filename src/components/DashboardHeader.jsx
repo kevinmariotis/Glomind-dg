@@ -152,7 +152,7 @@ function DashboardHeader({expandir_ancho=false}) {
                 method: 'GET',
                 headers: headers,
             };                                    
-            const response = await fetch(`${urlBaseApi}/api/usuario/getfavoritos/1/2/nombre-asc/3`, opciones);  //favoritos no comprados           
+            const response = await fetch(`${urlBaseApi}/api/usuario/getfavoritos/0/1/2/nombre-asc/3`, opciones);  //favoritos no comprados           
             if (response.ok){   
                 console.log('Datos de favoritos recuperados del servidor:');
                 const datos = await response.json();
@@ -367,11 +367,11 @@ function DashboardHeader({expandir_ancho=false}) {
                                                         </div>
                                                         <ul className="cart-dropdown-menu after-none p-0 notification-dropdown-menu">
                                                             <li className="menu-heading-block d-flex align-items-center">
-                                                                <a href="teacher-detail.html" className="avatar-sm flex-shrink-0 d-block">
+                                                                <Link to={`/usuario/editar`} className="avatar-sm flex-shrink-0 d-block">
                                                                     <img className="rounded-full img-fluid" src={imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${imagen_pequena}`} alt="Avatar image" />
-                                                                </a>
+                                                                </Link>
                                                                 <div className="ml-2">
-                                                                    <h4><a href="teacher-detail.html" className="text-black">{nombres}</a></h4>
+                                                                    <h4><Link to={`/usuario/editar`} className="text-black">{nombres}</Link></h4>
                                                                     <span className="d-block fs-14 lh-20">{correo}</span>
                                                                 </div>
                                                             </li>

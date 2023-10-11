@@ -699,7 +699,7 @@ function FormularioDetallesDeCurso(){
                                     <span className="student-total pl-2">{datos.estudiantes_cantidad} estudiantes</span>
                                 </div> : <></> }
                             </div> : <Skeleton width={'75%'} height={30} style={{marginTop: '27px'}}/> }
-                            {datos && datos.id_instructor && datos.id_instructor!=0 ? <p className="pt-2 pb-1">Creado por <a href="teacher-detail.html" className="text-color hover-underline">{datos.instructor}</a></p> : <Skeleton width={'30%'} />}
+                            {datos && datos.id_instructor && datos.id_instructor!=0 ? <p className="pt-2 pb-1">Creado por <Link to={`/usuario/${datos.id_instructor}`} className="text-color hover-underline">{datos.instructor}</Link></p> : <Skeleton width={'30%'} />}
                             {datos && datos.nombre ? <div className="d-flex flex-wrap align-items-center">
                                 {datos.ultima_actualizacion!='' && <p className="pr-3 d-flex align-items-center">
                                     <svg className="svg-icon-color-gray mr-1" width="16px" viewBox="0 0 24 24"><path d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12zm-10 5h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
@@ -851,19 +851,19 @@ function FormularioDetallesDeCurso(){
                                     <div className="instructor-wrap">
                                         <div className="media media-card">
                                             <div className="instructor-img">
-                                                <a href="teacher-detail.html" className="media-img d-block">
+                                                <Link to={`/usuario/${datos.id_instructor}`} className="media-img d-block">
                                                     <img className="lazy" src={datos.instructor_imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${datos.instructor_imagen_pequena}`} data-src={`${urlBase}/images/avatar_docente.jpg`} alt="Avatar image" />
-                                                </a>
+                                                </Link>
                                                 <ul className="generic-list-item pt-3">
                                                     <li><i className="la la-star mr-2 text-color-3"></i> {datos.instructor_rating} Calificación del instructor</li>
                                                     <li><i className="la la-user mr-2 text-color-3"></i> {datos.docente_estudiantes_cantidad} Estudiantes</li>
                                                     <li><i className="la la-comment-o mr-2 text-color-3"></i> {datos.docente_reviews} Reseñas</li>
                                                     <li><i className="la la-play-circle-o mr-2 text-color-3"></i> {datos.docente_cursos_cantidad} Cursos</li>
-                                                    <li><a href="teacher-detail.html">Ver todos los cursos</a></li>
+                                                    <li><Link to={`/usuario/${datos.id_instructor}`}>Ver todos los cursos</Link></li>
                                                 </ul>
                                             </div>
                                             <div className="media-body">
-                                                <h5><a href="teacher-detail.html">{datos.instructor}</a></h5>
+                                                <h5><Link to={`/usuario/${datos.id_instructor}`}>{datos.instructor}</Link></h5>
                                                 <span className="d-block lh-18 pt-2 pb-3">Se unió {datos.instructor_created_at}</span>
                                                 {Object.keys(docenteCursos).map((key) => (
                                                     <p key={`curso_docente${docenteCursos[key].id}`} className="text-black lh-18 pb-3">{docenteCursos[key].nombre} - {docenteCursos[key].estudiantes_cantidad}+ estudiantes</p>

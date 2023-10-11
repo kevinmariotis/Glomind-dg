@@ -663,11 +663,11 @@ function FormularioPlay() {
                                                         </div>
                                                         <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
                                                             <div className="media media-card align-items-center">
-                                                                <a href="teacher-detail.html" className="media-img d-block rounded-full avatar-md">                                                                    
+                                                                <Link to={`/usuario/${dataCurso.id_instructor}`} className="media-img d-block rounded-full avatar-md">                                                                    
                                                                     <img className="rounded-full" src={dataCurso.instructor_imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataCurso.instructor_imagen_pequena}`} data-src={`${urlBase}/images/avatar_docente.jpg`} alt="Foto del instructor" />
-                                                                </a>
+                                                                </Link>
                                                                 <div className="media-body">
-                                                                    <h5><a href="teacher-detail.html">{dataCurso.instructor}</a></h5>
+                                                                    <h5><Link to={`/usuario/${dataCurso.id_instructor}`}>{dataCurso.instructor}</Link></h5>
                                                                     <span className="d-block lh-18 pt-2">Instructor</span>
                                                                 </div>
                                                             </div>

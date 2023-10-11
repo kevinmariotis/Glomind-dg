@@ -127,7 +127,7 @@ function FormularioDashboardCursos() {
                             <div className="card-body">
                                 <h6 className="ribbon ribbon-blue-bg fs-14 mb-3">{nivelHabilidad[cursos[key].nivel]}</h6>
                                 <h5 className="card-title">{cursos[key].nombre}</h5>
-                                {cursos[key].id_instructor!=0 && <p className="card-text"><a href="teacher-detail.html">{cursos[key].instructor}</a></p>}
+                                {cursos[key].id_instructor!=0 && <p className="card-text"><Link to={`/usuario/${cursos[key].id_instructor}`}>{cursos[key].instructor}</Link></p>}
                                 <div className="rating-wrap d-flex align-items-center py-2">
                                     <div className="review-stars">
                                         <span className="rating-number">{cursos[key].reviews_puntuacion}</span>
