@@ -160,7 +160,7 @@ function TarjetaCursoHorizontal(
                     <div className="card-body">
                         <h6 className="ribbon ribbon-blue-bg fs-14 mb-3">{niveles[nivel]}</h6>
                         <h5 className="card-title"><Link to={`${urlBase}/curso/${url_amigable}`}>{nombre}</Link></h5>
-                        {instructor!='' && <p className="card-text"><a href="teacher-detail.html">{instructor}</a></p>}
+                        {instructor!='' && <p className="card-text"><Link to={`${urlBase}/usuario/${id_instructor}`}>{instructor}</Link></p>}
                         <div className="rating-wrap d-flex align-items-center py-2">
                             <div className="review-stars">
                                 <span className="rating-number">{reviews_puntuacion}</span>
