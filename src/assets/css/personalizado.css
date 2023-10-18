@@ -49,8 +49,8 @@
 
   /*Reescritura Hacer que el busador superior ocupe mas espacio al retirar los menues de al lado*/
   .menu-wrapper form {
-    width: 950px;   
-}
+     min-width: 500px;
+  }
 
 /*css sugerido en el sito de reac-player para que se ajuste a el wrapper que contiene el player*/
 .react-player {

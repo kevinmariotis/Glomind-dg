@@ -14,7 +14,7 @@ function BreadCrumbArea({nombreseccion='Sección', breadCrumbData=[], imagen='im
                     <h2 className="section__title text-white">{nombreseccion}</h2>
                 </div>
                 <ul className="generic-list-item generic-list-item-white generic-list-item-arrow d-flex flex-wrap align-items-center">
-                    <li key="breadcrumb0" ><Link to="/">Inicio</Link></li>
+                    {breadCrumbData.length>0 ? <li key="breadcrumb0" ><Link to="/">Inicio</Link></li> : ''}
                     {Object.keys(breadCrumbData).slice(0, 99).map((key) => (   
                         <li key={`breadcrumb${key}`}><Link to={breadCrumbData[key].link}>{breadCrumbData[key].nombre}</Link></li>                                                             
                     ))}                    

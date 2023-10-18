@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     const [cargarContadorCarrito, setCargarContadorCarrito] = useState(false);   //setCargarContadorCarrito debe ser usado por cualquier parte del programa para dar la orden de que se recarge el contador de items en el carrito
     const [cargarFavoritos, setCargarFavoritos] = useState(false);               //setCargarFavoritos debe ser usado por cualquier parte del programa para dar la orden de que se recarge la lista de favoritos del usuario.
     const [cargarMisCursos, setCargarMisCursos] = useState(false);               //setCargarMisCursos debe ser usado por cualquier parte del programa para dar la orden de que se recarge la lista de los cursos comprados por el usuario.
+    const [cargarTags, setCargarTags] = useState(false);                         //Similar a los anteriores, carga los tags que van en el menu desde el servidor.
     const [nombres, setNombres] = useState('');
     const [correo, setCorreo] = useState('');
     const [imagen_pequena, setImagenPequena] = useState('');
@@ -111,7 +112,7 @@ export const AuthProvider = ({ children }) => {
     }, []);           
        
     return (
-        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, correo, imagen_pequena, setJwt, logout, cargarContadorCarrito, cargarFavoritos, cargarMisCursos, setCargarContadorCarrito, setCargarFavoritos, setCargarMisCursos, temaActual, setTemaActual, esMovil, setImagenPequena}}>
+        <>{cargado==1 ? <AuthContext.Provider value={{jwt, authenticated, permissions, nombres, correo, imagen_pequena, setJwt, logout, cargarContadorCarrito, cargarFavoritos, cargarMisCursos, setCargarContadorCarrito, setCargarFavoritos, setCargarMisCursos, temaActual, setTemaActual, esMovil, setImagenPequena, cargarTags, setCargarTags}}>
             {children}
         </AuthContext.Provider> : <LoadingAnimation />}</>
     );

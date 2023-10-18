@@ -9,13 +9,13 @@ import Buscador from './Buscador';
 function HeaderMenuContent() {
     const [datos, setDatos] = useState({"datos":{},"fechahora":0});
     const [contadorCarrito, setContadorCarrito] = useState({"contador":0, "productos":{},"fechahora":0});
+    const [tags, setTags] = useState({"datos":{}, "fechahora":0});
 
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
 
     const urlBase = import.meta.env.VITE_URL_BASE;    
-    const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
-    const host = window.location.host;
-    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, authenticated} = useContext(AuthContext);    
+    const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
+    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, cargarTags, setCargarTags, authenticated} = useContext(AuthContext);    
 
     const handleFuncionAceptarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
@@ -50,6 +50,20 @@ function HeaderMenuContent() {
         }else{            
             setCargarContadorCarrito(true);
         }
+
+
+        //miramos si no tiene los datos de los tags
+        const dataTags = sessionStorage.getItem('datatags');    
+        if (dataTags) {   
+            console.log('Los tags ta existían');
+            setTags(JSON.parse(dataTags));
+            if(Math.floor(new Date().getTime()/1000)-parseInt(JSON.parse(dataTags).fechahora)>=3600){                
+                setCargarTags(true);
+            }
+        }else{            
+            setCargarTags(true);
+        }
+
         clicBuscarMovil();
     }, []);
     
@@ -59,6 +73,14 @@ function HeaderMenuContent() {
             obtenerDatosCarrito();            
         }
     }, [cargarContadorCarrito, authenticated]); 
+
+
+    //use efect para cargar los datos contadores del carrito
+    useEffect(() => {        
+        if(cargarTags){                                    
+            obtenerTags();            
+        }
+    }, [cargarTags]); 
 
     const obtenerDatosDelServidor = async () => {        
         try {            
@@ -76,6 +98,32 @@ function HeaderMenuContent() {
                 const categoriasistema = await response.json();                    
                 sessionStorage.setItem('categoriasistema', JSON.stringify({"datos":categoriasistema, "fechahora":Math.floor(new Date().getTime() / 1000)}));
                 setDatos({"datos":categoriasistema, "fechahora":Math.floor(new Date().getTime() / 1000)});                                                  
+            } else {    
+                const data = await response.json();
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                           
+            }
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+    const obtenerTags = async () => {        
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',             
+                },
+            };
+                
+            const response = await fetch(`${urlBaseApi}/api/cursotagagrupacion/getBuscador/1`, opciones);
+
+            if (response.ok) {                
+                console.log('Tags recuperados del servidor:');
+                const tagssistema = await response.json();                    
+                sessionStorage.setItem('datatags', JSON.stringify({"datos":tagssistema, "fechahora":Math.floor(new Date().getTime() / 1000)}));
+                setTags({"datos":tagssistema, "fechahora":Math.floor(new Date().getTime() / 1000)});                                                  
             } else {    
                 const data = await response.json();
                 mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                           
@@ -156,7 +204,7 @@ function HeaderMenuContent() {
                                                 <Link to="/">Categorías <i className="la la-angle-down fs-12"></i></Link>
                                                 <ul className="cat-dropdown-menu">
                                                     {Object.keys(datos.datos).map((key) => (
-                                                        <li key={datos.datos[key].id}>
+                                                        <li key={`menusup-categoria-${datos.datos[key].id}`}>
                                                             <Link to={`${urlBase}/categoria/${datos.datos[key].url_amigable}`}>{datos.datos[key].nombre} {datos.datos[key].categorias_hijas.length > 0 && (<i className="la la-angle-right"></i>)}</Link>
                                                             { }{
                                                                 datos.datos[key].categorias_hijas.length > 0 && (
@@ -174,7 +222,24 @@ function HeaderMenuContent() {
                                         </ul>
                                     </div>
                                     <Buscador />
-
+                                    {Object.keys(tags.datos).length>0 ? 
+                                        <nav className="main-menu">
+                                            <ul>
+                                                {Object.keys(tags.datos).map((key) => (
+                                                    <li key={`menu-tag-agrupacion-${tags.datos[key].id}`}>
+                                                        <a href="#">{tags.datos[key].nombre} <i className="la la-angle-down fs-12"></i></a>                                                        
+                                                        {tags.datos[key].tags.length > 0 && (
+                                                            <ul className="dropdown-menu-item">                                                                
+                                                                {tags.datos[key].tags.map((sub_tag) => {       
+                                                                    return <li key={`menu-subtag-agrupacion-${sub_tag.id}`} ><Link to={`${urlBase}/tag/${sub_tag.url_amigable}`} href="index.html">{sub_tag.nombre}</Link></li>
+                                                                })}
+                                                            </ul>
+                                                        )}                                                        
+                                                    </li>
+                                                ))}                                                 
+                                            </ul>
+                                        </nav> : ''
+                                    }   
                                     <div className="shop-cart mr-4">
                                         <ul>
                                             <li>

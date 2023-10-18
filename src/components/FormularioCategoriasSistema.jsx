@@ -23,6 +23,7 @@ export default function FormularioCategoriasSistema() {
     const [verPopUpCrearCategoria, setVerPopUpCrearCategoria] = useState(false);
     const [verPopUpEditarCategoria, setVerPopUpEditarCategoria] = useState(false);    
     const [verPopUpEditarImagenCategoria, setVerPopUpEditarImagenCategoria] = useState(false);    
+    const [verPopUpEditarImagenTag, setVerPopUpEditarImagenTag] = useState(false);    
     const [verPopUpEditarTagAgrupacion, setVerPopUpEditarTagAgrupacion] = useState(false);    
     const [verPopUpEditarTag, setVerPopUpEditarTag] = useState(false);        
     const [verPopUpCrearTagAgrupacion, setVerPopUpCrearTagAgrupacion] = useState(false);
@@ -36,6 +37,7 @@ export default function FormularioCategoriasSistema() {
     const [formEstado, setFormEstado] = useState(1);
     const [formNombreCategoriaPadre, setFormNombreCategoriaPadre] = useState('');
     const [imagenPequenaCategoriaSistema, setImagenPequenaCategoriaSistema] = useState('');
+    const [imagenPequenaTag, setImagenPequenaTag] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
     const [treeData, setTreeData] = useState([]);
     
@@ -180,6 +182,11 @@ export default function FormularioCategoriasSistema() {
                 setFormNombre(nombre);
                 setFormIdCategoriaEditando(id);   
                 buscarCursos(id, 1);
+            break;
+            case 'tag-imagen':
+                setVerPopUpEditarImagenTag(true);
+                setImagenPequenaTag(nombre);
+                setFormIdCategoriaEditando(id);                   
             break;
         }
     }    
@@ -345,6 +352,45 @@ export default function FormularioCategoriasSistema() {
                 if (response.ok){ 
                     setVerPopUpEditarImagenCategoria(false);
                     obtenerCategoriasSistema();
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Imagen actualizada.'});
+                    return;
+                } else {
+                    if(datos.codigo=='no-puede-ser-redimensioada-a-1920-450'){
+                        setPopup({mostrar:true, titulo:'Error', contenido:'La imagen no es de 1920 x 450 o no puede ser redimensionada equitativamente a este tamaño.'});
+                    }else{   
+                        mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+                    }                        
+                }
+            }catch(error){
+                // Manejar el caso de error en la solicitud
+                console.error('Error en la solicitud al servidor', error);
+            }
+        }else{
+            setPopup({mostrar:true, titulo:'Mensaje', contenido:'Seleccione una imagen de su dispositivo.'});
+        }
+    }
+
+    const editarImagenTag = async () => {   
+
+        reiniciarErrorCampoGlobal();        
+        if(selectedImage!=null){
+            setMostrarSpinner(true);
+            try{
+                const formData = new FormData();
+                formData.append('imagen', selectedImage);
+                const opciones = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization' : `Bearer ${jwt}`
+                    },
+                    body: formData
+                };
+                const response = await fetch(`${urlBaseApi}/api/cursotag/actualizarImagen/${formIdCategoriaEditando}`, opciones);
+                const datos = await response.json();            
+                setMostrarSpinner(false);
+                if (response.ok){ 
+                    setVerPopUpEditarImagenTag(false);
+                    obtenerTags();
                     setPopup({mostrar:true, titulo:'Listo', contenido:'Imagen actualizada.'});
                     return;
                 } else {
@@ -638,7 +684,7 @@ export default function FormularioCategoriasSistema() {
     const editarTag = async () => {               
         const raw = {
             'nombre': formNombre,
-            'id_tag_agrupacion': formEstado,
+            'id_tag_agrupacion': formEstado.toString(),
         };                            
         const opciones = {
             method: 'PUT',
@@ -929,7 +975,7 @@ export default function FormularioCategoriasSistema() {
                 <div className="modal-content">
                     <div className="modal-header border-bottom-gray">
                         <div className="pr-2">                            
-                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="asignarPerfilTitle">Editar categoría</h5>
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="asignarPerfilTitle">Editar imagen de categoría</h5>
                         </div>                            
                     </div>
                     <div className="modal-body">                        
@@ -950,6 +996,35 @@ export default function FormularioCategoriasSistema() {
                     <div className="modal-footer border-top-gray">                        
                         <button type="button" className="btn theme-btn mb-2" onClick={editarImagenCategoria}> Guardar </button>
                         <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setVerPopUpEditarImagenCategoria(false); }}> Cancelar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className={`modal fade modal-container ${verPopUpEditarImagenTag==true ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="modalEditarImagenTag" tabIndex="-1" role="dialog" aria-labelledby="modalEditarImagenTag" aria-hidden="true">
+            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div className="modal-content">
+                    <div className="modal-header border-bottom-gray">
+                        <div className="pr-2">                            
+                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="asignarPerfilTitle">Editar imagen de tag</h5>
+                        </div>                            
+                    </div>
+                    <div className="modal-body">                        
+                        <div className="form-group">
+                            <label className="label-text">Imágen (Solo 1920x450)</label>                            
+                            <div {...getRootProps()}>
+                                {imagenPequenaTag!=null && 
+                                    <><img className="mr-3" src={`${urlBaseApi}/${imagenPequenaTag}`} style={{width:'100%'}} alt="Imagen del tag"/><br/></>
+                                }                                                                                                        
+                                <input {...getInputProps()} className="multi file-upload-input" />
+                                <span className="file-upload-text"><i className="la la-cloud-upload mr-2 fs-18"></i>Selecciona o arrastra la imagen aquí.</span>
+                            </div>
+                            <ul>{fileList}</ul>                                        
+                            {erroresCampos['imagen'].length > 0 && (<SpamError mensaje={erroresCampos['imagen']} />)}       
+                        </div>
+                    </div>
+                    <div className="modal-footer border-top-gray">                        
+                        <button type="button" className="btn theme-btn mb-2" onClick={editarImagenTag}> Guardar </button>
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => { setVerPopUpEditarImagenTag(false); }}> Cancelar </button>
                     </div>
                 </div>
             </div>
@@ -1215,6 +1290,7 @@ export default function FormularioCategoriasSistema() {
                                                         </div>}
                                                         {permissions[52] ? <div onClick={()=>{ handleClickEditar('tag', tags[key].id, tags[key].nombre, tags[key].id_tag_agrupacion); obtenerTagsAgrupacion(); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar tag"><i className="la la-gear"></i></div> : ''}
                                                         {(permissions[56] || permissions[57] || permissions[58]) ? <div onClick={()=>{ handleClickEditar('tag-asignacion', tags[key].id, tags[key].nombre, 0); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar cursos tag"><i className="la la-list-ol"></i></div> : ''}
+                                                        {permissions[77] ? <div onClick={()=>{ handleClickEditar('tag-imagen', tags[key].id, tags[key].imagen_pequena, tags[key].id_tag_agrupacion); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar imagen del tag"><i className="la la-image"></i></div> : ''}
                                                     </th>
                                                 </tr>
                                             ))}

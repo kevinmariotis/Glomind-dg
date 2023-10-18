@@ -116,6 +116,36 @@ export default function FormularioDashboardCertificado() {
         }
     };
 
+    const handleGenerarCertificado = async (id_certificado) => {                
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {                           
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/certificado/generarPrueba/${id_certificado}`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.blob();            
+            if (response.ok){                                                                                                                       
+                const blob = new Blob([datos], { type: 'application/pdf' });                    
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `certificado_${id_certificado}.pdf`;                    
+                document.body.appendChild(link);
+                link.click();
+                setPopup({mostrar:true, titulo:'Mensaje', contenido:'El certificado está siendo descargado, por favor revise su carpeta de descargas.'});
+            } else {                
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
+            }            
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }        
+    };
+
     const estados = ['Desactivado', 'Activado'];
     const estados_clases = ['danger', 'success'];
 
@@ -175,7 +205,8 @@ export default function FormularioDashboardCertificado() {
                                         </ul>
                                     </td>
                                     <td>
-                                        {permissions[33] ? <div style={{float:'left'}} onClick={()=>{ navigate(`/certificado/editar/${certificados[key].id}`); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div> : ''}
+                                        {permissions[31] ? <div onClick={() => { handleGenerarCertificado(certificados[key].id); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="View"><i className="la la-eye"></i></div> : ''}
+                                        {permissions[33] ? <div onClick={()=>{ navigate(`/certificado/editar/${certificados[key].id}`); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div> : ''}
                                         {permissions[33] ? <div onClick={()=>{ handleEliminarCertificado(certificados[key].id); }}  className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">
                                             <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
                                         </div>: ''}
