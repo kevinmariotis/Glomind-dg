@@ -451,11 +451,11 @@ function FormularioPlay() {
                             <div className="lecture-video-detail">
                                 <div className="lecture-tab-body bg-gray p-4">
                                     <ul className="nav nav-tabs generic-tab" id="myTab" role="tablist">
-                                        <li className="nav-item">
+                                        <li className="nav-item" style={{display:'none'}}>
                                             <a className="nav-link" id="search-tab" data-toggle="tab" href="#search" role="tab" aria-controls="search" aria-selected="false">
                                                 <i className="la la-search"></i>
                                             </a>
-                                        </li>
+                                        </li>                                        
                                         <li className="nav-item">
                                             <a onClick={(event)=>{ handleCambiarPestana(event, 3); }} className={`nav-link ${pestanaActivada==3 ? 'active': ''}`} id="question-and-ans-tab" data-toggle="tab" href="#question-and-ans" role="tab" aria-controls="question-and-ans" aria-selected="false">
                                                 Preguntas y respuestas
@@ -478,7 +478,7 @@ function FormularioPlay() {
                                         </li>     
                                     </ul>
                                 </div>
-                                <div className="lecture-video-detail-body">
+                                <div className="lecture-video-detail-body" style={pestanaActivada==1 ? {padding: '0'} : pestanaActivada==3 ? {padding: '15px'} : {}}>
                                     <div className="tab-content" id="myTabContent">
                                         <div className="tab-pane fade" id="search" role="tabpanel" aria-labelledby="search-tab">
                                             <div className="search-course-wrap pt-40px">
@@ -509,7 +509,7 @@ function FormularioPlay() {
                                                                     <span className="fs-15"> Sección {parseInt(index)+1}: {categoria.nombre} </span>
                                                                     <span className="course-duration">
                                                                         <span>&nbsp;{categoria.cantidad_consumidos}/{categoria.cantidad_contenidos}</span>
-                                                                        <span>21min</span>
+                                                                        <span style={{display:'none'}}>21min</span>
                                                                     </span>
                                                                 </button>
                                                             </div>
@@ -721,7 +721,7 @@ function FormularioPlay() {
                                                         <span className="fs-15"> Sección {parseInt(index)+1}: {categoria.nombre} </span>
                                                         <span className="course-duration">
                                                             <span>&nbsp;{categoria.cantidad_consumidos}/{categoria.cantidad_contenidos}</span>
-                                                            <span>21min</span>
+                                                            <span style={{display:'none'}}>21min</span>
                                                         </span>
                                                     </button>
                                                 </div>

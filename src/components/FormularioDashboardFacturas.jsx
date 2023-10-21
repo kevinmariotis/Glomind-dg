@@ -6,12 +6,13 @@ import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
 import Paginador from './Paginador';
+import BotonDashboardNavegacionMovil from './BotonDashboardNavegacionMovil';
 import DashboardFooter from './DashboardFooter';
 
 function FormularioDashboardFacturas() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;           
-    const {jwt, nombres, setImagenPequena} = useContext(AuthContext);
+    const {jwt, esMovil, nombres, setImagenPequena} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});        
     const [paginaNavegacion, setPaginaNavegacion] = useState(1);
     
@@ -224,9 +225,7 @@ function FormularioDashboardFacturas() {
             textoCerrar="Aceptar"
         />         
         <div className="dashboard-content-wrap">
-            <div className="dashboard-menu-toggler btn theme-btn theme-btn-sm lh-28 theme-btn-transparent mb-4 ml-3">
-                <i className="la la-bars mr-1"></i> Dashboard Nav
-            </div>
+            {esMovil && <BotonDashboardNavegacionMovil />}
             <div className="container-fluid">                
                 
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
@@ -347,61 +346,61 @@ function FormularioDashboardFacturas() {
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Nombres</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{detallesFacturacion.nombres}</span>
+                                            <span className="rating-total pl-1">{detallesFacturacion.nombres}</span>
                                         </div>                                            
                                     </div>
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Apellidos</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{detallesFacturacion.apellidos}</span>
+                                            <span className="rating-total pl-1">{detallesFacturacion.apellidos}</span>
                                         </div>
                                     </div>
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Correo electrónico</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{detallesFacturacion.email}</span>
+                                            <span className="rating-total pl-1">{detallesFacturacion.email}</span>
                                         </div>
                                     </div>
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Cédula / Identificación</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{detallesFacturacion.identificacion}</span>
+                                            <span className="rating-total pl-1">{detallesFacturacion.identificacion}</span>
                                         </div>
                                     </div>                                                                          
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Teléfono</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{detallesFacturacion.telefono}</span>
+                                            <span className="rating-total pl-1">{detallesFacturacion.telefono}</span>
                                         </div>
                                     </div>                                                                          
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">País</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{detallesFacturacion.pais}</span>
+                                            <span className="rating-total pl-1">{detallesFacturacion.pais}</span>
                                         </div>
                                     </div>
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Departamento</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{detallesFacturacion.departamento}</span>
+                                            <span className="rating-total pl-1">{detallesFacturacion.departamento}</span>
                                         </div>
                                     </div>                    
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Ciudad</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{detallesFacturacion.ciudad}</span>
+                                            <span className="rating-total pl-1">{detallesFacturacion.ciudad}</span>
                                         </div>
                                     </div>
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Dirección</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{detallesFacturacion.direccion}</span>
+                                            <span className="rating-total pl-1">{detallesFacturacion.direccion}</span>
                                         </div>
                                     </div>
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Fecha checkout</label>
                                         <div className="form-group">
-                                            <span class="rating-total pl-1">{totalesFactura.fecha_checkout}</span>
+                                            <span className="rating-total pl-1">{totalesFactura.fecha_checkout}</span>
                                         </div>
                                     </div>
                                 </form>                                                                            

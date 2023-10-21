@@ -16,7 +16,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 function FormularioDetallesDeCurso(){
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API; 
     const urlBase = import.meta.env.VITE_URL_BASE;     
-    const {jwt, authenticated, setCargarContadorCarrito} = useContext(AuthContext);
+    const {jwt, authenticated, setCargarContadorCarrito, esMovil} = useContext(AuthContext);
     const { url_amigable } = useParams();
     const navigate = useNavigate();
 
@@ -86,12 +86,16 @@ function FormularioDetallesDeCurso(){
             }, 1500);
         }else{
             return () => { clearInterval(intervalRef.current); }
-        } 
+        }         
     }, []);
 
     useEffect(() => {   
         window.scrollTo(0, 0);
-        obtenerDatosDelServidor();        
+        obtenerDatosDelServidor(); 
+        if(esMovil){                        
+            let element = document.querySelector('.search-bar-close');
+            element.click();
+        }       
     }, [url_amigable]);
 
     useEffect(() => {   
@@ -488,7 +492,6 @@ function FormularioDetallesDeCurso(){
             if (response.ok){                               
                 //se mezcla el nuevo json con el existente evitando que se reemplazen los indices existentes
                 const mergedJson = { ...reviews };
-                console.log("la data es ", data);
                 Object.keys(data.reviews).forEach((key) => {
                     const newKey = parseInt(key, 10);
                     let currentIndex = newKey;

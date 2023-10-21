@@ -10,9 +10,10 @@ import Dropdown from './Dropdown';
 
 
 function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archivado=-1, tiene_review=-1, porcentaje_progreso=-1, callBackFavoritoCambiado=()=>{}, }) {        
-    const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
+    const urlBaseApi = import.meta.env.VITE_URL_BASE_API;  
+    const urlBase = import.meta.env.VITE_URL_BASE;          
     const navigate = useNavigate();            
-    const {jwt, authenticated, temaActual, setTemaActual} = useContext(AuthContext);
+    const {jwt, esMovil, authenticated, temaActual, setTemaActual} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
     const [mostrarSpinner, setMostrarSpinner] = useState(false);  
 
@@ -236,6 +237,18 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                 <div className="header-menu-content bg-dark">
                     <div className="container-fluid">
                         <div className="main-menu-content d-flex align-items-center">
+                            
+                            {esMovil ? <ul className="nav nav-tabs generic-tab" id="myTab" role="tablist">
+                                <li className="nav-item" style={{fontSize:'26px'}}>
+                                    <Link to={`/cursos/matriculados`} className="nav-link" style={{padding:'0.5rem 0rem'}} id="volver-tab" data-toggle="tab" href="#volver" role="tab" aria-controls="volver" aria-selected="false">
+                                        <i className="la la-arrow-left"></i>
+                                    </Link>
+                                </li>    
+                            </ul>: ''}
+                            <div className="logo-box">
+                                <Link to="/" className="logo"><img src={`${urlBase}/images/myedulogo-transparente_2.png`} alt="logo" /></Link>
+                            </div>   
+
                             <div className="logo-box logo--box">
                                 <div className="theme-picker d-flex align-items-center">
                                     <button onClick={handleThemeToggle} className="theme-picker-btn dark-mode-btn" title="Dark mode">
@@ -257,11 +270,18 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                                         </svg>
                                     </button>
                                 </div>
-                            </div>
-                            <div className="course-dashboard-header-title pl-4">
-                                <a href="course-details.html" className="text-white fs-15">{nombre_curso}</a>
+                            </div>                            
+                            <div className="course-dashboard-header-title pl-4">                                     
+                                <div className="text-white fs-15">{nombre_curso}</div>
                             </div>
                             <div className="menu-wrapper ml-auto">
+
+                                <ul className="nav nav-tabs generic-tab border-right border-right-gray pl-3 ml-3" style={{marginRight:'10px'}} id="myTab" role="tablist">
+                                    <li className="nav-item" style={{fontSize:'22px', marginBottom:'0'}}>
+                                        <Link className="nav-link" style={{padding:'0'}} to="/cursos/matriculados"><i className="la la-user mr-1"></i></Link>
+                                    </li>
+                                </ul>
+
                                 <div className="theme-picker d-flex align-items-center mr-3">
                                     <button onClick={handleThemeToggle} className="theme-picker-btn dark-mode-btn" title="Dark mode">
                                         <svg className="svg-icon-color-white" viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -281,8 +301,8 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                                             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                                         </svg>
                                     </button>
-                                </div>
-                                <div className="nav-right-button d-flex align-items-center">
+                                </div>                                
+                                <div className="nav-right-button d-flex align-items-center">                                    
                                     {porcentaje_progreso>=80 && tiene_review==0 ? <a href="#" onClick={()=>{ setMostrarModalRating(!mostrarModalRating); }} className="btn theme-btn theme-btn-sm theme-btn-transparent lh-26 text-white mr-2" data-toggle="modal" data-target="#ratingModal"><i className="la la-star mr-1"></i> deja una reseña</a> : ''}
                                     <a href="#" className="btn theme-btn theme-btn-sm theme-btn-transparent lh-26 text-white mr-2" data-toggle="modal" data-target="#shareModal"><i className="la la-share mr-1"></i> comparte</a>
                                     <div className="generic-action-wrap generic--action-wrap">

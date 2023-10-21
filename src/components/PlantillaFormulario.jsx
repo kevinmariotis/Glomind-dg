@@ -7,6 +7,7 @@ import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
 import Paginador from './Paginador';
+import BotonDashboardNavegacionMovil from './BotonDashboardNavegacionMovil';
 import DashboardFooter from './DashboardFooter';
 
 /*Import para el arbol de categorias*/
@@ -14,10 +15,10 @@ import { Tree, getBackendOptions, MultiBackend, } from "@minoru/react-dnd-treevi
 import { DndProvider } from "react-dnd";
 /*Fin de los imports para el arbol de categorias*/
 
-export default function FormularioCategoriasSistema() {
+export default function PlantillaFormulario() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
-    const {jwt, permissions} = useContext(AuthContext);
+    const {jwt, permissions, esMovil} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});    
     const [verPopUpAsignarPerfil, setVerPopUpAsignarPerfil] = useState(false);
     const [verPopUpCrearPerfil, setVerPopUpCrearPerfil] = useState(false);
@@ -159,9 +160,7 @@ export default function FormularioCategoriasSistema() {
             </div>
         </div>        
         <div className="dashboard-content-wrap">
-            <div className="dashboard-menu-toggler btn theme-btn theme-btn-sm lh-28 theme-btn-transparent mb-4 ml-3">
-                <i className="la la-bars mr-1"></i> Dashboard Nav
-            </div>
+            {esMovil && <BotonDashboardNavegacionMovil />}
             <div className="container-fluid">                
                 <div className="dashboard-heading mb-5">
                     <h3 className="fs-22 font-weight-semi-bold">Categorías y tags</h3>

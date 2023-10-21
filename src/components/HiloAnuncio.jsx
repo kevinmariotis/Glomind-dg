@@ -283,7 +283,7 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
             {seccionActivada==1 ? <div className="question-overview-result-wrap-2">
                 
                 {Object.keys(dataComentariosHilo).slice(0, 1).map((key) => (
-                    <div className="lecture-overview-wrap lecture-announcement-wrap">
+                    <div key={`comentario-hilo-${id_hilo}-${dataComentariosHilo[key].id}`}className="lecture-overview-wrap lecture-announcement-wrap">
 
                         {es_creador==1 ? <div className="lecture-overview-item">
                             <div className="question-overview-result-header d-flex align-items-center justify-content-between">                            

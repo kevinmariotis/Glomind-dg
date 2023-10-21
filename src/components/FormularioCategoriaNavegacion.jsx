@@ -42,15 +42,12 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
     const chekearCambiosBusquedaNombre = useCallback(() => {
         if(latest_ultimo_nombre_escrito.current!=latest_nombre_seleccionado.current){                    
             setNombreSeleccionado(latest_ultimo_nombre_escrito.current);                          
-            latest_nombre_seleccionado.current = latest_ultimo_nombre_escrito.current;
-            //console.log("Buscando por nombre..", latest_ultimo_nombre_escrito.current, latest_nombre_seleccionado.current);
-        }                                            
-        //console.log("Esperando nuevos cambios une:"+latest_ultimo_nombre_escrito.current+" ns:"+latest_nombre_seleccionado.current);
+            latest_nombre_seleccionado.current = latest_ultimo_nombre_escrito.current;            
+        }                                                    
     }, []);
 
     useEffect(() => {        
-        if (!intervalRef.current) {
-            console.log("creando interval");            
+        if (!intervalRef.current) {            
             intervalRef.current = setInterval(() => {
                 chekearCambiosBusquedaNombre();                
             }, 1500);
@@ -170,8 +167,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
 
             const response = await fetch(`${urlBaseApi}/api/categoriasistema/getCursosUrlAmigable/${url_amigable}/1/${pagina}/${orderBy}/${obtener_detalles}/${add}/${nombre_seleccionado}`, opciones);
 
-            if (response.ok) {                
-                //console.log('Categorías recuperadas del servidor:');
+            if (response.ok) {                                
                 const datos = await response.json();                    
                 //sessionStorage.setItem('categoriasistema', JSON.stringify({"datos":categoriasistema, "fechahora":Math.floor(new Date().getTime() / 1000)}));
                 setCursos(datos.cursos);
@@ -183,8 +179,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
                 datosArbol.forEach((elemento) => {  nuevaDataBreadCrumb.push({'link':`${urlBase}/categoria/${elemento.url_amigable}`, 'nombre':elemento.nombre}); });            
                 actualizarBreadCrumb(datosArbol[datosArbol.length-1].nombre);
                 actualizarBreadCrumbData(nuevaDataBreadCrumb);
-                actualizarBreadCrumbImagen(datosArbol[datosArbol.length-1].imagen_grande!=null ? datosArbol[datosArbol.length-1].imagen_grande : 'images/breadcrumb-bg.jpg');
-                console.log("nuevos datos breadCrumb", nuevaDataBreadCrumb);
+                actualizarBreadCrumbImagen(datosArbol[datosArbol.length-1].imagen_grande!=null ? datosArbol[datosArbol.length-1].imagen_grande : 'images/breadcrumb-bg.jpg');                
                 //fin de actualizar el breadCrumb
 
                 if(obtener_detalles=='1'){
@@ -194,8 +189,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
                     setNiveles(datos.niveles);
                     setCostos(datos.costos);
                     setInstructores(datos.instructores);                    
-                }
-                console.log("cantidad total cursos ",datos.cantidad_total_cursos);
+                }                
             } else {  
                 const respuesta = await response.json(); 
                 if(respuesta.codigo=='no-disponible'){
@@ -250,7 +244,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
                 <div className="row">
                     <div className="col-lg-4">
                         <div className="sidebar mb-5">
-                            <div className="card card-item">
+                            {Object.keys(subcategorias).length>0 ? <div className="card card-item">
                                 <div className="card-body">
                                     <h3 className="card-title fs-18 pb-2">Sub Categorías</h3>
                                     <div className="divider"><span></span></div>
@@ -260,7 +254,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
                                         </div>
                                     ))}                                                                                                                     
                                 </div>
-                            </div>        
+                            </div>: ''}
                             <div className="card card-item">
                                 <div className="card-body">
                                     <h3 className="card-title fs-18 pb-2">Búsqueda</h3>

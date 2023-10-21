@@ -6,12 +6,13 @@ import Spinner from './Spinner';
 import TarjetaCursoAdmin from './TarjetaCursoAdmin';
 import Paginador from './Paginador';
 import Popup from './Popup';
+import BotonDashboardNavegacionMovil from './BotonDashboardNavegacionMovil';
 import DashboardFooter from './DashboardFooter';
 
 function FormularioDashboardCursos() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
-    const {jwt, nombres, permissions} = useContext(AuthContext);
+    const {jwt, esMovil, nombres, permissions} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
     const [datosUsuario, setDatosUsuario] = useState({docente_rating:99.9});
     const [cursos, setCursos] = useState([]);    
@@ -88,9 +89,7 @@ function FormularioDashboardCursos() {
             textoCerrar="Aceptar"
         />
         <div className="dashboard-content-wrap">
-            <div className="dashboard-menu-toggler btn theme-btn theme-btn-sm lh-28 theme-btn-transparent mb-4 ml-3">
-                <i className="la la-bars mr-1"></i> Dashboard Nav
-            </div>
+            {esMovil && <BotonDashboardNavegacionMovil />}
             <div className="container-fluid">                                                
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
                     <div className="media media-card align-items-center">                        

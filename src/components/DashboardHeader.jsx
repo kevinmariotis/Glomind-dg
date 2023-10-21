@@ -2,15 +2,18 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
+import { clicBuscarMovil, clickMenuCategoriaSistemaMovil, setupSubMenu, closeCategoryMenuMovil, cliclMenuTagsMovil, closeTagsMenuMovil } from './comun';
 import Popup from './Popup';
 import Buscador from './Buscador';
 
 function DashboardHeader({expandir_ancho=false}) {  
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-    const {jwt, cargarContadorCarrito, setCargarContadorCarrito, cargarFavoritos, setCargarFavoritos, cargarMisCursos, setCargarMisCursos, authenticated, nombres, correo, imagen_pequena, temaActual, setTemaActual} = useContext(AuthContext);
+    const {jwt, esMovil, cargarContadorCarrito, setCargarContadorCarrito, cargarFavoritos, setCargarFavoritos, cargarMisCursos, setCargarMisCursos, authenticated, nombres, correo, imagen_pequena, temaActual, setTemaActual} = useContext(AuthContext);
+    const navigate = useNavigate(); 
 
-    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
+    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
+    const [datos, setDatos] = useState({"datos":{},"fechahora":0});
     const [contadorCarrito, setContadorCarrito] = useState({"contador":0, "productos":{},"fechahora":0});    
     const [misCursos, setMisCursos] = useState({});    
     const [favoritos, setFavoritos] = useState({});
@@ -30,11 +33,23 @@ function DashboardHeader({expandir_ancho=false}) {
         }
     }
 
-    useEffect(() => {                
+    useEffect(() => {
+
+        //miramos si no tiene los datos de categorias del sistema en sessionStorage
+        const categoriasistema = sessionStorage.getItem('categoriasistema');    
+        if (categoriasistema) {               
+            setDatos(JSON.parse(categoriasistema));                          
+            if(Math.floor(new Date().getTime()/1000)-parseInt(JSON.parse(categoriasistema).fechahora)>=3600){                
+                obtenerCategoriasSistema();
+            }
+        } else {
+            // Los datos no están en la caché local, obtenerlos del servidor            
+            obtenerCategoriasSistema();
+        }
+
         //miramos si no tiene los datos del carrito en sessionStorage
         const contadorcarrito = sessionStorage.getItem('contadorcarrito');    
-        if (contadorcarrito) {   
-            console.log('El contador de productos de carrito ya existia');
+        if (contadorcarrito) {               
             setContadorCarrito(JSON.parse(contadorcarrito));
             if(Math.floor(new Date().getTime()/1000)-parseInt(JSON.parse(contadorcarrito).fechahora)>=3600){                
                 setCargarContadorCarrito(true);
@@ -46,7 +61,7 @@ function DashboardHeader({expandir_ancho=false}) {
         //miramos si no tiene los datos de favoritos en sessionStorage
         const contadorfavoritos = sessionStorage.getItem('contadorfavoritos');    
         if (contadorfavoritos) {   
-            console.log('La lista de favoritos ya existia');
+            
             setFavoritos(JSON.parse(contadorfavoritos));
             if(Math.floor(new Date().getTime()/1000)-parseInt(JSON.parse(contadorfavoritos).fechahora)>=3600){                
                 setCargarFavoritos(true);
@@ -57,8 +72,7 @@ function DashboardHeader({expandir_ancho=false}) {
 
         //miramos si no tiene los datos de mis-cursos en sessionStorage
         const contadormiscursos = sessionStorage.getItem('contadormiscursos');    
-        if (contadormiscursos) {   
-            console.log('La lista de mis cursos ya existia');
+        if (contadormiscursos) {               
             setMisCursos(JSON.parse(contadormiscursos));
             if(Math.floor(new Date().getTime()/1000)-parseInt(JSON.parse(contadormiscursos).fechahora)>=3600){                
                 setCargarMisCursos(true);
@@ -67,7 +81,26 @@ function DashboardHeader({expandir_ancho=false}) {
             setCargarMisCursos(true);
         }
         
+        if(esMovil){
+            clicBuscarMovil();
+            clickMenuCategoriaSistemaMovil();         
+            cliclMenuTagsMovil();   
+        }
     }, []);
+
+    useEffect(() => {   
+        setupSubMenu();
+    }, [datos]);
+
+    const handleAbrirMiAprendizaje = () => {        
+        closeCategoryMenuMovil();
+        navigate(`/cursos/matriculados`);        
+    };
+
+    const handleAbrirLinkMenuPrincipal = (url_link) => {        
+        closeTagsMenuMovil();
+        navigate(url_link);        
+    };
 
     //use efect para cargar los datos contadores del carrito
     useEffect(() => {        
@@ -83,6 +116,31 @@ function DashboardHeader({expandir_ancho=false}) {
     }, [cargarContadorCarrito, cargarFavoritos, cargarMisCursos, authenticated]);
 
 
+    const obtenerCategoriasSistema = async () => {        
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',             
+                },
+            };
+                
+            const response = await fetch(`${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/0/1`, opciones);
+
+            if (response.ok) {                                
+                const categoriasistema = await response.json();                    
+                sessionStorage.setItem('categoriasistema', JSON.stringify({"datos":categoriasistema, "fechahora":Math.floor(new Date().getTime() / 1000)}));
+                setDatos({"datos":categoriasistema, "fechahora":Math.floor(new Date().getTime() / 1000)});                                                  
+            } else {    
+                const data = await response.json();
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                           
+            }
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
     const obtenerDatosCarrito = async () => {
         try {            
             const opciones = {
@@ -95,7 +153,7 @@ function DashboardHeader({expandir_ancho=false}) {
             const response = await fetch(`${urlBaseApi}/api/carrito/1`, opciones);
 
             if (response.ok) {                
-                console.log('Contador carrito recuperado del servidor:');
+                
                 const contadorcarrito = await response.json();                    
                 const tamanocarrito = contadorcarrito.productos.length;
                 sessionStorage.setItem('contadorcarrito', JSON.stringify({"contador":tamanocarrito, "productos":contadorcarrito.productos, "total":contadorcarrito.factura.total, "fechahora":Math.floor(new Date().getTime() / 1000)}));                
@@ -123,8 +181,7 @@ function DashboardHeader({expandir_ancho=false}) {
                 headers: headers,
             };                                    
             const response = await fetch(`${urlBaseApi}/api/usuario/cursos/0/1/1/nombre-asc/3`, opciones);            
-            if (response.ok){   
-                console.log('Datos de mis cursos recuperados del servidor:');
+            if (response.ok){                   
                 const datos = await response.json();
                 setMisCursos(datos.cursos);
 
@@ -153,8 +210,7 @@ function DashboardHeader({expandir_ancho=false}) {
                 headers: headers,
             };                                    
             const response = await fetch(`${urlBaseApi}/api/usuario/getfavoritos/0/1/2/nombre-asc/3`, opciones);  //favoritos no comprados           
-            if (response.ok){   
-                console.log('Datos de favoritos recuperados del servidor:');
+            if (response.ok){                   
                 const datos = await response.json();
                 setFavoritos(datos.cursos);
 
@@ -171,7 +227,7 @@ function DashboardHeader({expandir_ancho=false}) {
             console.error('Error en la solicitud al servidor', error);
         }
     };
-
+    
     return (
         <>
         <Popup 
@@ -193,13 +249,13 @@ function DashboardHeader({expandir_ancho=false}) {
                                 <div className="logo-box logo--box">
                                     <Link to="/" className="logo"><img src={`${urlBase}/images/myedulogo-transparente_2.png`} alt="logo" /></Link>
                                     <div className="user-btn-action">
-                                        <div className="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2" data-toggle="tooltip" data-placement="top" title="Search">
+                                        <div className="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2" data-toggle="tooltip" data-placement="top" title="Búsqueda">
                                             <i className="la la-search"></i>
                                         </div>
-                                        <div className="off-canvas-menu-toggle cat-menu-toggle icon-element icon-element-sm shadow-sm mr-2" data-toggle="tooltip" data-placement="top" title="Category menu">
+                                        <div className="off-canvas-menu-toggle cat-menu-toggle icon-element icon-element-sm shadow-sm mr-2" data-toggle="tooltip" data-placement="top" title="Menú de categorías">
                                             <i className="la la-th-large"></i>
                                         </div>
-                                        <div className="off-canvas-menu-toggle main-menu-toggle icon-element icon-element-sm shadow-sm" data-toggle="tooltip" data-placement="top" title="Main menu">
+                                        <div className="off-canvas-menu-toggle main-menu-toggle icon-element icon-element-sm shadow-sm" data-toggle="tooltip" data-placement="top" title="Menú principal">
                                             <i className="la la-bars"></i>
                                         </div>
                                     </div>
@@ -490,39 +546,41 @@ function DashboardHeader({expandir_ancho=false}) {
                 <div className="off-canvas-menu-close main-menu-close icon-element icon-element-sm shadow-sm" data-toggle="tooltip" data-placement="left" title="Close menu">
                     <i className="la la-times"></i>
                 </div>
-                <h4 className="off-canvas-menu-heading pt-90px">Alerts</h4>
-                <ul className="generic-list-item off-canvas-menu-list pt-1 pb-2 border-bottom border-bottom-gray">
-                    <li><a href="dashboard.html">Notifications</a></li>
+                <h4 style={{display:'none'}} className="off-canvas-menu-heading pt-90px">Alertas</h4>
+                <ul style={{display:'none'}} className="generic-list-item off-canvas-menu-list pt-1 pb-2 border-bottom border-bottom-gray">
+                    <li><a href="dashboard.html">Notificaciones</a></li>
                     <li><a href="dashboard-message.html">Messages</a></li>
                     <li><a href="my-courses.html">Wishlist</a></li>
                     <li><a href="shopping-cart.html">My cart</a></li>
                 </ul>
-                <h4 className="off-canvas-menu-heading pt-20px">Account</h4>
+                <h4 className="off-canvas-menu-heading pt-90px">Cuenta</h4>
                 <ul className="generic-list-item off-canvas-menu-list pt-1 pb-2 border-bottom border-bottom-gray">
-                    <li><a href="dashboard-settings.html">Account settings</a></li>
-                    <li><a href="dashboard-purchase-history.html">Purchase history</a></li>
+                    <li style={{display:'none'}}><a href="dashboard-settings.html">Account settings</a></li>
+                    <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/cursos/matriculados'); }}>Cursos Matriculados</a></li>
+                    <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/cursos/favoritos'); }}>Cursos Favoritos</a></li>
+                    <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/factura/historial'); }}>Historial de compras</a></li>                    
                 </ul>
-                <h4 className="off-canvas-menu-heading pt-20px">Profile</h4>
+                <h4 className="off-canvas-menu-heading pt-20px">Perfil</h4>
                 <ul className="generic-list-item off-canvas-menu-list pt-1 pb-2 border-bottom border-bottom-gray">
-                    <li><a href="student-detail.html">Public profile</a></li>
-                    <li><a href="dashboard-settings.html">Edit profile</a></li>
-                    <li><a href="index.html">Log out</a></li>
-                </ul>
-                <h4 className="off-canvas-menu-heading pt-20px">More from Aduca</h4>
-                <ul className="generic-list-item off-canvas-menu-list pt-1">
+                    <li style={{display:'none'}}><a href="student-detail.html">Public profile</a></li>
+                    <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/usuario/editar'); }}>Editar perfil</a></li>
+                    <li><a href="index.html">Cerrar sesión</a></li>
+                </ul>                
+                <h4 style={{display:'none'}} className="off-canvas-menu-heading pt-20px">More from Aduca</h4>
+                <ul style={{display:'none'}} className="generic-list-item off-canvas-menu-list pt-1">
                     <li><a href="for-business.html">Aduca for Business</a></li>
                     <li><a href="#">Get the app</a></li>
                     <li><a href="invite.html">Invite friends</a></li>
                     <li><a href="contact.html">Help</a></li>
                 </ul>
                 <div className="theme-picker d-flex align-items-center justify-content-center mt-4 px-3">
-                    <button className="theme-picker-btn dark-mode-btn btn theme-btn-sm theme-btn-white w-100 font-weight-semi-bold justify-content-center" title="Dark mode">
+                    <button onClick={handleThemeToggle} className="theme-picker-btn dark-mode-btn btn theme-btn-sm theme-btn-white w-100 font-weight-semi-bold justify-content-center" title="Dark mode">
                         <svg className="mr-1" viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                         </svg>
                         Dark Mode
                     </button>
-                    <button className="theme-picker-btn light-mode-btn btn theme-btn-sm theme-btn-white w-100 font-weight-semi-bold justify-content-center" title="Light mode">
+                    <button onClick={handleThemeToggle} className="theme-picker-btn light-mode-btn btn theme-btn-sm theme-btn-white w-100 font-weight-semi-bold justify-content-center" title="Light mode">
                         <svg className="mr-1" viewBox="0 0 24 24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="5"></circle>
                             <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -542,138 +600,31 @@ function DashboardHeader({expandir_ancho=false}) {
                 <div className="off-canvas-menu-close cat-menu-close icon-element icon-element-sm shadow-sm" data-toggle="tooltip" data-placement="left" title="Close menu">
                     <i className="la la-times"></i>
                 </div>
-                <h4 className="off-canvas-menu-heading pt-90px">Learn</h4>
+                <h4 className="off-canvas-menu-heading pt-90px">Aprender</h4>
                 <ul className="generic-list-item off-canvas-menu-list pt-1 pb-2 border-bottom border-bottom-gray">
-                    <li><a href="my-courses.html">My learning</a></li>
+                    <li><a onClick={handleAbrirMiAprendizaje} >Mi Aprendizaje</a></li>
                 </ul>
-                <h4 className="off-canvas-menu-heading pt-20px">Categories</h4>
+                <h4 className="off-canvas-menu-heading pt-20px">Categorías</h4>
                 <ul className="generic-list-item off-canvas-menu-list pt-1">
-                    <li>
-                        <a href="course-grid.html">Development</a>
-                        <ul className="sub-menu">
-                            <li><a href="#">All Development</a></li>
-                            <li><a href="#">Web Development</a></li>
-                            <li><a href="#">Mobile Apps</a></li>
-                            <li><a href="#">Game Development</a></li>
-                            <li><a href="#">Databases</a></li>
-                            <li><a href="#">Programming Languages</a></li>
-                            <li><a href="#">Software Testing</a></li>
-                            <li><a href="#">Software Engineering</a></li>
-                            <li><a href="#">E-Commerce</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="course-grid.html">business</a>
-                        <ul className="sub-menu">
-                            <li><a href="#">All Business</a></li>
-                            <li><a href="#">Finance</a></li>
-                            <li><a href="#">Entrepreneurship</a></li>
-                            <li><a href="#">Strategy</a></li>
-                            <li><a href="#">Real Estate</a></li>
-                            <li><a href="#">Home Business</a></li>
-                            <li><a href="#">Communications</a></li>
-                            <li><a href="#">Industry</a></li>
-                            <li><a href="#">Other</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="course-grid.html">IT & Software</a>
-                        <ul className="sub-menu">
-                            <li><a href="#">All IT & Software</a></li>
-                            <li><a href="#">IT Certification</a></li>
-                            <li><a href="#">Hardware</a></li>
-                            <li><a href="#">Network & Security</a></li>
-                            <li><a href="#">Operating Systems</a></li>
-                            <li><a href="#">Other</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="course-grid.html">Finance & Accounting</a>
-                        <ul className="sub-menu">
-                            <li><a href="#"> All Finance & Accounting</a></li>
-                            <li><a href="#">Accounting & Bookkeeping</a></li>
-                            <li><a href="#">Cryptocurrency & Blockchain</a></li>
-                            <li><a href="#">Economics</a></li>
-                            <li><a href="#">Investing & Trading</a></li>
-                            <li><a href="#">Other Finance & Economics</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="course-grid.html">design</a>
-                        <ul className="sub-menu">
-                            <li><a href="#">All Design</a></li>
-                            <li><a href="#">Graphic Design</a></li>
-                            <li><a href="#">Web Design</a></li>
-                            <li><a href="#">Design Tools</a></li>
-                            <li><a href="#">3D & Animation</a></li>
-                            <li><a href="#">User Experience</a></li>
-                            <li><a href="#">Other</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="course-grid.html">Personal Development</a>
-                        <ul className="sub-menu">
-                            <li><a href="#">All Personal Development</a></li>
-                            <li><a href="#">Personal Transformation</a></li>
-                            <li><a href="#">Productivity</a></li>
-                            <li><a href="#">Leadership</a></li>
-                            <li><a href="#">Personal Finance</a></li>
-                            <li><a href="#">Career Development</a></li>
-                            <li><a href="#">Parenting & Relationships</a></li>
-                            <li><a href="#">Happiness</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="course-grid.html">Marketing</a>
-                        <ul className="sub-menu">
-                            <li><a href="#">All Marketing</a></li>
-                            <li><a href="#">Digital Marketing</a></li>
-                            <li><a href="#">Search Engine Optimization</a></li>
-                            <li><a href="#">Social Media Marketing</a></li>
-                            <li><a href="#">Branding</a></li>
-                            <li><a href="#">Video & Mobile Marketing</a></li>
-                            <li><a href="#">Affiliate Marketing</a></li>
-                            <li><a href="#">Growth Hacking</a></li>
-                            <li><a href="#">Other</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="course-grid.html">Health & Fitness</a>
-                        <ul className="sub-menu">
-                            <li><a href="#">All Health & Fitness</a></li>
-                            <li><a href="#">Fitness</a></li>
-                            <li><a href="#">Sports</a></li>
-                            <li><a href="#">Dieting</a></li>
-                            <li><a href="#">Self Defense</a></li>
-                            <li><a href="#">Meditation</a></li>
-                            <li><a href="#">Mental Health</a></li>
-                            <li><a href="#">Yoga</a></li>
-                            <li><a href="#">Dance</a></li>
-                            <li><a href="#">Other</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="course-grid.html">Photography</a>
-                        <ul className="sub-menu">
-                            <li><a href="#">All Photography</a></li>
-                            <li><a href="#">Digital Photography</a></li>
-                            <li><a href="#">Photography Fundamentals</a></li>
-                            <li><a href="#">Commercial Photography</a></li>
-                            <li><a href="#">Video Design</a></li>
-                            <li><a href="#">Photography Tools</a></li>
-                            <li><a href="#">Other</a></li>
-                        </ul>
-                    </li>
+                    {Object.keys(datos.datos).map((key) => (
+                        <li key={`menusup-categoria-${datos.datos[key].id}`}>
+                            <a href="#">{datos.datos[key].nombre} <button className="sub-nav-toggler" type="button"><i className="la la-angle-down"></i></button></a>
+                            { }{
+                                datos.datos[key].categorias_hijas.length > 0 && (
+                                    <ul className="sub-menu">
+                                        {datos.datos[key].categorias_hijas.map((sub_categoria) => {                                                                    
+                                            return <li key={sub_categoria.id}><Link to={`${urlBase}/categoria/${sub_categoria.url_amigable}`}>{sub_categoria.nombre}</Link></li>
+                                        })}
+                                    </ul>
+                                )
+                            }
+                        </li>
+                    ))}
                 </ul>
             </div>
             <div className="mobile-search-form">
                 <div className="d-flex align-items-center">
-                    <form method="post" className="flex-grow-1 mr-3">
-                        <div className="form-group mb-0">
-                            <input className="form-control form--control pl-3" type="text" name="search" placeholder="Buscar curso" />
-                            <span className="la la-search search-icon"></span>
-                        </div>
-                    </form>
+                    <Buscador class_name={`flex-grow-1 mr-3`} />                    
                     <div className="search-bar-close icon-element icon-element-sm shadow-sm">
                         <i className="la la-times"></i>
                     </div>

@@ -106,7 +106,7 @@ function Buscador({class_name=""}) {
                 <div style={{position:'absolute', width:'100%'}}>
                     <ul style={{width:'100%', borderRadius: '5px'}} className={`suggestions ${temaActual==0 ? 'dark-theme' : 'light-fondo-li'}`}>
                         {Object.keys(resultados).map((key) => (
-                            <li onClick={e => handleClickElement(e) } onMouseEnter={handleMouseEnter} data-url_amigable={resultados[key].url_amigable} data-key={key} className={`${key==indexSeleccionado ? 'ul_seleccionado' : ''}`} style={{cursor:'pointer', borderRadius: '5px', paddingLeft:'5px', paddingTop:'5px', paddingBottom:'5px', paddingRight:'10px'}}>
+                            <li key={`resultado-buscador${resultados[key].id}`} onClick={e => handleClickElement(e) } onMouseEnter={handleMouseEnter} data-url_amigable={resultados[key].url_amigable} data-key={key} className={`${key==indexSeleccionado ? 'ul_seleccionado' : ''}`} style={{cursor:'pointer', borderRadius: '5px', paddingLeft:'5px', paddingTop:'5px', paddingBottom:'5px', paddingRight:'10px'}}>
                                 <>                                
                                     <img className="mr-3" style={{ height: '20px', borderRadius: '10%', cursor:'pointer' }} src={`${resultados[key].imagen_pequena!=null ? `${urlBaseApi}/${resultados[key].imagen_pequena}` : `${urlBase}/images/course-no-image.png`}`} alt="imagen de producto" />                                
                                     {resultados[key].nombre}

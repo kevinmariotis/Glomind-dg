@@ -8,12 +8,13 @@ import SpamError from './SpamError';
 import Popup from './Popup';
 import Paginador from './Paginador';
 import DashboardFooter from './DashboardFooter';
+import BotonDashboardNavegacionMovil from './BotonDashboardNavegacionMovil';
 
 export default function FormularioDashboardCupon() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const navigate = useNavigate();
-    const {jwt, permissions} = useContext(AuthContext);
+    const {jwt, permissions, esMovil} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});            
                        
     const [cupones, setCupones] = useState([]);
@@ -134,9 +135,7 @@ export default function FormularioDashboardCupon() {
             textoCerrar="Cerrar"
         />
         <div className="dashboard-content-wrap">
-            <div className="dashboard-menu-toggler btn theme-btn theme-btn-sm lh-28 theme-btn-transparent mb-4 ml-3">
-                <i className="la la-bars mr-1"></i> Dashboard Nav
-            </div>
+            {esMovil && <BotonDashboardNavegacionMovil />}
             <div className="container-fluid">                                                
                 <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
                     <div className="media media-card align-items-center">                        
