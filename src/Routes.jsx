@@ -49,6 +49,7 @@ import PaginaCrearCertificado from './components/PaginaCrearCertificado';
 import PaginaEditarCertificado from './components/PaginaEditarCertificado';
 import PaginaCursoUsuarios from './components/PaginaCursoUsuarios';
 import PaginaTagNavegacion from './components/PaginaTagNavegacion';
+import PaginaHome from './components/PaginaHome';
 
 import Pagina404 from './components/Pagina404';
 
@@ -73,7 +74,7 @@ const Rutas = () => {
                 <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} />
                 <Route path="/signup" element={<ProtectedRoute permiso={!authenticated} ><PaginaRegistrarse/></ProtectedRoute>} />                
                 <Route path="/cursos/matriculados" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardEnroledCourses/></ProtectedRoute>} />
-                <Route path="/cursos/:busqueda?" element={<ProtectedRoute permiso={validarPermisos([20, 21, 22, 66, 67, 44])} ><PaginaDashboardCursos/></ProtectedRoute>} />
+                <Route path="/cursos/:busqueda?" element={<ProtectedRoute permiso={validarPermisos([20, 21, 22, 66, 67, 44, 78])} ><PaginaDashboardCursos/></ProtectedRoute>} />
                 <Route path="/cursos/favoritos" element={<ProtectedRoute permiso={authenticated} ><PaginaFavoritos/></ProtectedRoute>} />                                
                 <Route path="/categoria/:url_amigable" element={<PaginaCategoriaNavegacion/>} />
                 <Route path="/tag/:url_amigable" element={<PaginaTagNavegacion/>} />
@@ -116,7 +117,7 @@ const Rutas = () => {
                 <Route path="/certificado/crear" element={<ProtectedRoute permiso={validarPermisos([32])} ><PaginaCrearCertificado/></ProtectedRoute>} />                                
                 <Route path="/certificado/editar/:id" element={<ProtectedRoute permiso={validarPermisos([33])} ><PaginaEditarCertificado/></ProtectedRoute>} />                                                
                 <Route path="/certificado" element={<ProtectedRoute permiso={validarPermisos([31, 32, 33])} ><PaginaDashboardCertificado/></ProtectedRoute>} />                                
-                <Route exact path="/" element={<Pagina404/>} />          
+                <Route exact path="/" element={<PaginaHome/>} />          
                 <Route path="*" component={<Pagina404/>} />
             </Routes>            
       </BrowserRouter>

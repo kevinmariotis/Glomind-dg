@@ -9,11 +9,11 @@ import Buscador from './Buscador';
 function DashboardHeader({expandir_ancho=false}) {  
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-    const {jwt, esMovil, cargarContadorCarrito, setCargarContadorCarrito, cargarFavoritos, setCargarFavoritos, cargarMisCursos, setCargarMisCursos, authenticated, nombres, correo, imagen_pequena, temaActual, setTemaActual} = useContext(AuthContext);
+    const {jwt, esMovil, logout, cargarContadorCarrito, setCargarContadorCarrito, cargarFavoritos, setCargarFavoritos, cargarMisCursos, setCargarMisCursos, authenticated, nombres, correo, imagen_pequena, temaActual, setTemaActual} = useContext(AuthContext);
     const navigate = useNavigate(); 
 
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
-    const [datos, setDatos] = useState({"datos":{},"fechahora":0});
+    const [datos, setDatos] = useState({"datos":{}, "fechahora":0});
     const [contadorCarrito, setContadorCarrito] = useState({"contador":0, "productos":{},"fechahora":0});    
     const [misCursos, setMisCursos] = useState({});    
     const [favoritos, setFavoritos] = useState({});
@@ -102,6 +102,12 @@ function DashboardHeader({expandir_ancho=false}) {
         navigate(url_link);        
     };
 
+    const handleCerrarSesion = () => {
+        if(logout()){
+            document.location.reload();
+        }        
+    };
+    
     //use efect para cargar los datos contadores del carrito
     useEffect(() => {        
         if(cargarContadorCarrito && authenticated){                                    
@@ -514,7 +520,7 @@ function DashboardHeader({expandir_ancho=false}) {
                                                                         </a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="index.html">
+                                                                        <a href="#" onClick={handleCerrarSesion}>
                                                                             <i className="la la-power-off mr-1"></i> Cerrar sesión
                                                                         </a>
                                                                     </li>

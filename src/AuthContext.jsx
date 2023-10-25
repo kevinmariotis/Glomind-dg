@@ -36,6 +36,12 @@ export const AuthProvider = ({ children }) => {
         setAuthenticated(false);
         setPermissions([]);
         setJwt(null);  
+        const jwt = Cookies.get('jwt');
+        if(jwt){
+            Cookies.remove('jwt');
+            return true;
+        }
+        return false;
     };
 
     useEffect(() => {    
@@ -49,7 +55,7 @@ export const AuthProvider = ({ children }) => {
         }
 
     }, [temaActual]);
-
+        
     useEffect(() => {   //El objetivo de este effect es establecer si se esta autenticado, recobrar los permisos y establecer el jwt en el contexto cuando el sitio se ejecute por primera vez.        
         
         async function cargarUsuario(){

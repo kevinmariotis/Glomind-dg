@@ -13,7 +13,7 @@ function FormularioDashboardVideo() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const {jwt, esMovil, nombres, permissions} = useContext(AuthContext);
-    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
+    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});  
     const [datosUsuario, setDatosUsuario] = useState({docente_rating:99.9});
     const [videos, setVideos] = useState([]);    
     const [paginaNavegacion, setPaginaNavegacion] = useState(1);
@@ -28,15 +28,25 @@ function FormularioDashboardVideo() {
     }, [paginaNavegacion, palabraBuscar]);
 
     const handleFuncionAceptarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        switch(popUp.data_switch){
+            case 'eliminar_video':
+                borrarVideo(popUp.data_id);
+            break;
+        }
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
+
     const handleFuncionCerrarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
 
     const handleSetPalabraBuscar = (event) => {                
         event.preventDefault();   
         setPalabraBuscar(event.target.value);
+    };
+
+    const handleBorrar = (id_video) => {                
+        setPopup({...popUp, mostrar:true, tipo:3, titulo:'Confirmar?', contenido:'Confirma que desea borrar el video?', data_switch:'eliminar_video', data_id:id_video, data_id_2:-1});        
     };
         
     const obtenerDatosVideos = async () => {                  
@@ -69,6 +79,32 @@ function FormularioDashboardVideo() {
         }
     };
     
+    const borrarVideo = async (id_video) => {
+        setMostrarSpinner(true);        
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'DELETE',
+                headers: headers,
+            };            
+            const response = await fetch(`${urlBaseApi}/api/video/${id_video}`, opciones);            
+            setMostrarSpinner(false);            
+            const datos = await response.json();
+            if (response.ok){ 
+                obtenerDatosVideos();
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Video borrado.'});                
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});
+            }     
+                    
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
     const permisoEditar = (permissions[28] || permissions[71] || permissions[72]) ? 1 : 0;
 
     return (
@@ -77,12 +113,12 @@ function FormularioDashboardVideo() {
         <Popup 
             mostrarPopup={popUp.mostrar} 
             tamano="xx"
-            tipo={2} 
+            tipo={popUp.tipo} 
             titulo={popUp.titulo} 
             mensaje={popUp.contenido} 
             funcionAceptar={handleFuncionAceptarPopUp} 
             funcionCerrar={handleFuncionCerrarPopUp}
-            textoCerrar="Aceptar"
+            textoCerrar="Cancelar"
         />
         <div className="dashboard-content-wrap">
             {esMovil && <BotonDashboardNavegacionMovil />}
@@ -117,8 +153,10 @@ function FormularioDashboardVideo() {
                             ancho={videos[key].ancho}
                             alto={videos[key].alto}
                             permisoEditar={permisoEditar}                            
+                            permisoBorrar={permissions[79]}                            
                             asignado={videos[key].asignado} 
                             segmentos={videos[key].segmentos} 
+                            handleBorrar={()=> handleBorrar(videos[key].id) }
                         />
                     ))}                       
                 </div>

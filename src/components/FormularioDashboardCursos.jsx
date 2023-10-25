@@ -13,7 +13,7 @@ function FormularioDashboardCursos() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const {jwt, esMovil, nombres, permissions} = useContext(AuthContext);
-    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
+    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});     
     const [datosUsuario, setDatosUsuario] = useState({docente_rating:99.9});
     const [cursos, setCursos] = useState([]);    
     const [paginaNavegacion, setPaginaNavegacion] = useState(1);
@@ -31,17 +31,27 @@ function FormularioDashboardCursos() {
     }, [paginaNavegacion, palabraBuscar]);
 
     const handleFuncionAceptarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        switch(popUp.data_switch){
+            case 'eliminar_curso':
+                borrarCurso(popUp.data_id);
+            break;
+        }
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
+
     const handleFuncionCerrarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
 
     const handleSetPalabraBuscar = (event) => {                
         event.preventDefault();   
         setPalabraBuscar(event.target.value);
     };
-        
+      
+    const handleEliminarCurso = (id_curso) => {  
+        setPopup({...popUp, mostrar:true, tipo:3, titulo:'Confirmar?', contenido:'Confirma que desea borrar el curso? Esta acción no tiene revesa en cuanto a la recuperación de datos del curso.', data_switch:'eliminar_curso', data_id:id_curso, data_id_2:-1});
+    };
+
     const obtenerDatosCursos = async () => {                  
         const headers = {
             'Authorization':`Bearer ${jwt}`,
@@ -72,6 +82,32 @@ function FormularioDashboardCursos() {
         }
     };
 
+    const borrarCurso = async (id_curso) => {
+        setMostrarSpinner(true);
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'DELETE',
+                headers: headers,
+            };            
+            const response = await fetch(`${urlBaseApi}/api/curso/${id_curso}`, opciones);            
+            setMostrarSpinner(false);            
+            const datos = await response.json();
+            if (response.ok){ 
+                obtenerDatosCursos();
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Curso borrado.'});                
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});
+            }     
+                    
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
     const nivelHabilidad = ['', 'Básico', 'Intermedio', 'Avanzado'];
     const permisoEditarCursoContenido = (permissions[29] || permissions[25] || permissions[24]) ? 1 : 0;
 
@@ -81,12 +117,12 @@ function FormularioDashboardCursos() {
         <Popup 
             mostrarPopup={popUp.mostrar} 
             tamano="xx"
-            tipo={2} 
+            tipo={popUp.tipo} 
             titulo={popUp.titulo} 
             mensaje={popUp.contenido} 
             funcionAceptar={handleFuncionAceptarPopUp} 
             funcionCerrar={handleFuncionCerrarPopUp}
-            textoCerrar="Aceptar"
+            textoCerrar="Cerrar"
         />
         <div className="dashboard-content-wrap">
             {esMovil && <BotonDashboardNavegacionMovil />}
@@ -159,9 +195,9 @@ function FormularioDashboardCursos() {
                                         {permissions[67] ? <Link to={`/curso/videopreview/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar video preview de curso"><i className="la la-video-camera"></i></div></Link> : ''}
                                         {permissions[66] ? <Link to={`/curso/imagen/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar imagen del curso"><i className="la la-image"></i></div></Link> : ''}
                                         {permissions[44] ? <Link to={`/curso/usuarios/${cursos[key].id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Estudiantes del curso"><i className="la la-users"></i></div></Link> : ''}
-                                        <div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Delete">
+                                        {permissions[78] ? <div onClick={()=> handleEliminarCurso(cursos[key].id) } className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Eliminar curso">
                                             <span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span>
-                                        </div>
+                                        </div>: ''}
                                     </div>
                                 </div>
                             </div>

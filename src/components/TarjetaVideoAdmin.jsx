@@ -14,8 +14,10 @@ function TarjetaVideoAdmin(
         ancho='',
         alto='',
         permisoEditar=false,
+        permisoBorrar=false,
         asignado=-1,
         segmentos=0,
+        handleBorrar,
     }) {        
         const urlBase = import.meta.env.VITE_URL_BASE;    
         const urlBaseApi = import.meta.env.VITE_URL_BASE_API;    
@@ -65,6 +67,7 @@ function TarjetaVideoAdmin(
                                 <p className="card-text lh-22 pt-2"><span>{duracion}</span> {(ancho!='' && alto!='') ? `(${ancho} x ${alto})`: ''}</p>                                
                                 <div className="rating-wrap d-flex align-items-center justify-content-between pt-3">                                
                                     {permisoEditar && <Link to={`${urlBase}/video/editar/${idvideo}`} className="btn theme-btn theme-btn-sm theme-btn-transparent" data-toggle="modal" data-target="#ratingModal"><i className="la la-gear"></i> Editar</Link>}
+                                    {permisoBorrar && <div onClick={handleBorrar} className="btn theme-btn theme-btn-sm theme-btn-transparent" data-toggle="modal" data-target="#ratingModal"><i className="la la-trash"></i> Borrar</div>}
                                 </div>
                             </div>
                         </div>

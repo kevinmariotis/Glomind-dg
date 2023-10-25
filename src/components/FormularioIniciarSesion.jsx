@@ -84,7 +84,7 @@ function FormularioIniciarSesion() {
                 const expirationDate = new Date();
                 expirationDate.setDate(expirationDate.getDate() + 30);
                 Cookies.set('jwt', data.token, { expires: expirationDate });                                
-                window.location.href = '/';     //se recarga la aplicacion de nuevo para que el AuthContext valide la cookie y cargue los permisos                
+                window.location.href = '/cursos/matriculados';     //se recarga la aplicacion de nuevo para que el AuthContext valide la cookie y cargue los permisos                                
                 return;
             } else {
                 // Obtener el código de error de la respuesta

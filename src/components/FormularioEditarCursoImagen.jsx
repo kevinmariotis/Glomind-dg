@@ -163,7 +163,7 @@ function FormularioEditarCursoImagen() {
                                     <div className="form-group mb-0">
                                         <label className="label-text">Tenga en cuenta si la imagen no es del tamaño 1920px x 450px el sistema intentará re-dimensionarla a este tamaño, si la escala (o aspec ratio) no permite redimensionarla a este tamaño no se guardará, debe de tener el tamaño suficiente para poder ser re-dimensionada a este tamaño o ser especificamente de este tamaño. Esta imagen se mostrará en las tarjetas del curso en la navegación por categorías, en las tarjetas de la página de inicio y el carrito de compras.</label>
                                         <div {...getRootProps()}>
-                                            {imagenActual!='' && 
+                                            {imagenActual!=null && 
                                                 <><img className="mr-3" src={`${urlBaseApi}/${imagenActual}`} alt="Imagen del curso"/><br/></>
                                             }                                                                                                        
                                             <input {...getInputProps()} className="multi file-upload-input" />
