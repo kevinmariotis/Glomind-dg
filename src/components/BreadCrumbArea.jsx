@@ -7,7 +7,7 @@ function BreadCrumbArea({nombreseccion='Sección', breadCrumbData=[], imagen='im
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;           
 
     return (<section className="breadcrumb-area section-padding img-bg-2" style={{'backgroundImage': `url(${imagen!='images/breadcrumb-bg.jpg' ? urlBaseApi : urlBase }/${imagen})`}}>
-        <div className="overlay"></div>
+        <div className="overlay" style={{opacity:'.4'}}></div>
         <div className="container">
             <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between">
                 <div className="section-heading">

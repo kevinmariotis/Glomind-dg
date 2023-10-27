@@ -15,7 +15,7 @@ function FormularioTagNavegacion({actualizarBreadCrumb, actualizarBreadCrumbData
     
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
     const [pagina, setPagina] = useState(1);
-    const [orderBy, setOrderBy] = useState('precio_actual-asc');    
+    const [orderBy, setOrderBy] = useState('estudiantes_cantidad-asc');    
         
     const [cursos, setCursos] = useState([]);    
     const [cantidad_total_cursos, setCantidadTotalCursos] = useState(0);            
