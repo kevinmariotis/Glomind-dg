@@ -291,7 +291,7 @@ function HeaderMenuContent() {
                                         </ul>
                                     </div>
                                     <div className="nav-right-button">
-                                        <a href="admission.html" className="btn theme-btn d-none d-lg-inline-block"><i className="la la-user-plus mr-1"></i> Admisión</a>
+                                        <Link to={`/signup`} className="btn theme-btn d-none d-lg-inline-block"><i className="la la-user-plus mr-1"></i> Admisión</Link>
                                     </div>
                                 </div>
                             </div>

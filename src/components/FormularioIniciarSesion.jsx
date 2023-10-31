@@ -133,12 +133,16 @@ function FormularioIniciarSesion() {
 
                 //si viene un codigo de error se muestra un mensaje en popup
                 if(data.codigo!=''){
-                    const contenidos = {
-                        "sesioniniciada" : {titulo:"Sesion iniciada", contenido:"Ya tenías la sesión iniciada previamente"},
-                        "suspendido" : {titulo:"Suspendido", contenido:"Su cuenta ha sido suspendida"},
-                        "incorrecto" : {titulo:"Incorrecto", contenido:"Nombre de usuario o contraseña incorrecta"},
-                    }                                        
-                    setPopup({mostrar:true, titulo:contenidos[data.codigo].titulo, contenido:contenidos[data.codigo].contenido});
+                    if(data.codigo!='validar-email'){
+                        const contenidos = {
+                            "sesioniniciada" : {titulo:"Sesion iniciada", contenido:"Ya tenías la sesión iniciada previamente"},
+                            "suspendido" : {titulo:"Suspendido", contenido:"Su cuenta ha sido suspendida"},
+                            "incorrecto" : {titulo:"Incorrecto", contenido:"Nombre de usuario o contraseña incorrecta"},                        
+                        }                                        
+                        setPopup({mostrar:true, titulo:contenidos[data.codigo].titulo, contenido:contenidos[data.codigo].contenido});
+                    }else{
+                        navigate(`/usuario/validaremail/-1/${encodeURIComponent(data.datos.email[0])}`);
+                    }
                 }
 
                 // Mostrar mensaje de error según el código de error

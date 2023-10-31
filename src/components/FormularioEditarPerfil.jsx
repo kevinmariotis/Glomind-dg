@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
@@ -9,12 +9,13 @@ import Popup from './Popup';
 import BotonDashboardNavegacionMovil from './BotonDashboardNavegacionMovil';
 import DashboardFooter from './DashboardFooter';
 
-function FormularioCrearVideo() {
+function FormularioEditarPerfil() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
-    const {jwt, nombres, setImagenPequena, permissions, esMovil} = useContext(AuthContext);
+    const {jwt, nombres, setImagenPequena, permissions, esMovil, logout} = useContext(AuthContext);
     const { id } = useParams();    
-    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});        
+    const navigate = useNavigate();
+    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});        
     const [verPopUpEliminarCuenta, setVerPopUpEliminarCuenta] = useState(false);
     const [pestanaActivada, setPestanaActivada] = useState(1);
     const [imagenSeleccionada, setImagenSeleccionada] = useState(null);    
@@ -35,6 +36,9 @@ function FormularioCrearVideo() {
     const [formRecibirPromociones, setFormRecibirPromociones] = useState(1);    
     const [formEstado, setFormEstado] = useState(1);    
 
+    const [formEmailOriginal, setFormEmailOriginal] = useState('');
+    const [advertenciaEmailMostrada, setAdvertenciaEmailMostrada] = useState(false);
+
     const [formProfesion, setFormProfesion] = useState('');
     const [formFacebook, setFormFacebook] = useState('');
     const [formTwitter, setFormTwitter] = useState('');
@@ -53,7 +57,14 @@ function FormularioCrearVideo() {
         //window.scrollTo(0, 0);
         obtenerDatosDelServidor();        
     }, []);
-              
+             
+    useEffect(() => {   
+        if(formEmail!='' && formEmailOriginal!='' && formEmail!=formEmailOriginal && !advertenciaEmailMostrada){
+            setAdvertenciaEmailMostrada(true);
+            setPopup({mostrar:true, titulo:'Advertencia', contenido:'Al guardar otro email se cerrará la sesión y deberá valiarlo de nuevo, asegúrese que está escribiendo el nuevo email correctamente.'});
+        }
+    }, [formEmail]);    
+
     //Estados de los errores de campos
     const camposErrores = {        
         'nombres':[],
@@ -126,10 +137,16 @@ function FormularioCrearVideo() {
     const handleContrasenaEliminarCuenta = (event) => {   setFormContrasenaEliminarCuenta(event.target.value);    };   
 
     const handleFuncionAceptarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        switch(popUp.data_switch){
+            case 'cerrar-sesion':
+                logout();
+                navigate(`/usuario/validaremail/-1/${encodeURIComponent(formEmail)}`);                
+            break;
+        }
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
     const handleFuncionCerrarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
 
     const handleCambiarPais = (event) => {
@@ -195,11 +212,15 @@ function FormularioCrearVideo() {
                 setFormInstagram(datos.usuario.instagram);
                 setFormLinkedin(datos.usuario.linkedin);
                 setFormYoutube(datos.usuario.youtube);
-                setPaises(datos.paises);                
+                setPaises(datos.paises);           
+                setFormEmailOriginal(datos.usuario.email);     
                 if(id==undefined){
                     setImagenPequena(datos.usuario.imagen_pequena);     //Authcontext                
                 }
-                const biografia_array = datos.usuario.docente_descripcion.split("<separador>");
+                let biografia_array = [];
+                if(datos.usuario.docente_descripcion!=null){
+                    biografia_array = datos.usuario.docente_descripcion.split("<separador>");
+                }
                 let biografiax = '';                
                 biografia_array.forEach((element) => {
                     biografiax = (biografiax!='') ? biografiax+='\n'+element : biografiax=element;
@@ -224,17 +245,20 @@ function FormularioCrearVideo() {
     const handleActualizarPerfil = async (event) => {
         event.preventDefault();
         reiniciarErrorCampoGlobal();        
-        const raw = {                   
-            'nombres': formNombres,
-            'apellidos': formApellidos,
-            'email': formEmail,            
-            'telefono': formTelefono==null ? '' : formTelefono.toString(),
-            'id_pais': formIdPais,
-            'id_departamento': formIdDepartamento,
-            'ciudad': formCiudad,    
-            'profesion': formProfesion,
-            'recibir_promociones': formRecibirPromociones,
+
+        const raw = {    
         };
+
+        if(formNombres!=null){ raw.nombres = formNombres; }
+        if(formApellidos!=null){ raw.apellidos = formApellidos; }
+        if(formEmail!=null){ raw.email = formEmail; }
+        if(formTelefono!=null){ raw.telefono = formTelefono.toString(); }
+        if(formIdPais!=null){ raw.id_pais = formIdPais; }
+        if(formIdDepartamento!=null){ raw.id_departamento = formIdDepartamento; }
+        if(formCiudad!=null){ raw.ciudad = formCiudad; }
+        if(formProfesion!=null){ raw.profesion = formProfesion; }
+        if(formRecibirPromociones!=null){ raw.recibir_promociones = formRecibirPromociones; }
+        
         if(formBiografia!=''){
             raw.docente_descripcion = formBiografia;
         }
@@ -260,6 +284,7 @@ function FormularioCrearVideo() {
             setMostrarSpinner(false);
             const datos = await response.json();            
             if (response.ok){    
+                const cerrar_sesion = datos.cerrar_sesion=='1' ? true : false;
                 //Se sube la imagen si se tuviera una adjunta             
                 if(imagenSeleccionada!=null){
                     setMostrarSpinner(true);
@@ -271,12 +296,12 @@ function FormularioCrearVideo() {
                             'Authorization' : `Bearer ${jwt}`
                         },
                         body: formData
-                    };
+                    };                    
                     const response = await fetch(`${urlBaseApi}/api/usuario/actualizarImagen/${id!=undefined ? id : '0'}`, opciones);
                     const datos = await response.json();            
                     setMostrarSpinner(false);
                     if (response.ok){                      
-                        setPopup({mostrar:true, titulo:'Listo', contenido:'Datos guardados satisfactoriamente.'});
+                        setPopup({mostrar:true, titulo:'Listo', contenido:'Datos guardados satisfactoriamente.', data_switch: cerrar_sesion ? 'cerrar-sesion' : '' });
                         obtenerDatosDelServidor();
                         return;
                     } else {
@@ -284,7 +309,7 @@ function FormularioCrearVideo() {
                     }
 
                 }else{
-                    setPopup({mostrar:true, titulo:'Listo', contenido:'Datos guardados satisfactoriamente.'});
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Datos guardados satisfactoriamente.', data_switch: datos.cerrar_sesion=='1' ? 'cerrar-sesion' : '' });
                 }
                 return;
             } else {
@@ -751,4 +776,4 @@ function FormularioCrearVideo() {
     )
 }
 
-export default FormularioCrearVideo;
+export default FormularioEditarPerfil;

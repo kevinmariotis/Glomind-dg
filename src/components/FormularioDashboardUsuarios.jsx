@@ -67,9 +67,11 @@ export default function FormularioDashboardUsuarios() {
     };
     
     const handleFuncionAceptarPopUp = () => {        
-        /*switch(popUp.data_switch){
-            
-        }*/
+        switch(popUp.data_switch){
+            case 'enviar_email_validacion_email':
+                enviarEmailValicacionEmail(popUp.data_id);
+            break;
+        }
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
 
@@ -81,7 +83,12 @@ export default function FormularioDashboardUsuarios() {
         event.preventDefault();   
         setBuscarPorTexto(event.target.value);
     };
-  
+    
+    const handleEnviarEmailValidacionEmail = (id_usuario) => {
+        setPopup({...popUp, mostrar:true, tipo:3, titulo:'Confirmar?', contenido:'Confirma que desea enviar un correo de confirmación de correo electrónico a este usuario?', data_switch:'enviar_email_validacion_email', data_id:id_usuario, data_id_2:-1});
+    };    
+    
+
     
     const obtenerDatosDelServidor = async () => {
         const headers = {
@@ -105,6 +112,30 @@ export default function FormularioDashboardUsuarios() {
                     const data = await response.json();          
                     mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
                 }  
+            }
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+    const enviarEmailValicacionEmail = async (id_usuario) => {
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {               
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/usuario/enviarEmailValidarEmail/${id_usuario}`, opciones);
+            setMostrarSpinner(false);
+            if (response.ok){                           
+                setPopup({mostrar:true, tipo:2, titulo:'Listo', contenido:'Email enviado al correo electrónico del usuario'});
+            } else {      
+                const data = await response.json();          
+                mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
             }
         }catch(error){
             // Manejar el caso de error en la solicitud
@@ -219,7 +250,8 @@ export default function FormularioDashboardUsuarios() {
                                                     </th>
                                                     <th scope="row" width="20%">
                                                         {permissions[19] ? <div style={{float:'left'}} onClick={()=>{ navigate(`/usuario/editar/${usuarios[key].id}`); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración"><i className="la la-gear"></i></div> : ''}
-                                                        {permissions[76] ? <div onClick={()=>{ navigate(`/factura/historial/${usuarios[key].id}`); }}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Ver compras del usuario"><i className="la la la-shopping-cart"></i></div></div> : ''}
+                                                        {permissions[76] ? <div onClick={()=>{ navigate(`/factura/historial/${usuarios[key].id}`); }}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Ver compras del usuario"><i className="la la-shopping-cart"></i></div></div> : ''}
+                                                        {permissions[19] ? <div onClick={()=>{ handleEnviarEmailValidacionEmail(usuarios[key].id); }}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Enviar correo de confirmación de email"><i className="la la-envelope-o"></i></div></div> : ''}
                                                     </th>
                                                 </tr>
                                             ))}

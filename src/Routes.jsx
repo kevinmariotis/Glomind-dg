@@ -50,6 +50,7 @@ import PaginaEditarCertificado from './components/PaginaEditarCertificado';
 import PaginaCursoUsuarios from './components/PaginaCursoUsuarios';
 import PaginaTagNavegacion from './components/PaginaTagNavegacion';
 import PaginaHome from './components/PaginaHome';
+import PaginaValidarEmail from './components/PaginaValidarEmail';
 
 import Pagina404 from './components/Pagina404';
 
@@ -116,7 +117,8 @@ const Rutas = () => {
                 <Route path="/cupon" element={<ProtectedRoute permiso={validarPermisos([61, 62, 63])} ><PaginaDashboardCupon/></ProtectedRoute>} />                                
                 <Route path="/certificado/crear" element={<ProtectedRoute permiso={validarPermisos([32])} ><PaginaCrearCertificado/></ProtectedRoute>} />                                
                 <Route path="/certificado/editar/:id" element={<ProtectedRoute permiso={validarPermisos([33])} ><PaginaEditarCertificado/></ProtectedRoute>} />                                                
-                <Route path="/certificado" element={<ProtectedRoute permiso={validarPermisos([31, 32, 33])} ><PaginaDashboardCertificado/></ProtectedRoute>} />                                
+                <Route path="/certificado" element={<ProtectedRoute permiso={validarPermisos([31, 32, 33])} ><PaginaDashboardCertificado/></ProtectedRoute>} />
+                <Route path="/usuario/validaremail/:id_usuario/:hash" element={<ProtectedRoute permiso={true} ><PaginaValidarEmail/></ProtectedRoute>} />
                 <Route exact path="/" element={<PaginaHome/>} />          
                 <Route path="*" component={<Pagina404/>} />
             </Routes>            

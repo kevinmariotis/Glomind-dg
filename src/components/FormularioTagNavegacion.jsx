@@ -88,9 +88,7 @@ function FormularioTagNavegacion({actualizarBreadCrumb, actualizarBreadCrumbData
                 actualizarBreadCrumb(datos.nombre);
                 actualizarBreadCrumbData([]);
                 //actualizarBreadCrumbImagen(datosArbol[datosArbol.length-1].imagen_grande!=null ? datosArbol[datosArbol.length-1].imagen_grande : 'images/breadcrumb-bg.jpg');                
-                //fin de actualizar el breadCrumb
-                
-                console.log("cantidad total cursos ",datos.cantidad_total_cursos);
+                //fin de actualizar el breadCrumb                                
             } else {  
                 const respuesta = await response.json(); 
                 if(respuesta.codigo=='no-disponible'){
