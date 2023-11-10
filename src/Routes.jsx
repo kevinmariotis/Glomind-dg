@@ -51,6 +51,7 @@ import PaginaCursoUsuarios from './components/PaginaCursoUsuarios';
 import PaginaTagNavegacion from './components/PaginaTagNavegacion';
 import PaginaHome from './components/PaginaHome';
 import PaginaValidarEmail from './components/PaginaValidarEmail';
+import PaginaRecuperarContrasena from './components/PaginaRecuperarContrasena';
 
 import Pagina404 from './components/Pagina404';
 
@@ -73,6 +74,7 @@ const Rutas = () => {
         <BrowserRouter>            
             <Routes>                                
                 <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} />
+                <Route path="/recover/:id_usuario?/:hash?" element={<ProtectedRoute permiso={!authenticated} ><PaginaRecuperarContrasena/></ProtectedRoute>} />                
                 <Route path="/signup" element={<ProtectedRoute permiso={!authenticated} ><PaginaRegistrarse/></ProtectedRoute>} />                
                 <Route path="/cursos/matriculados" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardEnroledCourses/></ProtectedRoute>} />
                 <Route path="/cursos/:busqueda?" element={<ProtectedRoute permiso={validarPermisos([20, 21, 22, 66, 67, 44, 78])} ><PaginaDashboardCursos/></ProtectedRoute>} />

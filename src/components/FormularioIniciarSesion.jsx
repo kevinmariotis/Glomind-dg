@@ -29,6 +29,7 @@ function FormularioIniciarSesion() {
     const [mostrarSpinner, setMostrarSpinner] = useState(false);  
 
     const [passwordVisible, setPasswordVisible] = useState(false);
+    const [recordarme, setRecordarme] = useState(false);
 
     const handleTogglePassword = () => {
         setPasswordVisible(!passwordVisible);
@@ -56,7 +57,17 @@ function FormularioIniciarSesion() {
     
     useEffect(() => {    
         window.scrollTo(0, 0);
+        const recordarme_guardado = sessionStorage.getItem('recordarme');
+        if(recordarme_guardado){   
+            setRecordarme(true);
+            setUsername(recordarme_guardado);
+        }
     }, []);
+
+    const handleRecordarme = (event) => {                        
+        const { checked } = event.target;
+        setRecordarme(checked ? true: false);        
+    };
 
     const fetchData = async (event) => {
         event.preventDefault();
@@ -83,7 +94,14 @@ function FormularioIniciarSesion() {
                 console.log('Inició sesión correctamente, datos de respuesta:', data);                
                 const expirationDate = new Date();
                 expirationDate.setDate(expirationDate.getDate() + 30);
-                Cookies.set('jwt', data.token, { expires: expirationDate });                                
+                Cookies.set('jwt', data.token, { expires: expirationDate });
+                if(recordarme){
+                    sessionStorage.setItem('recordarme', username);
+                }else{
+                    if(sessionStorage.getItem('recordarme')){
+                        sessionStorage.removeItem('recordarme');
+                    }
+                }
                 window.location.href = '/cursos/matriculados';     //se recarga la aplicacion de nuevo para que el AuthContext valide la cookie y cargue los permisos                                
                 return;
             } else {
@@ -235,10 +253,10 @@ function FormularioIniciarSesion() {
                                     <div className="btn-box">
                                         <div className="d-flex align-items-center justify-content-between pb-4">
                                             <div className="custom-control custom-checkbox fs-15">
-                                                <input type="checkbox" className="custom-control-input" id="rememberMeCheckbox" required />
+                                                <input type="checkbox" onChange={handleRecordarme} checked={recordarme} className="custom-control-input" id="rememberMeCheckbox" required />
                                                 <label className="custom-control-label custom--control-label" htmlFor="rememberMeCheckbox">Recordarme</label>
                                             </div>
-                                            <a href="recover.html" className="btn-text">Olvidé mi contraseña</a>
+                                            <Link to={`/recover`} className="btn-text">Olvidé mi contraseña</Link>
                                         </div>
                                         <button className="btn theme-btn" type="submit" disabled={botonIniciarSesionEstado} onClick={fetchData}>Iniciar sesión <i className="la la-arrow-right icon ml-1"></i></button>
                                         <p className="fs-14 pt-2">No tiene una cuenta? <Link to="/signup" className="text-color hover-underline">Regístrese</Link></p>
