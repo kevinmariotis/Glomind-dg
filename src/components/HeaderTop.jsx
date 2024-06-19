@@ -17,8 +17,8 @@ function HeaderTop() {
                 <div className="col-lg-6">
                     <div className="header-widget">
                         <ul className="generic-list-item d-flex flex-wrap align-items-center fs-14">
-                            <li className="d-flex align-items-center pr-3 mr-3 border-right border-right-gray"><i className="la la-phone mr-1"></i><a href="tel:018000181027"> 01 8000 181 027</a></li>
-                            <li className="d-flex align-items-center"><i className="la la-envelope-o mr-1"></i><a href="mailto:comunicacionesbq@coruniamericana.edu.co"> comunicacionesbq@coruniamericana.edu.co</a></li>
+                            <li className="d-flex align-items-center pr-3 mr-3 border-right border-right-gray"><i className="la la-phone mr-1"></i><a href="tel:25560366"> 255 6 03 66</a></li>
+                            <li className="d-flex align-items-center"><i className="la la-envelope-o mr-1"></i><a href="mailto:info@uvirtualad.mx"> info@uvirtualad.mx</a></li>
                         </ul>
                     </div>
                 </div>
