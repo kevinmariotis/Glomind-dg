@@ -246,7 +246,7 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                                 </li>    
                             </ul>: ''}
                             <div className="logo-box">
-                                <Link to="/" className="logo"><img src={`${urlBase}/images/myedulogo-transparente_2.png`} alt="logo" /></Link>
+                                <Link to="/" className="logo"><img src={`${urlBase}/images/educalablogo.png`} alt="logo" /></Link>
                             </div>   
 
                             <div className="logo-box logo--box">

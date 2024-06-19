@@ -7586,8 +7586,8 @@ div.datedropper .picker .pick-lg-b li {
     border-left-color: rgba(238, 238, 238, 0.1) !important; }
   .dark-theme .footer__logo,
   .dark-theme .logo img {
-    -webkit-filter: brightness(900%) brightness(200%);
-    filter: brightness(900%) brightness(200%); }
+    /*-webkit-filter: brightness(900%) brightness(200%);
+    filter: brightness(900%) brightness(200%);*/ }
   .dark-theme .menu-category > ul > li a,
   .dark-theme .shop-cart-btn,
   .dark-theme .media-card .media-body h5 a,

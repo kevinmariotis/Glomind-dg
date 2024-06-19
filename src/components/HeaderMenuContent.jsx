@@ -193,7 +193,7 @@ function HeaderMenuContent() {
                         <div className="row align-items-center">
                             <div className="col-lg-2">
                                 <div className="logo-box">
-                                    <Link to="/" className="logo"><img src={`${urlBase}/images/myedulogo-transparente_2.png`} alt="logo" /></Link>
+                                    <Link to="/" className="logo"><img src={`${urlBase}/images/educalablogo.png`} alt="logo" /></Link>
                                     <div className="user-btn-action">
                                         <div className="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2" data-toggle="tooltip" data-placement="top" title="Search">
                                             <i className="la la-search"></i>
