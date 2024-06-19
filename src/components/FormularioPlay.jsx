@@ -616,7 +616,7 @@ function FormularioPlay() {
                                                             <h3 className="fs-16 font-weight-semi-bold pb-2">Certificado</h3>
                                                         </div>
                                                         <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
-                                                            <p className="pb-3">Obtén el certificado de Prisma completando el curso</p>
+                                                            <p className="pb-3">Obtén el certificado de Educalab completando el curso</p>
                                                             <button type="button" onClick={handleGenerarCertificado} className="btn theme-btn theme-btn-transparent">Descargar certificado</button>
                                                         </div>
                                                     </div>
