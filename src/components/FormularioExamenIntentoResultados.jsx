@@ -132,7 +132,7 @@ function FormularioExamenIntentoResultados() {
                 method: 'DELETE',
                 headers: headers,
             };            
-            const response = await fetch(`${urlBaseApi}/api/examenintento/${id_examen_intento}`, opciones);            
+            const response = await fetch(`${urlBaseApi}/api/examenintento/${id_examen_intento}/${id_curso}`, opciones);            
             const datos = await response.json();   
             if (response.ok){                                           
                 navigate(`/examen/historial/${configuracion.id_examen}/${id_curso}`);

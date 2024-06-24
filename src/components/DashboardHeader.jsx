@@ -253,7 +253,7 @@ function DashboardHeader({expandir_ancho=false}) {
                         <div className="row align-items-center">
                             <div className="col-lg-12">
                                 <div className="logo-box logo--box">
-                                    <Link to="/" className="logo"><img src={`${urlBase}/images/educalablogo.png`} alt="logo" /></Link>
+                                    <Link to="/" className="logo"><img src={`${urlBase}/images/edukalab_logo.png`} alt="logo" /></Link>
                                     <div className="user-btn-action">
                                         <div className="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2" data-toggle="tooltip" data-placement="top" title="Búsqueda">
                                             <i className="la la-search"></i>

@@ -15,7 +15,7 @@ function CompaniasAliadas() {
                 <div className="row align-items-center">
                     <div className="col-lg-6">
                         <div className="cta-content-wrap">
-                            <h3 className="fs-20 font-weight-semi-bold lh-28">Las mejores empresas confían en <div className="text-color">Prizma</div> para desarrollar habilidades profesionales.</h3>
+                            <h3 className="fs-20 font-weight-semi-bold lh-28">Las mejores empresas confían en <div className="text-color">EdukaLAB</div> para desarrollar habilidades profesionales.</h3>
                         </div>
                     </div>
                     <div className="col-lg-6">

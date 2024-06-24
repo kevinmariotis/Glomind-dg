@@ -163,7 +163,7 @@ function FooterArea() {
                         <div className="col-lg-6">
                             <div className="d-flex flex-wrap align-items-center">
                                 <a href="index.html" className="pr-4">
-                                    <img src={`${urlBase}/images/educalablogo.png`} alt="footer logo" className="footer__logo" />
+                                    <img src={`${urlBase}/images/edukalab_logo.png`} alt="footer logo" className="footer__logo" />
                                 </a>
                                 <p className="copy-desc">Copyright &copy; 2024 <a href="https://google.com.co" target="_blank">Desarrolladores</a></p>
                             </div>

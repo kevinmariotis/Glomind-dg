@@ -751,7 +751,7 @@ function FormularioDetallesDeCurso(){
                                     </ul>
                                 </div>}
                                 <div className="course-overview-card border border-gray p-4 rounded">
-                                    <h3 className="fs-20 font-weight-semi-bold">Las mejores empresas confían en Prizma</h3>                                    
+                                    <h3 className="fs-20 font-weight-semi-bold">Las mejores empresas confían en EdukaLAB</h3>                                    
                                     <div className="pb-3">
                                         <img style={{maxWidth:'140px', marginRight:'60px'}} className="mr-3" src={`${urlBase}/images/empresas/americana.png`} alt="Logo de empresa"/>
                                         <img style={{maxWidth:'140px', marginRight:'60px'}} className="mr-3" src={`${urlBase}/images/empresas/system_center.png`} alt="Logo de empresa"/>

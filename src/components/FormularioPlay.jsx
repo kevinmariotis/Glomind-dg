@@ -213,7 +213,7 @@ function FormularioPlay() {
                                 }else{
                                     //si es de tipo 1 se crea un intento, de lo contrario se envia a la presentacion del examen.
                                     if(datos.tipo!=1){
-                                        navigate(`/examen/presentacion/${datos.id}/${dataCurso.id}`);
+                                        navigate(`/examen/presentacion/${datos.id}/${dataCurso.id}/${url_amigable}`);
                                     }else{
                                         iniciarIntentoExamen(datos.id, dataCurso.id);
                                     }
@@ -403,7 +403,7 @@ function FormularioPlay() {
                 funcionCerrar={handleFuncionCerrarPopUp}
                 textoCerrar="Cerrar"
             />
-            <FormularioPlayHeader id_curso={dataCurso.id} nombre_curso={dataCurso.nombre} favorito={dataCurso.favorito} archivado={dataCurso.archivado} tiene_review={dataCurso.tiene_review} porcentaje_progreso={dataCurso.porcentaje_progreso} callBackFavoritoCambiado={obtenerDatosDelServidor}/>
+            <FormularioPlayHeader id_curso={dataCurso.id} nombre_curso={dataCurso.nombre} es_docente={dataCurso.es_docente} favorito={dataCurso.favorito} archivado={dataCurso.archivado} tiene_review={dataCurso.tiene_review} porcentaje_progreso={dataCurso.porcentaje_progreso} callBackFavoritoCambiado={obtenerDatosDelServidor}/>
             
             <section className="course-dashboard">
                 <div className="course-dashboard-wrap">
