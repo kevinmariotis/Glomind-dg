@@ -59,7 +59,7 @@ import Pagina404 from './components/Pagina404';
 //import Home from './components/Home';
 
 const Rutas = () => {    
-    const {authenticated, permissions} = useContext(AuthContext);  //se obtiene los datos del contexto de la sesion (AuthContext)                    
+    const {authenticated, permissions, esDocente} = useContext(AuthContext);  //se obtiene los datos del contexto de la sesion (AuthContext)                    
     const validarPermisos = (lista=[]) => {        
         let retornar = false;
         lista.forEach(function(element) {                        
@@ -83,16 +83,16 @@ const Rutas = () => {
                 <Route path="/tag/:url_amigable" element={<PaginaTagNavegacion/>} />
                 <Route path="/carrito/checkout" element={<ProtectedRoute permiso={authenticated} ><PaginaCheckout/></ProtectedRoute>} />          
                 <Route path="/carrito" element={<ProtectedRoute permiso={authenticated} ><PaginaCarrito/></ProtectedRoute>} />                
-                <Route path="/video/crear" element={<ProtectedRoute permiso={validarPermisos([27])} ><PaginaCrearVideo/></ProtectedRoute>} />          
-                <Route path="/video/editar/:id" element={<ProtectedRoute permiso={validarPermisos([28, 70, 71, 72])} ><PaginaEditarVideo/></ProtectedRoute>} />                                          
+                <Route path="/video/crear/:id_curso_agregar?/:id_curso_categoria?" element={<ProtectedRoute permiso={validarPermisos([27]) || esDocente} ><PaginaCrearVideo/></ProtectedRoute>} />          
+                <Route path="/video/editar/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([28, 70, 71, 72]) || esDocente} ><PaginaEditarVideo/></ProtectedRoute>} />                                          
                 <Route path="/video" element={<ProtectedRoute permiso={validarPermisos([26, 27, 28])} ><PaginaDashboardVideo/></ProtectedRoute>} />          
-                <Route path="/examen/crear/:id_curso?/:id_categoria?" element={<ProtectedRoute permiso={validarPermisos([46])} ><PaginaCrearExamen/></ProtectedRoute>} />
-                <Route path="/examen/huecopreguntas/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaDashboardHuecoPreguntas/></ProtectedRoute>} />
-                <Route path="/examen/editar/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamen/></ProtectedRoute>} />
-                <Route path="/examen/crearpregunta/seleccion_multiple_unica_respuesta/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaCrearExamenPreguntaSmur/></ProtectedRoute>} />
-                <Route path="/examen/editarpregunta/seleccion_multiple_unica_respuesta/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamenPreguntaSmur/></ProtectedRoute>} />
-                <Route path="/examen/crearpregunta/falso_verdadero/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaCrearExamenPreguntaFv/></ProtectedRoute>} />
-                <Route path="/examen/editarpregunta/falso_verdadero/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47])} ><PaginaEditarExamenPreguntaFv/></ProtectedRoute>} />
+                <Route path="/examen/crear/:id_curso?/:id_categoria?" element={<ProtectedRoute permiso={validarPermisos([46]) || esDocente} ><PaginaCrearExamen/></ProtectedRoute>} />
+                <Route path="/examen/huecopreguntas/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47]) || esDocente} ><PaginaDashboardHuecoPreguntas/></ProtectedRoute>} />
+                <Route path="/examen/editar/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47]) || esDocente} ><PaginaEditarExamen/></ProtectedRoute>} />
+                <Route path="/examen/crearpregunta/seleccion_multiple_unica_respuesta/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47]) || esDocente} ><PaginaCrearExamenPreguntaSmur/></ProtectedRoute>} />
+                <Route path="/examen/editarpregunta/seleccion_multiple_unica_respuesta/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47]) || esDocente} ><PaginaEditarExamenPreguntaSmur/></ProtectedRoute>} />
+                <Route path="/examen/crearpregunta/falso_verdadero/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47]) || esDocente} ><PaginaCrearExamenPreguntaFv/></ProtectedRoute>} />
+                <Route path="/examen/editarpregunta/falso_verdadero/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47]) || esDocente} ><PaginaEditarExamenPreguntaFv/></ProtectedRoute>} />
                 <Route path="/examen/presentacion/:id_examen/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenPresentacion/></ProtectedRoute>} />                
                 <Route path="/examen/intento/:id_examen_intento/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenIntento/></ProtectedRoute>} />                                
                 <Route path="/examen/resultados/:id_examen_intento/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenIntentoResultados/></ProtectedRoute>} />
@@ -100,7 +100,7 @@ const Rutas = () => {
                 <Route path="/home" element={<ProtectedRoute permiso={authenticated} ><PaginaDashboardHome/></ProtectedRoute>} />                
                 <Route path="/curso/crear" element={<ProtectedRoute permiso={validarPermisos([21])} ><PaginaCrearCurso/></ProtectedRoute>} />
                 <Route path="/curso/editar/:id" element={<ProtectedRoute permiso={validarPermisos([22])} ><PaginaEditarCurso/></ProtectedRoute>} />
-                <Route path="/curso/contenido/:id" element={<ProtectedRoute permiso={validarPermisos([29, 25, 24])} ><PaginaEditarContenidoCurso/></ProtectedRoute>} />
+                <Route path="/curso/contenido/:id/:url_amigable_volver?" element={<ProtectedRoute permiso={validarPermisos([73, 25, 24]) || esDocente} ><PaginaEditarContenidoCurso/></ProtectedRoute>} />
                 <Route path="/curso/videopreview/:id" element={<ProtectedRoute permiso={validarPermisos([67])} ><PaginaEditarCursoVideoPreview/></ProtectedRoute>} />
                 <Route path="/curso/imagen/:id" element={<ProtectedRoute permiso={validarPermisos([66])} ><PaginaEditarCursoImagen/></ProtectedRoute>} />                
                 <Route path="/curso/usuarios/:id" element={<ProtectedRoute permiso={validarPermisos([44])} ><PaginaCursoUsuarios/></ProtectedRoute>} />                                

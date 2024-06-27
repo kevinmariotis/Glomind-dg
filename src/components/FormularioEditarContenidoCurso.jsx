@@ -17,10 +17,12 @@ function FormularioEditarContenidoCurso() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const navigate = useNavigate(); 
-    const { id } = useParams();    
-    const {jwt, nombres, permissions} = useContext(AuthContext);
+    const { id, url_amigable_volver } = useParams();    
+    const {jwt, nombres, permissions, urlAmigableVolver, setUrlAmigableVolver} = useContext(AuthContext);
     const [nombre, setNombre] = useState('');    
     const [examenesSoloPago, setExamenesSoloPago] = useState(0);        
+    const [esDocente, setEsDocente] = useState(0);
+    const [instructorEditaContenido, setInstructorEditaContenido] = useState(0);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
     const [popUpConfirmarBorrarSeccion, setPopupConfirmarBorrarSeccion] = useState({mostrar:false, titulo:'', contenido:'', id_categoria:''});    
     const [popUpConfirmarBorrarContenido, setPopupConfirmarBorrarContenido] = useState({mostrar:false, titulo:'', contenido:'', id_contenido:''});    
@@ -43,6 +45,9 @@ function FormularioEditarContenidoCurso() {
     
     useEffect(() => {           
         window.scrollTo(0, 0);
+        if(url_amigable_volver){
+            setUrlAmigableVolver(url_amigable_volver);
+        }
         obtenerDatosServidor();        
     }, []);
 
@@ -168,6 +173,10 @@ function FormularioEditarContenidoCurso() {
                 const datos2 = await response2.json();
                 setNombre(datos2.nombre);
                 setExamenesSoloPago(datos2.examenes_solo_pago);
+                setEsDocente(datos2.es_docente);
+                if(datos2.instructor_edita_contenido){
+                    setInstructorEditaContenido(datos2.instructor_edita_contenido);
+                }
             } else {     
                 const datos2 = await response2.json();            
                 mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {});                    
@@ -395,9 +404,13 @@ function FormularioEditarContenidoCurso() {
     }
 
     const handleAgregarVideo = (event) => {         
-        event.preventDefault();               
-        setMostrarPopUpAgregarContenido(false); 
-        setMostrarPopUpAgregarVideo(true);
+        event.preventDefault();    
+        if(urlAmigableVolver==''){
+            setMostrarPopUpAgregarContenido(false); 
+            setMostrarPopUpAgregarVideo(true);
+        }else{
+            navigate(`/video/crear/${id}/${idSeccionAgregarContenido}`); 
+        }
     }
     
     const handleSeleccionarVideo = async (id_video) => {        
@@ -698,7 +711,7 @@ function FormularioEditarContenidoCurso() {
                                         <th scope="col"></th>
                                         <th scope="col">Nombre</th>
                                         <th scope="col">Descripción</th>
-                                        {permissions[36] ? <th scope="col"></th> : ''}
+                                        {(permissions[36] || esDocente==1) ? <th scope="col"></th> : ''}
                                     </tr>
                                     </thead>
                                     <tbody >
@@ -715,7 +728,7 @@ function FormularioEditarContenidoCurso() {
                                                 <th scope="row">                                                                                                                                                                                                                      
                                                     {cortarCadenaPorCaracter(item.descripcion, '.', 10).split('<br />').map((line, index) => (<span style={{ fontStyle: 'italic' }}>{line}<br /></span> ))}                                                    
                                                 </th>
-                                                {permissions[36] ? <th scope="row">    
+                                                {(permissions[36] || esDocente==1) ? <th scope="row">    
                                                     <div onClick={(event) => { handleEditarDescargable(event, {id_descargable:item.id, nombre:item.nombre, descripcion:item.descripcion}); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div>
                                                     <div onClick={event => { handleBorrarDescargable(event, item.id); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>
                                                 </th> : ''}
@@ -832,7 +845,7 @@ function FormularioEditarContenidoCurso() {
                         <div className="form-group">
                             <label className="label-text">Qué deseas agregar?</label>  <br/>
                             <button className="btn theme-btn" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>&nbsp;
-                            {permissions[46] ? <Link to={`${urlBase}/examen/crear/${id}/${idSeccionAgregarContenido}`} className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Examen</Link> : ''}
+                            {permissions[46] || esDocente==1 ? <Link to={`${urlBase}/examen/crear/${id}/${idSeccionAgregarContenido}`} className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Examen</Link> : ''}
                         </div>
                     </div>
                     <div className="modal-footer border-top-gray">                        
@@ -845,7 +858,7 @@ function FormularioEditarContenidoCurso() {
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
-                    <h3 className="fs-22 font-weight-semi-bold"><Link to={`/cursos`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link>&nbsp; {nombre!='' ? nombre : <Skeleton width={'30%'}/> }</h3>
+                    <h3 className="fs-22 font-weight-semi-bold"><Link to={`${urlAmigableVolver!='' ? '/play/'+urlAmigableVolver : '/cursos'}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la edición de contenidos"><i className="la la-angle-left"></i></div></Link>&nbsp; {nombre!='' ? nombre : <Skeleton width={'30%'}/> }</h3>
                     <span style={{marginLeft:'57px'}}>{nombre!='' ? 'Editar contenido del curso' : <Skeleton width={'20%'}/> }</span>
                     
                 </div>
@@ -853,7 +866,7 @@ function FormularioEditarContenidoCurso() {
                     {Object.keys(contenido).map((key) => (                
                         <div className="card card-item" key={`contenido-cat-${contenido[key].id_categoria}`}>
                             <div className="card-body">
-                                <h3 className="fs-22 font-weight-semi-bold pb-2">{contenido[key].nombre} {permissions[25] ? <div onClick={event=>{ handleEditarSeccion(event, contenido[key].id_categoria, contenido[key].nombre); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar sección"><i className="la la-edit"></i></div> : ''} {(contenido[key].curso_contenido.length==0 && permissions[25]) ? <div onClick={event => { handleBorrarCategoria(event, contenido[key].id_categoria); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}</h3>                            
+                                <h3 className="fs-22 font-weight-semi-bold pb-2">{contenido[key].nombre} {permissions[25] || esDocente ? <div onClick={event=>{ handleEditarSeccion(event, contenido[key].id_categoria, contenido[key].nombre); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar sección"><i className="la la-edit"></i></div> : ''} {(contenido[key].curso_contenido.length==0 && (permissions[25] || esDocente)) ? <div onClick={event => { handleBorrarCategoria(event, contenido[key].id_categoria); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}</h3>                            
                                 <div className="divider"><span></span></div>
                                 <div className="row">                                                                
                                     <div className="col-lg-12">
@@ -863,7 +876,7 @@ function FormularioEditarContenidoCurso() {
                                                 <tr>
                                                     <th scope="col">Vista Previa</th>
                                                     <th scope="col">Nombre</th>                                                    
-                                                    {permissions[34] ? <th scope="col">Descargable</th> : ''}
+                                                    {permissions[34] || esDocente ? <th scope="col">Descargable</th> : ''}
                                                     <th scope="col">Porcentaje en curso</th>
                                                     <th scope="col">Detalle</th>                                
                                                     <th scope="col"></th>
@@ -883,7 +896,7 @@ function FormularioEditarContenidoCurso() {
                                                             <td>
                                                                 {tema.nombre}
                                                             </td>
-                                                            {permissions[34] ? 
+                                                            {permissions[34] || esDocente==1 ? 
                                                                 <td>
                                                                     {tema.descargables.map((descargable) => 
                                                                         <div onClick={()=>{ handleDownload({'ruta_archivo':`${urlBaseApi}/${descargable.ruta_archivo.replace('public/', '')}`, 'nombre_archivo':'descargable.pdf'}) }} className="icon-element icon-element-sm flex-shrink-0 bg-7 mr-3 text-white" style={{cursor:'pointer'}}>
@@ -906,20 +919,21 @@ function FormularioEditarContenidoCurso() {
                                                                 </div>
                                                             </td>                                        
                                                             <td>                                                                
-                                                                {permissions[29] ? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Subir" onClick={event => handleMoverContenido(event, tema.id_contenido, '1')} title="Subir"><i className="la la-sort-up"></i></a> : ''}
-                                                                {permissions[29] ? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Bajar" onClick={event => handleMoverContenido(event, tema.id_contenido, '2')} title="Bajar"><i className="la la-sort-down"></i></a> : ''}
-                                                                {permissions[29] ? <div onClick={event => { handleBorrarContenido(event, tema.id_contenido); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}
-                                                                {(permissions[35] || permissions[36]) ? <a onClick={(event) => { handleAbrirListaDescargable(event, {id_tipo_contenido:tema.id_tipo_contenido, tipo_contenido:tema.tipo_contenido}) } }  href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Editar descargable" title="Editar descargable"><i className="la la-download"></i></a> : ''}
+                                                                {permissions[29] || esDocente==1 ? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Subir" onClick={event => handleMoverContenido(event, tema.id_contenido, '1')} title="Subir"><i className="la la-sort-up"></i></a> : ''}
+                                                                {permissions[29] || esDocente==1? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Bajar" onClick={event => handleMoverContenido(event, tema.id_contenido, '2')} title="Bajar"><i className="la la-sort-down"></i></a> : ''}
+                                                                {permissions[29] || esDocente==1? <div onClick={event => { handleBorrarContenido(event, tema.id_contenido); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}
+                                                                {(permissions[35] || permissions[36] || esDocente==1) ? <a onClick={(event) => { handleAbrirListaDescargable(event, {id_tipo_contenido:tema.id_tipo_contenido, tipo_contenido:tema.tipo_contenido}) } }  href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Editar descargable" title="Editar descargable"><i className="la la-download"></i></a> : ''}
 
-                                                                {(tema.tipo_contenido==2 && permissions[47]) ? <Link to={`/examen/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
-                                                                {(tema.tipo_contenido==2 && permissions[47]) ? <div onClick={() => { handleFuncionHuecoPreguntas(tema.id_tipo_contenido) } } className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar preguntas"><i className="la la-list-ol"></i></div> : ''}
+                                                                {(tema.tipo_contenido==1 && (esDocente==1 && instructorEditaContenido==1)) ? <Link to={`/video/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
+                                                                {(tema.tipo_contenido==2 && (permissions[47] || esDocente==1)  ) ? <Link to={`/examen/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
+                                                                {(tema.tipo_contenido==2 && (permissions[47] || esDocente==1)) ? <div onClick={() => { handleFuncionHuecoPreguntas(tema.id_tipo_contenido) } } className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar preguntas"><i className="la la-list-ol"></i></div> : ''}
                                                             </td>
                                                         </tr>
                                                     )}                                
                                                 </tbody>
                                             </table>                            
                                         </div>                            
-                                        {permissions[29] ? <div className="course-submit-btn-box pb-4">
+                                        {permissions[29] || esDocente==1 ? <div className="course-submit-btn-box pb-4">
                                             <button className="btn theme-btn" type="submit" onClick={event=>{ handleAgregarContenido(event, contenido[key].id_categoria); }}><i className="la la-plus mr-2"></i>Agregar contenido</button>
                                         </div>: ''}
                                     </div>                                    
@@ -927,7 +941,7 @@ function FormularioEditarContenidoCurso() {
                             </div>
                         </div>
                     ))}
-                    {permissions[24] ? <div className="course-submit-btn-box pb-4">
+                    {permissions[24] || esDocente==1 ? <div className="course-submit-btn-box pb-4">
                         <button className="btn theme-btn" type="submit" onClick={event => handleAbrirCrearSeccion(event)}><i className="la la-plus mr-2"></i>Agregar sección</button>
                     </div> : ''}
                 </form>

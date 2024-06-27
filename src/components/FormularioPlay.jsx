@@ -403,7 +403,7 @@ function FormularioPlay() {
                 funcionCerrar={handleFuncionCerrarPopUp}
                 textoCerrar="Cerrar"
             />
-            <FormularioPlayHeader id_curso={dataCurso.id} nombre_curso={dataCurso.nombre} es_docente={dataCurso.es_docente} favorito={dataCurso.favorito} archivado={dataCurso.archivado} tiene_review={dataCurso.tiene_review} porcentaje_progreso={dataCurso.porcentaje_progreso} callBackFavoritoCambiado={obtenerDatosDelServidor}/>
+            <FormularioPlayHeader id_curso={dataCurso.id} nombre_curso={dataCurso.nombre} instructor_edita_contenido={dataCurso.es_docente && dataCurso.instructor_edita_contenido ? true : false} curso_url_amigable={url_amigable} favorito={dataCurso.favorito} archivado={dataCurso.archivado} tiene_review={dataCurso.tiene_review} porcentaje_progreso={dataCurso.porcentaje_progreso} callBackFavoritoCambiado={obtenerDatosDelServidor}/>
             
             <section className="course-dashboard">
                 <div className="course-dashboard-wrap">

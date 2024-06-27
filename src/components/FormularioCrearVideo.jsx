@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
@@ -12,7 +12,9 @@ function FormularioCrearVideo() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const {jwt, permissions} = useContext(AuthContext);
-    const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});        
+    const { id_curso_categoria, id_curso_agregar } = useParams();
+    const navigate = useNavigate(); 
+    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1}); 
     const [popUpSubida, setPopupSubida] = useState({mostrar:false, titulo:'', contenido:''});        
     const [selectedVideo, setSelectedImage] = useState(null);
     const [progress, setProgress] = useState(0);
@@ -56,10 +58,17 @@ function FormularioCrearVideo() {
     const handleDescripcionChange = (event) => { setDescripcion(event.target.value);    };      
 
     const handleFuncionAceptarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        switch(popUp.data_switch){
+            case 'video-creado':
+                if(id_curso_agregar && id_curso_categoria){
+                    navigate(`/curso/contenido/${id_curso_agregar}`);
+                }                  
+            break;
+        }
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
     const handleFuncionCerrarPopUp = () => {        
-        setPopup({...popUp, mostrar:false});
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, data_id_2:-1});
     };
 
     const onDrop = (acceptedFiles) => {
@@ -87,7 +96,10 @@ function FormularioCrearVideo() {
             formData.append('descripcion', descripcion);
             formData.append('nombre', nombre);
             formData.append('video_grande', selectedVideo);
-
+            if(id_curso_agregar && id_curso_categoria){
+                formData.append('id_curso', id_curso_agregar);
+                formData.append('id_categoria', id_curso_categoria);
+            }
             const xhr = new XMLHttpRequest();
 
             // Escuchamos el evento de progreso para actualizar el estado del progreso.
@@ -104,9 +116,9 @@ function FormularioCrearVideo() {
                 const status = xhr.status;   
                 const datos = JSON.parse(xhr.responseText);                                      
                 if(status>=200 && status<300){                    
-                    setPopup({mostrar:true, titulo:'Listo', contenido:'Video guardado satisfactoriamente'});
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Video guardado satisfactoriamente', data_switch:'video-creado'});
                     setNombre('');
-                    setDescripcion('');
+                    setDescripcion('');                    
                 }else{
                     mensajesDeError(setPopup, status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Error', 'contenido': 'Hubo un error al subir el video, revise el formulario.'});
                 }                
@@ -155,7 +167,7 @@ function FormularioCrearVideo() {
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
-                    <h3 className="fs-22 font-weight-semi-bold"><Link to={`/video`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la lista de videos"><i className="la la-angle-left"></i></div></Link>&nbsp;Crear video</h3>                    
+                    <h3 className="fs-22 font-weight-semi-bold"><Link to={id_curso_agregar ? `/curso/contenido/${id_curso_agregar}` : `/video`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la lista de videos"><i className="la la-angle-left"></i></div></Link>&nbsp;Crear video</h3>                    
                 </div>
                 <form action="#">                      
                     <div className="card card-item">

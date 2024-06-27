@@ -9,7 +9,7 @@ import { mensajesDeError } from './utils';
 import Dropdown from './Dropdown';
 
 
-function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archivado=-1, tiene_review=-1, porcentaje_progreso=-1, callBackFavoritoCambiado=()=>{}, }) {        
+function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archivado=-1, tiene_review=-1, porcentaje_progreso=-1, instructor_edita_contenido=false, curso_url_amigable=null, callBackFavoritoCambiado=()=>{}, }) {        
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;  
     const urlBase = import.meta.env.VITE_URL_BASE;          
     const navigate = useNavigate();            
@@ -173,7 +173,13 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
         }catch (error) {
             console.error('Error de conexión:', error);
         }        
-    }    
+    }   
+    
+    //Ir a la pagina de edicion de contenidos del curso si es docente
+    const verPaginaEditarCurso = (event) => {
+        navigate(`/curso/contenido/${id_curso}${curso_url_amigable!=null ? '/'+curso_url_amigable : ''}`);
+    }
+
     return (        
         <>
             {mostrarSpinner && <Spinner />}
@@ -246,7 +252,7 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                                 </li>    
                             </ul>: ''}
                             <div className="logo-box">
-                                <Link to="/" className="logo"><img src={`${urlBase}/images/educalablogo.png`} alt="logo" /></Link>
+                                <Link to="/" className="logo"><img src={`${urlBase}/images/edukalab_logo.png`} alt="logo" /></Link>
                             </div>   
 
                             <div className="logo-box logo--box">
@@ -309,6 +315,7 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                                         <Dropdown data={[
                                             {nombre:(favorito==1) ? 'Quitar de favorito' : 'Marcar como favorito', tipo_link:'funcion', 'href':()=>{ establecerQuitarFavorito(); }},
                                             {nombre:(archivado==1) ? 'Desarchivar curso' : 'Archivar curso', tipo_link:'funcion', 'href':()=>{ establecerArchivarCurso(); }},
+                                            ...(instructor_edita_contenido==1 ? [{nombre:'Editar contenidos', tipo_link:'funcion', 'href':()=>{ verPaginaEditarCurso(); }}] : []),
                                         ]}/>                                        
                                     </div>
                                 </div>

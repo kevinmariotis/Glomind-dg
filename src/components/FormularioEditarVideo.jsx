@@ -13,8 +13,8 @@ import DashboardFooter from './DashboardFooter';
 function FormularioEditarVideo() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
-    const { id } = useParams();
-    const {jwt, permissions} = useContext(AuthContext);
+    const { id, id_curso } = useParams();
+    const {jwt, permissions, urlAmigableVolver} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});        
     const [popUpSubida, setPopupSubida] = useState({mostrar:false, titulo:'', contenido:''});        
     const [selectedVideo, setSelectedVideo] = useState(null);
@@ -197,7 +197,7 @@ function FormularioEditarVideo() {
     const handleActualizarCurso = async () => {
         reiniciarErrorCampoGlobal();
         setProgress(0);
-        if(permissions[28]==1){
+        if(permissions[28]==1 || urlAmigableVolver!=''){
             const raw = {
                 'nombre': nombre.toString(),            
                 'descripcion': descripcion.toString(),
@@ -513,10 +513,10 @@ function FormularioEditarVideo() {
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
-                    <h3 className="fs-22 font-weight-semi-bold"><Link to={`/video`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la lista de videos"><i className="la la-angle-left"></i></div></Link>&nbsp;Editar video</h3>                    
+                    <h3 className="fs-22 font-weight-semi-bold"><Link to={id_curso ? `/curso/contenido/${id_curso}` : `/video`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Volver a la lista de videos"><i className="la la-angle-left"></i></div></Link>&nbsp;Editar video</h3>                    
                 </div>
                 <form action="#">                      
-                    {permissions[28] ? <div className="card card-item">
+                    {permissions[28] || urlAmigableVolver!='' ? <div className="card card-item">
                         <div className="card-body">
                             <h3 className="fs-22 font-weight-semi-bold pb-2">General</h3>
                             <div className="divider"><span></span></div>
@@ -538,7 +538,7 @@ function FormularioEditarVideo() {
                             </div>
                         </div>
                     </div> : ''} 
-                    {permissions[71] ? <div className="card card-item">
+                    {permissions[71] || urlAmigableVolver!='' ? <div className="card card-item">
                         <div className="card-body">
                             <h3 className="fs-22 font-weight-semi-bold pb-2">Adjuntar video</h3>
                             <div className="divider"><span></span></div>
@@ -570,7 +570,7 @@ function FormularioEditarVideo() {
                             </div>
                         </div>
                     </div>: ''}                   
-                    {permissions[70] ? <div className="card card-item">
+                    {permissions[70] || urlAmigableVolver!='' ? <div className="card card-item">
                         <div className="card-body">
                             <h3 className="fs-22 font-weight-semi-bold pb-2">Marcadores</h3>
                             <div className="divider"><span></span></div>
@@ -621,7 +621,7 @@ function FormularioEditarVideo() {
                             </div>
                         </div>
                     </div> : ''}
-                    {permissions[72] ? <div className="card card-item">
+                    {permissions[72] || urlAmigableVolver!='' ? <div className="card card-item">
                         <div className="card-body">
                             <h3 className="fs-22 font-weight-semi-bold pb-2">Imagen miniatura</h3>
                             <div className="divider"><span></span></div>
