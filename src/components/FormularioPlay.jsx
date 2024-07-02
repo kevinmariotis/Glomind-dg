@@ -63,6 +63,14 @@ function FormularioPlay() {
                 case 1: //1 video
                     setTipoContenidoHilo(2);    //2 video
                 break;
+                case 3:    //3 recurso
+                    handleActualizaEstadoConsumo();
+                    setTipoContenidoHilo(3);    //3 recurso
+                break;
+                case 4:    //4 etiqueta
+                    handleActualizaEstadoConsumo();
+                    setTipoContenidoHilo(4);    //4 etiqueta
+                break;
             }
         }
     }, [dataContenidoViendo]);     
@@ -147,7 +155,7 @@ function FormularioPlay() {
             const datos = await response.json();
             if (response.ok){                                                                               
                 setContenido(datos);
-                if(activar_actividad_actual){
+                if(activar_actividad_actual && !dataCurso.es_docente){
                     setCargarActividadActual(true);
                 }
             } else {                
@@ -282,7 +290,7 @@ function FormularioPlay() {
             const response = await fetch(`${urlBaseApi}/api/cursocontenidoconsumo/${contenidoActivado}`, opciones);            
             const datos = await response.json();                        
             if (response.ok){                                
-                return;
+                //return;
             } else {
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
             }                
@@ -291,7 +299,7 @@ function FormularioPlay() {
         }
     }
 
-    const handleActualizaEstadoConsumoVideo = async () => {        
+    const handleActualizaEstadoConsumo = async () => {        
         if(dataContenidoViendo.consumo_estado==0){            
             const raw = {           
                 'estado': 1,
@@ -418,9 +426,24 @@ function FormularioPlay() {
                                             posision_actual={parseInt(dataContenidoViendo.consumo_puntuacion)}                                            
                                             estado_consumo={dataContenidoViendo.consumo_estado}
                                             funcion_reportar_posicion_actual = {handleActualizaPosicionActualVideo}                                            
-                                            funcion_reportar_visto_completo = {handleActualizaEstadoConsumoVideo}                                            
+                                            funcion_reportar_visto_completo = {handleActualizaEstadoConsumo}                                            
                                         />                                                          
-                                        : ''
+                                        : 
+                                    dataContenidoViendo.tipo_contenido==3 ?
+                                            'Recurso: Aqui, colocar el pdf si ruta_archivo termina en .pdf de lo contario mostrar un icono representativo de un archico estandar y colocar un mensaje abajo para invitar a la descarga, verificar como se ve en dispositivos moviles.'
+                                    : 
+
+                                    dataContenidoViendo.tipo_contenido==4 ?
+                                            'Etiqueta: Aqui, se muestra el html de la etiqueta y se trata de que se ocupe todo el div padre tanto en ancho como alto, verificar como se ve en dispositivos moviles.'
+                                    : 
+
+                                    dataContenidoViendo.tipo_contenido==5 ?
+                                            'Tarea: Aqui se debe mostrar el historial de envios (una misma tarea pudiera ser enviada varias veces), la fecha hora de envio y si ya fue calificada o no (basado en el estado), tambien la posibilidad de volver a enviarla (si se permite por configuracion de la misma tarea) retroalimentacion del docente, tambien la posibididad de descargar el archivo que envió. Si es el docente le da acceso a un panel especial (otra ruta) para ver todos los intentos y calificar.'
+                                    : 
+
+                                    dataContenidoViendo.tipo_contenido==6 ?
+                                            'Foro: Aqui, se muestra en la parte superior el nombre del foro, segido de la descripcion, seguido del componente de foro como tal, si el usuario es el docente se permite poner una calificacion por cada foro de 1 a 5.'
+                                    : ''
                                     }                                    
                                 </div>
                                 <div className="lecture-viewer-text-wrap">
