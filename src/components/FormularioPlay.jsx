@@ -552,7 +552,12 @@ function FormularioPlay() {
                                                                                             {categoria.curso_contenido[key].tipo_contenido==1 ? 
                                                                                                 <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
                                                                                                     {categoria.curso_contenido[key].imagen_preview_pequena && categoria.curso_contenido[key].imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].imagen_preview_pequena}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
-                                                                                                </div> : ''}                                                                            
+                                                                                                </div> : 
+                                                                                             categoria.curso_contenido[key].tipo_contenido==3 ?
+                                                                                                <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
+                                                                                                    {categoria.curso_contenido[key].ruta_imagen_preview_small && categoria.curso_contenido[key].ruta_imagen_preview_small!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].ruta_imagen_preview_small}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
+                                                                                                </div>
+                                                                                             : ''}                                                                            
                                                                                         </div>
 
                                                                                         <h4 className="fs-15">{parseInt(key)+1}. {categoria.curso_contenido[key].nombre}</h4>
@@ -564,11 +569,12 @@ function FormularioPlay() {
                                                                                                         <i className="la la-play-circle"></i>
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                                     ? 
-                                                                                                        categoria.curso_contenido[key].tipo==1 ? 'Actividad' : 'Examen'
+                                                                                                        categoria.curso_contenido[key].tipo==1 ? <span><i className="la la-gamepad"></i> Actividad</span> : <span><i className="la la-pencil"></i> Examen</span>
 
-                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 3
-                                                                                                    ? 'Actividad tipo 3'
-                                                                                                    : 'Actividad desconocida'
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 3 ? <span><i className="la la-file"></i> Recurso</span>
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 4 ? <span><i className="la la-paperclip"></i> Etiqueta</span>
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 5 ? <span><i className="la la-home"></i> Tarea</span>
+                                                                                                    : ''
                                                                                                 }
 
                                                                                                 {
@@ -578,11 +584,12 @@ function FormularioPlay() {
 
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                                     ? 
-                                                                                                        categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? categoria.curso_contenido[key].tiempo_resumido : ''
+                                                                                                        categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? ' de duración '+categoria.curso_contenido[key].tiempo_resumido : ''
                                                                                                         
-                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 3
-                                                                                                    ? 'Actividad tipo 3'
-                                                                                                    : 'Actividad desconocida'
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 3 ? ''                                                                                                    
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 4 ? ''
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                                    : ''
                                                                                                 }    
                                                                                             </p>                                                                                            
                                                                                             {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&
@@ -764,7 +771,13 @@ function FormularioPlay() {
                                                                                 {categoria.curso_contenido[key].tipo_contenido==1 ? 
                                                                                     <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
                                                                                         {categoria.curso_contenido[key].imagen_preview_pequena && categoria.curso_contenido[key].imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].imagen_preview_pequena}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
-                                                                                    </div> : ''}                                                                            
+                                                                                    </div> : 
+                                                                                 categoria.curso_contenido[key].tipo_contenido==3 ?
+                                                                                    <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
+                                                                                        {categoria.curso_contenido[key].ruta_imagen_preview_small && categoria.curso_contenido[key].ruta_imagen_preview_small!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].ruta_imagen_preview_small}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
+                                                                                    </div>
+                                                                                    : ''
+                                                                                }                                                                            
                                                                             </div>
 
                                                                             <h4 className="fs-15">{parseInt(key) + 1}. {categoria.curso_contenido[key].nombre}</h4>
@@ -776,11 +789,12 @@ function FormularioPlay() {
                                                                                             <i className="la la-play-circle"></i>
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                         ? 
-                                                                                            categoria.curso_contenido[key].tipo==1 ? 'Actividad' : 'Examen'
+                                                                                            categoria.curso_contenido[key].tipo==1 ? <span><i className="la la-gamepad"></i> Actividad</span> : <span><i className="la la-pencil"></i> Examen</span>
 
-                                                                                        : categoria.curso_contenido[key].tipo_contenido === 3
-                                                                                        ? 'Actividad tipo 3'
-                                                                                        : 'Actividad desconocida'
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 3 ? <span><i className="la la-file"></i> Recurso</span>
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 4 ? <span><i className="la la-paperclip"></i> Etiqueta</span>
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 5 ? <span><i className="la la-home"></i> Tarea</span>
+                                                                                        : ''
                                                                                     }
 
                                                                                     {
@@ -790,11 +804,12 @@ function FormularioPlay() {
 
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                         ? 
-                                                                                            categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? categoria.curso_contenido[key].tiempo_resumido : ''
+                                                                                            categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? ' de duración: '+categoria.curso_contenido[key].tiempo_resumido : ''
                                                                                             
-                                                                                        : categoria.curso_contenido[key].tipo_contenido === 3
-                                                                                        ? 'Actividad tipo 3'
-                                                                                        : 'Actividad desconocida'
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 3 ? ''
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 4 ? ''
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                        : ''
                                                                                     }                                                                                        
                                                                                 </p>
                                                                                 {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&

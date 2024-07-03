@@ -93,7 +93,7 @@ const Rutas = () => {
                 <Route path="/examen/editarpregunta/seleccion_multiple_unica_respuesta/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47]) || esDocente} ><PaginaEditarExamenPreguntaSmur/></ProtectedRoute>} />
                 <Route path="/examen/crearpregunta/falso_verdadero/:id/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47]) || esDocente} ><PaginaCrearExamenPreguntaFv/></ProtectedRoute>} />
                 <Route path="/examen/editarpregunta/falso_verdadero/:id/:id_examen_pregunta/:id_curso?" element={<ProtectedRoute permiso={validarPermisos([47]) || esDocente} ><PaginaEditarExamenPreguntaFv/></ProtectedRoute>} />
-                <Route path="/examen/presentacion/:id_examen/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenPresentacion/></ProtectedRoute>} />                
+                <Route path="/examen/presentacion/:id_examen/:id_curso/:url_amigable_volver?" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenPresentacion/></ProtectedRoute>} />                
                 <Route path="/examen/intento/:id_examen_intento/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenIntento/></ProtectedRoute>} />                                
                 <Route path="/examen/resultados/:id_examen_intento/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenIntentoResultados/></ProtectedRoute>} />
                 <Route path="/examen/historial/:id_examen/:id_curso" element={<ProtectedRoute permiso={authenticated} ><PaginaExamenHistorial/></ProtectedRoute>} />                
