@@ -403,6 +403,15 @@ function FormularioEditarContenidoCurso() {
         setMostrarPopUpAgregarContenido(true);
     }
 
+    /** Handle Agregar Tag */
+
+    const handleAgregarTag = (event) => {
+        event.preventDefault();
+        if(urlAmigableVolver == ''){
+            
+        }
+    }
+
     const handleAgregarVideo = (event) => {         
         event.preventDefault();    
         if(urlAmigableVolver==''){
@@ -694,6 +703,12 @@ function FormularioEditarContenidoCurso() {
                 <Button variant="secondary" onClick={handleFuncionCerrarPopUpVideo}>Cerrar</Button>
             </Modal.Footer>
         </Modal>
+
+        {
+            /*
+                Popup lista descargable
+            */
+        }
         {popUpListaDescargable.mostrar==1 && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="decargableModal" tabIndex="-1" role="dialog" aria-labelledby="decargableModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -746,6 +761,12 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
+
+        {
+            /*
+                Popup descargable
+            */
+        }
         {popUpDescargable.mostrar==1 && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="decargableModal" tabIndex="-1" role="dialog" aria-labelledby="decargableModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -789,6 +810,13 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
+
+        {
+            /*
+                Popup crear seccion
+            */
+        }
+
         {mostrarPopUpCrearSeccion && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -811,6 +839,13 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
+
+        {
+            /*
+                Popup editar sección
+            */
+        }
+
         {mostrarPopUpEditarSeccion && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal2" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -833,6 +868,14 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
+
+
+        {
+            /*
+                Popup agregrar contenido
+            */
+        }
+        
         {mostrarPopUpAgregarContenido && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal3" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -844,8 +887,9 @@ function FormularioEditarContenidoCurso() {
                     <div className="modal-body">
                         <div className="form-group">
                             <label className="label-text">Qué deseas agregar?</label>  <br/>
-                            <button className="btn theme-btn" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>&nbsp;
-                            {permissions[46] || esDocente==1 ? <Link to={`${urlBase}/examen/crear/${id}/${idSeccionAgregarContenido}`} className="btn theme-btn" type="button" ><i className="la la-plus mr-2"></i>Examen</Link> : ''}
+                            <button className="btn theme-btn ml-2" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>
+                            {permissions[46] || esDocente==1 ? <Link to={`${urlBase}/examen/crear/${id}/${idSeccionAgregarContenido}`} className="btn theme-btn ml-2" type="button" ><i className="la la-plus mr-2"></i>Examen</Link> : ''}
+                            {permissions[46] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button"> <i className="la la-plus mr-2"></i> Etiqueta</button> : ''}
                         </div>
                     </div>
                     <div className="modal-footer border-top-gray">                        
@@ -854,7 +898,16 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
+
+        {
+            /*
+                Popup agregar video
+            */
+        }
+
         {mostrarPopUpAgregarVideo && <VideoPicker funcionMostrarPopUp={setMostrarPopUpAgregarVideo} funcionSetVideoSeleccionado={handleSeleccionarVideo} />}
+        
+        
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
