@@ -29,11 +29,11 @@ function FormularioPlay() {
     const [mostrarMasCursoDescripcion, setMostrarMasCursoDescripcion]  = useState(false);
     const [contenido, setContenido] = useState([]);  
     const [dataContenidoViendo, setDataContenidoViendo] = useState([]);  
-    const [tipoContenidoHilo, setTipoContenidoHilo] = useState(1);  //videos : 2, etc..
+    const [tipoContenidoHilo, setTipoContenidoHilo] = useState(-1);  //videos : 2, etc..
       
     const [contenidoActivado, setContenidoActivado] = useState(-1);  //el contenido que se está viendo
     const [contenidoActivadoAnterior, setContenidoActivadoAnterior] = useState(-1);  //el contenido anterior que estaba viendo, por si acaso hay que volver a señalarlo.
-    const [pestanaActivada, setPestanaActivada] = useState(3);  //pestañas que estan debajo del video
+    const [pestanaActivada, setPestanaActivada] = useState(4);  //pestañas que estan debajo del video
     const [cargarActividadActual, setCargarActividadActual] = useState(false);
         
     const refBloqueDescripcion = useRef(null);
@@ -70,6 +70,9 @@ function FormularioPlay() {
                 case 4:    //4 etiqueta
                     handleActualizaEstadoConsumo();
                     setTipoContenidoHilo(4);    //4 etiqueta
+                break;                
+                default:
+                    setTipoContenidoHilo(-1);   //Ninguno, no tiene foro
                 break;
             }
         }
@@ -229,7 +232,12 @@ function FormularioPlay() {
                             }
                         break;
                         default:
-                            setDataContenidoViendo(datos);                                
+                            setDataContenidoViendo(datos);  
+                            if([5, 6].includes(datos.tipo_contenido)){  //Si son los foros o tareas 
+                                setPestanaActivada(4);      //Se ativan los anuncios, ya que no tienen chay y la descripcion esta arriba
+                            }else{
+                                setPestanaActivada(3);      //Se activa la descripción
+                            }
                         break;
                     }                                        
                 } else {                
@@ -479,11 +487,11 @@ function FormularioPlay() {
                                                 <i className="la la-search"></i>
                                             </a>
                                         </li>                                        
-                                        <li className="nav-item">
+                                        {[2, 3, 4].includes(tipoContenidoHilo) ? <li className="nav-item">
                                             <a onClick={(event)=>{ handleCambiarPestana(event, 3); }} className={`nav-link ${pestanaActivada==3 ? 'active': ''}`} id="question-and-ans-tab" data-toggle="tab" href="#question-and-ans" role="tab" aria-controls="question-and-ans" aria-selected="false">
-                                                Preguntas y respuestas
+                                                Descripción
                                             </a>
-                                        </li>                                        
+                                        </li> : ''}   
                                         <li className="nav-item mobile-menu-nav-item">
                                             <a onClick={(event)=>{ handleCambiarPestana(event, 1); }} className={`nav-link ${pestanaActivada==1 ? 'active': ''}`} id="course-content-tab" data-toggle="tab" href="#course-content" role="tab" aria-controls="course-content" aria-selected="false">
                                                 Contenido del curso
@@ -552,7 +560,12 @@ function FormularioPlay() {
                                                                                             {categoria.curso_contenido[key].tipo_contenido==1 ? 
                                                                                                 <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
                                                                                                     {categoria.curso_contenido[key].imagen_preview_pequena && categoria.curso_contenido[key].imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].imagen_preview_pequena}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
-                                                                                                </div> : ''}                                                                            
+                                                                                                </div> : 
+                                                                                             categoria.curso_contenido[key].tipo_contenido==3 ?
+                                                                                                <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
+                                                                                                    {categoria.curso_contenido[key].ruta_imagen_preview_small && categoria.curso_contenido[key].ruta_imagen_preview_small!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].ruta_imagen_preview_small}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
+                                                                                                </div>
+                                                                                             : ''}                                                                            
                                                                                         </div>
 
                                                                                         <h4 className="fs-15">{parseInt(key)+1}. {categoria.curso_contenido[key].nombre}</h4>
@@ -564,11 +577,13 @@ function FormularioPlay() {
                                                                                                         <i className="la la-play-circle"></i>
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                                     ? 
-                                                                                                        categoria.curso_contenido[key].tipo==1 ? 'Actividad' : 'Examen'
+                                                                                                        categoria.curso_contenido[key].tipo==1 ? <span><i className="la la-gamepad"></i> Actividad</span> : <span><i className="la la-pencil"></i> Examen</span>
 
-                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 3
-                                                                                                    ? 'Actividad tipo 3'
-                                                                                                    : 'Actividad desconocida'
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 3 ? <span><i className="la la-file"></i> Recurso</span>
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 4 ? <span><i className="la la-paperclip"></i> Etiqueta</span>
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 5 ? <span><i className="la la-home"></i> Tarea</span>
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 6 ? <span><i className="la la-comments"></i> Foro</span>
+                                                                                                    : ''
                                                                                                 }
 
                                                                                                 {
@@ -578,11 +593,13 @@ function FormularioPlay() {
 
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                                     ? 
-                                                                                                        categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? categoria.curso_contenido[key].tiempo_resumido : ''
+                                                                                                        categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? ' de duración '+categoria.curso_contenido[key].tiempo_resumido : ''
                                                                                                         
-                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 3
-                                                                                                    ? 'Actividad tipo 3'
-                                                                                                    : 'Actividad desconocida'
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 3 ? ''                                                                                                    
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 4 ? ''
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 6 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                                    : ''
                                                                                                 }    
                                                                                             </p>                                                                                            
                                                                                             {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&
@@ -714,7 +731,13 @@ function FormularioPlay() {
                                         </div>
         
                                         <div className={`tab-pane fade show ${pestanaActivada==3 ? 'active': ''}`} id="question-and-ans" role="tabpanel" aria-labelledby="question-and-ans-tab">                                                                                        
-                                            {dataCurso.id!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={tipoContenidoHilo} /> : ''}                                            
+                                            <div className="lecture-overview-wrap">
+                                                <div className="lecture-overview-item">
+                                                    <h3 className="fs-24 font-weight-semi-bold pb-2">{dataContenidoViendo.nombre ? dataContenidoViendo.nombre : ''}</h3>
+                                                    {dataContenidoViendo.descripcion!=null ? <p>{dataContenidoViendo.descripcion.split('<br />').map((line, index2) => (<span key={`desc-general-larga-${index2}`}>{line}<br /></span> ))}</p> : ''}
+                                                </div>                                                
+                                            </div>                                            
+                                            {dataCurso.id!=-1 && tipoContenidoHilo!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={tipoContenidoHilo} /> : ''}                                            
                                         </div>
                                         
                                         {dataCurso.instructor!='' ? <div className={`tab-pane fade show ${pestanaActivada==4 ? 'active': ''}`} id="announcements" role="tabpanel" aria-labelledby="announcements-tab">
@@ -764,7 +787,13 @@ function FormularioPlay() {
                                                                                 {categoria.curso_contenido[key].tipo_contenido==1 ? 
                                                                                     <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
                                                                                         {categoria.curso_contenido[key].imagen_preview_pequena && categoria.curso_contenido[key].imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].imagen_preview_pequena}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
-                                                                                    </div> : ''}                                                                            
+                                                                                    </div> : 
+                                                                                 categoria.curso_contenido[key].tipo_contenido==3 ?
+                                                                                    <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
+                                                                                        {categoria.curso_contenido[key].ruta_imagen_preview_small && categoria.curso_contenido[key].ruta_imagen_preview_small!=null ? <img src={`${urlBaseApi}/${categoria.curso_contenido[key].ruta_imagen_preview_small}`} alt={categoria.curso_contenido[key].nombre} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={categoria.curso_contenido[key].nombre} /> }
+                                                                                    </div>
+                                                                                    : ''
+                                                                                }                                                                            
                                                                             </div>
 
                                                                             <h4 className="fs-15">{parseInt(key) + 1}. {categoria.curso_contenido[key].nombre}</h4>
@@ -776,11 +805,13 @@ function FormularioPlay() {
                                                                                             <i className="la la-play-circle"></i>
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                         ? 
-                                                                                            categoria.curso_contenido[key].tipo==1 ? 'Actividad' : 'Examen'
+                                                                                            categoria.curso_contenido[key].tipo==1 ? <span><i className="la la-gamepad"></i> Actividad</span> : <span><i className="la la-pencil"></i> Examen</span>
 
-                                                                                        : categoria.curso_contenido[key].tipo_contenido === 3
-                                                                                        ? 'Actividad tipo 3'
-                                                                                        : 'Actividad desconocida'
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 3 ? <span><i className="la la-file"></i> Recurso</span>
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 4 ? <span><i className="la la-paperclip"></i> Etiqueta</span>
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 5 ? <span><i className="la la-home"></i> Tarea</span>
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 6 ? <span><i className="la la-comments"></i> Foro</span>
+                                                                                        : ''
                                                                                     }
 
                                                                                     {
@@ -790,11 +821,13 @@ function FormularioPlay() {
 
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                         ? 
-                                                                                            categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? categoria.curso_contenido[key].tiempo_resumido : ''
+                                                                                            categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? ' de duración: '+categoria.curso_contenido[key].tiempo_resumido : ''
                                                                                             
-                                                                                        : categoria.curso_contenido[key].tipo_contenido === 3
-                                                                                        ? 'Actividad tipo 3'
-                                                                                        : 'Actividad desconocida'
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 3 ? ''
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 4 ? ''
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 6 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                        : ''
                                                                                     }                                                                                        
                                                                                 </p>
                                                                                 {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&
