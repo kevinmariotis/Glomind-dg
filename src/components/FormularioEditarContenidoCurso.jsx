@@ -408,7 +408,7 @@ function FormularioEditarContenidoCurso() {
     const handleAgregarTag = (event) => {
         event.preventDefault();
         if(urlAmigableVolver == ''){
-            
+
         }
     }
 
@@ -890,6 +890,8 @@ function FormularioEditarContenidoCurso() {
                             <button className="btn theme-btn ml-2" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>
                             {permissions[46] || esDocente==1 ? <Link to={`${urlBase}/examen/crear/${id}/${idSeccionAgregarContenido}`} className="btn theme-btn ml-2" type="button" ><i className="la la-plus mr-2"></i>Examen</Link> : ''}
                             {permissions[46] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button"> <i className="la la-plus mr-2"></i> Etiqueta</button> : ''}
+                            {permissions[46] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button"> <i className="la la-plus mr-2"></i> Recurso</button> : ''}
+                            {permissions[46] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button"> <i className="la la-plus mr-2"></i> Tarea</button> : ''}
                         </div>
                     </div>
                     <div className="modal-footer border-top-gray">                        
