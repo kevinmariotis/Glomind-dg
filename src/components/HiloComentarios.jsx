@@ -6,10 +6,10 @@ import SpamError from './SpamError';
 import Spinner from './Spinner';
 import Popup from './Popup';
 
-function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}) {
+function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, id_curso=-1, es_docente=false}) {
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
     const urlBase = import.meta.env.VITE_URL_BASE;  
-    const {jwt, esMovil} = useContext(AuthContext);
+    const {jwt, esMovil, temaActual} = useContext(AuthContext);
         
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
     const [mostrarSpinner, setMostrarSpinner] = useState(false);  
@@ -227,7 +227,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                 setSeccionActivada(1);                
                 setNuevaPregunta('');
                 setIdComentarioHijosViendo(0);
-                setPopup({mostrar:true, titulo:'Listo', contenido:'Tu pregunta ha sido publicada.'});                
+                setPopup({mostrar:true, titulo:'Listo', contenido: tipo_objeto_enlace!=6 ? 'Tu pregunta ha sido publicada.' : 'Tu participación ha sido publicada.' });                
                 cargarHiloComentarios(id_hilo);
             } else {
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
@@ -380,9 +380,70 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
         setFiltrarPorPreguntasSinRespuesta(checked ? true: false);        
     };
     
+    const handleCalificacionChange = async (event, id_comentario, es_comentario_hijo) => {
+        event.preventDefault();        
+        //console.log("colocando "+event.target.value+" al comentario "+id_comentario);
+        if(event.target.value!=-1){      
+            if(!es_comentario_hijo){
+                actualizarCalificacionLocal(id_comentario, event.target.value);      
+            }else{
+                actualizarCalificacionHijoLocal(id_comentario, event.target.value);      
+            }
+            try {                                                          
+                const raw = {           
+                    'id_curso': id_curso.toString(),
+                    'calificacion': event.target.value.toString(),
+                };
+                const opciones = {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization' : `Bearer ${jwt}`
+                    },
+                    body: JSON.stringify(raw),
+                };        
+                try {
+                    setMostrarSpinner(true);
+                    const response = await fetch(`${urlBaseApi}/api/comentario/calificacion/${id_comentario}`, opciones);
+                    setMostrarSpinner(false);
+                    const datos = await response.json();            
+                    if (response.ok){                        
+                        return;
+                    } else {
+                        mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+                    }                
+                }catch (error) {
+                    console.error('Error de conexión:', error);
+                }
+            }catch(error){
+                // Manejar el caso de error en la solicitud
+                console.error('Error en la solicitud al servidor', error);
+            }            
+        }
+    };
+
     const handleCargarMasComentarios = () => {                
         setPagina(Math.abs(pagina)+1);        
     };
+
+    const actualizarCalificacionLocal = (id_comentario, calificacion) => {
+        const mergedJson = { ...dataComentariosHilo };   
+        Object.keys(mergedJson).forEach((key) => {                                
+            if (mergedJson[key].id==id_comentario) {                
+                mergedJson[key].calificacion = calificacion;
+            }
+        });
+        setDataComentariosHilo(mergedJson);
+    }
+
+    const actualizarCalificacionHijoLocal = (id_comentario, calificacion) => {
+        const mergedJson = { ...dataComentariosHijos };   
+        Object.keys(mergedJson).forEach((key) => {                                
+            if (mergedJson[key].id==id_comentario) {                
+                mergedJson[key].calificacion = calificacion;
+            }
+        });
+        setDataComentariosHijos(mergedJson);
+    }
 
     const reiniciarEstados  = () => {
         setSeccionActivada(1);
@@ -395,6 +456,12 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
         latest_ultimo_comentario_escrito.current = '';
         latest_comentario_seleccionado.current = '';
     };
+
+    const options = [];
+    for (let i = 0.0; i <= 5.0; i += 0.1) {
+        options.push(i.toFixed(1)); // .toFixed(1) asegura que los números tengan un decimal
+    }
+
     return (
         <>
             {mostrarSpinner && <Spinner />}
@@ -410,10 +477,10 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
             />
             <div className="lecture-overview-wrap lecture-quest-wrap">
                 {seccionActivada==2 ? <div className="new-question-wrap-2">
-                    <button onClick={event => handleCambiarSeccion(event, 1)} className="btn theme-btn theme-btn-transparent back-to-question-btn"><i className="la la-reply mr-1"></i>Volver a todas las preguntas</button>
+                    <button onClick={event => handleCambiarSeccion(event, 1)} className="btn theme-btn theme-btn-transparent back-to-question-btn"><i className="la la-reply mr-1"></i>Volver a todas las {tipo_objeto_enlace!=6 ? 'preguntas' : 'participaciones'}</button>
                     <div className="question-replay-input-wrap pt-20px">
                         <div className="question-replay-body">
-                            <h3 className="fs-20 font-weight-semi-bold">Escribe tu pregunta</h3>
+                            <h3 className="fs-20 font-weight-semi-bold">Escribe tu {tipo_objeto_enlace!=6 ? 'comentario' : 'participación'}</h3>
                             <form method="post" className="pt-4">
                                 <div className="replay-action-bar">
                                     <div className="btn-group">
@@ -427,14 +494,14 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                 </div>
 
                                 <div className="btn-box">
-                                    <button onClick={event => handleCrearPregunta(event)} className="btn theme-btn">Agregar pregunta <i className="la la-arrow-right icon ml-1"></i></button>
+                                    <button onClick={event => handleCrearPregunta(event)} className="btn theme-btn">Agregar {tipo_objeto_enlace!=6 ? 'pregunta' : 'participación'} <i className="la la-arrow-right icon ml-1"></i></button>
                                 </div>
                             </form>
                         </div>
                     </div>                    
                 </div> : ''}
                 {seccionActivada==3 ? <div className="replay-question-wrap-2">
-                    <button onClick={event => handleCambiarSeccion(event, 1)}  className="btn theme-btn theme-btn-transparent back-to-question-btn"><i className="la la-reply mr-1"></i>Volver a todas las preguntas</button>
+                    <button onClick={event => handleCambiarSeccion(event, 1)}  className="btn theme-btn theme-btn-transparent back-to-question-btn"><i className="la la-reply mr-1"></i>Volver a todas las {tipo_objeto_enlace!=6 ? 'preguntas' : 'participaciones'}</button>
                     <div className="replay-question-body pt-30px">
                         <div className="question-list-item">
                             {Object.keys(dataComentariosHilo).map((key) => (
@@ -464,7 +531,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                                                     <i className="la la-ellipsis-v"></i>
                                                                 </button>
                                                                 <div className="dropdown-menu dropdown-menu-right">
-                                                                    <a className="dropdown-item" href="#" data-toggle="modal" data-target="#reportModal"><i className="la la-flag mr-1"></i> Reportar comentario</a>
+                                                                    <a className="dropdown-item" href="#" data-toggle="modal" data-target="#reportModal"><i className="la la-flag mr-1"></i> Reportar {tipo_objeto_enlace!=6 ? 'comentario' : 'participación'}</a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -475,8 +542,8 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                         <div className="question-replay-separator-wrap d-flex align-items-center justify-content-between py-3">
                                             <h4 className="fs-16 font-weight-semi-bold">{Object.keys(dataComentariosHijos).length} respuestas</h4>
                                             {dataComentariosHilo[key].siguiendo==1 ?
-                                                <button onClick={e => seguirComentario(dataComentariosHilo[key].id, 0)} className="btn swapping-btn text-gray font-weight-medium" data-text-swap="Following replies" data-text-original="Follow replies">Dejar de seguir este hilo</button>
-                                            : <button onClick={e => seguirComentario(dataComentariosHilo[key].id, 1)} className="btn swapping-btn text-gray font-weight-medium" data-text-swap="Following replies" data-text-original="Follow replies">Seguir este hilo</button> }
+                                                <button onClick={e => seguirComentario(dataComentariosHilo[key].id, 0)} className="btn swapping-btn text-gray font-weight-medium" data-text-swap="Following replies" data-text-original="Follow replies">Dejar de seguir {tipo_objeto_enlace!=6 ? 'este hilo' : 'esta participación'}</button>
+                                            : <button onClick={e => seguirComentario(dataComentariosHilo[key].id, 1)} className="btn swapping-btn text-gray font-weight-medium" data-text-swap="Following replies" data-text-original="Follow replies">Seguir {tipo_objeto_enlace!=6 ? 'este hilo' : 'esta participación'}</button> }
                                         </div>
                                     </>
                                 :''
@@ -494,12 +561,22 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                             <p className="pt-1 fs-15">
                                                 {dataComentariosHijos[key].texto.split('<br />').map((line, index2) => (<span key={`desc-respuesta-${dataComentariosHijos[key].id}-${index2}`}>{line}<br /></span> ))}
                                             </p>
+                                            {tipo_objeto_enlace==6 && <div className="number-upvotes pb-2 d-flex align-items-center">
+                                                {es_docente ? <select onChange={event => handleCalificacionChange(event, dataComentariosHijos[key].id, true)} value={dataComentariosHijos[key].calificacion} style={{width:'100px'}} name="horax" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
+                                                    <option value={-1}> -- </option>
+                                                    {options.map((option, index) => (
+                                                        <option key={index} value={option}>
+                                                            {option}
+                                                        </option>
+                                                    ))}
+                                                </select> : <span>{dataComentariosHijos[key].calificacion!=null ? 'Calificación: '+dataComentariosHijos[key].calificacion : 'Sin calif.'}</span>}
+                                            </div>}
                                         </div>
                                     </div>
                                 ))} 
                                 <div className="question-replay-input-wrap pt-20px">
                                     <div className="question-replay-body">
-                                        <h3 className="fs-16 font-weight-semi-bold">Agregar respuesta</h3>
+                                        <h3 className="fs-16 font-weight-semi-bold">Agregar {tipo_objeto_enlace!=6 ? 'respuesta' : 'replica'}</h3>
                                         <form method="post" className="pt-4">
                                             <div className="replay-action-bar">
                                                 <div className="btn-group" style={{visibility:'hidden'}}>
@@ -512,7 +589,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                                 {erroresCampos['texto'].length > 0 && (<SpamError mensaje={erroresCampos['texto']} />)}
                                             </div>
                                             <div className="btn-box">
-                                                <button onClick={event => handleCrearPregunta(event)} className="btn theme-btn" type="submit">Agregar respuesta <i className="la la-arrow-right icon ml-1"></i></button>
+                                                <button onClick={event => handleCrearPregunta(event)} className="btn theme-btn" type="submit">Agregar {tipo_objeto_enlace!=6 ? 'respuesta' : 'replica'} <i className="la la-arrow-right icon ml-1"></i></button>
                                             </div>
                                         </form>
                                     </div>
@@ -525,7 +602,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                     <div className="lecture-overview-item">
                         <form method="post">
                             <div className="input-group mb-3">
-                                <input onChange={handleBuscarComentario} className="form-control form--control form--control-gray pl-3" type="text" name="buscar_comentario" id={`buscar_comentarios_${id_hilo}`} placeholder="Buscar comentarios" />
+                                <input onChange={handleBuscarComentario} className="form-control form--control form--control-gray pl-3" type="text" name="buscar_comentario" id={`buscar_comentarios_${id_hilo}`} placeholder={`Buscar ${tipo_objeto_enlace!=6 ? 'comentarios' : 'participaciones'}`} />
                                 <div className="input-group-append">
                                     <div className="btn theme-btn"><i className="la la-search search-icon"></i></div>
                                 </div>
@@ -551,7 +628,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                                 <div className="custom-control custom-checkbox fs-15">
                                                     <input onChange={handleFiltrarPorPreguntasQueSigo} checked={filtrarPorPreguntasQueSigo} type="checkbox" className="custom-control-input" id="questionsCheckbox" required />
                                                     <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox">
-                                                        Comentarios que sigo
+                                                        {tipo_objeto_enlace!=6 ? 'Comentarios' : 'Participaciones'} que sigo
                                                     </label>
                                                 </div>
                                             </div>
@@ -559,7 +636,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                                 <div className="custom-control custom-checkbox fs-15">
                                                     <input onChange={handleFiltrarPorPreguntasQueHice} checked={filtrarPorPreguntasQueHice} type="checkbox" className="custom-control-input" id="questionsCheckbox2" required />
                                                     <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox2">
-                                                        Comentarios que hice
+                                                        {tipo_objeto_enlace!=6 ? 'Comentarios' : 'Participaciones'} que hice
                                                     </label>
                                                 </div>
                                             </div>
@@ -567,7 +644,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                                 <div className="custom-control custom-checkbox fs-15">
                                                     <input onChange={handleFiltrarPorPreguntasSinRespuesta} checked={filtrarPorPreguntasSinRespuesta} type="checkbox" className="custom-control-input" id="questionsCheckbox3" required />
                                                     <label className="custom-control-label custom--control-label" htmlFor="questionsCheckbox3">
-                                                        Comentarios sin respuesta
+                                                        {tipo_objeto_enlace!=6 ? 'Comentarios' : 'Participaciones'} sin respuesta
                                                     </label>
                                                 </div>
                                             </div>
@@ -579,8 +656,8 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                     </div>
                     <div className="lecture-overview-item">
                         <div className="question-overview-result-header d-flex align-items-center justify-content-between">
-                            <h3 className="fs-17 font-weight-semi-bold">{cantidadComentarios} comentarios / preguntas</h3>
-                            <button onClick={event => handleCambiarSeccion(event, 2)} className="btn theme-btn theme-btn-sm theme-btn-transparent ask-new-question-btn">Nueva pregunta</button>
+                            <h3 className="fs-17 font-weight-semi-bold">{cantidadComentarios} {tipo_objeto_enlace!=6 ? 'comentarios' : 'participaciones'} / preguntas</h3>
+                            <button onClick={event => handleCambiarSeccion(event, 2)} className="btn theme-btn theme-btn-sm theme-btn-transparent ask-new-question-btn">Nueva {tipo_objeto_enlace!=6 ? 'pregunta' : 'participación'}</button>
                         </div>
                     </div>
                     <div className="section-block"></div>
@@ -610,6 +687,16 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                                                     <span>{dataComentariosHilo[key].comentarios_hijos}</span>
                                                     <button onClick={e => setIdComentarioHijosViendo(dataComentariosHilo[key].id) }  type="button" className="question-replay-btn"><i className="la la-comments"></i></button>
                                                 </div>
+                                                {tipo_objeto_enlace==6 && <div className="number-upvotes pb-2 d-flex align-items-center">
+                                                    {es_docente ? <select onChange={event => handleCalificacionChange(event, dataComentariosHilo[key].id, false)} value={dataComentariosHilo[key].calificacion} name="hora" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
+                                                        <option value={-1}> -- </option>
+                                                        {options.map((option, index) => (
+                                                            <option key={index} value={option}>
+                                                                {option}
+                                                            </option>
+                                                        ))}
+                                                    </select> : <span>{dataComentariosHilo[key].calificacion!=null ? 'Calif: '+dataComentariosHilo[key].calificacion : 'Sin calif.'}</span>}
+                                                </div>}
                                             </div>
                                         </div>
                                         <p className="meta-tags pt-1 fs-13">                                                                           
@@ -621,7 +708,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1}
                         ))}
                         {Object.keys(dataComentariosHilo).length<cantidadComentarios && 
                             <div className="question-btn-box pt-35px text-center">
-                                <button onClick={handleCargarMasComentarios} className="btn theme-btn theme-btn-transparent w-100" type="button">Ver más comentarios</button>
+                                <button onClick={handleCargarMasComentarios} className="btn theme-btn theme-btn-transparent w-100" type="button">Ver más {tipo_objeto_enlace!=6 ? 'comentarios' : 'participaciones'}</button>
                             </div>
                         }
                     </div>
