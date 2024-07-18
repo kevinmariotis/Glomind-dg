@@ -120,14 +120,14 @@ function FooterArea() {
                     </div>
                     <div className="col-lg-3 responsive-column-half">
                         <div className="footer-item">
-                            <h3 className="fs-20 font-weight-semi-bold pb-2">Cursos</h3>
+                            <h3 className="fs-20 font-weight-semi-bold pb-2">Ofrecemos</h3>
                             <div className="divider border-bottom-0"><span></span></div>
                             <ul className="generic-list-item">
-                                {Object.keys(datos.datos).map((key) => (
-                                    <li key={`menusup-categoria-footer-${datos.datos[key].id}`}>
-                                        <Link to={`${urlBase}/categoria/${datos.datos[key].url_amigable}`}>{datos.datos[key].nombre} <button className="sub-nav-toggler" type="button"><i className="la la-angle-down"></i></button></Link>
-                                    </li>
-                                ))}
+                                <li>Doctorado en Derecho</li>
+                                <li>Doctorado en Educación</li>
+                                <li>Licenciatura en Ingeniería en Ciencia de Datos</li>
+                                <li>Licenciatura en Ingeniería en Desarrollo de Software</li>
+                                <li>Licenciatura en Ingeniería en Desarrollo de Software</li>                                
                             </ul>
                         </div>
                     </div>

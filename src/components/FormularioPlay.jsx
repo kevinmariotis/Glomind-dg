@@ -547,7 +547,7 @@ function FormularioPlay() {
                                                                 <button onClick={() => toggleTab(index)} aria-expanded={activeTab === index} className="btn btn-link" type="button" data-toggle="collapse" data-target={`#mobileCourseCollapse${parseInt(index)+1}`}  aria-controls={`mobileCourseCollapse${parseInt(index)+1}`}>
                                                                     <i className="la la-angle-down" style={{display:'none'}}></i>
                                                                     <i className="la la-angle-up" style={{display:'none'}}></i>
-                                                                    <span className="fs-15"> Sección {parseInt(index)+1}: {categoria.nombre} </span>
+                                                                    <span className="fs-15"> Unidad {parseInt(index)+1}: {categoria.nombre} </span>
                                                                     <span className="course-duration">
                                                                         <span>&nbsp;{categoria.cantidad_consumidos}/{categoria.cantidad_contenidos}</span>
                                                                         <span style={{display:'none'}}>21min</span>
@@ -654,7 +654,7 @@ function FormularioPlay() {
                                                             <ul className="generic-list-item">
                                                                 <li><span>Exámenes:</span>{dataCurso.cantidad_examenes}</li>
                                                                 <li><span>Horas de video:</span>{dataCurso.cantidad_horas_de_video}</li>
-                                                                <li><span>Certificado:</span>{dataCurso.expedir_certificado==1 ? 'Si' : 'No'}</li>
+                                                                {/*<li><span>Certificado:</span>{dataCurso.expedir_certificado==1 ? 'Si' : 'No'}</li>*/}
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -666,7 +666,7 @@ function FormularioPlay() {
                                                             <h3 className="fs-16 font-weight-semi-bold pb-2">Certificado</h3>
                                                         </div>
                                                         <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
-                                                            <p className="pb-3">Obtén el certificado de Educalab completando el curso</p>
+                                                            <p className="pb-3">Obtén el certificado de EdukaLAB completando el curso</p>
                                                             <button type="button" onClick={handleGenerarCertificado} className="btn theme-btn theme-btn-transparent">Descargar certificado</button>
                                                         </div>
                                                     </div>
@@ -774,7 +774,7 @@ function FormularioPlay() {
                                                     <button aria-expanded={activeTab === index} onClick={() => toggleTab(index)} className={`btn btn-link ${activeTab !== index ? 'collapsed' : ''}`} type="button" data-toggle="collapse" data-target={`#collapse${parseInt(index)+1}`} aria-controls={`collapse${parseInt(index)+1}`}>
                                                         <i className="la la-angle-down" style={{display:'none'}}></i>
                                                         <i className="la la-angle-up" style={{display:'none'}}></i>
-                                                        <span className="fs-15"> Sección {parseInt(index)+1}: {categoria.nombre} </span>
+                                                        <span className="fs-15"> Unidad {parseInt(index)+1}: {categoria.nombre} </span>
                                                         <span className="course-duration">
                                                             <span>&nbsp;{categoria.cantidad_consumidos}/{categoria.cantidad_contenidos}</span>
                                                             <span style={{display:'none'}}>21min</span>
