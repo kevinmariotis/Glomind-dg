@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [authenticated, setAuthenticated] = useState(false);
     const [permissions, setPermissions] = useState([]);
     const [esDocente, setEsDocente] = useState(false);
-    const [temaActual, setTemaActual] = useState(sessionStorage.getItem('temaActual') ?? 0);    //1 'light-theme', 0 'dark-theme'
+    const [temaActual, setTemaActual] = useState(sessionStorage.getItem('temaActual') ?? 1);    //1 'light-theme', 0 'dark-theme'
     const [esMovil, setEsMovil] = useState(false);
     const [cargarContadorCarrito, setCargarContadorCarrito] = useState(false);   //setCargarContadorCarrito debe ser usado por cualquier parte del programa para dar la orden de que se recarge el contador de items en el carrito
     const [cargarFavoritos, setCargarFavoritos] = useState(false);               //setCargarFavoritos debe ser usado por cualquier parte del programa para dar la orden de que se recarge la lista de favoritos del usuario.

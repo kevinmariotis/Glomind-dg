@@ -218,26 +218,26 @@ function FormularioRegistrarse(){
                                     <form method="post" className="pt-4">                            
                                         <div className="input-box form-row">
                                             <div className="form-group col-md-6">                                                       
-                                                <input onChange={handleNombresChange} value={nombres} className="form-control form--control" type="text" name="nombres" placeholder="Nombres" />
+                                                <input onChange={handleNombresChange} value={nombres} className="form-control form--control" type="text" name="nombres" placeholder="Nombres" maxLength="64" />
                                                 <span className="la la-user input-icon"></span>                                                
                                                 {erroresCampos['nombres'].length > 0 && (<SpamError mensaje={erroresCampos['nombres']} />)}
                                             </div>
                                             <div className="form-group col-md-6">
-                                                <input onChange={handleApellidosChange} value={apellidos} className="form-control form--control" type="text" name="apellidos" placeholder="Apellidos" />
+                                                <input onChange={handleApellidosChange} value={apellidos} className="form-control form--control" type="text" name="apellidos" placeholder="Apellidos" maxLength="64" />
                                                 <span className="la la-user input-icon"></span>
                                                 {erroresCampos['apellidos'].length > 0 && (<SpamError mensaje={erroresCampos['apellidos']} />)}
                                             </div>
                                         </div>                                                                                                                                                    
                                         <div className="input-box form-row">                                                                                                                                               
                                             <div className="form-group col-md-12">
-                                                <input onChange={handleTelefonoChange} value={telefono} className="form-control form--control" type="text" name="telefono" placeholder="Telefono" />
-                                                <span className="la la-user input-icon"></span>
+                                                <input onChange={handleTelefonoChange} value={telefono} className="form-control form--control" type="text" name="telefono" placeholder="Telefono" maxLength="10"/>
+                                                <span className="la la-mobile-phone input-icon"></span>
                                                 {erroresCampos['telefono'].length > 0 && (<SpamError mensaje={erroresCampos['telefono']} />)}
                                             </div>
                                         </div>                                       
                                         <div className="input-box">    
                                             <div className="form-group">
-                                                <input onChange={handleEmailChange} value={email} className="form-control form--control" type="email" name="email" placeholder="Correo electrónico" />
+                                                <input onChange={handleEmailChange} value={email} className="form-control form--control" type="email" name="email" placeholder="Correo electrónico" maxLength="64" />
                                                 <span className="la la-envelope input-icon"></span>
                                                 {erroresCampos['email'].length > 0 && (<SpamError mensaje={erroresCampos['email']} />)}
                                             </div>                                                                        

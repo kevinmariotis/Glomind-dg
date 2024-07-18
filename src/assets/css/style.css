@@ -2855,7 +2855,7 @@ div.datedropper .picker .pick-lg-b li {
   padding-left: 45px;
   font-size: 14px;
   color: #233d63;
-  border-color: rgba(127, 136, 151, 0.2);
+  border-color: #7f8897e6;
   font-weight: 400;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -4764,7 +4764,7 @@ div.datedropper .picker .pick-lg-b li {
   transition: all 0.3s;
   -webkit-box-shadow: 0 0 40px rgba(82, 85, 90, 0.1);
   -moz-box-shadow: 0 0 40px rgba(82, 85, 90, 0.1);
-  box-shadow: 0 0 40px rgba(82, 85, 90, 0.1);
+  box-shadow: 0 0 40px rgba(82, 85, 90, 0.3);
   border: 0; }
   .card-item .card-title {
     color: #233d63;
