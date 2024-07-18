@@ -6,7 +6,7 @@ function DashboardFooter() {
   return (
     <div className="row align-items-center dashboard-copyright-content pb-4">
         <div className="col-lg-6">
-            <p className="copy-desc">&copy; 2024 Educalab. Derechos reservados. por <a href="https://www.google.com/" target="_blank">Desarrolladores</a></p>
+            <p className="copy-desc">&copy; 2024 EdukaLAB. Derechos reservados. por <a href="https://www.google.com/" target="_blank">Desarrolladores</a></p>
         </div>
         <div className="col-lg-6">
             <ul className="generic-list-item d-flex flex-wrap align-items-center fs-14 justify-content-end">

@@ -75,7 +75,8 @@ function Buscador({class_name=""}) {
                             setBuscar('');
                             setResultados({});
                             setIndexSeleccionado(0);
-                            navigate(`/curso/${resultados[i].url_amigable}`); 
+                            //navigate(`/curso/${resultados[i].url_amigable}`);     //Antes, para mostar la presentacion del curso
+                            navigate(`/play/${resultados[i].url_amigable}`);
                         }
                     }                       
                 }
@@ -95,7 +96,8 @@ function Buscador({class_name=""}) {
         setBuscar('');        
         setResultados({});
         setIndexSeleccionado(0);
-        navigate(`/curso/${url_amigable}`);
+        //navigate(`/curso/${url_amigable}`);     //Antes, para mostar la presentacion del curso
+        navigate(`/play/${url_amigable}`);
     };
     
     return (

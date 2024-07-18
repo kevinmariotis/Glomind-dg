@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 
-function BreadCrumbArea({nombreseccion='Sección', breadCrumbData=[], imagen='images/breadcrumb-bg.jpg'}) {   
+function BreadCrumbArea({nombreseccion='Unidad', breadCrumbData=[], imagen='images/breadcrumb-bg.jpg'}) {   
     //const [breadCrumb, setBreadCrumb] = useState(breadCrumbData);
     const urlBase = import.meta.env.VITE_URL_BASE;
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;           

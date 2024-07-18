@@ -27,6 +27,7 @@ function HeaderMenuContent() {
 
     useEffect(() => {        
         // Verificar si los datos están almacenados en la caché local
+        /* Se comentó para anular las categorías que se muestran en la parte superior del sitio
         const categoriasistema = sessionStorage.getItem('categoriasistema');    
         if (categoriasistema) {   
             setDatos(JSON.parse(categoriasistema));                          
@@ -36,7 +37,7 @@ function HeaderMenuContent() {
         } else {
             // Los datos no están en la caché local, obtenerlos del servidor            
             obtenerDatosDelServidor();
-        }
+        }*/
 
         //miramos si no tiene los datos del carrito en sessionStorage
         const contadorcarrito = sessionStorage.getItem('contadorcarrito');    
@@ -96,6 +97,7 @@ function HeaderMenuContent() {
         navigate(`/tag/${url_amigable}`);        
     };
     
+    /* Se comentó para anular las categorías que se muestran en la parte superior del sitio
     const obtenerDatosDelServidor = async () => {        
         try {            
             const opciones = {
@@ -119,7 +121,7 @@ function HeaderMenuContent() {
             // Manejar el caso de error en la solicitud
             console.error('Error en la solicitud al servidor', error);
         }
-    };
+    };*/
 
     const obtenerTags = async () => {        
         try {            
@@ -194,7 +196,7 @@ function HeaderMenuContent() {
                             <div className="col-lg-2">
                                 <div className="logo-box">
                                     <Link to="/" className="logo"><img src={`${urlBase}/images/edukalab_logo.png`} alt="logo" /></Link>
-                                    <div className="user-btn-action">
+                                    <div className="user-btn-action" style={{display:'none'}}>
                                         <div className="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2" data-toggle="tooltip" data-placement="top" title="Search">
                                             <i className="la la-search"></i>
                                         </div>
@@ -207,7 +209,7 @@ function HeaderMenuContent() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-lg-10">
+                            <div className="col-lg-10" style={{display:'none'}}>
                                 <div className="menu-wrapper">
                                     <div className="menu-category">
                                         <ul>
@@ -253,7 +255,7 @@ function HeaderMenuContent() {
                                     }   
                                     <div className="shop-cart mr-4">
                                         <ul>
-                                            <li>
+                                            { /*<li>
                                                 <Link to="/carrito "className="shop-cart-btn d-flex align-items-center">
                                                     <i className="la la-shopping-cart"></i>
                                                     {authenticated && contadorCarrito.contador>0 && <span className="product-count">{contadorCarrito.contador}</span>}
@@ -287,7 +289,7 @@ function HeaderMenuContent() {
                                                         <Link to="/carrito" className="btn theme-btn w-100">Ir al carrito <i className="la la-arrow-right icon ml-1"></i></Link>
                                                     </li>
                                                 </ul>}
-                                            </li>
+                                            </li> */ }
                                         </ul>
                                     </div>
                                     <div className="nav-right-button">
