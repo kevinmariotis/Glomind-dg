@@ -39,6 +39,13 @@ function FormularioPlay() {
     const refBloqueDescripcion = useRef(null);
     const refHiloComentarios = useRef(null);    
 
+    function Iframex({frame}){
+        console.log(frame);
+        return(
+            <div style={{height: '100%', position: 'absolute', top: '0', left: '0', width: '100%' }} dangerouslySetInnerHTML={{ __html: frame.html }}></div>
+        )
+    }
+
     useEffect(() => {    
         window.scrollTo(0, 0);
         sideBarAbrirCerrar();        
@@ -405,6 +412,8 @@ function FormularioPlay() {
     };
 
     const nivelHabilidad = ['', 'Básico', 'Intermedio', 'Avanzado'];
+
+
          
     return (        
         <>
@@ -442,10 +451,10 @@ function FormularioPlay() {
                                     : 
 
                                     dataContenidoViendo.tipo_contenido==4 ?
-                                            'Etiqueta: Aqui, se muestra el html de la etiqueta y se trata de que se ocupe todo el div padre tanto en ancho como alto, verificar como se ve en dispositivos moviles.'
+                                       <Iframex frame={dataContenidoViendo} />
                                     : 
 
-                                    dataContenidoViendo.tipo_contenido==5 ?
+                                    dataContenidoViendo.tipo_contenido==5 ? 
                                             'Tarea: Aqui se debe mostrar el historial de envios (una misma tarea pudiera ser enviada varias veces), la fecha hora de envio y si ya fue calificada o no (basado en el estado), tambien la posibilidad de volver a enviarla (si se permite por configuracion de la misma tarea) retroalimentacion del docente, tambien la posibididad de descargar el archivo que envió. Si es el docente le da acceso a un panel especial (otra ruta) para ver todos los intentos y calificar.'
                                     : 
 
@@ -537,7 +546,7 @@ function FormularioPlay() {
                                                                 <button onClick={() => toggleTab(index)} aria-expanded={activeTab === index} className="btn btn-link" type="button" data-toggle="collapse" data-target={`#mobileCourseCollapse${parseInt(index)+1}`}  aria-controls={`mobileCourseCollapse${parseInt(index)+1}`}>
                                                                     <i className="la la-angle-down" style={{display:'none'}}></i>
                                                                     <i className="la la-angle-up" style={{display:'none'}}></i>
-                                                                    <span className="fs-15"> Sección {parseInt(index)+1}: {categoria.nombre} </span>
+                                                                    <span className="fs-15"> Unidad {parseInt(index)+1}: {categoria.nombre} </span>
                                                                     <span className="course-duration">
                                                                         <span>&nbsp;{categoria.cantidad_consumidos}/{categoria.cantidad_contenidos}</span>
                                                                         <span style={{display:'none'}}>21min</span>
@@ -764,7 +773,7 @@ function FormularioPlay() {
                                                     <button aria-expanded={activeTab === index} onClick={() => toggleTab(index)} className={`btn btn-link ${activeTab !== index ? 'collapsed' : ''}`} type="button" data-toggle="collapse" data-target={`#collapse${parseInt(index)+1}`} aria-controls={`collapse${parseInt(index)+1}`}>
                                                         <i className="la la-angle-down" style={{display:'none'}}></i>
                                                         <i className="la la-angle-up" style={{display:'none'}}></i>
-                                                        <span className="fs-15"> Sección {parseInt(index)+1}: {categoria.nombre} </span>
+                                                        <span className="fs-15"> Unidad {parseInt(index)+1}: {categoria.nombre} </span>
                                                         <span className="course-duration">
                                                             <span>&nbsp;{categoria.cantidad_consumidos}/{categoria.cantidad_contenidos}</span>
                                                             <span style={{display:'none'}}>21min</span>
