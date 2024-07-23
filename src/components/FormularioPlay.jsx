@@ -241,7 +241,7 @@ function FormularioPlay() {
                         default:
                             setDataContenidoViendo(datos);  
                             if([5, 6].includes(datos.tipo_contenido)){  //Si son los foros o tareas 
-                                setPestanaActivada(4);      //Se ativan los anuncios, ya que no tienen chay y la descripcion esta arriba
+                                setPestanaActivada(-1);      //No se activa ninguna para que el enfoque esté en el tema superior
                             }else{
                                 setPestanaActivada(3);      //Se activa la descripción
                             }
@@ -435,7 +435,7 @@ function FormularioPlay() {
                     <div className="course-dashboard-container d-flex">
                         <div className="course-dashboard-column">
                             <div className="lecture-viewer-container">
-                                <div className="lecture-video-item" style={{position:'relative', paddingTop:'56.25%'}}> {/* (9 / 16) * 100 = 56.25 */}
+                                <div className="lecture-video-item" style={{position:'relative', paddingTop:dataContenidoViendo.tipo_contenido==1 ? '56.25%' : '0%'}}> {/* (9 / 16) * 100 = 56.25 */}
                                     {dataContenidoViendo.tipo_contenido==1 ?                                         
                                         <VideoPlayerPrisma
                                             url_video={`${urlBaseApi}/${esMovil ? dataContenidoViendo.video_pequeno!=null ? dataContenidoViendo.video_pequeno : dataContenidoViendo.video_grande : dataContenidoViendo.video_grande }`}
@@ -459,7 +459,17 @@ function FormularioPlay() {
                                     : 
 
                                     dataContenidoViendo.tipo_contenido==6 ?
-                                            'Foro: Aqui, se muestra en la parte superior el nombre del foro, segido de la descripcion, seguido del componente de foro como tal, si el usuario es el docente se permite poner una calificacion por cada foro de 1 a 5.'
+                                        <>
+                                            <div className="lecture-video-detail-body">
+                                                <div className="lecture-overview-wrap">
+                                                    <div className="lecture-overview-item">
+                                                        <h3 className="fs-24 font-weight-semi-bold pb-2">Foro: {dataContenidoViendo.nombre}</h3>
+                                                        <p>{dataContenidoViendo.descripcion.split('<br />').map((line, index2) => (<span key={`desc-general-larga-top-${index2}`}>{line}<br /></span> ))}</p>
+                                                    </div>                                                    
+                                                    <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={dataContenidoViendo.tipo_contenido} id_curso={dataCurso.id} es_docente={dataCurso.es_docente} />
+                                                </div>
+                                            </div>
+                                        </>
                                     : ''
                                     }                                    
                                 </div>
@@ -653,7 +663,7 @@ function FormularioPlay() {
                                                             <ul className="generic-list-item">
                                                                 <li><span>Exámenes:</span>{dataCurso.cantidad_examenes}</li>
                                                                 <li><span>Horas de video:</span>{dataCurso.cantidad_horas_de_video}</li>
-                                                                <li><span>Certificado:</span>{dataCurso.expedir_certificado==1 ? 'Si' : 'No'}</li>
+                                                                {/*<li><span>Certificado:</span>{dataCurso.expedir_certificado==1 ? 'Si' : 'No'}</li>*/}
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -665,7 +675,7 @@ function FormularioPlay() {
                                                             <h3 className="fs-16 font-weight-semi-bold pb-2">Certificado</h3>
                                                         </div>
                                                         <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
-                                                            <p className="pb-3">Obtén el certificado de Educalab completando el curso</p>
+                                                            <p className="pb-3">Obtén el certificado de EdukaLAB completando el curso</p>
                                                             <button type="button" onClick={handleGenerarCertificado} className="btn theme-btn theme-btn-transparent">Descargar certificado</button>
                                                         </div>
                                                     </div>
@@ -739,13 +749,13 @@ function FormularioPlay() {
                                             </div>
                                         </div>
         
-                                        <div className={`tab-pane fade show ${pestanaActivada==3 ? 'active': ''}`} id="question-and-ans" role="tabpanel" aria-labelledby="question-and-ans-tab">                                                                                        
-                                            <div className="lecture-overview-wrap">
+                                        <div className={`tab-pane fade show ${pestanaActivada==3 ? 'active': ''}`} id="question-and-ans" role="tabpanel" aria-labelledby="question-and-ans-tab">                                                                                                                                    
+                                            <div className="lecture-overview-wrap lecture-quest-wrap">
                                                 <div className="lecture-overview-item">
                                                     <h3 className="fs-24 font-weight-semi-bold pb-2">{dataContenidoViendo.nombre ? dataContenidoViendo.nombre : ''}</h3>
                                                     {dataContenidoViendo.descripcion!=null ? <p>{dataContenidoViendo.descripcion.split('<br />').map((line, index2) => (<span key={`desc-general-larga-${index2}`}>{line}<br /></span> ))}</p> : ''}
                                                 </div>                                                
-                                            </div>                                            
+                                            </div>                                                                                        
                                             {dataCurso.id!=-1 && tipoContenidoHilo!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={tipoContenidoHilo} /> : ''}                                            
                                         </div>
                                         

@@ -302,7 +302,7 @@ function DashboardHeader({expandir_ancho=false}) {
                                             </div>
                                             <div className="shop-cart pr-3 mr-3 border-right border-right-gray">
                                                 <ul>
-                                                    <li>
+                                                    { /*<li>
                                                         <p className="shop-cart-btn d-flex align-items-center">
                                                             <i className="la la-shopping-cart fs-22"></i>
                                                             {Object.keys(contadorCarrito.productos).length>0 &&
@@ -333,7 +333,7 @@ function DashboardHeader({expandir_ancho=false}) {
                                                             <Link to="/carrito" className="btn theme-btn w-100">Ir al carrito <i className="la la-arrow-right icon ml-1"></i></Link>
                                                             </li>
                                                         </ul>}
-                                                    </li>
+                                                    </li> */ }
                                                 </ul>
                                             </div>
                                             <div className="shop-cart wishlist-cart pr-3 mr-3 border-right border-right-gray">
@@ -468,11 +468,11 @@ function DashboardHeader({expandir_ancho=false}) {
                                                                             <i className="la la-file-video-o mr-1"></i> Mis cursos matriculados
                                                                         </Link>
                                                                     </li>
-                                                                    <li>
+                                                                    { /* <li>
                                                                         <Link to="/carrito">
                                                                             <i className="la la-shopping-basket mr-1"></i> Mi carrito
                                                                         </Link>
-                                                                    </li>
+                                                                    </li>  */ }
                                                                     <li style={{ display: 'none' }}>
                                                                         <a href="my-courses.html">
                                                                             <i className="la la-heart-o mr-1"></i> My wishlist
@@ -564,7 +564,7 @@ function DashboardHeader({expandir_ancho=false}) {
                     <li style={{display:'none'}}><a href="dashboard-settings.html">Account settings</a></li>
                     <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/cursos/matriculados'); }}>Cursos Matriculados</a></li>
                     <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/cursos/favoritos'); }}>Cursos Favoritos</a></li>
-                    <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/factura/historial'); }}>Historial de compras</a></li>                    
+                    { /*<li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/factura/historial'); }}>Historial de compras</a></li>   */}                   
                 </ul>
                 <h4 className="off-canvas-menu-heading pt-20px">Perfil</h4>
                 <ul className="generic-list-item off-canvas-menu-list pt-1 pb-2 border-bottom border-bottom-gray">

@@ -47,14 +47,14 @@ function TarjetaCursoAdmin(
                                 </div>
                                 <div className="skill-bar-percent">{porcentaje_progreso}%</div>
                             </div>
-                            <div className="rating-wrap d-flex align-items-center justify-content-between pt-3">
+                            { /*<div className="rating-wrap d-flex align-items-center justify-content-between pt-3">
                                 <div className="review-stars">
                                     {estrellas.map((number) => (                                                                                
                                         <span key={`estrella-${idcurso}-${number}`} className={`la la-star${reviews_puntuacion < number ? "-o" : ""}`}></span>
                                     ))}   
                                 </div>
                                 <Link to={`${urlBase}/curso/${url_amigable}`} className="btn theme-btn theme-btn-sm theme-btn-transparent" data-toggle="modal" data-target="#ratingModal">Dejar una reseña</Link>
-                            </div>
+                            </div> */ }
                         </div>
                     </div>
                 </div>
