@@ -46,6 +46,45 @@ function FormularioPlay() {
         )
     }
 
+
+    function ResourceFrame({resource}){
+        console.log(resource);
+        let ruta_archivo = urlBaseApi + '/' + resource.ruta_archivo.replace('public/', '');
+
+        let file_parts   = resource.ruta_archivo.split('/');
+        let file_type    = (file_parts[2].split('.'))[1];
+
+        let style_pdf = {
+            height: '100%', 
+            position: 'absolute', 
+            top: '0', 
+            left: '0', 
+            width: '100%'
+        }
+
+        let style_nopdf  = {
+            'display': 'flex',
+            'flex-direction': 'column',
+            'align-content': 'center',
+            'justify-content': 'center',
+            'align-items': 'center',
+            height: '100%', 
+            position: 'absolute', 
+            top: '0', 
+            left: '0', 
+            width: '100%'
+        } 
+
+        return(
+            <div style={ file_type == 'pdf' ? style_pdf : style_nopdf }>
+                {file_type == 'pdf' && <iframe width="100%" height="100%" src={ ruta_archivo }  frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>}
+                {file_type != 'pdf' && <div><a href={ ruta_archivo } target='_blank'> Descargar Recurso </a></div>}
+            </div>
+        )   
+    }
+
+
+
     useEffect(() => {    
         window.scrollTo(0, 0);
         sideBarAbrirCerrar();        
@@ -435,7 +474,7 @@ function FormularioPlay() {
                     <div className="course-dashboard-container d-flex">
                         <div className="course-dashboard-column">
                             <div className="lecture-viewer-container">
-                                <div className="lecture-video-item" style={{position:'relative', paddingTop:dataContenidoViendo.tipo_contenido==1 ? '56.25%' : '0%'}}> {/* (9 / 16) * 100 = 56.25 */}
+                                <div className="lecture-video-item" style={{position:'relative', paddingTop:dataContenidoViendo.tipo_contenido==1 || dataContenidoViendo.tipo_contenido==3 || dataContenidoViendo.tipo_contenido==4 ? '56.25%' : '0%'}}> {/* (9 / 16) * 100 = 56.25 */}
                                     {dataContenidoViendo.tipo_contenido==1 ?                                         
                                         <VideoPlayerPrisma
                                             url_video={`${urlBaseApi}/${esMovil ? dataContenidoViendo.video_pequeno!=null ? dataContenidoViendo.video_pequeno : dataContenidoViendo.video_grande : dataContenidoViendo.video_grande }`}
@@ -447,7 +486,7 @@ function FormularioPlay() {
                                         />                                                          
                                         : 
                                     dataContenidoViendo.tipo_contenido==3 ?
-                                            'Recurso: Aqui, colocar el pdf si ruta_archivo termina en .pdf de lo contario mostrar un icono representativo de un archico estandar y colocar un mensaje abajo para invitar a la descarga, verificar como se ve en dispositivos moviles.'
+                                        <ResourceFrame resource={dataContenidoViendo} />
                                     : 
 
                                     dataContenidoViendo.tipo_contenido==4 ?
