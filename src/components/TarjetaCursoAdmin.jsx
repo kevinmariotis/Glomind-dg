@@ -5,9 +5,9 @@ import { AuthContext } from '../AuthContext';
 function TarjetaCursoAdmin(
     {
         idcurso=0,
-        url_amigable='',
+        url_amigable=null,
         nombre='Nombre curso', 
-        imagen='/images/img8.jpg',                
+        imagen=null,
         instructor='',
         id_instructor=0,
         descripcion_instructor='',
@@ -25,7 +25,7 @@ function TarjetaCursoAdmin(
                     <div className="card card-item">
                         <div className="card-image">
                             <Link to={`${urlBase}/play/${url_amigable}`} className="d-block">
-                                <img className="card-img-top" src={imagen!='/images/img8.jpg' ? urlBaseApi+'/'+imagen : imagen} alt="Card image cap" />
+                                <img className="card-img-top" src={imagen!=null ? urlBaseApi+'/'+imagen : '/images/img8.jpg'} alt="Card image cap" />
                                 <div className="play-button">
                                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="-307.4 338.8 91.8 91.8">                                                          
                                         <g>
