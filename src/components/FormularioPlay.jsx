@@ -255,9 +255,10 @@ function FormularioPlay() {
                     method: 'GET',
                     headers: headers,
                 };
-                //setMostrarSpinner(true);
+                setMostrarSpinner(true);
                 const response = await fetch(`${urlBaseApi}/api/cursocontenido/${id_contenido}`, opciones);
-                //setMostrarSpinner(false);
+                
+                setMostrarSpinner(false);
                 const datos = await response.json();
                 if (response.ok){             
                     switch(datos.tipo_contenido){

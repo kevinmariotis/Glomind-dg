@@ -44,7 +44,7 @@ function FormularioEditarContenidoCurso() {
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
 
 
-    const [popUpTag, setPopupTag] = useState({mostrar:false, i_tag:-1, nombre:'', html:''});
+    const [popUpTag, setPopupTag] = useState({mostrar:false, i_tag:-1, nombre:'', html:'', descripcion: ''});
     const [popUpResource, setPopupResource] = useState({mostrar:false, i_res:-1, nombre:'', descripcion:'', id_curso:'', id_categoria: ''});
     
     useEffect(() => {           
@@ -144,7 +144,9 @@ function FormularioEditarContenidoCurso() {
             'application/pdf': ['.pdf'],            
             'application/zip': ['.zip'],            
             'application/vnd.rar': ['.rar'],      
-            'application/vnd.ms-excel': ['.xls'],      
+            'application/vnd.ms-excel': ['.xls'],  
+            'application/msword' : ['.doc'],
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],    
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],      
         }
     });    
@@ -156,9 +158,10 @@ function FormularioEditarContenidoCurso() {
     // Procesador de datos del Etiquetas Form
 
     const handleTag = {
-        nombre : (event) => { setPopupTag({...popUpTag, nombre:event.target.value});  },
-        html   : (event) => { setPopupTag({...popUpTag, html:event.target.value});  },
-        show   : (event) => { 
+        nombre      : (event) => { setPopupTag({...popUpTag, nombre:event.target.value});  },
+        html        : (event) => { setPopupTag({...popUpTag, html:event.target.value});  },
+        descripcion : (event) => { setPopupTag({...popUpTag, descripcion:event.target.value})},
+        show        : (event) => { 
             setPopupTag({...popUpTag, mostrar: 1})
         },
         showEdit : (event, data) => {
@@ -167,7 +170,8 @@ function FormularioEditarContenidoCurso() {
                 nombre : data.nombre, 
                 html   : data.html,
                 mostrar: 1,
-                i_tag  : data.id_tipo_contenido 
+                i_tag  : data.id_tipo_contenido,
+                descripcion: data.descripcion
             });
         },
         save   : async (event) => {
@@ -178,7 +182,7 @@ function FormularioEditarContenidoCurso() {
 
                 let dataTag = {
                     nombre       : popUpTag.nombre,
-                    descripcion  : popUpTag.nombre,
+                    descripcion  : popUpTag.descripcion,
                     html         : popUpTag.html
                 }
 
@@ -192,6 +196,7 @@ function FormularioEditarContenidoCurso() {
     
                 const response = await fetch(`${urlBaseApi}/api/etiqueta/${popUpTag.i_tag}`, opciones);
                 setMostrarSpinner(false);
+                obtenerDatosServidor();
     
                 const datos = await response.json();            
                 
@@ -217,6 +222,7 @@ function FormularioEditarContenidoCurso() {
     
                 const response = await fetch(`${urlBaseApi}/api/etiqueta`, opciones);
                 setMostrarSpinner(false);
+                obtenerDatosServidor();
     
                 const datos = await response.json();            
                 
@@ -224,6 +230,8 @@ function FormularioEditarContenidoCurso() {
                 console.log(datos);
                 }
            }
+
+           setPopupTag({...popUpTag, mostrar: 0});
            
         }
     }
@@ -287,6 +295,7 @@ function FormularioEditarContenidoCurso() {
                 const responseRaw = await fetch(`${urlBaseApi}/api/recurso/${popUpResource.i_res}`, opcionesData);
 
                 setMostrarSpinner(false);
+                obtenerDatosServidor();
                 
             }else{
 
@@ -310,6 +319,7 @@ function FormularioEditarContenidoCurso() {
     
                 const response = await fetch(`${urlBaseApi}/api/recurso`, opciones);
                 setMostrarSpinner(false);
+                obtenerDatosServidor();
     
                 const datos = await response.json();            
                 
@@ -317,6 +327,8 @@ function FormularioEditarContenidoCurso() {
                     console.log(datos);
                 }
             }
+
+            setPopupResource({...popUpResource, mostrar: 0})
 
         }   
     }
@@ -378,6 +390,9 @@ function FormularioEditarContenidoCurso() {
                 break;
                 case 2:
                     url = `${urlBaseApi}/api/examen/getDescargables/${popUpListaDescargable.id_tipo_contenido}`;
+                break;
+                case 6:
+                    url = `${urlBaseApi}/api/foro/getDescargables/${popUpListaDescargable.id_tipo_contenido}`;
                 break;
             }            
             const response = await fetch(url, opciones);            
@@ -1063,9 +1078,9 @@ function FormularioEditarContenidoCurso() {
                             <label className="label-text">Qué deseas agregar?</label>  <br/>
                             <button className="btn theme-btn ml-2" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>
                             {permissions[46] || esDocente==1 ? <Link to={`${urlBase}/examen/crear/${id}/${idSeccionAgregarContenido}`} className="btn theme-btn ml-2" type="button" ><i className="la la-plus mr-2"></i>Examen</Link> : ''}
-                            {permissions[46] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={handleTag.show}> <i className="la la-plus mr-2"></i> Etiqueta</button> : ''}
-                            {permissions[46] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={handleResource.show}> <i className="la la-plus mr-2"></i> Recurso</button> : ''}
-                            {permissions[46] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button"> <i className="la la-plus mr-2"></i> Tarea</button> : ''}
+                            {permissions[89] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={handleTag.show}> <i className="la la-plus mr-2"></i> Etiqueta</button> : ''}
+                            {permissions[86] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={handleResource.show}> <i className="la la-plus mr-2"></i> Recurso</button> : ''}
+                            {permissions[92] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button"> <i className="la la-plus mr-2"></i> Tarea</button> : ''}
                         </div>
                     </div>
                     <div className="modal-footer border-top-gray">                        
@@ -1106,6 +1121,13 @@ function FormularioEditarContenidoCurso() {
                                 <label className="label-text">Nombre</label>                                                                    
                                 <input value={popUpTag.nombre} onChange={handleTag.nombre} className="form-control form--control pl-3" type="text" name="nombre_descargable" maxLength="64" placeholder="Ej: Plantilla para cálculos" />
                                 {erroresCampos['nombre'].length > 0 && (<SpamError mensaje={erroresCampos['nombre']} />)}                            
+                            </div>
+                        </div>
+                        <div className="col-lg-12">
+                            <div className="form-group">
+                                <label className="label-text">Descripción</label>                                                                    
+                                <input value={popUpTag.descripcion} onChange={handleTag.descripcion} className="form-control form--control pl-3" type="text" name="descripcion" maxLength="64" placeholder="Descripcion del contenido" />
+                                {erroresCampos['descripcion'].length > 0 && (<SpamError mensaje={erroresCampos['descripcion']} />)}                            
                             </div>
                         </div>    
                         <div className="col-lg-12">
