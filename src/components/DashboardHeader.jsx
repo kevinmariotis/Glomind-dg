@@ -281,7 +281,7 @@ function DashboardHeader({expandir_ancho=false}) {
                                                             {Object.keys(misCursos).slice(0, 3).map((key) => (
                                                                 <li key={misCursos[key].id+'mis-cursos'} className="media media-card">
                                                                     <Link to={`/play/${misCursos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
-                                                                        {misCursos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${misCursos[key].imagen_pequena}`} alt={misCursos[key].nombre} /> : <img src="images/course-no-image.png" alt={misCursos[key].nombre} /> }
+                                                                        {misCursos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${misCursos[key].imagen_pequena}`} alt={misCursos[key].nombre} /> : <img src="/images/course-no-image.png" alt={misCursos[key].nombre} /> }
                                                                     </Link>
                                                                     <div className="media-body">
                                                                         <h5><Link to={`/play/${misCursos[key].url_amigable}`}>{misCursos[key].nombre}</Link></h5>

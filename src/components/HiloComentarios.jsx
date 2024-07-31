@@ -175,7 +175,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                             while (mergedJson[currentIndex] !== undefined) {
                                 currentIndex++;
                             }
-                            datos.comentarios[key].update = 0;
+                            datos.comentarios[key].update = Math.floor(Math.random() * 10000) + 1;
                             mergedJson[currentIndex] = datos.comentarios[key];
                         }                        
                     });
@@ -183,7 +183,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                 }else{    
                     const mergedJson = {};  
                     Object.keys(datos.comentarios).forEach((key) => {
-                        datos.comentarios[key].update = 1;
+                        datos.comentarios[key].update = Math.floor(Math.random() * 10000) + 1;
                         mergedJson[key] = datos.comentarios[key];
                     });
                     setDataComentariosHilo(mergedJson);                    
@@ -228,7 +228,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                 setNuevaPregunta('');
                 setIdComentarioHijosViendo(0);
                 setPopup({mostrar:true, titulo:'Listo', contenido: tipo_objeto_enlace!=6 ? 'Tu pregunta ha sido publicada.' : 'Tu participación ha sido publicada.' });                
-                cargarHiloComentarios(id_hilo);
+                cargarHiloComentarios(id_hilo!=0 ? id_hilo : datos.comentario_hilo);
             } else {
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
             }            

@@ -8,7 +8,7 @@ import Popup from './Popup';
     Ejemplo de data; [{descripcion:"Descargable uno", id:7, nombre:"Descargable uno", ruta_archivo:"public/descargables/d_7_9dnBtuUWLady00d2.pdf"}]
 */
 
-function DropdownContenido({data={}}) {
+function DropdownContenido({data={}, mostrarHaciaArriba=false}) {
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API; 
     const [isOpen, setIsOpen] = useState(false);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
@@ -80,7 +80,7 @@ function DropdownContenido({data={}}) {
                 <a onClick={handleToggle} className="btn theme-btn theme-btn-sm theme-btn-transparent mt-1 fs-14 font-weight-medium" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded={isOpen ? 'true' : 'false'}>
                     <i className="la la-folder-open mr-1"></i> Recursos<i className="la la-angle-down ml-1"></i>
                 </a>
-                <div className={`dropdown-menu dropdown-menu-right ${isOpen ? 'show' : ''}`}>
+                <div className={`dropdown-menu ${!mostrarHaciaArriba ? 'dropdown-menu-right' : 'dropdown_out_of_view' } ${isOpen ? 'show' : ''}`}>
                     {Object.keys(data).map((key, index) => (
                         <div key={`drop-key-contenido-${index}`} className="dropdown-item" style={{cursor:'pointer'}} onClick={() => handleItemClick(data[key])}>
                             {data[key].nombre}.{data[key].ruta_archivo.split('.').pop()}

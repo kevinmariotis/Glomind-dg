@@ -272,12 +272,12 @@
 .collapse2.show {
   max-height: 1000px;
   transition: max-height 0.35s ease;
-  overflow: hidden;  
+  overflow: hidden;  /*originalmente en hidden, pero al colocar hidden no se ve el desplegable de recursos cuando esta al borde inferior de la seccion*/
 }
 .collapse2 {
   max-height: 0;
   transition: max-height 0.35s ease;
-  overflow: hidden;  
+  overflow: hidden;  /*originalmente en hidden, pero al colocar hidden no se ve el desplegable de recursos cuando esta al borde inferior de la seccion*/
 }
 
 .collapsing2 {
@@ -309,4 +309,17 @@
 }
 .light-fondo-li {
   background-color: #ffffff;  
+}
+
+/*Permitir que el dropdown de "recursos" peuda verse cuando está en el ultimo lugar de una unidad*/
+/*.accordion>.card{
+	overflow:visible;
+}*/
+
+/*se crea clase para hacer que el contenido de un dropdown se muestre hacia arriba con respecto a su padre y no hacia abajo como normalmente lo hace, esta clase es para aplicarla en casos especiales*/
+.dropdown_out_of_view {
+  right: 0;
+  left: auto;
+  top: 0;
+  transform: translate(0, -100%);
 }
