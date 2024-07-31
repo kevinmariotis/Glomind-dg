@@ -69,7 +69,7 @@ function FormularioPlay() {
             'justify-content': 'center',
             'align-items': 'center',
             height: '100%', 
-            position: 'absolute', 
+            position: 'relative', 
             top: '0', 
             left: '0', 
             width: '100%'
@@ -78,7 +78,8 @@ function FormularioPlay() {
         return(
             <div style={ file_type == 'pdf' ? style_pdf : style_nopdf }>
                 {file_type == 'pdf' && <iframe width="100%" height="100%" src={ ruta_archivo }  frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>}
-                {file_type != 'pdf' && <div><a href={ ruta_archivo } target='_blank'> Descargar Recurso </a></div>}
+                {(file_type != 'pdf' && (file_type != 'jpg' && file_type != 'jpeg' && file_type != 'png')) && <div><a href={ ruta_archivo } target='_blank'> Descargar Recurso </a></div>}
+                {(file_type != 'pdf' && (file_type == 'jpg' || file_type == 'jpeg' || file_type == 'png')) && <div><img src={ ruta_archivo } className='img-fluid m-3'/></div>}
             </div>
         )   
     }
@@ -475,7 +476,7 @@ function FormularioPlay() {
                     <div className="course-dashboard-container d-flex">
                         <div className="course-dashboard-column">
                             <div className="lecture-viewer-container">
-                                <div className="lecture-video-item" style={{position:'relative', paddingTop:dataContenidoViendo.tipo_contenido==1 || dataContenidoViendo.tipo_contenido==3 || dataContenidoViendo.tipo_contenido==4 ? '56.25%' : '0%'}}> {/* (9 / 16) * 100 = 56.25 */}
+                                <div className="lecture-video-item" style={{position:'relative', paddingTop:dataContenidoViendo.tipo_contenido==1 || dataContenidoViendo.tipo_contenido==4 ? '56.25%' : '0%'}}> {/* (9 / 16) * 100 = 56.25 */}
                                     {dataContenidoViendo.tipo_contenido==1 ?                                         
                                         <VideoPlayerPrisma
                                             url_video={`${urlBaseApi}/${esMovil ? dataContenidoViendo.video_pequeno!=null ? dataContenidoViendo.video_pequeno : dataContenidoViendo.video_grande : dataContenidoViendo.video_grande }`}

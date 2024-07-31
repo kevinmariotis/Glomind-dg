@@ -155,6 +155,7 @@ function FormularioEditarContenidoCurso() {
     ));*/
 
 
+
     // Procesador de datos del Etiquetas Form
 
     const handleTag = {
@@ -174,18 +175,18 @@ function FormularioEditarContenidoCurso() {
                 descripcion: data.descripcion
             });
         },
-        save   : async (event) => {
-
+        save   : async (event) => { 
+    
            setMostrarSpinner(true);
-
+    
            if(popUpTag.i_tag != -1){
-
+    
                 let dataTag = {
                     nombre       : popUpTag.nombre,
                     descripcion  : popUpTag.descripcion,
                     html         : popUpTag.html
                 }
-
+    
                 const opciones = {   
                     method: 'PUT',
                     headers: {
@@ -203,11 +204,11 @@ function FormularioEditarContenidoCurso() {
                 if (response.ok){  
                     console.log(datos);
                 }
-
+    
            }else{
                 const tagData = new FormData();        
                 tagData.append('nombre', popUpTag.nombre);   
-                tagData.append('descripcion', popUpTag.nombre);
+                tagData.append('descripcion', popUpTag.descripcion);
                 tagData.append('html', popUpTag.html)
                 tagData.append('id_curso', id);
                 tagData.append('id_categoria', idSeccionAgregarContenido);
@@ -227,15 +228,17 @@ function FormularioEditarContenidoCurso() {
                 const datos = await response.json();            
                 
                 if (response.ok){  
-                console.log(datos);
+                    console.log(datos);
+                }else{
+                    mensajesDeError(setPopup, response.status, (typeof (response.json()).datos !== 'undefined') ? (response.json()).datos : {});
                 }
            }
-
+    
            setPopupTag({...popUpTag, mostrar: 0});
            
         }
     }
-
+    
 
     // Manejador de procesos relacionados con los recursos
 
@@ -260,9 +263,13 @@ function FormularioEditarContenidoCurso() {
             if(popUpResource.i_res != -1){
 
                 let file = document.querySelector('input[name=resourceArchivo]').files[0];  
-                const resData = new FormData();        
+                let preview = document.querySelector('input[name=resourceVistaPrevia]').files[0];
+
+                const resData = new FormData();  
+                const previewData = new FormData();      
    
                 resData.append('archivo', file);
+                previewData.append('archivo_vista_previa', preview);
 
                 let resRowData = {
                     nombre      : popUpResource.nombre,
@@ -276,6 +283,15 @@ function FormularioEditarContenidoCurso() {
                         'Authorization' : `Bearer ${jwt}`
                     },
                     body: resData
+                };
+
+
+                const opcionesPreview = {   
+                    method: 'POST',
+                    headers: {
+                        'Authorization' : `Bearer ${jwt}`
+                    },
+                    body: previewData
                 };
 
                                 
@@ -292,23 +308,40 @@ function FormularioEditarContenidoCurso() {
                     const response = await fetch(`${urlBaseApi}/api/recurso/actualizarArchivo/${popUpResource.i_res}`, opcionesArchivo);
                 }
 
+                if(preview){
+                    const responsePreview = await fetch(`${urlBaseApi}/api/recurso/actualizarImagenVistaPrevia/${popUpResource.i_res}`, opcionesPreview);                    
+                }
+
                 const responseRaw = await fetch(`${urlBaseApi}/api/recurso/${popUpResource.i_res}`, opcionesData);
 
+                if(response.ok){
+                    if(responseRaw.ok){
+
+                    }else{
+                        mensajesDeError(setPopup, responseRaw.status, (typeof (responseRaw.json()).datos !== 'undefined') ? (responseRaw.json()).datos : {});
+                    }
+                }else{
+                    mensajesDeError(setPopup, response.status, (typeof (response.json()).datos !== 'undefined') ? (response.json()).datos : {});
+                }
+
                 setMostrarSpinner(false);
+                setPopupResource({i_res:-1});
                 obtenerDatosServidor();
                 
             }else{
 
                 let file = document.querySelector('input[name=resourceArchivo]').files[0];  
-                const resData = new FormData();        
-    
+                let preview = document.querySelector('input[name=resourceVistaPrevia]').files[0];
+
+                const resData = new FormData(); 
                 resData.append('nombre', popUpResource.nombre);   
-                resData.append('descripcion', popUpResource.nombre);
+                resData.append('descripcion', popUpResource.descripcion);
                 resData.append('id_curso', id);
                 resData.append('id_categoria', idSeccionAgregarContenido);
                 resData.append('archivo', file);
-    
+                resData.append('archivo_vista_previa', preview);
                 
+
                 const opciones = {   
                     method: 'POST',
                     headers: {
@@ -318,6 +351,7 @@ function FormularioEditarContenidoCurso() {
                 };
     
                 const response = await fetch(`${urlBaseApi}/api/recurso`, opciones);
+
                 setMostrarSpinner(false);
                 obtenerDatosServidor();
     
@@ -325,6 +359,8 @@ function FormularioEditarContenidoCurso() {
                 
                 if (response.ok){  
                     console.log(datos);
+                }else{
+                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});
                 }
             }
 
@@ -1126,7 +1162,7 @@ function FormularioEditarContenidoCurso() {
                         <div className="col-lg-12">
                             <div className="form-group">
                                 <label className="label-text">Descripción</label>                                                                    
-                                <input value={popUpTag.descripcion} onChange={handleTag.descripcion} className="form-control form--control pl-3" type="text" name="descripcion" maxLength="64" placeholder="Descripcion del contenido" />
+                                <textarea value={popUpTag.descripcion} onChange={handleTag.descripcion} className="form-control form--control pl-3" type="text" name="descripcion" maxLength="64" placeholder="Descripcion del contenido" ></textarea>
                                 {erroresCampos['descripcion'].length > 0 && (<SpamError mensaje={erroresCampos['descripcion']} />)}                            
                             </div>
                         </div>    
@@ -1184,6 +1220,12 @@ function FormularioEditarContenidoCurso() {
                                 <input type="file" name="resourceArchivo" class="form-control form--control user-text-editor pl-3"></input>
                             </div>
                         </div> 
+                        <div className="col-lg-12">
+                            <div className="form-group">
+                                <label className="label-text">Vista previa</label>
+                                <input type="file" name="resourceVistaPrevia" class="form-control form--control user-text-editor pl-3"></input>
+                            </div>
+                        </div> 
                     </div>
                     <div className="modal-footer border-top-gray">
                         <button type="button" className="btn theme-btn mb-2" onClick={handleResource.save} >{popUpResource.i_res != -1 ? 'Guardar' : 'Crear'}</button>                             
@@ -1235,7 +1277,15 @@ function FormularioEditarContenidoCurso() {
                                                                     {tema.tipo_contenido==1 ? 
                                                                         <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
                                                                             {tema.imagen_preview_pequena && tema.imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${tema.imagen_preview_pequena}`} alt={tema.nombre} onClick={()=>{ setPosterVistaPrevia(tema.imagen_preview_pequena); setPopupVideo({...popUpVideo, mostrar:true, 'contenido':tema.video_grande}); }} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={tema.nombre} /> }
-                                                                        </div> : ''}                                                                            
+                                                                        </div> : ''} 
+                                                                    
+                                                                    {
+                                                                        tema.tipo_contenido == 3 ?
+                                                                        <div className="media-img">
+                                                                            <img src={`${urlBaseApi}/${tema.ruta_imagen_preview_small}`} />
+                                                                        </div> : ''
+                                                                    }
+
                                                                 </div>
                                                             </th>
                                                             <td>
