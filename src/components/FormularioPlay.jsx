@@ -35,6 +35,8 @@ function FormularioPlay() {
     const [contenidoActivadoAnterior, setContenidoActivadoAnterior] = useState(-1);  //el contenido anterior que estaba viendo, por si acaso hay que volver a señalarlo.
     const [pestanaActivada, setPestanaActivada] = useState(4);  //pestañas que estan debajo del video
     const [cargarActividadActual, setCargarActividadActual] = useState(false);
+
+    const [mimeType, setMimeType] = useState("");
         
     const refBloqueDescripcion = useRef(null);
     const refHiloComentarios = useRef(null);    
@@ -53,6 +55,8 @@ function FormularioPlay() {
 
         let file_parts   = resource.ruta_archivo.split('/');
         let file_type    = (file_parts[2].split('.'))[1];
+
+        setMimeType(file_type);
 
         let style_pdf = {
             height: '100%', 
@@ -476,7 +480,7 @@ function FormularioPlay() {
                     <div className="course-dashboard-container d-flex">
                         <div className="course-dashboard-column">
                             <div className="lecture-viewer-container">
-                                <div className="lecture-video-item" style={{position:'relative', paddingTop:dataContenidoViendo.tipo_contenido==1 || dataContenidoViendo.tipo_contenido==4 ? '56.25%' : '0%'}}> {/* (9 / 16) * 100 = 56.25 */}
+                                <div className="lecture-video-item" style={{position:'relative', paddingTop:dataContenidoViendo.tipo_contenido==1 || dataContenidoViendo.tipo_contenido==4 || (dataContenidoViendo.tipo_contenido==3 && mimeType == 'pdf') ? '56.25%' : '0%'}}> {/* (9 / 16) * 100 = 56.25 */}
                                     {dataContenidoViendo.tipo_contenido==1 ?                                         
                                         <VideoPlayerPrisma
                                             url_video={`${urlBaseApi}/${esMovil ? dataContenidoViendo.video_pequeno!=null ? dataContenidoViendo.video_pequeno : dataContenidoViendo.video_grande : dataContenidoViendo.video_grande }`}
