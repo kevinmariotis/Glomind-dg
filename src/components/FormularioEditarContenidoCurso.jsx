@@ -178,6 +178,13 @@ function FormularioEditarContenidoCurso() {
         save   : async (event) => { 
     
            setMostrarSpinner(true);
+
+
+           if(popUpTag.nombre == '' && popUpTag.descripcion == '' && popUpTag.html == ''){
+                mensajesDeError(setPopup, 500, {descripcion: ['Campos sin diligenciar.']});
+                setMostrarSpinner(false);
+                return false;
+           }
     
            if(popUpTag.i_tag != -1){
     
@@ -196,13 +203,14 @@ function FormularioEditarContenidoCurso() {
                 };
     
                 const response = await fetch(`${urlBaseApi}/api/etiqueta/${popUpTag.i_tag}`, opciones);
-                setMostrarSpinner(false);
-                obtenerDatosServidor();
-    
                 const datos = await response.json();            
                 
                 if (response.ok){  
-                    console.log(datos);
+                    setMostrarSpinner(false);
+                    obtenerDatosServidor();
+                    setPopupTag({...popUpTag, mostrar: 0});
+                }else{
+                    mensajesDeError(setPopup, response.status, (typeof (response.json()).datos !== 'undefined') ? (response.json()).datos : {});
                 }
     
            }else{
@@ -228,13 +236,13 @@ function FormularioEditarContenidoCurso() {
                 const datos = await response.json();            
                 
                 if (response.ok){  
-                    console.log(datos);
+                    setPopupTag({...popUpTag, mostrar: 0});
                 }else{
                     mensajesDeError(setPopup, response.status, (typeof (response.json()).datos !== 'undefined') ? (response.json()).datos : {});
                 }
            }
     
-           setPopupTag({...popUpTag, mostrar: 0});
+           
            
         }
     }
@@ -260,6 +268,8 @@ function FormularioEditarContenidoCurso() {
         },
         save          : async (event) => {
 
+            setMostrarSpinner(true);
+            
             if(popUpResource.i_res != -1){
 
                 let file = document.querySelector('input[name=resourceArchivo]').files[0];  
@@ -325,10 +335,16 @@ function FormularioEditarContenidoCurso() {
                 }
 
                 setMostrarSpinner(false);
-                setPopupResource({i_res:-1});
+                setPopupResource({...popUpResource, i_res:-1});
                 obtenerDatosServidor();
                 
             }else{
+                console.log(popUpResource);
+                if (popUpResource.nombre == '' && popUpResource.descripcion == ''){
+                    mensajesDeError(setPopup, 500, {nombre: ['Campos sin diligenciar']});
+                    setMostrarSpinner(false);
+                    return false;
+                }
 
                 let file = document.querySelector('input[name=resourceArchivo]').files[0];  
                 let preview = document.querySelector('input[name=resourceVistaPrevia]').files[0];
@@ -359,12 +375,13 @@ function FormularioEditarContenidoCurso() {
                 
                 if (response.ok){  
                     console.log(datos);
+                    setPopupResource({...popUpResource, mostrar: 0})
                 }else{
                     mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});
                 }
             }
 
-            setPopupResource({...popUpResource, mostrar: 0})
+            
 
         }   
     }
@@ -1177,7 +1194,7 @@ function FormularioEditarContenidoCurso() {
                     </div>
                     <div className="modal-footer border-top-gray">
                         <button type="button" className="btn theme-btn mb-2" onClick={handleTag.save} >{popUpTag.i_tag != -1 ? 'Guardar' : 'Crear'}</button>                             
-                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={(e) => setPopupTag({mostrar:0})}> Cancelar </button>
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={(e) => setPopupTag({...popUpTag,mostrar:0})}> Cancelar </button>
                     </div>
                 </div>
             </div>
@@ -1229,7 +1246,7 @@ function FormularioEditarContenidoCurso() {
                     </div>
                     <div className="modal-footer border-top-gray">
                         <button type="button" className="btn theme-btn mb-2" onClick={handleResource.save} >{popUpResource.i_res != -1 ? 'Guardar' : 'Crear'}</button>                             
-                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={(e) => setPopupResource({mostrar:0})}> Cancelar </button>
+                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={(e) => setPopupResource({...popUpResource, mostrar:0})}> Cancelar </button>
                     </div>
                 </div>
             </div>
@@ -1282,7 +1299,10 @@ function FormularioEditarContenidoCurso() {
                                                                     {
                                                                         tema.tipo_contenido == 3 ?
                                                                         <div className="media-img">
-                                                                            <img src={`${urlBaseApi}/${tema.ruta_imagen_preview_small}`} />
+                                                                            {
+                                                                                tema.ruta_imagen_preview_small && tema.ruta_imagen_preview_small != null ? <img src={`${urlBaseApi}/${tema.ruta_imagen_preview_small}`} /> : <img src={`${urlBaseApi}/images/course-no-image.png`} /> 
+                                                                            }
+                                                                            
                                                                         </div> : ''
                                                                     }
 
