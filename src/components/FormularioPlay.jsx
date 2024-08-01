@@ -98,13 +98,13 @@ function FormularioPlay() {
 
     useEffect(() => {    
         if(dataCurso.id!=-1){
-            //obtenerContenidos({activar_actividad_actual:true});        
+            obtenerContenidos({activar_actividad_actual:true});        
         }        
     }, [dataCurso.id]);
 
     useEffect(() => {    
         if(cargarActividadActual){
-            actividadActual();
+            //actividadActual();
         }        
     }, [contenido]);
                 
