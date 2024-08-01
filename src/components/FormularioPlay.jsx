@@ -98,7 +98,7 @@ function FormularioPlay() {
 
     useEffect(() => {    
         if(dataCurso.id!=-1){
-            obtenerContenidos({activar_actividad_actual:true});        
+            //obtenerContenidos({activar_actividad_actual:true});        
         }        
     }, [dataCurso.id]);
 
@@ -210,7 +210,7 @@ function FormularioPlay() {
             if (response.ok){                                                                               
                 setContenido(datos);
                 if(activar_actividad_actual && !dataCurso.es_docente){
-                    setCargarActividadActual(true);
+                    //setCargarActividadActual(true);
                 }
             } else {                
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
@@ -611,7 +611,7 @@ function FormularioPlay() {
                                                             <div id={`mobileCourseCollapse${parseInt(index)+1}`} className="show" aria-labelledby={`mobileCourseHeading${parseInt(index)+1}`} data-parent="#mobileCourseAccordionCourseExample">
                                                                 <div className="card-body p-0">
                                                                     <ul className="curriculum-sidebar-list">
-                                                                        {Object.keys(categoria.curso_contenido).map((key) => (
+                                                                        {Object.keys(categoria.curso_contenido).map((key, index2) => (
                                                                             <li key={`contenido-mobil-${key}`} className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
                                                                                 <div className="course-item-content-wrap">
                                                                                     <div className="custom-control custom-checkbox">
@@ -668,7 +668,7 @@ function FormularioPlay() {
                                                                                             </p>                                                                                            
                                                                                             {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&
                                                                                                 <div key={`drop-contenido-mobil-${categoria.curso_contenido[key].id_contenido}-${key}`} className="generic-action-wrap">
-                                                                                                    <DropdownContenido data={categoria.curso_contenido[key].descargables} />
+                                                                                                    <DropdownContenido data={categoria.curso_contenido[key].descargables} mostrarHaciaArriba={index2 === Object.keys(categoria.curso_contenido).length - 1} />
                                                                                                 </div>
                                                                                             }
                                                                                         </div>
@@ -801,7 +801,7 @@ function FormularioPlay() {
                                                     {dataContenidoViendo.descripcion!=null ? <p>{dataContenidoViendo.descripcion.split('<br />').map((line, index2) => (<span key={`desc-general-larga-${index2}`}>{line}<br /></span> ))}</p> : ''}
                                                 </div>                                                
                                             </div>                                                                                        
-                                            {dataCurso.id!=-1 && tipoContenidoHilo!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={tipoContenidoHilo} /> : ''}                                            
+                                            {dataCurso.id!=-1 && tipoContenidoHilo!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? contenidoActivado : dataContenidoViendo.id} tipo_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? 99 : tipoContenidoHilo} /> : ''}
                                         </div>
                                         
                                         {dataCurso.instructor!='' ? <div className={`tab-pane fade show ${pestanaActivada==4 ? 'active': ''}`} id="announcements" role="tabpanel" aria-labelledby="announcements-tab">
@@ -838,7 +838,7 @@ function FormularioPlay() {
                                                 <div id={`collapse${parseInt(index)+1}`} className={`show ${collapsing && activeTab === index ? 'collapsing2' : ''}${activeTab !== index ? 'collapse2' : ''}${activeTab === index && !collapsing ? 'collapse2 show' : ''}`} aria-labelledby={`heading${parseInt(index)+1}`} data-parent="#accordionCourseExample">
                                                     <div className="card-body p-0">
                                                         <ul className="curriculum-sidebar-list">
-                                                            {Object.keys(categoria.curso_contenido).map((key) => (
+                                                            {Object.keys(categoria.curso_contenido).map((key, index22) => (
                                                                 <li key={`contenido-desktop-${key}`} className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
                                                                     <div className="course-item-content-wrap">
                                                                         <div className="custom-control custom-checkbox">
@@ -896,7 +896,7 @@ function FormularioPlay() {
                                                                                 </p>
                                                                                 {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&
                                                                                     <div key={`drop-contenido-desktop-${categoria.curso_contenido[key].id_contenido}-${key}`} className="generic-action-wrap">
-                                                                                        <DropdownContenido data={categoria.curso_contenido[key].descargables} />
+                                                                                        <DropdownContenido data={categoria.curso_contenido[key].descargables} mostrarHaciaArriba={index22 === Object.keys(categoria.curso_contenido).length - 1} />
                                                                                     </div>
                                                                                 }
                                                                             </div>
