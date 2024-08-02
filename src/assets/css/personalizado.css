@@ -270,7 +270,7 @@
 /*css para el movimiento del acordeon (inhabilitado por el momento, se dejaria estatico el acordeon)*/
 
 .collapse2.show {
-  max-height: 1000px;
+  max-height: 2000px; /*originalmente 1000 pero hay cursos que tienen muchas actividades en una misma leccion*/
   transition: max-height 0.35s ease;
   overflow: hidden;  /*originalmente en hidden, pero al colocar hidden no se ve el desplegable de recursos cuando esta al borde inferior de la seccion*/
 }
@@ -281,13 +281,13 @@
 }
 
 .collapsing2 {
-  max-height: 1000px; /* Altura máxima durante la transición */
+  max-height: 2000px; /* Altura máxima durante la transición */
   transition: max-height 0.35s ease;
   
 }
 
 .show.collapse {
-  max-height: 1000px; /* Altura máxima cuando la pestaña está abierta */
+  max-height: 2000px; /* Altura máxima cuando la pestaña está abierta */
 }
 
 
