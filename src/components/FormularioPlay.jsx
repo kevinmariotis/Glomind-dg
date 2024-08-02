@@ -518,10 +518,7 @@ function FormularioPlay() {
                                                     <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={dataContenidoViendo.tipo_contenido} id_curso={dataCurso.id} es_docente={dataCurso.es_docente} />
                                                 </div>
                                             </div>
-                                        </>
-                                    : 
-                                    dataContenidoViendo.tipo_contenido==7 ? 
-                                            'Url: Aquí mostrar el componente para URL título, la descripción, la imagen de vista previta y en la parte inferior el botón para ir a la url.'
+                                        </>                                    
                                     : ''
                                     }                                    
                                 </div>
@@ -808,6 +805,20 @@ function FormularioPlay() {
                                                 <div className="lecture-overview-item">
                                                     <h3 className="fs-24 font-weight-semi-bold pb-2">{dataContenidoViendo.nombre ? dataContenidoViendo.nombre : ''}</h3>
                                                     {dataContenidoViendo.descripcion!=null ? <p>{dataContenidoViendo.descripcion.split('<br />').map((line, index2) => (<span key={`desc-general-larga-${index2}`}>{line}<br /></span> ))}</p> : ''}
+
+                                                    {dataContenidoViendo.tipo_contenido==7 ?
+                                                            <div className="col-lg-7 mx-auto">
+                                                                <div className="error-content text-center">
+                                                                    <div className="section-heading" style={{marginBottom:'100px', marginTop:'50px'}}>
+                                                                        <p className="section__desc">
+                                                                            <button onClick={() => window.open(dataContenidoViendo.url, '_blank')} href="#" className="btn theme-btn">Ir al sitio externo</button>
+                                                                        </p>
+                                                                    </div>                                                        
+                                                                </div>
+                                                            </div>
+                                                        : ''
+                                                    }
+
                                                 </div>                                                
                                             </div>                                                                                        
                                             {dataCurso.id!=-1 && tipoContenidoHilo!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? contenidoActivado : dataContenidoViendo.id} tipo_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? 99 : tipoContenidoHilo} /> : ''}
