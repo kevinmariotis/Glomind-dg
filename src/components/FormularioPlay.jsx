@@ -121,7 +121,11 @@ function FormularioPlay() {
                 case 4:    //4 etiqueta
                     handleActualizaEstadoConsumo();
                     setTipoContenidoHilo(4);    //4 etiqueta
-                break;                
+                break; 
+                case 7:
+                    handleActualizaEstadoConsumo();
+                    setTipoContenidoHilo(7);    //7 URL
+                break;
                 default:
                     setTipoContenidoHilo(-1);   //Ninguno, no tiene foro
                 break;
@@ -500,7 +504,7 @@ function FormularioPlay() {
                                     : 
 
                                     dataContenidoViendo.tipo_contenido==5 ? 
-                                            'Tarea: Aqui se debe mostrar el historial de envios (una misma tarea pudiera ser enviada varias veces), la fecha hora de envio y si ya fue calificada o no (basado en el estado), tambien la posibilidad de volver a enviarla (si se permite por configuracion de la misma tarea) retroalimentacion del docente, tambien la posibididad de descargar el archivo que envió. Si es el docente le da acceso a un panel especial (otra ruta) para ver todos los intentos y calificar.'
+                                            'Tarea: Aqui se debe mostrar componente para tarea, que muestra: el historial de envios (una misma tarea pudiera ser enviada varias veces), la fecha hora de envio y si ya fue calificada o no (basado en el estado), tambien la posibilidad de volver a enviarla (si se permite por configuracion de la misma tarea) retroalimentacion del docente, tambien la posibididad de descargar el archivo que envió. Si es el docente le da acceso a un panel especial (otra ruta) para ver todos los intentos y calificar.'
                                     : 
 
                                     dataContenidoViendo.tipo_contenido==6 ?
@@ -515,6 +519,9 @@ function FormularioPlay() {
                                                 </div>
                                             </div>
                                         </>
+                                    : 
+                                    dataContenidoViendo.tipo_contenido==7 ? 
+                                            'Url: Aquí mostrar el componente para URL título, la descripción, la imagen de vista previta y en la parte inferior el botón para ir a la url.'
                                     : ''
                                     }                                    
                                 </div>
@@ -647,6 +654,7 @@ function FormularioPlay() {
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 4 ? <span><i className="la la-paperclip"></i> Etiqueta</span>
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 5 ? <span><i className="la la-home"></i> Tarea</span>
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 6 ? <span><i className="la la-comments"></i> Foro</span>
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 7 ? <span><i className="la la-external-link"></i> Url</span>
                                                                                                     : ''
                                                                                                 }
 
@@ -663,6 +671,7 @@ function FormularioPlay() {
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 4 ? ''
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 6 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 7 ? ` Link externo`
                                                                                                     : ''
                                                                                                 }    
                                                                                             </p>                                                                                            
@@ -875,6 +884,7 @@ function FormularioPlay() {
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 4 ? <span><i className="la la-paperclip"></i> Etiqueta</span>
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 5 ? <span><i className="la la-home"></i> Tarea</span>
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 6 ? <span><i className="la la-comments"></i> Foro</span>
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 7 ? <span><i className="la la-external-link"></i> Url</span>
                                                                                         : ''
                                                                                     }
 
@@ -891,6 +901,7 @@ function FormularioPlay() {
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 4 ? ''
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 6 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 7 ? ` Link externo`
                                                                                         : ''
                                                                                     }                                                                                        
                                                                                 </p>
