@@ -555,7 +555,7 @@ function FormularioPlay() {
                                                 <i className="la la-search"></i>
                                             </a>
                                         </li>                                        
-                                        {[2, 3, 4].includes(tipoContenidoHilo) ? <li className="nav-item">
+                                        {[2, 3, 4, 7].includes(tipoContenidoHilo) ? <li className="nav-item">
                                             <a onClick={(event)=>{ handleCambiarPestana(event, 3); }} className={`nav-link ${pestanaActivada==3 ? 'active': ''}`} id="question-and-ans-tab" data-toggle="tab" href="#question-and-ans" role="tab" aria-controls="question-and-ans" aria-selected="false">
                                                 Descripción
                                             </a>
