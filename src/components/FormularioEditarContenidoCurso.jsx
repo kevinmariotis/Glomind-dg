@@ -7,6 +7,8 @@ import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
 import VideoPicker from './VideoPicker';
+import CrearEditarRecurso from './CrearEditarRecurso';
+import CrearEditarEtiqueta from './CrearEditarEtiqueta';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Skeleton from 'react-loading-skeleton'
@@ -31,6 +33,8 @@ function FormularioEditarContenidoCurso() {
     const [popUpDescargable, setPopupDescargable] = useState({mostrar:false, id_descargable:-1, nombre:'', descripcion:'', archivo_seleccionado:''});    
     const [popUpListaDescargable, setPopupListaDescargable] = useState({mostrar:false, id_tipo_contenido:-1, tipo_contenido:-1});        
     const [posterVistaPrevia, setPosterVistaPrevia] = useState('');    
+    const [popUpRecurso, setPopupRecurso] = useState({mostrar:false, id_categoria:-1, id_recurso:-1});        
+    const [popUpEtiqueta, setPopupEtiqueta] = useState({mostrar:false, id_categoria:-1, id_etiqueta:-1});        
     const [contenido, setContenido] = useState({});        
     const [mostrarPopUpCrearSeccion, setMostrarPopUpCrearSeccion] = useState(false);                    
     const [mostrarPopUpEditarSeccion, setMostrarPopUpEditarSeccion] = useState(false);                    
@@ -42,11 +46,7 @@ function FormularioEditarContenidoCurso() {
     const [listaDescargables, setListaDescargables] = useState([]);
     
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
-
-
-    const [popUpTag, setPopupTag] = useState({mostrar:false, i_tag:-1, nombre:'', html:'', descripcion: ''});
-    const [popUpResource, setPopupResource] = useState({mostrar:false, i_res:-1, nombre:'', descripcion:'', id_curso:'', id_categoria: ''});
-    
+        
     useEffect(() => {           
         window.scrollTo(0, 0);
         if(url_amigable_volver){
@@ -153,239 +153,7 @@ function FormularioEditarContenidoCurso() {
     /*const fileList = acceptedFiles.map((file, index) => (
         <li key={`archivo-ajuntado-${index}`}>{file.name}</li>
     ));*/
-
-
-
-    // Procesador de datos del Etiquetas Form
-
-    const handleTag = {
-        nombre      : (event) => { setPopupTag({...popUpTag, nombre:event.target.value});  },
-        html        : (event) => { setPopupTag({...popUpTag, html:event.target.value});  },
-        descripcion : (event) => { setPopupTag({...popUpTag, descripcion:event.target.value})},
-        show        : (event) => { 
-            setPopupTag({...popUpTag, mostrar: 1})
-        },
-        showEdit : (event, data) => {
-            console.log(data);
-            setPopupTag({
-                nombre : data.nombre, 
-                html   : data.html,
-                mostrar: 1,
-                i_tag  : data.id_tipo_contenido,
-                descripcion: data.descripcion
-            });
-        },
-        save   : async (event) => { 
-    
-           setMostrarSpinner(true);
-
-
-           if(popUpTag.nombre == '' && popUpTag.descripcion == '' && popUpTag.html == ''){
-                mensajesDeError(setPopup, 500, {descripcion: ['Campos sin diligenciar.']});
-                setMostrarSpinner(false);
-                return false;
-           }
-    
-           if(popUpTag.i_tag != -1){
-    
-                let dataTag = {
-                    nombre       : popUpTag.nombre,
-                    descripcion  : popUpTag.descripcion,
-                    html         : popUpTag.html
-                }
-    
-                const opciones = {   
-                    method: 'PUT',
-                    headers: {
-                        'Authorization' : `Bearer ${jwt}`
-                    },
-                    body: JSON.stringify(dataTag)
-                };
-    
-                const response = await fetch(`${urlBaseApi}/api/etiqueta/${popUpTag.i_tag}`, opciones);
-                const datos = await response.json();            
-                
-                if (response.ok){  
-                    setMostrarSpinner(false);
-                    obtenerDatosServidor();
-                    setPopupTag({...popUpTag, mostrar: 0});
-                }else{
-                    mensajesDeError(setPopup, response.status, (typeof (response.json()).datos !== 'undefined') ? (response.json()).datos : {});
-                }
-    
-           }else{
-                const tagData = new FormData();        
-                tagData.append('nombre', popUpTag.nombre);   
-                tagData.append('descripcion', popUpTag.descripcion);
-                tagData.append('html', popUpTag.html)
-                tagData.append('id_curso', id);
-                tagData.append('id_categoria', idSeccionAgregarContenido);
-                    
-                const opciones = {   
-                    method: 'POST',
-                    headers: {
-                        'Authorization' : `Bearer ${jwt}`
-                    },
-                    body: tagData
-                };
-    
-                const response = await fetch(`${urlBaseApi}/api/etiqueta`, opciones);
-                setMostrarSpinner(false);
-                obtenerDatosServidor();
-    
-                const datos = await response.json();            
-                
-                if (response.ok){  
-                    setPopupTag({...popUpTag, mostrar: 0});
-                }else{
-                    mensajesDeError(setPopup, response.status, (typeof (response.json()).datos !== 'undefined') ? (response.json()).datos : {});
-                }
-           }
-    
-           
-           
-        }
-    }
-    
-
-    // Manejador de procesos relacionados con los recursos
-
-    const handleResource = {
-        nombre        : (event) => { setPopupResource({...popUpResource, nombre:event.target.value});  },
-        descripcion   : (event) => { setPopupResource({...popUpResource, descripcion:event.target.value});  },
-        show          : (event) => { 
-
-            setPopupResource({...popUpResource, mostrar: 1})
-
-        },
-        showEdit      : (event, data) => {
-            setPopupResource({
-                nombre : data.nombre, 
-                descripcion   : data.descripcion,
-                mostrar: 1,
-                i_res  : data.id_tipo_contenido
-            });
-        },
-        save          : async (event) => {
-
-            setMostrarSpinner(true);
             
-            if(popUpResource.i_res != -1){
-
-                let file = document.querySelector('input[name=resourceArchivo]').files[0];  
-                let preview = document.querySelector('input[name=resourceVistaPrevia]').files[0];
-
-                const resData = new FormData();  
-                const previewData = new FormData();      
-   
-                resData.append('archivo', file);
-                previewData.append('archivo_vista_previa', preview);
-
-                let resRowData = {
-                    nombre      : popUpResource.nombre,
-                    descripcion : popUpResource.descripcion
-                };
-    
-                
-                const opcionesArchivo = {   
-                    method: 'POST',
-                    headers: {
-                        'Authorization' : `Bearer ${jwt}`
-                    },
-                    body: resData
-                };
-
-
-                const opcionesPreview = {   
-                    method: 'POST',
-                    headers: {
-                        'Authorization' : `Bearer ${jwt}`
-                    },
-                    body: previewData
-                };
-
-                                
-                const opcionesData = {   
-                    method: 'PUT',
-                    headers: {
-                        'Authorization' : `Bearer ${jwt}`
-                    },
-                    body: JSON.stringify(resRowData)
-                };
-    
-                
-                if(file){
-                    const response = await fetch(`${urlBaseApi}/api/recurso/actualizarArchivo/${popUpResource.i_res}`, opcionesArchivo);
-                }
-
-                if(preview){
-                    const responsePreview = await fetch(`${urlBaseApi}/api/recurso/actualizarImagenVistaPrevia/${popUpResource.i_res}`, opcionesPreview);                    
-                }
-
-                const responseRaw = await fetch(`${urlBaseApi}/api/recurso/${popUpResource.i_res}`, opcionesData);
-
-                if(response.ok){
-                    if(responseRaw.ok){
-
-                    }else{
-                        mensajesDeError(setPopup, responseRaw.status, (typeof (responseRaw.json()).datos !== 'undefined') ? (responseRaw.json()).datos : {});
-                    }
-                }else{
-                    mensajesDeError(setPopup, response.status, (typeof (response.json()).datos !== 'undefined') ? (response.json()).datos : {});
-                }
-
-                setMostrarSpinner(false);
-                setPopupResource({...popUpResource, i_res:-1});
-                obtenerDatosServidor();
-                
-            }else{
-                console.log(popUpResource);
-                if (popUpResource.nombre == '' && popUpResource.descripcion == ''){
-                    mensajesDeError(setPopup, 500, {nombre: ['Campos sin diligenciar']});
-                    setMostrarSpinner(false);
-                    return false;
-                }
-
-                let file = document.querySelector('input[name=resourceArchivo]').files[0];  
-                let preview = document.querySelector('input[name=resourceVistaPrevia]').files[0];
-
-                const resData = new FormData(); 
-                resData.append('nombre', popUpResource.nombre);   
-                resData.append('descripcion', popUpResource.descripcion);
-                resData.append('id_curso', id);
-                resData.append('id_categoria', idSeccionAgregarContenido);
-                resData.append('archivo', file);
-                resData.append('archivo_vista_previa', preview);
-                
-
-                const opciones = {   
-                    method: 'POST',
-                    headers: {
-                        'Authorization' : `Bearer ${jwt}`
-                    },
-                    body: resData
-                };
-    
-                const response = await fetch(`${urlBaseApi}/api/recurso`, opciones);
-
-                setMostrarSpinner(false);
-                obtenerDatosServidor();
-    
-                const datos = await response.json();            
-                
-                if (response.ok){  
-                    console.log(datos);
-                    setPopupResource({...popUpResource, mostrar: 0})
-                }else{
-                    mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});
-                }
-            }
-
-            
-
-        }   
-    }
-
     const obtenerDatosServidor = async () => {                  
         const headers = {
             'Authorization':`Bearer ${jwt}`,
@@ -642,16 +410,7 @@ function FormularioEditarContenidoCurso() {
         setIdSeccionAgregarContenido(id_categoria);
         setMostrarPopUpAgregarContenido(true);
     }
-
-    /** Handle Agregar Tag */
-
-    const handleAgregarTag = (event) => {
-        event.preventDefault();
-        if(urlAmigableVolver == ''){
-
-        }
-    }
-
+    
     const handleAgregarVideo = (event) => {         
         event.preventDefault();    
         if(urlAmigableVolver==''){
@@ -887,6 +646,21 @@ function FormularioEditarContenidoCurso() {
         link.click();
     };
 
+    const tiposDeContenido = [
+        { id: 1, nombre: 'Video' },
+        { id: 2, nombre: 'Examen' },
+        { id: 3, nombre: 'Recurso' },
+        { id: 4, nombre: 'Etiqueta' },
+        { id: 5, nombre: 'Tarea' },
+        { id: 6, nombre: 'Foro' },
+        { id: 7, nombre: 'Url' }
+    ];
+
+    const obtenerNombreContenido = (tipoContenido) => {
+        const contenido = tiposDeContenido.find(c => c.id === tipoContenido);
+        return contenido ? contenido.nombre : 'Desconocido';
+    };
+
     return (
         <>
         {mostrarSpinner && <Spinner />}
@@ -944,11 +718,9 @@ function FormularioEditarContenidoCurso() {
             </Modal.Footer>
         </Modal>
 
-        {
-            /*
-                Popup lista descargable
-            */
-        }
+        {popUpRecurso.mostrar==1 && <CrearEditarRecurso id_curso={id} id_categoria={popUpRecurso.id_categoria}  id_recurso={popUpRecurso.id_recurso} funcionMostrarPopUp={()=>{ setPopupRecurso({...popUpRecurso, mostrar:0}); obtenerDatosServidor(); }} />}
+        {popUpEtiqueta.mostrar==1 && <CrearEditarEtiqueta id_curso={id} id_categoria={popUpEtiqueta.id_categoria}  id_etiqueta={popUpEtiqueta.id_etiqueta} funcionMostrarPopUp={()=>{ setPopupEtiqueta({...popUpEtiqueta, mostrar:0}); obtenerDatosServidor(); }} />}
+        
         {popUpListaDescargable.mostrar==1 && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="decargableModal" tabIndex="-1" role="dialog" aria-labelledby="decargableModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -1001,13 +773,7 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
-
-        {
-            /*
-                Popup descargable
-            */
-        }
-
+        
         {popUpDescargable.mostrar==1 && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="decargableModal" tabIndex="-1" role="dialog" aria-labelledby="decargableModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -1052,13 +818,7 @@ function FormularioEditarContenidoCurso() {
             </div>
         </div>
         }
-
-        {
-            /*
-                Popup crear seccion
-            */
-        }
-
+        
         {mostrarPopUpCrearSeccion && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -1081,13 +841,7 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
-
-        {
-            /*
-                Popup editar sección
-            */
-        }
-
+        
         {mostrarPopUpEditarSeccion && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal2" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -1110,14 +864,7 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
-
-
-        {
-            /*
-                Popup agregrar contenido
-            */
-        }
-        
+                
         {mostrarPopUpAgregarContenido && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal3" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -1131,8 +878,8 @@ function FormularioEditarContenidoCurso() {
                             <label className="label-text">Qué deseas agregar?</label>  <br/>
                             <button className="btn theme-btn ml-2" type="button" onClick={handleAgregarVideo} ><i className="la la-plus mr-2"></i>Video</button>
                             {permissions[46] || esDocente==1 ? <Link to={`${urlBase}/examen/crear/${id}/${idSeccionAgregarContenido}`} className="btn theme-btn ml-2" type="button" ><i className="la la-plus mr-2"></i>Examen</Link> : ''}
-                            {permissions[89] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={handleTag.show}> <i className="la la-plus mr-2"></i> Etiqueta</button> : ''}
-                            {permissions[86] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={handleResource.show}> <i className="la la-plus mr-2"></i> Recurso</button> : ''}
+                            {permissions[89] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={()=>{ setPopupEtiqueta({...popUpEtiqueta, mostrar:1, id_etiqueta:-1, id_categoria:idSeccionAgregarContenido}); setMostrarPopUpAgregarContenido(false); }}> <i className="la la-plus mr-2"></i> Etiqueta</button> : ''}
+                            {permissions[86] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={()=>{ setPopupRecurso({...popUpRecurso, mostrar:1, id_recurso:-1, id_categoria:idSeccionAgregarContenido}); setMostrarPopUpAgregarContenido(false); }}> <i className="la la-plus mr-2"></i> Recurso</button> : ''}
                             {permissions[92] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button"> <i className="la la-plus mr-2"></i> Tarea</button> : ''}
                         </div>
                     </div>
@@ -1142,123 +889,9 @@ function FormularioEditarContenidoCurso() {
                 </div>
             </div>
         </div>}
-
-        {
-            /*
-                Popup agregar video
-            */
-        }
-
+       
         {mostrarPopUpAgregarVideo && <VideoPicker funcionMostrarPopUp={setMostrarPopUpAgregarVideo} funcionSetVideoSeleccionado={handleSeleccionarVideo} />}
-        
-
-
-
-        {
-            /*
-                Popup Etiqueta
-            */
-        }
-
-        {popUpTag.mostrar==1 && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="tagModal" tabIndex="-1" role="dialog" aria-labelledby="tagModalTitle" aria-hidden="true">
-            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div className="modal-content">
-                    <div className="modal-header border-bottom-gray">
-                        <div className="pr-2">                            
-                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="decargableModalTitle">{popUpTag.id_tag!=-1 ? 'Editar etiqueta' : 'Crear etiqueta' }</h5>
-                        </div>                            
-                    </div>
-                    <div className="modal-body">
-                        <div className="col-lg-12">
-                            <div className="form-group">
-                                <label className="label-text">Nombre</label>                                                                    
-                                <input value={popUpTag.nombre} onChange={handleTag.nombre} className="form-control form--control pl-3" type="text" name="nombre_descargable" maxLength="64" placeholder="Ej: Plantilla para cálculos" />
-                                {erroresCampos['nombre'].length > 0 && (<SpamError mensaje={erroresCampos['nombre']} />)}                            
-                            </div>
-                        </div>
-                        <div className="col-lg-12">
-                            <div className="form-group">
-                                <label className="label-text">Descripción</label>                                                                    
-                                <textarea value={popUpTag.descripcion} onChange={handleTag.descripcion} className="form-control form--control pl-3" type="text" name="descripcion" maxLength="64" placeholder="Descripcion del contenido" ></textarea>
-                                {erroresCampos['descripcion'].length > 0 && (<SpamError mensaje={erroresCampos['descripcion']} />)}                            
-                            </div>
-                        </div>    
-                        <div className="col-lg-12">
-                            <div className="form-group">
-                                <label className="label-text">HTML</label>
-                                <textarea value={popUpTag.html} onChange={handleTag.html} className="form-control form--control user-text-editor pl-3" name="desc_descargable" ></textarea>
-                                {erroresCampos['descripcion'].length > 0 && (<SpamError mensaje={erroresCampos['descripcion']} />)}
-                            </div>
-                        </div> 
                         
-                    </div>
-                    <div className="modal-footer border-top-gray">
-                        <button type="button" className="btn theme-btn mb-2" onClick={handleTag.save} >{popUpTag.i_tag != -1 ? 'Guardar' : 'Crear'}</button>                             
-                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={(e) => setPopupTag({...popUpTag,mostrar:0})}> Cancelar </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        }
-
-
-        {
-            /*
-                Popup Recursos
-            */
-        }
-
-        {popUpResource.mostrar==1 && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="resourceModal" tabIndex="-1" role="dialog" aria-labelledby="resourceModalTitle" aria-hidden="true">
-            <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div className="modal-content">
-                    <div className="modal-header border-bottom-gray">
-                        <div className="pr-2">                            
-                            <h5 className="modal-title fs-19 font-weight-semi-bold lh-24" id="resourceModalTitle">{popUpResource.i_res!=-1 ? 'Editar recurso' : 'Crear recurso' }</h5>
-                        </div>                            
-                    </div>
-                    <div className="modal-body">
-                        <div className="col-lg-12">
-                            <div className="form-group">    
-                                <label className="label-text">Nombre</label>                                                                    
-                                <input value={popUpResource.nombre} onChange={handleResource.nombre} className="form-control form--control pl-3" type="text" name="nombre" maxLength="64" placeholder="Ej: Plantilla para cálculos" />
-                                {erroresCampos['nombre'].length > 0 && (<SpamError mensaje={erroresCampos['nombre']} />)}                            
-                            </div>
-                        </div>    
-                        <div className="col-lg-12">
-                            <div className="form-group">
-                                <label className="label-text">Descripcion</label>
-                                <textarea value={popUpResource.descripcion} onChange={handleResource.descripcion} className="form-control form--control user-text-editor pl-3" name="descripcion" ></textarea>
-                                {erroresCampos['descripcion'].length > 0 && (<SpamError mensaje={erroresCampos['descripcion']} />)}
-                            </div>
-                        </div> 
-                        <div className="col-lg-12">
-                            <div className="form-group">
-                                <label className="label-text">Archivo</label>
-                                <input type="file" name="resourceArchivo" class="form-control form--control user-text-editor pl-3"></input>
-                            </div>
-                        </div> 
-                        <div className="col-lg-12">
-                            <div className="form-group">
-                                <label className="label-text">Vista previa</label>
-                                <input type="file" name="resourceVistaPrevia" class="form-control form--control user-text-editor pl-3"></input>
-                            </div>
-                        </div> 
-                    </div>
-                    <div className="modal-footer border-top-gray">
-                        <button type="button" className="btn theme-btn mb-2" onClick={handleResource.save} >{popUpResource.i_res != -1 ? 'Guardar' : 'Crear'}</button>                             
-                        <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={(e) => setPopupResource({...popUpResource, mostrar:0})}> Cancelar </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        }
-
-
-
-
-
-
-        
         <div className="dashboard-content-wrap">
             <div className="container-fluid">
                 <div className="dashboard-heading mb-5">                    
@@ -1279,6 +912,7 @@ function FormularioEditarContenidoCurso() {
                                                 <thead>
                                                 <tr>
                                                     <th scope="col">Vista Previa</th>
+                                                    <th scope="col">Tipo</th>
                                                     <th scope="col">Nombre</th>                                                    
                                                     {permissions[34] || esDocente ? <th scope="col">Descargable</th> : ''}
                                                     <th scope="col">Porcentaje en curso</th>
@@ -1288,19 +922,18 @@ function FormularioEditarContenidoCurso() {
                                                 </thead>
                                                 <tbody >
                                                     {contenido[key].curso_contenido.map((tema) => 
-                                                        <tr key={`contenido-x-${key}`}>
+                                                        <tr key={`contenido-x-${key}-${tema.id_contenido}`}>
                                                             <th scope="row">
                                                                 <div className="custom-control custom-checkbox media media-card">                                                                                                                                                                            
                                                                     {tema.tipo_contenido==1 ? 
                                                                         <div className="media-img" style={{ height: 'auto', cursor:'pointer' }}>
                                                                             {tema.imagen_preview_pequena && tema.imagen_preview_pequena!=null ? <img src={`${urlBaseApi}/${tema.imagen_preview_pequena}`} alt={tema.nombre} onClick={()=>{ setPosterVistaPrevia(tema.imagen_preview_pequena); setPopupVideo({...popUpVideo, mostrar:true, 'contenido':tema.video_grande}); }} /> : <img src={`${urlBase}/images/course-no-image.png`} alt={tema.nombre} /> }
-                                                                        </div> : ''} 
-                                                                    
+                                                                        </div> : ''}                                                                     
                                                                     {
-                                                                        tema.tipo_contenido == 3 ?
+                                                                        tema.tipo_contenido == 3 || tema.tipo_contenido == 7 ?
                                                                         <div className="media-img">
                                                                             {
-                                                                                tema.ruta_imagen_preview_small && tema.ruta_imagen_preview_small != null ? <img src={`${urlBaseApi}/${tema.ruta_imagen_preview_small}`} /> : <img src={`${urlBaseApi}/images/course-no-image.png`} /> 
+                                                                                tema.ruta_imagen_preview_small && tema.ruta_imagen_preview_small != null ? <img src={`${urlBaseApi}/${tema.ruta_imagen_preview_small}`} /> : <img src={`${urlBase}/images/course-no-image.png`} /> 
                                                                             }
                                                                             
                                                                         </div> : ''
@@ -1309,12 +942,15 @@ function FormularioEditarContenidoCurso() {
                                                                 </div>
                                                             </th>
                                                             <td>
+                                                                {obtenerNombreContenido(tema.tipo_contenido)}
+                                                            </td>
+                                                            <td>
                                                                 {tema.nombre}
                                                             </td>
                                                             {permissions[34] || esDocente==1 ? 
                                                                 <td>
                                                                     {tema.descargables.map((descargable) => 
-                                                                        <div onClick={()=>{ handleDownload({'ruta_archivo':`${urlBaseApi}/${descargable.ruta_archivo.replace('public/', '')}`, 'nombre_archivo':'descargable.pdf'}) }} className="icon-element icon-element-sm flex-shrink-0 bg-7 mr-3 text-white" style={{cursor:'pointer'}}>
+                                                                        <div key={`descargable-${descargable.id}`} onClick={()=>{ handleDownload({'ruta_archivo':`${urlBaseApi}/${descargable.ruta_archivo.replace('public/', '')}`, 'nombre_archivo':'descargable.pdf'}) }} className="icon-element icon-element-sm flex-shrink-0 bg-7 mr-3 text-white" style={{cursor:'pointer'}}>
                                                                             <i className="la la-download"></i>
                                                                         </div>                                                                    
                                                                     )}   
@@ -1338,8 +974,8 @@ function FormularioEditarContenidoCurso() {
                                                                 {permissions[29] || esDocente==1? <a href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Bajar" onClick={event => handleMoverContenido(event, tema.id_contenido, '2')} title="Bajar"><i className="la la-sort-down"></i></a> : ''}
                                                                 {permissions[29] || esDocente==1? <div onClick={event => { handleBorrarContenido(event, tema.id_contenido); }} className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger" data-toggle="tooltip" data-placement="top" title="Borrar"><span data-toggle="modal" data-target="#itemDeleteModal" className="w-100 h-100 d-inline-block"><i className="la la-trash"></i></span></div>: ''}
                                                                 {(permissions[35] || permissions[36] || esDocente==1) ? <a onClick={(event) => { handleAbrirListaDescargable(event, {id_tipo_contenido:tema.id_tipo_contenido, tipo_contenido:tema.tipo_contenido}) } }  href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Editar descargable" title="Editar descargable"><i className="la la-download"></i></a> : ''}
-                                                                {tema.tipo_contenido == 4 && (permissions[90] || esDocente==1) ? <div onClick={event => { handleTag.showEdit(event, tema); }} className="icon-element icon-element-sm shadow-sm cursor-pointer m-1 text-secondary" data-toggle="tooltip" data-placement="top" title="Editar Etiqueta"><span data-toggle="modal" data-target="#tagModal" className="w-100 h-100 d-inline-block"><i className="la la-cog"></i></span></div>: ''}
-                                                                {tema.tipo_contenido == 3 && (permissions[87] || esDocente==1) ? <div onClick={event => { handleResource.showEdit(event, tema); }} className="icon-element icon-element-sm shadow-sm cursor-pointer m-1 text-secondary" data-toggle="tooltip" data-placement="top" title="Editar Recurso"><span data-toggle="modal" data-target="#resourceModal" className="w-100 h-100 d-inline-block"><i className="la la-cog"></i></span></div>: ''}
+                                                                {tema.tipo_contenido == 4 && (permissions[90] || esDocente==1) ? <div onClick={()=>{ setPopupEtiqueta({...popUpEtiqueta, mostrar:1, id_etiqueta:tema.id_tipo_contenido, id_categoria:-1});}} className="icon-element icon-element-sm shadow-sm cursor-pointer m-1 text-secondary" data-toggle="tooltip" data-placement="top" title="Editar Etiqueta"><span data-toggle="modal" data-target="#tagModal" className="w-100 h-100 d-inline-block"><i className="la la-cog"></i></span></div>: ''}
+                                                                {tema.tipo_contenido == 3 && (permissions[87] || esDocente==1) ? <div onClick={()=>{ setPopupRecurso({...popUpRecurso, mostrar:1, id_recurso:tema.id_tipo_contenido, id_categoria:-1});}} className="icon-element icon-element-sm shadow-sm cursor-pointer m-1 text-secondary" data-toggle="tooltip" data-placement="top" title="Editar Recurso"><span data-toggle="modal" data-target="#resourceModal" className="w-100 h-100 d-inline-block"><i className="la la-cog"></i></span></div>: ''}
 
                                                                 {(tema.tipo_contenido==1 && (esDocente==1 && instructorEditaContenido==1)) ? <Link to={`/video/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
                                                                 {(tema.tipo_contenido==2 && (permissions[47] || esDocente==1)  ) ? <Link to={`/examen/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
