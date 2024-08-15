@@ -9,6 +9,7 @@ import Popup from './Popup';
 import VideoPicker from './VideoPicker';
 import CrearEditarRecurso from './CrearEditarRecurso';
 import CrearEditarEtiqueta from './CrearEditarEtiqueta';
+import CrearEditarForo from './CrearEditarForo';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Skeleton from 'react-loading-skeleton'
@@ -35,6 +36,7 @@ function FormularioEditarContenidoCurso() {
     const [posterVistaPrevia, setPosterVistaPrevia] = useState('');    
     const [popUpRecurso, setPopupRecurso] = useState({mostrar:false, id_categoria:-1, id_recurso:-1});        
     const [popUpEtiqueta, setPopupEtiqueta] = useState({mostrar:false, id_categoria:-1, id_etiqueta:-1});        
+    const [popUpForo, setPopupForo] = useState({mostrar:false, id_categoria:-1, id_foro:-1});
     const [contenido, setContenido] = useState({});        
     const [mostrarPopUpCrearSeccion, setMostrarPopUpCrearSeccion] = useState(false);                    
     const [mostrarPopUpEditarSeccion, setMostrarPopUpEditarSeccion] = useState(false);                    
@@ -720,6 +722,7 @@ function FormularioEditarContenidoCurso() {
 
         {popUpRecurso.mostrar==1 && <CrearEditarRecurso id_curso={id} id_categoria={popUpRecurso.id_categoria}  id_recurso={popUpRecurso.id_recurso} funcionMostrarPopUp={()=>{ setPopupRecurso({...popUpRecurso, mostrar:0}); obtenerDatosServidor(); }} />}
         {popUpEtiqueta.mostrar==1 && <CrearEditarEtiqueta id_curso={id} id_categoria={popUpEtiqueta.id_categoria}  id_etiqueta={popUpEtiqueta.id_etiqueta} funcionMostrarPopUp={()=>{ setPopupEtiqueta({...popUpEtiqueta, mostrar:0}); obtenerDatosServidor(); }} />}
+        {popUpForo.mostrar==1 && <CrearEditarForo id_curso={id} id_categoria={popUpForo.id_categoria}  id_foro={popUpForo.id_foro} funcionMostrarPopUp={()=>{ setPopupForo({...popUpForo, mostrar:0}); obtenerDatosServidor(); }} />}
         
         {popUpListaDescargable.mostrar==1 && <div className="modal fade modal-container show" style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="decargableModal" tabIndex="-1" role="dialog" aria-labelledby="decargableModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -880,7 +883,9 @@ function FormularioEditarContenidoCurso() {
                             {permissions[46] || esDocente==1 ? <Link to={`${urlBase}/examen/crear/${id}/${idSeccionAgregarContenido}`} className="btn theme-btn ml-2" type="button" ><i className="la la-plus mr-2"></i>Examen</Link> : ''}
                             {permissions[89] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={()=>{ setPopupEtiqueta({...popUpEtiqueta, mostrar:1, id_etiqueta:-1, id_categoria:idSeccionAgregarContenido}); setMostrarPopUpAgregarContenido(false); }}> <i className="la la-plus mr-2"></i> Etiqueta</button> : ''}
                             {permissions[86] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={()=>{ setPopupRecurso({...popUpRecurso, mostrar:1, id_recurso:-1, id_categoria:idSeccionAgregarContenido}); setMostrarPopUpAgregarContenido(false); }}> <i className="la la-plus mr-2"></i> Recurso</button> : ''}
+                            {permissions[95] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button" onClick={()=>{ setPopupForo({...popUpForo, mostrar:1, id_foro:-1, id_categoria:idSeccionAgregarContenido}); setMostrarPopUpAgregarContenido(false); }}> <i className="la la-plus mr-2"></i> Foro</button> : ''}
                             {permissions[92] || esDocente==1 ? <button className="btn theme-btn ml-2" type="button"> <i className="la la-plus mr-2"></i> Tarea</button> : ''}
+                            
                         </div>
                     </div>
                     <div className="modal-footer border-top-gray">                        
@@ -976,6 +981,7 @@ function FormularioEditarContenidoCurso() {
                                                                 {(permissions[35] || permissions[36] || esDocente==1) ? <a onClick={(event) => { handleAbrirListaDescargable(event, {id_tipo_contenido:tema.id_tipo_contenido, tipo_contenido:tema.tipo_contenido}) } }  href="#" className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-success" data-toggle="tooltip" data-placement="top" data-title="Editar descargable" title="Editar descargable"><i className="la la-download"></i></a> : ''}
                                                                 {tema.tipo_contenido == 4 && (permissions[90] || esDocente==1) ? <div onClick={()=>{ setPopupEtiqueta({...popUpEtiqueta, mostrar:1, id_etiqueta:tema.id_tipo_contenido, id_categoria:-1});}} className="icon-element icon-element-sm shadow-sm cursor-pointer m-1 text-secondary" data-toggle="tooltip" data-placement="top" title="Editar Etiqueta"><span data-toggle="modal" data-target="#tagModal" className="w-100 h-100 d-inline-block"><i className="la la-cog"></i></span></div>: ''}
                                                                 {tema.tipo_contenido == 3 && (permissions[87] || esDocente==1) ? <div onClick={()=>{ setPopupRecurso({...popUpRecurso, mostrar:1, id_recurso:tema.id_tipo_contenido, id_categoria:-1});}} className="icon-element icon-element-sm shadow-sm cursor-pointer m-1 text-secondary" data-toggle="tooltip" data-placement="top" title="Editar Recurso"><span data-toggle="modal" data-target="#resourceModal" className="w-100 h-100 d-inline-block"><i className="la la-cog"></i></span></div>: ''}
+                                                                {tema.tipo_contenido == 6 && (permissions[96] || esDocente==1) ? <div onClick={()=>{ setPopupForo({...popUpForo, mostrar:1, id_foro:tema.id_tipo_contenido, id_categoria:-1});}} className="icon-element icon-element-sm shadow-sm cursor-pointer m-1 text-secondary" data-toggle="tooltip" data-placement="top" title="Editar Foro"><span data-toggle="modal" data-target="#resourceEditForo" className="w-100 h-100 d-inline-block"><i className="la la-cog"></i></span></div>: ''}
 
                                                                 {(tema.tipo_contenido==1 && (esDocente==1 && instructorEditaContenido==1)) ? <Link to={`/video/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
                                                                 {(tema.tipo_contenido==2 && (permissions[47] || esDocente==1)  ) ? <Link to={`/examen/editar/${tema.id_tipo_contenido}/${id}`}><div className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary" data-toggle="tooltip" data-placement="top" data-title="Editar configuración" title="Editar configuración"><i className="la la-gear"></i></div></Link> : ''}
