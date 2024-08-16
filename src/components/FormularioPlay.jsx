@@ -7,6 +7,7 @@ import { AuthContext } from '../AuthContext';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
+import Recurso from './Recurso';
 import { mensajesDeError } from './utils';
 import DropdownContenido from './DropdownContenido';
 import HiloComentarios from './HiloComentarios';
@@ -35,9 +36,7 @@ function FormularioPlay() {
     const [contenidoActivadoAnterior, setContenidoActivadoAnterior] = useState(-1);  //el contenido anterior que estaba viendo, por si acaso hay que volver a señalarlo.
     const [pestanaActivada, setPestanaActivada] = useState(4);  //pestañas que estan debajo del video
     const [cargarActividadActual, setCargarActividadActual] = useState(false);
-
-    const [mimeType, setMimeType] = useState("");
-        
+            
     const refBloqueDescripcion = useRef(null);
     const refHiloComentarios = useRef(null);    
 
@@ -47,49 +46,7 @@ function FormularioPlay() {
             <div style={{height: '100%', position: 'absolute', top: '0', left: '0', width: '100%' }} dangerouslySetInnerHTML={{ __html: frame.html }}></div>
         )
     }
-
-
-    function ResourceFrame({resource}){
-        console.log(resource);
-        let ruta_archivo = urlBaseApi + '/' + resource.ruta_archivo.replace('public/', '');
-
-        let file_parts   = resource.ruta_archivo.split('/');
-        let file_type    = (file_parts[2].split('.'))[1];
-
-        setMimeType(file_type);
-
-        let style_pdf = {
-            height: '100%', 
-            position: 'absolute', 
-            top: '0', 
-            left: '0', 
-            width: '100%'
-        }
-
-        let style_nopdf  = {
-            'display': 'flex',
-            'flex-direction': 'column',
-            'align-content': 'center',
-            'justify-content': 'center',
-            'align-items': 'center',
-            height: '100%', 
-            position: 'relative', 
-            top: '0', 
-            left: '0', 
-            width: '100%'
-        } 
-
-        return(
-            <div style={ file_type == 'pdf' ? style_pdf : style_nopdf }>
-                {file_type == 'pdf' && <iframe width="100%" height="100%" src={ ruta_archivo }  frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>}
-                {(file_type != 'pdf' && (file_type != 'jpg' && file_type != 'jpeg' && file_type != 'png')) && <div><a href={ ruta_archivo } target='_blank'> Descargar Recurso </a></div>}
-                {(file_type != 'pdf' && (file_type == 'jpg' || file_type == 'jpeg' || file_type == 'png')) && <div><img src={ ruta_archivo } className='img-fluid m-3'/></div>}
-            </div>
-        )   
-    }
-
-
-
+    
     useEffect(() => {    
         window.scrollTo(0, 0);
         sideBarAbrirCerrar();        
@@ -484,7 +441,7 @@ function FormularioPlay() {
                     <div className="course-dashboard-container d-flex">
                         <div className="course-dashboard-column">
                             <div className="lecture-viewer-container">
-                                <div className="lecture-video-item" style={{position:'relative', paddingTop:dataContenidoViendo.tipo_contenido==1 || dataContenidoViendo.tipo_contenido==4 || (dataContenidoViendo.tipo_contenido==3 && mimeType == 'pdf') ? '56.25%' : '0%'}}> {/* (9 / 16) * 100 = 56.25 */}
+                                <div className="lecture-video-item" style={{position:'relative', paddingTop:dataContenidoViendo.tipo_contenido==1 || dataContenidoViendo.tipo_contenido==4 || (dataContenidoViendo.tipo_contenido==3 && dataContenidoViendo.ruta_archivo.split('.').pop().split('?')[0].split('#')[0]=='pdf') ? '56.25%' : '0%'}}> {/* (9 / 16) * 100 = 56.25 */}
                                     {dataContenidoViendo.tipo_contenido==1 ?                                         
                                         <VideoPlayerPrisma
                                             url_video={`${urlBaseApi}/${esMovil ? dataContenidoViendo.video_pequeno!=null ? dataContenidoViendo.video_pequeno : dataContenidoViendo.video_grande : dataContenidoViendo.video_grande }`}
@@ -496,7 +453,7 @@ function FormularioPlay() {
                                         />                                                          
                                         : 
                                     dataContenidoViendo.tipo_contenido==3 ?
-                                        <ResourceFrame resource={dataContenidoViendo} />
+                                        <Recurso id_recurso={dataContenidoViendo.id} />
                                     : 
 
                                     dataContenidoViendo.tipo_contenido==4 ?
