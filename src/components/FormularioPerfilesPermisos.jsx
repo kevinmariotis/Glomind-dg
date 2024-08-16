@@ -435,27 +435,27 @@ function FormularioPerfilesPermisos() {
                                 options={optionsUsuario}
                                 isClearable
                                 isSearchable
-                                styles={{
+                                styles={temaActual==0 ? {
                                     control: (provided) => ({
-                                        ...provided,
-                                        backgroundColor: '#333',
-                                        borderColor: '#666',
-                                        color: '#fff',
+                                      ...provided,
+                                      backgroundColor: '#333',
+                                      borderColor: '#666',
+                                      color: '#fff',
                                     }),
                                     option: (provided, state) => ({
-                                        ...provided,
-                                        backgroundColor: state.isSelected ? '#444' : '#333',
-                                        color: state.isSelected ? '#fff' : '#ccc',
+                                      ...provided,
+                                      backgroundColor: state.isSelected ? '#444' : '#333',
+                                      color: state.isSelected ? '#fff' : '#ccc',
                                     }),
                                     singleValue: (provided) => ({
-                                        ...provided,
-                                        color: '#fff',
+                                      ...provided,
+                                      color: '#fff',
                                     }),
                                     input: (provided) => ({
-                                        ...provided,
-                                        color: '#fff', // Asegura que el color del texto sea blanco
+                                      ...provided,
+                                      color: '#fff', // Asegura que el color del texto sea blanco
                                     }),
-                                    }}
+                                  }:{}}
                             />                             
                             {erroresCampos['id_usuario'].length > 0 && (<SpamError mensaje={erroresCampos['id_usuario']} />)}
                         </div>    

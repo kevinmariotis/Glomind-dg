@@ -478,7 +478,7 @@ function FormularioCrearCurso() {
                                             options={optionsCertificado}
                                             isClearable
                                             isSearchable
-                                            styles={{
+                                            styles={temaActual==0 ? {
                                                 control: (provided) => ({
                                                   ...provided,
                                                   backgroundColor: '#333',
@@ -498,7 +498,7 @@ function FormularioCrearCurso() {
                                                   ...provided,
                                                   color: '#fff', // Asegura que el color del texto sea blanco
                                                 }),
-                                              }}
+                                              }:{}}
                                         />
                                         {erroresCampos['id_certificado'].length > 0 && (<SpamError mensaje={erroresCampos['id_certificado']} />)}
                                     </div>
@@ -581,7 +581,7 @@ function FormularioCrearCurso() {
                                             options={optionsInstructor}
                                             isClearable
                                             isSearchable
-                                            styles={{
+                                            styles={temaActual==0 ? {
                                                 control: (provided) => ({
                                                   ...provided,
                                                   backgroundColor: '#333',
@@ -601,7 +601,7 @@ function FormularioCrearCurso() {
                                                   ...provided,
                                                   color: '#fff', // Asegura que el color del texto sea blanco
                                                 }),
-                                              }}
+                                              }:{}}
                                         />
                                         {erroresCampos['id_instructor'].length > 0 && (<SpamError mensaje={erroresCampos['id_instructor']} />)}
                                     </div>

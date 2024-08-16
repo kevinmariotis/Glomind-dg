@@ -144,17 +144,14 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
             }
         },
         toogleMostrarFechaInicio : (event) => {
-            setMostrarFechaInicio(!mostrarFechaInicio);
-            //setDatos({...datos, mostrar_fecha_inicio:!datos.mostrar_fecha_inicio});            
+            setMostrarFechaInicio(!mostrarFechaInicio);            
         },
         toogleMostrarFechaFin : (event) => {
-            setMostrarFechaFin(!mostrarFechaFin);
-            //setDatos({...datos, mostrar_fecha_fin:!datos.mostrar_fecha_fin});
+            setMostrarFechaFin(!mostrarFechaFin);            
         },
         hideSelects : (event) => {            
             if(event.target.name===undefined){
-                console.log("ejecutandso");
-                //setDatos({...datos, mostrar_fecha_inicio:false, mostrar_fecha_fin:false});                
+                console.log("ejecutandso");                
                 setMostrarFechaInicio(false);
                 setMostrarFechaFin(false);
             }
