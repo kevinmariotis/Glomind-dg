@@ -27,8 +27,19 @@ export default function CrearEditarTarea({funcionMostrarPopUp, id_curso, id_cate
         if(id_tarea!=-1){
             handleObjeto.get();
         }
+        document.addEventListener('click', handleCloseOnOutsideClick);
+        return () => {
+            document.removeEventListener('click', handleCloseOnOutsideClick);
+        };
     }, [id_tarea]);
-           
+         
+    const handleCloseOnOutsideClick = (event) => {        
+        if(event.target.name===undefined){                
+            setDatos({...datos, mostrar_fecha_inicio:false});
+            setDatos({...datos, mostrar_fecha_fin:false});
+        }
+    };
+    
     //Estados de los errores de campos
     const camposErrores = {                        
         'nombre':[],

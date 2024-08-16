@@ -27,8 +27,19 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
         if(id_foro!=-1){
             handleObjeto.get();
         }
+        document.addEventListener('click', handleCloseOnOutsideClick);
+        return () => {
+            document.removeEventListener('click', handleCloseOnOutsideClick);
+        };
     }, [id_foro]);
-           
+        
+    const handleCloseOnOutsideClick = (event) => {        
+        if(event.target.name===undefined){                
+            setDatos({...datos, mostrar_fecha_inicio:false});
+            setDatos({...datos, mostrar_fecha_fin:false});
+        }
+    };
+
     //Estados de los errores de campos
     const camposErrores = {                        
         'nombre':[],
