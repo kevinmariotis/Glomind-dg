@@ -84,7 +84,7 @@ export default function CrearEditarUrl({funcionMostrarPopUp, id_curso, id_catego
                 setMostrarSpinner(false);
                 if (response.ok){                           
                     const datos = await response.json();                    
-                    setPopupObjeto({...popUpObjeto, nombre:datos.nombre, descripcion:datos.descripcion, url:datos.url, archivo_vista_previa:null, ruta_imagen_preview_small:datos.ruta_imagen_preview_small});
+                    setPopupObjeto({...popUpObjeto, nombre:datos.nombre, descripcion:datos.descripcion.replace(/<br\s*\/?>/gi,'\n'), url:datos.url, archivo_vista_previa:null, ruta_imagen_preview_small:datos.ruta_imagen_preview_small});
                 } else {      
                     const data = await response.json();          
                     mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                

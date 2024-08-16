@@ -132,7 +132,7 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
 
                     const modo_calificacion = datos.modo_calificacion==1  ? 'mas_alta' : 'promedio';
 
-                    setDatos({...datos, fecha_inicio:new Date(partes_inicio2[0], partes_inicio2[1]-1, partes_inicio2[2]), hora_inicio:partes_inicio_hora[0], minuto_inicio:partes_inicio_hora[1], fecha_fin:new Date(partes_fin2[0], partes_fin2[1]-1, partes_fin2[2]), hora_fin:partes_fin_hora[0], minuto_fin:partes_fin_hora[1], nombre:datos.nombre, descripcion:datos.descripcion, fecha_hora_inicio:datos.fecha_hora_inicio, fecha_hora_fin:datos.fecha_hora_fin, modo_calificacion:modo_calificacion, porcentaje_en_total_curso:datos.porcentaje_en_total_curso});
+                    setDatos({...datos, fecha_inicio:new Date(partes_inicio2[0], partes_inicio2[1]-1, partes_inicio2[2]), hora_inicio:partes_inicio_hora[0], minuto_inicio:partes_inicio_hora[1], fecha_fin:new Date(partes_fin2[0], partes_fin2[1]-1, partes_fin2[2]), hora_fin:partes_fin_hora[0], minuto_fin:partes_fin_hora[1], nombre:datos.nombre, descripcion:datos.descripcion.replace(/<br\s*\/?>/gi,'\n'), fecha_hora_inicio:datos.fecha_hora_inicio, fecha_hora_fin:datos.fecha_hora_fin, modo_calificacion:modo_calificacion, porcentaje_en_total_curso:datos.porcentaje_en_total_curso});
                                         
                 } else {      
                     const data = await response.json();          

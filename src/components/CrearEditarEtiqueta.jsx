@@ -83,7 +83,7 @@ export default function CrearEditarEtiqueta({funcionMostrarPopUp, id_curso, id_c
                 setMostrarSpinner(false);
                 if (response.ok){                           
                     const datos = await response.json();                    
-                    setPopupTag({...popUpTag, nombre:datos.nombre, descripcion:datos.descripcion, html:datos.html});
+                    setPopupTag({...popUpTag, nombre:datos.nombre, descripcion:datos.descripcion.replace(/<br\s*\/?>/gi,'\n'), html:datos.html});
                 } else {      
                     const data = await response.json();          
                     mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                

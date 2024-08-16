@@ -83,7 +83,7 @@ export default function CrearEditarRecurso({funcionMostrarPopUp, id_curso, id_ca
                 setMostrarSpinner(false);
                 if (response.ok){                           
                     const datos = await response.json();                    
-                    setPopupResource({...popUpResource, nombre:datos.nombre, descripcion:datos.descripcion, archivo:datos.ruta_archivo, archivo_vista_previa:datos.ruta_imagen_preview_small});
+                    setPopupResource({...popUpResource, nombre:datos.nombre, descripcion:datos.descripcion.replace(/<br\s*\/?>/gi,'\n'), archivo:datos.ruta_archivo, archivo_vista_previa:datos.ruta_imagen_preview_small});
                 } else {      
                     const data = await response.json();          
                     mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
