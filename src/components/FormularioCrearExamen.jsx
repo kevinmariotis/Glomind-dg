@@ -11,7 +11,7 @@ function FormularioCrearExamen() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const navigate = useNavigate(); 
-    const {jwt, permissions} = useContext(AuthContext);
+    const {jwt, permissions, temaActual} = useContext(AuthContext);
     const { id_curso, id_categoria } = useParams();
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});            
     const [popUpCreado, setPopupCreado] = useState({mostrar:false, titulo:'', contenido:''});            
@@ -216,7 +216,7 @@ function FormularioCrearExamen() {
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <label className="label-text">Tipo de examen</label>
-                                        <select onChange={handleTipoChange} value={tipo} name="tipo" className="form-control select-dark">
+                                        <select onChange={handleTipoChange} value={tipo} name="tipo" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>                                            
                                             <option value="1">Básico, o control de aprendizaje</option>
                                             <option value="2">Nivel Medio (Ceritificación, Pago o no según configuración del curso)</option>
@@ -228,7 +228,7 @@ function FormularioCrearExamen() {
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <label className="label-text">Política de retroalimentación</label>
-                                        <select onChange={handlePoliticaRetroalimentacionChange} value={politicaDeRetroalimentacion} disabled={bloquearTiempo} name="politica_retroalimentacion" className="form-control select-dark">
+                                        <select onChange={handlePoliticaRetroalimentacionChange} value={politicaDeRetroalimentacion} disabled={bloquearTiempo} name="politica_retroalimentacion" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>                                            
                                             <option value="0">No se muestra retroalimentaciones y respuestas correctas o incorrectas</option>
                                             <option value="1">Si se muestra retroalimentaciones y respuestas correctas o incorrectas en cada intento</option>
@@ -241,7 +241,7 @@ function FormularioCrearExamen() {
                                     <div className="col-lg-12">
                                         <div className="form-group">
                                             <label className="label-text">Porcentaje en total del curso</label>
-                                            <select onChange={handlePorcentajeEnTotalCurso} value={porcentajeEnTotalCurso} disabled={bloquearTiempo} name="porcentaje_en_total_curso" className="form-control select-dark">
+                                            <select onChange={handlePorcentajeEnTotalCurso} value={porcentajeEnTotalCurso} disabled={bloquearTiempo} name="porcentaje_en_total_curso" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                                 <option value={0}> -- Seleccione --</option>                                            
                                                 {porcentaje_en_total_curso.map((number) => (
                                                     <option key={number} value={number}>
@@ -266,7 +266,7 @@ function FormularioCrearExamen() {
                                     <div className="input-box form-row">                                        
                                         <div className="form-group col-md-3">                                                       
                                             <label className="label-text">Horas</label>
-                                            <select onChange={handleHoraChange} value={hora} disabled={bloquearTiempo} name="tiempo_horas" className="form-control select-dark">
+                                            <select onChange={handleHoraChange} value={hora} disabled={bloquearTiempo} name="tiempo_horas" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                                 <option value=""> -- Seleccione --</option>                                            
                                                 {horas.map((number) => (
                                                     <option key={number} value={number}>
@@ -278,7 +278,7 @@ function FormularioCrearExamen() {
                                         </div>
                                         <div className="form-group col-md-3">
                                             <label className="label-text">Minutos</label>
-                                            <select onChange={handleMinutoChange} value={minuto} disabled={bloquearTiempo} name="tiempo_minutos" className="form-control select-dark">
+                                            <select onChange={handleMinutoChange} value={minuto} disabled={bloquearTiempo} name="tiempo_minutos" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                                 <option value=""> -- Seleccione --</option>                                            
                                                 {minutos.map((number) => (
                                                     <option key={number} value={number}>
@@ -292,7 +292,7 @@ function FormularioCrearExamen() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Intentos</label>
-                                        <select onChange={handleIntentosChange} value={intentos} name="intentos" className="form-control select-dark">
+                                        <select onChange={handleIntentosChange} value={intentos} name="intentos" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">Ilimitados</option>
                                             {[1, 2, 3, 4, 5, 6].map((number) => (
@@ -307,7 +307,7 @@ function FormularioCrearExamen() {
                                 <div className="col-lg-6" style={{display:'none'}}>
                                     <div className="form-group">
                                         <label className="label-text">Dejar avanzar aún sin aprobar?</label>
-                                        <select onChange={handleDejarAvanzarSiFallidoChange} value={dejarAvanzarSiFallido} name="dejar_avanzar_si_fallido" className="form-control select-dark">
+                                        <select onChange={handleDejarAvanzarSiFallidoChange} value={dejarAvanzarSiFallido} name="dejar_avanzar_si_fallido" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">No</option>
                                             <option value="1">Si</option>

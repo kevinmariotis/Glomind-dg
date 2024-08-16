@@ -10,7 +10,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const navigate = useNavigate();
-    const {jwt, authenticated} = useContext(AuthContext);  
+    const {jwt, authenticated, temaActual} = useContext(AuthContext);  
     const { url_amigable } = useParams();    
 
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
@@ -228,7 +228,7 @@ function FormularioCategoriaNavegacion({actualizarBreadCrumb, actualizarBreadCru
                                 <li><a href="course-list.html" data-toggle="tooltip" data-placement="top" title="List View"><span className="la la-list"></span></a></li>
                             </ul>
                             <div className="select-container select--container">    
-                                <select onChange={handleOrdenarPor} className="form-control select-dark" >                                                        
+                                <select onChange={handleOrdenarPor} className={`form-control ${temaActual==1 ? '' : 'select-dark'}`} >                                                        
                                     <option value="precio_actual-asc">Ordenar por</option>
                                     <option value="precio_actual-asc">Menor a mayor precio</option>
                                     <option value="precio_actual-desc">Mayor a menor precio</option>                                    

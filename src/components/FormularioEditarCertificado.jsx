@@ -249,7 +249,7 @@ function FormularioEditarCertificado() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Estado</label>
-                                        <select onChange={handleEstadoChange} value={estado} name="estado" className="form-control select-dark">
+                                        <select onChange={handleEstadoChange} value={estado} name="estado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>                                            
                                             <option value="0">Desactivado</option>
                                             <option value="1">Activado</option>                                            

@@ -16,7 +16,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 function FormularioDetallesDeCurso(){
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API; 
     const urlBase = import.meta.env.VITE_URL_BASE;     
-    const {jwt, authenticated, setCargarContadorCarrito, esMovil} = useContext(AuthContext);
+    const {jwt, authenticated, setCargarContadorCarrito, esMovil, temaActual} = useContext(AuthContext);
     const { url_amigable } = useParams();
     const navigate = useNavigate();
 
@@ -976,7 +976,7 @@ function FormularioDetallesDeCurso(){
                                                 </div>
                                             </form>
                                             <div className="select-container select--container mb-3">
-                                                <select className="form-control select-dark" onChange={handleFiltrarByComentarios}>
+                                                <select className={`form-control ${temaActual==1 ? '' : 'select-dark'}`} onChange={handleFiltrarByComentarios}>
                                                     <option value="estrella:0">Todos (Recientes)</option>
                                                     <option value="posision_ranking-desc">Todos (Más Útiles)</option>
                                                     <option value="calificacion-desc">Todos (Mejor valorados)</option>                                                    

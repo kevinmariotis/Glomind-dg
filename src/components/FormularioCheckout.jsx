@@ -11,7 +11,7 @@ function FormularioCheckout() {
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
     const navigate = useNavigate();
     const formRef = useRef(null);            
-    const {jwt, authenticated, setCargarContadorCarrito} = useContext(AuthContext);
+    const {jwt, authenticated, setCargarContadorCarrito, temaActual} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
     const [popUpVolver, setPopupVolver] = useState({mostrar:false, titulo:'', contenido:''});
     const [popUpConfirmar, setPopupConfirmar] = useState({mostrar:false, titulo:'', contenido:''});
@@ -387,7 +387,7 @@ function FormularioCheckout() {
                                             <label className="label-text">País</label>
                                             <div className="form-group">
                                                 <div className="select-container w-auto">
-                                                    <select value={formIdPais} onChange={handleCambiarPais} className="form-control form--control select-dark" type="text" name="id_pais">                                                        
+                                                    <select value={formIdPais} onChange={handleCambiarPais} className={`form-control form--control ${temaActual==1 ? '' : 'select-dark'}`} type="text" name="id_pais">                                                        
                                                         <option value="">Seleccione País</option>
                                                         {paises.map((dato, index) => (
                                                             <option key={dato.id} value={dato.id} >{dato.nombre}</option>
@@ -400,7 +400,7 @@ function FormularioCheckout() {
                                         <div className="input-box col-lg-6">
                                             <label className="label-text">Departamento</label>
                                             <div className="form-group">
-                                                <select value={formIdDepartamento} onChange={handleDepartamentoChange} className="form-control form--control select-dark" type="text" name="id_departamento">
+                                                <select value={formIdDepartamento} onChange={handleDepartamentoChange} className={`form-control form--control ${temaActual==1 ? '' : 'select-dark'}`} type="text" name="id_departamento">
                                                     <option value="" >Seleccione departamento</option>
                                                     {departamentos.map((dato, index) => (
                                                         <option key={dato.id} value={dato.id} >{dato.nombre}</option>

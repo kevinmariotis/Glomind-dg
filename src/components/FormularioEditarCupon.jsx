@@ -248,7 +248,7 @@ function FormularioEditarCupon() {
                                     <div className="form-group">
                                         <label className="label-text" style={{'display':'block'}}>Fecha de inicio</label>                                        
                                         <input onClick={handleMostrarFechaInicio} value={format(fechaInicio, 'yyyy-MM-dd')} style={{width:'50%', float:'left'}} readOnly className="form-control form--control pl-3" type="text" name="fecha_inicio" maxLength="64" placeholder="" />
-                                        <select onChange={handleHoraInicioChange} style={{width:'25%', height:'50px', float:'left'}} value={horaInicio} name="hora_inicio" className="form-control select-dark">
+                                        <select onChange={handleHoraInicioChange} style={{width:'25%', height:'50px', float:'left'}} value={horaInicio} name="hora_inicio" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Hora --</option>   
                                             {horas.map((hora) => (
                                                 <option key={`h-inicio-${hora}`} value={hora.toString().padStart(2, '0')}>
@@ -256,7 +256,7 @@ function FormularioEditarCupon() {
                                                 </option>
                                             ))}                                                                                     
                                         </select>
-                                        <select onChange={handleMinutoInicioChange} style={{width:'25%', height:'50px'}} value={minutoInicio} name="minuto_inicio" className="form-control select-dark">
+                                        <select onChange={handleMinutoInicioChange} style={{width:'25%', height:'50px'}} value={minutoInicio} name="minuto_inicio" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Minuto --</option>                                                                                        
                                             {minutos.map((minuto) => (
                                                 <option key={`m-inicio-${minuto}`} value={minuto.toString().padStart(2, '0')}>
@@ -279,7 +279,7 @@ function FormularioEditarCupon() {
                                     <div className="form-group">
                                         <label className="label-text" style={{'display':'block'}}>Fecha de finalización</label>                                        
                                         <input onClick={handleMostrarFechaFin} value={format(fechaFin, 'yyyy-MM-dd')} style={{width:'50%', float:'left'}} readOnly className="form-control form--control pl-3" type="text" name="fecha_fin" maxLength="64" placeholder="" />
-                                        <select onChange={handleHoraFinChange} style={{width:'25%', height:'50px', float:'left'}} value={horaFin} name="hora_fin" className="form-control select-dark">
+                                        <select onChange={handleHoraFinChange} style={{width:'25%', height:'50px', float:'left'}} value={horaFin} name="hora_fin" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Hora --</option>   
                                             {horas.map((hora) => (
                                                 <option key={`h-fin-${hora}`} value={hora.toString().padStart(2, '0')}>
@@ -287,7 +287,7 @@ function FormularioEditarCupon() {
                                                 </option>
                                             ))}                                                                                     
                                         </select>
-                                        <select onChange={handleMinutoFinChange} style={{width:'25%', height:'50px'}} value={minutoFin} name="minuto_fin" className="form-control select-dark">
+                                        <select onChange={handleMinutoFinChange} style={{width:'25%', height:'50px'}} value={minutoFin} name="minuto_fin" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Minuto --</option>                                                                                        
                                             {minutos.map((minuto) => (
                                                 <option key={`m-fin-${minuto}`} value={minuto.toString().padStart(2, '0')}>
@@ -309,7 +309,7 @@ function FormularioEditarCupon() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Tipo descuento</label>
-                                        <select onChange={handleTipoChange} value={tipo} name="tipo" className="form-control select-dark">
+                                        <select onChange={handleTipoChange} value={tipo} name="tipo" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>                                            
                                             <option value="1">Porcentaje (%)</option>
                                             <option value="2">Valor dinero específico ($)</option>
@@ -334,7 +334,7 @@ function FormularioEditarCupon() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Estado</label>
-                                        <select onChange={handleEstadoChange} value={estado} name="estado" className="form-control select-dark">
+                                        <select onChange={handleEstadoChange} value={estado} name="estado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>                                            
                                             <option value="1">Activado</option>
                                             <option value="0">Desactivado</option>

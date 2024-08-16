@@ -19,7 +19,7 @@ import { DndProvider } from "react-dnd";
 export default function FormularioCategoriasSistema() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
-    const {jwt, permissions, esMovil} = useContext(AuthContext);
+    const {jwt, permissions, esMovil, temaActual} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});    
     const [verPopUpCrearCategoria, setVerPopUpCrearCategoria] = useState(false);
     const [verPopUpEditarCategoria, setVerPopUpEditarCategoria] = useState(false);    
@@ -924,7 +924,7 @@ export default function FormularioCategoriasSistema() {
                         </div>
                         <div className="form-group">
                             <label className="label-text">Estado</label>
-                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className="form-control select-dark">
+                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value=""> -- Seleccione --</option>                                            
                                 <option value="1">Visible</option>
                                 <option value="0">Oculta</option>                                
@@ -955,7 +955,7 @@ export default function FormularioCategoriasSistema() {
                         </div>                        
                         <div className="form-group">
                             <label className="label-text">Estado</label>
-                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className="form-control select-dark">
+                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value=""> -- Seleccione --</option>                                            
                                 <option value="1">Visible</option>
                                 <option value="0">Oculta</option>                                
@@ -1046,7 +1046,7 @@ export default function FormularioCategoriasSistema() {
                         </div>
                         <div className="form-group">
                             <label className="label-text">Buscador</label>
-                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className="form-control select-dark">
+                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value=""> -- Seleccione --</option>                                            
                                 <option value="1">Si</option>
                                 <option value="0">No</option>
@@ -1077,7 +1077,7 @@ export default function FormularioCategoriasSistema() {
                         </div>                        
                         <div className="form-group">
                             <label className="label-text">Mostrar en buscador</label>
-                            <select onChange={handleEstadoChange} value={formEstado} name="buscador" className="form-control select-dark">
+                            <select onChange={handleEstadoChange} value={formEstado} name="buscador" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value=""> -- Seleccione --</option>                                            
                                 <option value="1">Si</option>
                                 <option value="0">No</option>                                
@@ -1109,7 +1109,7 @@ export default function FormularioCategoriasSistema() {
                         </div>
                         <div className="form-group">
                             <label className="label-text">Agrupación</label>
-                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className="form-control select-dark">
+                            <select onChange={handleEstadoChange} value={formEstado} name="estado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value=""> -- Seleccione --</option>
                                 {Object.keys(tagsAgrupaciones).map((key) => (
                                     <option value={tagsAgrupaciones[key].id}>{tagsAgrupaciones[key].nombre}</option>                                    
@@ -1141,7 +1141,7 @@ export default function FormularioCategoriasSistema() {
                         </div>                        
                         <div className="form-group">
                             <label className="label-text">Agrupación</label>
-                            <select onChange={handleEstadoChange} value={formEstado} name="id_tag_agrupacion" className="form-control select-dark">
+                            <select onChange={handleEstadoChange} value={formEstado} name="id_tag_agrupacion" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value=""> -- Seleccione --</option>                                            
                                 {Object.keys(tagsAgrupaciones).map((key) => (
                                     <option value={tagsAgrupaciones[key].id}>{tagsAgrupaciones[key].nombre}</option>                                    

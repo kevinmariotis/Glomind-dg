@@ -12,7 +12,7 @@ import DashboardFooter from './DashboardFooter';
 function FormularioEditarPerfil() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
-    const {jwt, nombres, setImagenPequena, permissions, esMovil, logout} = useContext(AuthContext);
+    const {jwt, nombres, setImagenPequena, permissions, esMovil, logout, temaActual} = useContext(AuthContext);
     const { id } = useParams();    
     const navigate = useNavigate();
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});        
@@ -608,7 +608,7 @@ function FormularioEditarPerfil() {
                                     <label className="label-text">País</label>
                                     <div className="form-group">
                                         <div className="select-container w-auto">
-                                            <select value={formIdPais} onChange={handleCambiarPais} className="form-control form--control select-dark" type="text" name="id_pais">                                                        
+                                            <select value={formIdPais} onChange={handleCambiarPais} className={`form-control form--control ${temaActual==1 ? '' : 'select-dark'}`} type="text" name="id_pais">                                                        
                                                 <option value="">Seleccione País</option>
                                                 {paises.map((dato, index) => (
                                                     <option key={dato.id} value={dato.id} >{dato.nombre}</option>
@@ -621,7 +621,7 @@ function FormularioEditarPerfil() {
                                 <div className="input-box col-lg-6">
                                     <label className="label-text">Departamento</label>
                                     <div className="form-group">
-                                        <select value={formIdDepartamento} onChange={handleDepartamentoChange} className="form-control form--control select-dark" type="text" name="id_departamento">
+                                        <select value={formIdDepartamento} onChange={handleDepartamentoChange} className={`form-control form--control ${temaActual==1 ? '' : 'select-dark'}`} type="text" name="id_departamento">
                                             <option value="" >Seleccione departamento</option>
                                             {departamentos.map((dato, index) => (
                                                 <option key={dato.id} value={dato.id} >{dato.nombre}</option>
@@ -655,7 +655,7 @@ function FormularioEditarPerfil() {
                                     <div className="input-box col-lg-6">
                                         <label className="label-text">Estado</label>
                                         <div className="form-group">
-                                            <select value={formEstado} onChange={handleEstadoChange} className="form-control form--control select-dark" type="text" name="estado">
+                                            <select value={formEstado} onChange={handleEstadoChange} className={`form-control form--control ${temaActual==1 ? '' : 'select-dark'}`} type="text" name="estado">
                                                 <option value="">Seleccione el estado</option>
                                                 <option value={1} >Activo</option>
                                                 <option value={2} >Suspendido</option>                                                

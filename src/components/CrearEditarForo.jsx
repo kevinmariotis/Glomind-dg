@@ -22,23 +22,22 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});                        
     const [datos, setDatos] = useState({mostrar:true, nombre:'', descripcion:'', fecha_hora_inicio:'', fecha_inicio:today, hora_inicio:'', minuto_inicio:'', fecha_hora_fin:'', fecha_fin:today, hora_fin:'', minuto_fin:'', modo_calificacion:0, porcentaje_en_total_curso:-1, id_curso:-1, id_categoria: -1, mostrar_fecha_inicio:false, mostrar_fecha_fin:false, });
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
+
+    const [mostrarFechaInicio, setMostrarFechaInicio] = useState(false);    
+    const [mostrarFechaFin, setMostrarFechaFin] = useState(false);    
     
     useEffect(() => {        
         if(id_foro!=-1){
             handleObjeto.get();
-        }
-        document.addEventListener('click', handleCloseOnOutsideClick);
-        return () => {
-            document.removeEventListener('click', handleCloseOnOutsideClick);
-        };
+        }        
     }, [id_foro]);
-        
-    const handleCloseOnOutsideClick = (event) => {        
-        if(event.target.name===undefined){                
-            setDatos({...datos, mostrar_fecha_inicio:false});
-            setDatos({...datos, mostrar_fecha_fin:false});
-        }
-    };
+            
+    useEffect(() => {        
+        document.addEventListener('click', handleObjeto.hideSelects);
+        return () => {
+            document.removeEventListener('click', handleObjeto.hideSelects);
+        };
+    }, []);
 
     //Estados de los errores de campos
     const camposErrores = {                        
@@ -145,12 +144,20 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
             }
         },
         toogleMostrarFechaInicio : (event) => {
-
-            setDatos({...datos, mostrar_fecha_inicio:!datos.mostrar_fecha_inicio});            
+            setMostrarFechaInicio(!mostrarFechaInicio);
+            //setDatos({...datos, mostrar_fecha_inicio:!datos.mostrar_fecha_inicio});            
         },
         toogleMostrarFechaFin : (event) => {
-
-            setDatos({...datos, mostrar_fecha_fin:!datos.mostrar_fecha_fin});
+            setMostrarFechaFin(!mostrarFechaFin);
+            //setDatos({...datos, mostrar_fecha_fin:!datos.mostrar_fecha_fin});
+        },
+        hideSelects : (event) => {            
+            if(event.target.name===undefined){
+                console.log("ejecutandso");
+                //setDatos({...datos, mostrar_fecha_inicio:false, mostrar_fecha_fin:false});                
+                setMostrarFechaInicio(false);
+                setMostrarFechaFin(false);
+            }
         },
         save          : async (event) => {
 
@@ -264,7 +271,7 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
                             <div className="form-group">
                                 <label className="label-text" style={{'display':'block'}}>Fecha de inicio</label>                                        
                                 <input onClick={handleObjeto.toogleMostrarFechaInicio} value={format(datos.fecha_inicio, 'yyyy-MM-dd')} style={{width:'50%', float:'left'}} readOnly className="form-control form--control pl-3" type="text" name="fecha_inicio" maxLength="64" placeholder="" />
-                                <select onChange={handleObjeto.hora_inicio} style={{width:'25%', height:'50px', float:'left'}} value={datos.hora_inicio} name="hora_inicio" className="form-control select-dark">
+                                <select onChange={handleObjeto.hora_inicio} style={{width:'25%', height:'50px', float:'left'}} value={datos.hora_inicio} name="hora_inicio" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                     <option value=""> -- Hora --</option>   
                                     {horas.map((hora) => (
                                         <option key={`h-inicio-${hora}`} value={hora.toString().padStart(2, '0')}>
@@ -272,7 +279,7 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
                                         </option>
                                     ))}                                                                                     
                                 </select>
-                                <select onChange={handleObjeto.minuto_inicio} style={{width:'25%', height:'50px'}} value={datos.minuto_inicio} name="minuto_inicio" className="form-control select-dark">
+                                <select onChange={handleObjeto.minuto_inicio} style={{width:'25%', height:'50px'}} value={datos.minuto_inicio} name="minuto_inicio" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                     <option value=""> -- Minuto --</option>                                                                                        
                                     {minutos.map((minuto) => (
                                         <option key={`m-inicio-${minuto}`} value={minuto.toString().padStart(2, '0')}>
@@ -280,7 +287,7 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
                                         </option>
                                     ))}
                                 </select>                                        
-                                <div style={{position:'absolute',  zIndex:'999', backgroundColor: temaActual ? '#ffffff' : '#1B1B1B', display:datos.mostrar_fecha_inicio ? 'block' : 'none'}}>
+                                <div style={{position:'absolute',  zIndex:'999', backgroundColor: temaActual ? '#ffffff' : '#1B1B1B', display:mostrarFechaInicio ? 'block' : 'none'}}>
                                     <DayPicker
                                         mode="single"
                                         selected={datos.fecha_inicio}
@@ -295,7 +302,7 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
                             <div className="form-group">
                                 <label className="label-text" style={{'display':'block'}}>Fecha de finalización</label>                                        
                                 <input onClick={handleObjeto.toogleMostrarFechaFin} value={format(datos.fecha_fin, 'yyyy-MM-dd')} style={{width:'50%', float:'left'}} readOnly className="form-control form--control pl-3" type="text" name="fecha_fin" maxLength="64" placeholder="" />
-                                <select onChange={handleObjeto.hora_fin} style={{width:'25%', height:'50px', float:'left'}} value={datos.hora_fin} name="hora_fin" className="form-control select-dark">
+                                <select onChange={handleObjeto.hora_fin} style={{width:'25%', height:'50px', float:'left'}} value={datos.hora_fin} name="hora_fin" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                     <option value=""> -- Hora --</option>   
                                     {horas.map((hora) => (
                                         <option key={`h-fin-${hora}`} value={hora.toString().padStart(2, '0')}>
@@ -303,7 +310,7 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
                                         </option>
                                     ))}                                                                                     
                                 </select>
-                                <select onChange={handleObjeto.minuto_fin} style={{width:'25%', height:'50px'}} value={datos.minuto_fin} name="minuto_fin" className="form-control select-dark">
+                                <select onChange={handleObjeto.minuto_fin} style={{width:'25%', height:'50px'}} value={datos.minuto_fin} name="minuto_fin" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                     <option value=""> -- Minuto --</option>                                                                                        
                                     {minutos.map((minuto) => (
                                         <option key={`m-fin-${minuto}`} value={minuto.toString().padStart(2, '0')}>
@@ -311,7 +318,7 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
                                         </option>
                                     ))}
                                 </select>                                        
-                                <div style={{position:'absolute',  zIndex:'999', backgroundColor: temaActual ? '#ffffff' : '#1B1B1B', display:datos.mostrar_fecha_fin ? 'block' : 'none'}}>
+                                <div style={{position:'absolute',  zIndex:'999', backgroundColor: temaActual ? '#ffffff' : '#1B1B1B', display:mostrarFechaFin ? 'block' : 'none'}}>
                                     <DayPicker
                                         mode="single"
                                         selected={datos.fecha_fin}
@@ -325,7 +332,7 @@ export default function CrearEditarForo({funcionMostrarPopUp, id_curso, id_categ
                         <div className="col-lg-12">
                             <div className="form-group">
                                 <label className="label-text">Modo calificación</label>                                              
-                                <select onChange={handleObjeto.modo_calificacion} style={{height:'50px'}} value={datos.modo_calificacion} name="modo_calificacion" className="form-control select-dark">
+                                <select onChange={handleObjeto.modo_calificacion} style={{height:'50px'}} value={datos.modo_calificacion} name="modo_calificacion" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                     <option value={0}> -- Seleccione --</option>
                                     <option value="promedio">Promedio de calificaciones</option>
                                     <option value="mas_alta">Calificación más alta</option>                                    

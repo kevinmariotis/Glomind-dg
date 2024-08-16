@@ -11,7 +11,7 @@ function FormularioDashboardHuecoPreguntas() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const navigate = useNavigate(); 
-    const {jwt, permissions} = useContext(AuthContext);
+    const {jwt, permissions, temaActual} = useContext(AuthContext);
     const { id, id_curso } = useParams();
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});                    
     const [PopUpAgrupacion, setPopUpAgrupacion] = useState({mostrar:false, titulo:'', contenido:''});                    
@@ -543,7 +543,7 @@ function FormularioDashboardHuecoPreguntas() {
                     <div className="modal-body">
                         <div className="form-group">
                             <label className="label-text">Agrupación o pregunta fija</label>
-                            <select onChange={handleAgrupacionPreguntaFija} value={agrupacionPreguntaFija} name="id_agrupacion_agregar" className="form-control select-dark">
+                            <select onChange={handleAgrupacionPreguntaFija} value={agrupacionPreguntaFija} name="id_agrupacion_agregar" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value={0}> -- Seleccione --</option>                                            
                                 {agrupacionesDisponibles.map((tema) => (
                                     <option key={tema.id} value={tema.id}>
@@ -560,7 +560,7 @@ function FormularioDashboardHuecoPreguntas() {
                         </div>
                         <div className="form-group">
                             <label className="label-text">Porcentaje en el examen</label>
-                            <select onChange={handlePorcentajeValor} value={porcentajeValor} name="porcentaje_valor" className="form-control select-dark">
+                            <select onChange={handlePorcentajeValor} value={porcentajeValor} name="porcentaje_valor" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value={0}> -- Seleccione --</option>                                            
                                 {porcentaje_valor.map((number) => (
                                     <option key={number} value={number}>

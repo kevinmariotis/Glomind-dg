@@ -11,7 +11,7 @@ function FormularioEditarExamenPreguntaFv() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const navigate = useNavigate(); 
-    const {jwt, permissions} = useContext(AuthContext);
+    const {jwt, permissions, temaActual} = useContext(AuthContext);
     const { id, id_examen_pregunta, id_curso } = useParams();
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});                    
     
@@ -234,7 +234,7 @@ function FormularioEditarExamenPreguntaFv() {
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <label className="label-text">A que agrupación pertenecerá esta pregunta?</label>                                        
-                                        <select onChange={handleAgrupacionChange} value={agrupacion} name="id_agrupacion" className="form-control select-dark">
+                                        <select onChange={handleAgrupacionChange} value={agrupacion} name="id_agrupacion" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value={idPreguntaFija}> -- Pregunta fija -- </option>
                                             {Object.keys(agrupaciones).map((key) => (
@@ -268,7 +268,7 @@ function FormularioEditarExamenPreguntaFv() {
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <label className="label-text">Falso o verdadero?</label>                                        
-                                        <select onChange={handleFalsoVerdaderoChange} value={falsoVerdadero} name="respuesta" className="form-control select-dark">
+                                        <select onChange={handleFalsoVerdaderoChange} value={falsoVerdadero} name="respuesta" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value={-1}> -- Seleccione --</option>
                                             <option value={0}>Falso</option>
                                             <option value={1}>Verdadero</option>                                            
@@ -279,7 +279,7 @@ function FormularioEditarExamenPreguntaFv() {
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <label className="label-text">Estado</label>
-                                        <select onChange={handleEstadoChange} value={estado} name="estado" className="form-control select-dark">
+                                        <select onChange={handleEstadoChange} value={estado} name="estado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value="1">Activada</option>
                                             <option value="0">Desactivada</option>                                            
                                         </select>

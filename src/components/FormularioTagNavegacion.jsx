@@ -10,7 +10,7 @@ function FormularioTagNavegacion({actualizarBreadCrumb, actualizarBreadCrumbData
     const urlBase = import.meta.env.VITE_URL_BASE;    
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const navigate = useNavigate();
-    const {jwt, authenticated} = useContext(AuthContext);  
+    const {jwt, authenticated, temaActual} = useContext(AuthContext);  
     const { url_amigable } = useParams();    
     
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});
@@ -124,7 +124,7 @@ function FormularioTagNavegacion({actualizarBreadCrumb, actualizarBreadCrumbData
                         <div className="d-flex flex-wrap align-items-center">
                             
                             <div className="select-container select--container">    
-                                <select onChange={handleOrdenarPor} className="form-control select-dark" >                                                        
+                                <select onChange={handleOrdenarPor} className={`form-control ${temaActual==1 ? '' : 'select-dark'}`} >                                                        
                                     <option value="precio_actual-asc">Ordenar por</option>
                                     <option value="precio_actual-asc">Menor a mayor precio</option>
                                     <option value="precio_actual-desc">Mayor a menor precio</option>                                    

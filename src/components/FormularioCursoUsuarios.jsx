@@ -14,7 +14,7 @@ export default function FormularioCursoUsuarios() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const { id } = useParams();
-    const {jwt, permissions} = useContext(AuthContext);
+    const {jwt, permissions, temaActual} = useContext(AuthContext);
     const navigate = useNavigate(); 
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});    
     const [verPopUpMatricular, setVerPopUpMatricular] = useState(false);
@@ -301,7 +301,7 @@ export default function FormularioCursoUsuarios() {
                     <div className="modal-body">
                         <div className="form-group">
                             <label className="label-text">Exámenes</label>
-                            <select onChange={handleExamenesChange} value={formExamenes} name="examenes" className="form-control select-dark">
+                            <select onChange={handleExamenesChange} value={formExamenes} name="examenes" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value="-1"> -- Seleccione --</option>                                            
                                 <option value="1">Si</option>
                                 <option value="0">No</option>
@@ -310,7 +310,7 @@ export default function FormularioCursoUsuarios() {
                         </div>
                         <div className="form-group">
                             <label className="label-text">Certificado</label>
-                            <select onChange={handleCertificadoChange} value={formCertificado} name="certificado" className="form-control select-dark">
+                            <select onChange={handleCertificadoChange} value={formCertificado} name="certificado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value="-1"> -- Seleccione --</option>                                            
                                 <option value="1">Si</option>
                                 <option value="0">No</option>

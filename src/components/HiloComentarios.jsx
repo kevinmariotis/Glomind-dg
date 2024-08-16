@@ -611,7 +611,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                         <div className="question-overview-filter-wrap d-flex align-items-center">
                             <div className="question-overview-filter-item">
                                 <div className="select-container w-100">
-                                    <select onChange={handleOrdenarPorChange} value={ordenarPor} className="form-control select-dark">
+                                    <select onChange={handleOrdenarPorChange} value={ordenarPor} className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                         <option value="comentario.puntuacion-desc">Ordenar por Los más votados</option>
                                         <option value="comentario.created_at-desc">Ordenar por Los más recientes</option>
                                     </select>

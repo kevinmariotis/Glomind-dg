@@ -14,7 +14,7 @@ import DashboardFooter from './DashboardFooter';
 function FormularioCrearCurso() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
-    const {jwt, nombres, permissions} = useContext(AuthContext);
+    const {jwt, nombres, permissions, temaActual} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
     const [categorias, setCategorias] = useState({});    
     const [cursos, setCursos] = useState([]);    
@@ -398,7 +398,7 @@ function FormularioCrearCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Nivel</label>                                        
-                                        <select onChange={handleNivelChange} name="nivel" className="form-control select-dark">
+                                        <select onChange={handleNivelChange} name="nivel" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="1">Básico</option>
                                             <option value="2">Medio</option>
@@ -410,7 +410,7 @@ function FormularioCrearCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Promocionado?</label>                                        
-                                        <select onChange={handlePromocionadoChange} name="promocionado" className="form-control select-dark">
+                                        <select onChange={handlePromocionadoChange} name="promocionado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">No</option>
                                             <option value="1">Si</option>                                            
@@ -424,7 +424,7 @@ function FormularioCrearCurso() {
                                         <label className="label-text">Categoría: </label>&nbsp;
                                         <label className="label-text">{categoriaSeleccionada.nombre}</label>&nbsp;
                                         {categoriaSeleccionada.id!=0 && <span onClick={handleReiniciarCategoria}>(Reiniciar)</span>}
-                                        <select name="id_categoria" className="form-control select-dark" onChange={handleSeleccionarCategoria}>
+                                        <select name="id_categoria" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`} onChange={handleSeleccionarCategoria}>
                                             <option value=""> -- Seleccionar sub categoría --</option>                                            
                                             {Object.keys(categorias).map((key) => (
                                                 <option key={`catop-${categorias[key].id}`} value={categorias[key].id}>{categorias[key].nombre}</option>                                                
@@ -436,7 +436,7 @@ function FormularioCrearCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Expedir ceritificado</label>                                        
-                                        <select onChange={handleExpedirCertiticadoChange} name="expedir_certificado" className="form-control select-dark">
+                                        <select onChange={handleExpedirCertiticadoChange} name="expedir_certificado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">No</option>
                                             <option value="1">Si</option>                                            
@@ -447,7 +447,7 @@ function FormularioCrearCurso() {
                                 {permissions[69] ? <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Nota mínima para superar el curso</label>
-                                        <select onChange={handleNotaMinimaSuperadoChange} name="nota_minima_superado" className="form-control select-dark">
+                                        <select onChange={handleNotaMinimaSuperadoChange} name="nota_minima_superado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0"> -- No aplica --</option>
                                             {options}                                  
@@ -458,7 +458,7 @@ function FormularioCrearCurso() {
                                 {permissions[65] ? <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Estado</label>
-                                        <select onChange={handleEstadoChange} name="estado" className="form-control select-dark">
+                                        <select onChange={handleEstadoChange} name="estado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="1">Disponible para nuevas compras</option>
                                             <option value="0">No disponible para comprar</option>
@@ -528,7 +528,7 @@ function FormularioCrearCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Exámenes solo pago</label>                                        
-                                        <select onChange={handleExamenesSoloPagoChange} name="examenes_solo_pago" className="form-control select-dark">
+                                        <select onChange={handleExamenesSoloPagoChange} name="examenes_solo_pago" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">No</option>
                                             <option value="1">Si</option>                                            
@@ -546,7 +546,7 @@ function FormularioCrearCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Certificado solo pago</label>                                        
-                                        <select onChange={handleCertificadoSoloPagoChange} name="certificado_solo_pago" className="form-control select-dark">
+                                        <select onChange={handleCertificadoSoloPagoChange} name="certificado_solo_pago" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">No</option>
                                             <option value="1">Si</option>                                            

@@ -13,7 +13,7 @@ import DashboardFooter from './DashboardFooter';
 function FormularioPerfilesPermisos() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
-    const {jwt, permissions, esMovil, nombres, setImagenPequena} = useContext(AuthContext);
+    const {jwt, permissions, esMovil, nombres, setImagenPequena, temaActual} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});
     const [paginaAsignacionesPerfiles, setPaginaAsignacionesPerfiles] = useState(1);
     const [verPopUpAsignarPerfil, setVerPopUpAsignarPerfil] = useState(false);
@@ -461,7 +461,7 @@ function FormularioPerfilesPermisos() {
                         </div>    
                         <div className="form-group">
                             <label className="label-text">Perfil</label>
-                            <select onChange={handlePerfilSeleccionadoChange} value={perfilSeleccionado} name="tipo" className="form-control select-dark">
+                            <select onChange={handlePerfilSeleccionadoChange} value={perfilSeleccionado} name="tipo" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value=""> -- Seleccione --</option>
                                 {Object.keys(perfiles).map((key) => (
                                     <option key={`perfil-seleccionar-${perfiles[key].id}`} value={perfiles[key].id}>{perfiles[key].nombre}</option>                                                
@@ -493,7 +493,7 @@ function FormularioPerfilesPermisos() {
                         </div>    
                         <div className="form-group">
                             <label className="label-text">Copiar de</label>
-                            <select onChange={handlePerfilSeleccionadoChange} value={perfilSeleccionado} name="tipo" className="form-control select-dark">
+                            <select onChange={handlePerfilSeleccionadoChange} value={perfilSeleccionado} name="tipo" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                 <option value={-1}> -- Ninguno --</option>
                                 {Object.keys(perfiles).map((key) => (
                                     <option key={`perfil-seleccionar-${perfiles[key].id}`} value={perfiles[key].id}>{perfiles[key].nombre}</option>                                                

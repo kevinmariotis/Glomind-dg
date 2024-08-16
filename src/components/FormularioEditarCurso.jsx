@@ -15,7 +15,7 @@ function FormularioEditarCurso() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;   
     const { id } = useParams();
-    const {jwt, nombres, permissions} = useContext(AuthContext);
+    const {jwt, nombres, permissions, temaActual} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
     const [categorias, setCategorias] = useState({});    
     const [cursos, setCursos] = useState([]);    
@@ -503,7 +503,7 @@ function FormularioEditarCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Nivel</label>                                        
-                                        <select value={nivel} onChange={handleNivelChange} name="nivel" className="form-control select-dark">
+                                        <select value={nivel} onChange={handleNivelChange} name="nivel" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="1">Básico</option>
                                             <option value="2">Medio</option>
@@ -515,7 +515,7 @@ function FormularioEditarCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Promocionado?</label>                                        
-                                        <select value={promocionado} onChange={handlePromocionadoChange} name="promocionado" className="form-control select-dark">
+                                        <select value={promocionado} onChange={handlePromocionadoChange} name="promocionado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">No</option>
                                             <option value="1">Si</option>                                            
@@ -529,7 +529,7 @@ function FormularioEditarCurso() {
                                         <label className="label-text">Categoría: </label>&nbsp;
                                         <label className="label-text">{categoriaSeleccionada.nombre}</label>&nbsp;
                                         {categoriaSeleccionada.id!=0 && <span onClick={handleReiniciarCategoria}>(Reiniciar)</span>}
-                                        <select name="id_categoria" className="form-control select-dark" onChange={handleSeleccionarCategoria}>
+                                        <select name="id_categoria" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`} onChange={handleSeleccionarCategoria}>
                                             <option value=""> -- Seleccionar sub categoría --</option>                                            
                                             {Object.keys(categorias).map((key) => (
                                                 <option key={`catop-${categorias[key].id}`} value={categorias[key].id}>{categorias[key].nombre}</option>                                                
@@ -541,7 +541,7 @@ function FormularioEditarCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Expedir ceritificado</label>                                        
-                                        <select value={expedirCerfificado} onChange={handleExpedirCertiticadoChange} name="expedir_certificado" className="form-control select-dark">
+                                        <select value={expedirCerfificado} onChange={handleExpedirCertiticadoChange} name="expedir_certificado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">No</option>
                                             <option value="1">Si</option>                                            
@@ -552,7 +552,7 @@ function FormularioEditarCurso() {
                                 {permissions[69] ? <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Nota mínima para superar el curso</label>
-                                        <select value={notaMinimaSuperado} onChange={handleNotaMinimaSuperadoChange} name="nota_minima_superado" className="form-control select-dark">
+                                        <select value={notaMinimaSuperado} onChange={handleNotaMinimaSuperadoChange} name="nota_minima_superado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0"> -- No aplica --</option>
                                             {options}                                  
@@ -563,7 +563,7 @@ function FormularioEditarCurso() {
                                 {permissions[65] ? <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Estado</label>
-                                        <select value={estado} onChange={handleEstadoChange} name="estado" className="form-control select-dark">
+                                        <select value={estado} onChange={handleEstadoChange} name="estado" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="1">Disponible para nuevas compras</option>
                                             <option value="0">No disponible para comprar</option>
@@ -633,7 +633,7 @@ function FormularioEditarCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Exámenes solo pago</label>                                        
-                                        <select value={examenesSoloPago} onChange={handleExamenesSoloPagoChange} name="examenes_solo_pago" className="form-control select-dark">
+                                        <select value={examenesSoloPago} onChange={handleExamenesSoloPagoChange} name="examenes_solo_pago" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">No</option>
                                             <option value="1">Si</option>                                            
@@ -651,7 +651,7 @@ function FormularioEditarCurso() {
                                 <div className="col-lg-6">
                                     <div className="form-group">
                                         <label className="label-text">Certificado solo pago</label>                                        
-                                        <select value={certificadoSoloPago} onChange={handleCertificadoSoloPagoChange} name="certificado_solo_pago" className="form-control select-dark">
+                                        <select value={certificadoSoloPago} onChange={handleCertificadoSoloPagoChange} name="certificado_solo_pago" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                             <option value=""> -- Seleccione --</option>
                                             <option value="0">No</option>
                                             <option value="1">Si</option>                                            
