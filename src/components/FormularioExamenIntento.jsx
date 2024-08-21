@@ -236,6 +236,24 @@ function FormularioExamenIntento() {
         setPopup({mostrar:true, titulo:'Tiempo superado!', tipo:2, contenido:'El tiempo para responder ha terminado y el intento fue cerrado, las respuestas que hayas seleccionado se procesaron y generaron una calificación.', data_switch:'tiempo_terminado'});
     };
 
+    const handleDescargar = async (item) => {
+        const parts = item.ruta_archivo.split("public/");      
+        const url = `${urlBaseApi}/${parts[1]}`;
+        
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `${item.nombre}.${item.ruta_archivo.split('.').pop()}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+        setPopup({mostrar:true, titulo:'Mensaje', contenido:'El archivo está siendo descargado, por favor revise su carpeta de descargas.'});
+    };
+
     return (
         <>
             {mostrarSpinner && <Spinner />}
@@ -274,8 +292,22 @@ function FormularioExamenIntento() {
                         </div>
                     </div>
                 </div>  
+                {configuracion.descargables && configuracion.descargables.length>0 ?
+                    <div className="bg-dark pt-60px pb-60px">
+                        <div className="container">                    
+                            <div className="breadcrumb-content pt-40px text-center">
+                                <div className="section-heading">                                    
+                                    {configuracion.descargables.map((descargable, index) => (
+                                        <button key={`descargable-${descargable.id}`} className="btn theme-btn" onClick={(event) => { event.preventDefault(); event.stopPropagation(); handleDescargar(descargable); }}><i className="la la-paperclip"></i>Descargar archivo: {descargable.nombre}</button>
+                                    ))}
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                    : ''
+                }
                 <div className="bg-dark pt-60px pb-60px">
-                    <div className="container" >  
+                    <div className="container" >                         
                         {preguntaActual!=-1 && Object.keys(preguntas).length>1 ?
                         <ul className="quiz-course-nav d-flex align-items-center justify-content-between list_preguntas" style={{overflowX: 'auto', whiteSpace: 'nowrap', paddingBottom:'15px'}}>
                             {Object.keys(preguntas).map((key) => (   
@@ -293,7 +325,7 @@ function FormularioExamenIntento() {
                         {preguntaActual!=-1 && <div className="breadcrumb-content pt-40px">
                             <div className="section-heading">
                                 {preguntaActual!=-1 && Object.keys(preguntas).length>1 ? <h2 className="section__title text-white fs-30 pb-2">Pregunta {parseInt(preguntaActual)+1} de {Object.keys(preguntas).length}</h2> : ''}
-                                <p className="section__desc text-white-50">{preguntas[preguntaActual].texto_pregunta.split('<br />').map((line, index) => (<span>{line}<br /></span> ))}</p>                                
+                                <p className="section__desc text-white-50">{preguntas[preguntaActual].texto_pregunta.split('<br />').map((line, index) => (<span key={`textopre-${index}`}>{line}<br /></span> ))}</p>                                
                             </div>
                         </div>}
                     </div>

@@ -122,6 +122,24 @@ function FormularioExamenPresentacion() {
         setPopup({mostrar:true, titulo:'Confirmar', tipo:3, contenido:'Confirma que desea iniciar un intento?', data_switch:'iniciar_intento'});
     };
 
+    const handleDescargar = async (item) => {
+        const parts = item.ruta_archivo.split("public/");      
+        const url = `${urlBaseApi}/${parts[1]}`;
+        
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `${item.nombre}.${item.ruta_archivo.split('.').pop()}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+        setPopup({mostrar:true, titulo:'Mensaje', contenido:'El archivo está siendo descargado, por favor revise su carpeta de descargas.'});
+    };
+
     return (
         <>
             {mostrarSpinner && <Spinner />}
@@ -162,7 +180,7 @@ function FormularioExamenPresentacion() {
                 </div>  
                 <div className="pt-60px pb-60px">
                     <div className="container">                    
-                        <div className="breadcrumb-content pt-40px">
+                        <div className="breadcrumb-content pt-40px ">
                             <div className="section-heading">
                                 <h2 className="section__title fs-30 pb-2"><i className="la la-pencil-square-o mr-2"></i>{examen.nombre}</h2>
                                 {examen.descripcion=='' ? 
@@ -171,11 +189,23 @@ function FormularioExamenPresentacion() {
                                         <Skeleton width={'55%'} height={20}  />
                                         <Skeleton width={'45%'} height={20}  />
                                     </>
-                                    : <p className="section__desc">{examen.descripcion.split('<br />').map((line, index) => (<span>{line}<br /></span> ))}</p>
+                                    : <p className="section__desc">{examen.descripcion.split('<br />').map((line, index) => (<span key={`description-e-${index}`}>{line}<br /></span> ))}</p>
                                 }
-                            </div>
+                            </div>                            
                         </div>
                     </div>
+                    {examen.descargables && examen.descargables.length>0 ?
+                        <div className="container">                    
+                            <div className="breadcrumb-content pt-40px text-center">
+                                <div className="section-heading">                                    
+                                    {examen.descargables.map((descargable, index) => (
+                                        <button key={`descargable-${descargable.id}`} className="btn theme-btn" onClick={(event) => { event.preventDefault(); event.stopPropagation(); handleDescargar(descargable); }}><i className="la la-paperclip"></i>Descargar archivo: {descargable.nombre}</button>
+                                     ))}
+                                </div>                            
+                            </div>
+                        </div>
+                        : ''
+                    }   
                 </div>    
                 <div className="bg-dark pt-60px pb-60px">
                     <div className="container">                        
