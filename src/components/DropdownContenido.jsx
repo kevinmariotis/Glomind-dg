@@ -1,6 +1,7 @@
 // Dropdown.js
 // Es el drowp dow que originalmente aparece para descargar recursos
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { AuthContext } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Popup from './Popup';
 /*
@@ -8,7 +9,8 @@ import Popup from './Popup';
     Ejemplo de data; [{descripcion:"Descargable uno", id:7, nombre:"Descargable uno", ruta_archivo:"public/descargables/d_7_9dnBtuUWLady00d2.pdf"}]
 */
 
-function DropdownContenido({data={}, mostrarHaciaArriba=false}) {
+function DropdownContenido({data={}, id_curso_contenido, mostrarHaciaArriba=false}) {
+    const {jwt} = useContext(AuthContext);
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API; 
     const [isOpen, setIsOpen] = useState(false);
     const [popUp, setPopup] = useState({mostrar:false, titulo:'', contenido:''});    
@@ -40,13 +42,29 @@ function DropdownContenido({data={}, mostrarHaciaArriba=false}) {
             document.removeEventListener('click', handleCloseOnOutsideClick);
         };
     }, [isOpen]);
-
-    const handleItemClick2 = (item) => {     
-        const parts = item.split("public/");        
-        window.open(`${urlBaseApi}/${parts[1]}`, '_blank');
+    
+    const handleItemClick = async (item) => {
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }    
+        const opciones = {
+            method: 'GET',
+            headers: headers,
+        };
+        const response = await fetch(`${urlBaseApi}/api/cursocontenido/${id_curso_contenido}`, opciones);                        
+        const datos = await response.json();
+        if(response.ok){
+            datos.descargables.forEach(function(descargable){
+                if(descargable.id==item.id){                    
+                    descargar(descargable);
+                }
+            });
+        } else {   
+            setPopup({mostrar:true, titulo:'Mensaje', contenido:'No se puede descargar en este momento.'});
+        }
     };
 
-    const handleItemClick = async (item) => {
+    const descargar = async (item) => {
         const parts = item.ruta_archivo.split("public/");      
         const url = `${urlBaseApi}/${parts[1]}`;
         
@@ -63,7 +81,6 @@ function DropdownContenido({data={}, mostrarHaciaArriba=false}) {
         URL.revokeObjectURL(blobUrl);
         setPopup({mostrar:true, titulo:'Mensaje', contenido:'El archivo está siendo descargado, por favor revise su carpeta de descargas.'});
     };
-
     return ( 
         <>
             <Popup 
@@ -77,13 +94,13 @@ function DropdownContenido({data={}, mostrarHaciaArriba=false}) {
                 textoCerrar="Aceptar"
             />               
             <div ref={dropdownRef} className={`dropdown ${isOpen ? 'show' : ''}`}>
-                <a onClick={handleToggle} className="btn theme-btn theme-btn-sm theme-btn-transparent mt-1 fs-14 font-weight-medium" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded={isOpen ? 'true' : 'false'}>
+                <a onClick={(event) => {event.preventDefault(); event.stopPropagation(); handleToggle(); }} className="btn theme-btn theme-btn-sm theme-btn-transparent mt-1 fs-14 font-weight-medium" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded={isOpen ? 'true' : 'false'}>
                     <i className="la la-folder-open mr-1"></i> Recursos<i className="la la-angle-down ml-1"></i>
                 </a>
                 <div className={`dropdown-menu ${!mostrarHaciaArriba ? 'dropdown-menu-right' : 'dropdown_out_of_view'} ${isOpen ? 'show' : ''}`}>
                     {Object.keys(data).map((key, index) => (
-                        <div key={`drop-key-contenido-${index}`} className="dropdown-item" style={{cursor:'pointer'}} onClick={() => handleItemClick(data[key])}>
-                            {data[key].nombre}.{data[key].ruta_archivo.split('.').pop()}
+                        <div key={`drop-key-contenido-${index}`} className="dropdown-item" style={{cursor:'pointer'}} onClick={(event) => { event.preventDefault(); event.stopPropagation(); handleItemClick(data[key]); }}>
+                            {data[key].nombre}.{data[key].extension}
                         </div>
                     ))}
                 </div>

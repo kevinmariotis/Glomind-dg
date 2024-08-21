@@ -631,7 +631,7 @@ function FormularioPlay() {
                                                                                             </p>                                                                                            
                                                                                             {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&
                                                                                                 <div key={`drop-contenido-mobil-${categoria.curso_contenido[key].id_contenido}-${key}`} className="generic-action-wrap">
-                                                                                                    <DropdownContenido data={categoria.curso_contenido[key].descargables} mostrarHaciaArriba={index2 === Object.keys(categoria.curso_contenido).length - 1} />
+                                                                                                    <DropdownContenido id_curso_contenido={categoria.curso_contenido[key].id_contenido} data={categoria.curso_contenido[key].descargables} mostrarHaciaArriba={index2 === Object.keys(categoria.curso_contenido).length - 1} />
                                                                                                 </div>
                                                                                             }
                                                                                         </div>
@@ -875,7 +875,7 @@ function FormularioPlay() {
                                                                                 </p>
                                                                                 {Object.keys(categoria.curso_contenido[key].descargables).length>0 &&
                                                                                     <div key={`drop-contenido-desktop-${categoria.curso_contenido[key].id_contenido}-${key}`} className="generic-action-wrap">
-                                                                                        <DropdownContenido data={categoria.curso_contenido[key].descargables} mostrarHaciaArriba={index22 === Object.keys(categoria.curso_contenido).length - 1} />
+                                                                                        <DropdownContenido id_curso_contenido={categoria.curso_contenido[key].id_contenido} data={categoria.curso_contenido[key].descargables} mostrarHaciaArriba={index22 === Object.keys(categoria.curso_contenido).length - 1} />
                                                                                     </div>
                                                                                 }
                                                                             </div>
