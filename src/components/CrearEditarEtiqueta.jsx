@@ -194,7 +194,7 @@ export default function CrearEditarEtiqueta({funcionMostrarPopUp, id_curso, id_c
                         </div> 
                         <div className="col-lg-12">
                             <div className="form-group">
-                                <label className="label-text">Html</label>
+                                <label className="label-text">Html (iframes de youtube, vimeo o prezi)</label>
                                 <textarea value={popUpTag.html} onChange={handleTag.html} className="form-control form--control user-text-editor pl-3" name="html" ></textarea>
                                 {erroresCampos['html'].length > 0 && (<SpamError mensaje={erroresCampos['html']} />)}
                             </div>
