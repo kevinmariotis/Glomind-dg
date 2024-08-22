@@ -8,6 +8,7 @@ import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
 import Recurso from './Recurso';
+import Tarea from './Tarea';
 import { mensajesDeError } from './utils';
 import DropdownContenido from './DropdownContenido';
 import HiloComentarios from './HiloComentarios';
@@ -461,7 +462,7 @@ function FormularioPlay() {
                                     : 
 
                                     dataContenidoViendo.tipo_contenido==5 ? 
-                                            'Tarea: Aqui se debe mostrar componente para tarea, que muestra: el historial de envios (una misma tarea pudiera ser enviada varias veces), la fecha hora de envio y si ya fue calificada o no (basado en el estado), tambien la posibilidad de volver a enviarla (si se permite por configuracion de la misma tarea) retroalimentacion del docente, tambien la posibididad de descargar el archivo que envió. Si es el docente le da acceso a un panel especial (otra ruta) para ver todos los intentos y calificar.'
+                                        <Tarea id_contenido={contenidoActivado} id_curso={dataCurso.id} es_docente={dataCurso.es_docente} />
                                     : 
 
                                     dataContenidoViendo.tipo_contenido==6 ?
