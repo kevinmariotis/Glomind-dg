@@ -245,7 +245,7 @@ function FormularioHome() {
                             {Object.keys(categoriasPopulares).map((key) => (
                                 <div key={`categoria-popular-${categoriasPopulares[key].id}`} className="col-lg-4 responsive-column-half">
                                     <div className="category-item">
-                                        <img  className="cat__img lazy" src={`${categoriasPopulares[key].imagen_tiny!=null ? `${urlBaseApi}/${categoriasPopulares[key].imagen_tiny}` : 'images/img-loading.png'}`} data-src="images/img1.jpg" alt="Category image" />
+                                        <img  className="cat__img lazy" src={`${categoriasPopulares[key].imagen_tiny!=null ? `${urlBaseApi}/${categoriasPopulares[key].imagen_tiny}` : 'images/img-loading.png'}`} data-src="/images/img1.jpg" alt="Category image" />
                                         <div className="category-content">
                                             <div className="category-inner">
                                                 <h3 className="cat__title"><a href="#">{categoriasPopulares[key].nombre}</a></h3>
@@ -413,8 +413,8 @@ function FormularioHome() {
                         </div>
                         <div className="col-lg-5 ml-auto">
                             <div className="generic-img-box">
-                                <img src="images/acerca_de_600_400.png" data-src="images/acerca_de_600_400.png" alt="About image" className="img__item img__item-1 lazy" />
-                                <img src="images/acerca_de_2_600_400.png" data-src="images/acerca_de_2_600_400.png" alt="About image" className="img__item img__item-2 lazy" />
+                                <img src="/images/acerca_de_600_400.png" data-src="/images/acerca_de_600_400.png" alt="About image" className="img__item img__item-1 lazy" />
+                                <img src="/images/acerca_de_2_600_400.png" data-src="/images/acerca_de_2_600_400.png" alt="About image" className="img__item img__item-2 lazy" />
                             </div>
                         </div>
                     </div>
@@ -436,9 +436,9 @@ function FormularioHome() {
                         <span class="section-divider"></span>
                     </div>
                     <div class="client-logo-carousel pt-4">
-                        <a href="https://litoral.edu.co/" target="_blank" class="client-logo-item"><img src="images/empresas/litoral.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
-                        <a href="https://scv.edu.co/" target="_blank" class="client-logo-item"><img src="images/empresas/system_center.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
-                        <a href="https://americana.edu.co/barranquilla" target="_blank" class="client-logo-item"><img src="images/empresas/americana.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>                        
+                        <a href="https://litoral.edu.co/" target="_blank" class="client-logo-item"><img src="/images/empresas/litoral.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
+                        <a href="https://scv.edu.co/" target="_blank" class="client-logo-item"><img src="/images/empresas/system_center.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
+                        <a href="https://americana.edu.co/barranquilla" target="_blank" class="client-logo-item"><img src="/images/empresas/americana.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>                        
                     </div>
                 </div>
             </section>

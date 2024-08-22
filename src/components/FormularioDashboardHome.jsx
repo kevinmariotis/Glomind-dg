@@ -10,7 +10,7 @@ function FormularioDashboardHome() {
             <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
                 <div className="media media-card align-items-center">
                     <div className="media-img media--img media-img-md rounded-full">
-                        <img className="rounded-full" src="images/small-avatar-1.jpg" alt="Student thumbnail image" />
+                        <img className="rounded-full" src="/images/small-avatar-1.jpg" alt="Student thumbnail image" />
                     </div>
                     <div className="media-body">
                         <h2 className="section__title fs-30">Howdy, Tim Buchalka</h2>

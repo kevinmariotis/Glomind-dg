@@ -164,7 +164,7 @@ function FormularioExamenPresentacion() {
                                         <div className="media media-card">
                                         {curso.url_amigable=='' ? <Skeleton width={82} height={48} /> : 
                                             <Link to={`/play/${curso.url_amigable}`} className="media-img" style={{ height: 'auto' }}>
-                                                {curso.imagen_pequena!=null ? <img src={`${urlBaseApi}/${curso.imagen_pequena}`} alt={curso.nombre} /> : <img src="images/course-no-image.png" alt={curso.nombre} /> }
+                                                {curso.imagen_pequena!=null ? <img src={`${urlBaseApi}/${curso.imagen_pequena}`} alt={curso.nombre} /> : <img src="/images/course-no-image.png" alt={curso.nombre} /> }
                                             </Link>
                                         }
                                         </div>

@@ -133,7 +133,7 @@ function FormularioExamenHistorial() {
                                         <div className="media media-card">
                                         {curso.url_amigable=='' ? <Skeleton width={82} height={48} /> : 
                                             <Link to={`/play/${curso.url_amigable}`} className="media-img" style={{ height: 'auto' }}>
-                                                {curso.imagen_pequena!=null ? <img src={`${urlBaseApi}/${curso.imagen_pequena}`} alt={curso.nombre} /> : <img src="images/course-no-image.png" alt={curso.nombre} /> }
+                                                {curso.imagen_pequena!=null ? <img src={`${urlBaseApi}/${curso.imagen_pequena}`} alt={curso.nombre} /> : <img src="/images/course-no-image.png" alt={curso.nombre} /> }
                                             </Link>
                                         }
                                         </div>
@@ -156,7 +156,7 @@ function FormularioExamenHistorial() {
                                 <li>
                                     <div className="d-flex align-items-center">
                                         <a href="course-details.html">
-                                            <img src="images/angular.png" alt="" className="w-50px" />
+                                            <img src="/images/angular.png" alt="" className="w-50px" />
                                         </a>
                                         <p>
                                             <Link  to={`/examen/presentacion/${id_examen}/${id_curso}`}className="fs-22 font-weight-semi-bold">{examen.nombre}</Link><span className="d-block pt-1">{examen.tipo==1 ? 'Actividad' : 'Examen'}</span>

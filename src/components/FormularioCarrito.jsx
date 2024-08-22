@@ -169,7 +169,7 @@ function FormularioCarrito() {
                                         <th scope="row">
                                             <div className="media media-card">
                                                 <Link to={`/curso/${productos[key].url_amigable}`} className="media-img mr-0">
-                                                    {productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${productos[key].imagen_pequena}`} style={{ height: 'auto' }} alt="Imagen del curso" /> : <img src="images/small-img.jpg" style={{ height: 'auto' }} alt="Imagen del curso" />}
+                                                    {productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${productos[key].imagen_pequena}`} style={{ height: 'auto' }} alt="Imagen del curso" /> : <img src="/images/small-img.jpg" style={{ height: 'auto' }} alt="Imagen del curso" />}
                                                 </Link>
                                             </div>
                                         </th>
