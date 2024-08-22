@@ -2,7 +2,7 @@ import React, {useContext, useState, useEffect} from 'react';
 import { AuthContext } from '../AuthContext';
 import Popup from './Popup';
 
-function Recurso({id_recurso}){
+function Recurso({id_contenido}){
     const {jwt} = useContext(AuthContext);
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;              
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});    
@@ -13,7 +13,7 @@ function Recurso({id_recurso}){
 
     useEffect(() => {        
         obtenerDatosServidor();        
-    }, [id_recurso]);
+    }, [id_contenido]);
 
     useEffect(() => {           
         
@@ -38,7 +38,7 @@ function Recurso({id_recurso}){
                 method: 'GET',
                 headers: headers,
             };            
-            const response = await fetch(`${urlBaseApi}/api/recurso/${id_recurso}`, opciones);            
+            const response = await fetch(`${urlBaseApi}/api/cursocontenido/${id_contenido}`, opciones);            
             const datos = await response.json();   
             if (response.ok){                      
                 setDatos(datos);

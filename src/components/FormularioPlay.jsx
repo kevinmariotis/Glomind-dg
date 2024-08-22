@@ -454,7 +454,7 @@ function FormularioPlay() {
                                         />                                                          
                                         : 
                                     dataContenidoViendo.tipo_contenido==3 ?
-                                        <Recurso id_recurso={dataContenidoViendo.id} />
+                                        <Recurso id_contenido={contenidoActivado} />
                                     : 
 
                                     dataContenidoViendo.tipo_contenido==4 ?
@@ -467,15 +467,25 @@ function FormularioPlay() {
 
                                     dataContenidoViendo.tipo_contenido==6 ?
                                         <>
-                                            <div className="lecture-video-detail-body">
-                                                <div className="lecture-overview-wrap">
-                                                    <div className="lecture-overview-item">
-                                                        <h3 className="fs-24 font-weight-semi-bold pb-2">Foro: {dataContenidoViendo.nombre}</h3>
-                                                        <p>{dataContenidoViendo.descripcion.split('<br />').map((line, index2) => (<span key={`desc-general-larga-top-${index2}`}>{line}<br /></span> ))}</p>
-                                                    </div>                                                    
-                                                    <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={dataContenidoViendo.tipo_contenido} id_curso={dataCurso.id} es_docente={dataCurso.es_docente} />
-                                                </div>
-                                            </div>
+                                            <div className="pt-60px pb-60px">
+                                                <div className="container">                    
+                                                    <div className="breadcrumb-content pt-40px ">
+                                                        <div className="section-heading">
+                                                            <h2 className="section__title fs-30 pb-2"><i className="la la-comments mr-2"></i>{dataContenidoViendo.nombre}</h2>
+                                                            {dataContenidoViendo.descripcion=='' ? 
+                                                                <>
+                                                                    <Skeleton width={'60%'} height={20} />
+                                                                    <Skeleton width={'55%'} height={20}  />
+                                                                    <Skeleton width={'45%'} height={20}  />
+                                                                </>
+                                                                : <p className="section__desc">{dataContenidoViendo.descripcion.split('<br />').map((line, index) => (<span key={`desc-general-larga-top-${index}`}>{line}<br /></span> ))}</p>
+                                                            }
+                                                        </div>                            
+                                                    </div>
+                                                    <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={dataContenidoViendo.tipo_contenido} id_curso={dataCurso.id} es_docente={dataCurso.es_docente} />             
+                                                </div>   
+                                                
+                                            </div>                                                                                        
                                         </>                                    
                                     : ''
                                     }                                    

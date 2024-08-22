@@ -348,7 +348,7 @@ export default function Tarea({id_contenido, id_curso, es_docente}) {
             </div>  
             {!es_docente ?
                 <>
-                  <div className="bg-dark pt-60px pb-60px">
+                  <div className="pt-60px pb-60px">
                         <div className="container">                    
                             <div className="breadcrumb-content pt-40px text-center">
                                 <div className="section-heading">                                    
@@ -356,11 +356,11 @@ export default function Tarea({id_contenido, id_curso, es_docente}) {
                                         <div className="form-group">
                                             {popUpObjeto.permitir_enviar=='si' ?
                                                 <>
-                                                    <label className="label-text"><p className="section__desc text-white-50 pb-2">Subir entrega</p></label>
+                                                    <label className="label-text"><p className="section__desc pb-2">Subir entrega</p></label>
                                                     <input type="file" name="archivoEntrega" className="form-control form--control user-text-editor pl-3"></input>
                                                     {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
                                                 </>
-                                            : <label className="label-text"><p className="section__desc text-white-50 pb-2">{mentajesNoEnvio[popUpObjeto.permitir_enviar]}</p></label>}
+                                            : <label className="label-text"><p className="section__desc pb-2">{mentajesNoEnvio[popUpObjeto.permitir_enviar]}</p></label>}
                                         </div>
                                     </div> 
                                     {popUpObjeto.permitir_enviar=='si' && <div className="col-lg-12">
@@ -411,7 +411,7 @@ export default function Tarea({id_contenido, id_curso, es_docente}) {
                                                 <th scope="col"></th>
                                                 <th scope="col">Nombres y apellidos</th>
                                                 <th scope="col">Fecha hora entrega</th>
-                                                <th scope="col">Fecha hora calificación</th>                        
+                                                <th scope="col">Calificación</th>                        
                                                 <th scope="col">Archivo</th>
                                                 <th scope="col"></th>
                                             </tr>
@@ -433,7 +433,7 @@ export default function Tarea({id_contenido, id_curso, es_docente}) {
                                                             {entregas[key].fecha_hora_entrega}
                                                         </td>
                                                         <td>
-                                                            {estadoTarea[entregas[key].estado]}                                                            
+                                                            {entregas[key].estado!=2 ? estadoTarea[entregas[key].estado] : entregas[key].calificacion}                                                            
                                                         </td>
                                                         <td>
                                                             {es_docente ?
