@@ -453,7 +453,7 @@ export default function Tarea({id_contenido, id_curso, es_docente}) {
                                         </table>
                                         <Paginador elemetosTotales={totalEntregas} elementosPorPagina={20} paginaActual={paginaNavegacion} callbackCambioPagina={setPaginaNavegacion} />
                                     </div>
-                                    : <p className="section__desc text-white-50 pb-2">No hay entregas</p>}
+                                    : <p className="section__desc pb-2">No hay entregas</p>}
                                 </div>
                             </div>
                         </div>

@@ -32,6 +32,11 @@ function FormularioDashboardEnroledCourses() {
         obtenerDatosCursos();
     }, [pestanaActivada]);
 
+    useEffect(() => {         
+        obtenerDatosCursos();
+    }, [paginaNavegacion]);
+    
+
     const handleFuncionAceptarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };
@@ -82,7 +87,7 @@ function FormularioDashboardEnroledCourses() {
             
             //buscamos los datos de los cursos a mostrar
             setMostrarSpinner(true);
-            const response2 = await fetch(`${urlBaseApi}/api/usuario/cursos/0/${paginaNavegacion}/${pestanaActivada}/nombre-asc/3`, opciones);
+            const response2 = await fetch(`${urlBaseApi}/api/usuario/cursos/0/${paginaNavegacion}/${pestanaActivada}/nombre-asc/9`, opciones);
             setMostrarSpinner(false);
             if (response2.ok){   
                     const datos2 = await response2.json();   
@@ -223,7 +228,7 @@ function FormularioDashboardEnroledCourses() {
                         </div>
                     </div>
                 </div>
-                <Paginador elemetosTotales={totalCursos} elementosPorPagina={3} paginaActual={paginaNavegacion} callbackCambioPagina={setPaginaNavegacion} />
+                <Paginador elemetosTotales={totalCursos} elementosPorPagina={9} paginaActual={paginaNavegacion} callbackCambioPagina={setPaginaNavegacion} />
                 <DashboardFooter />
             </div>
         </div>
