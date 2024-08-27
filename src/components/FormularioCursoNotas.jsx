@@ -125,10 +125,11 @@ function FormularioCursoNotas() {
                 setEditarNota({...editarNota, mostrar:true, id_usuario:id_usuario, id_curso_contenido:id_curso_contenido, puntuacion_fija:puntuacion_fija})
             }
         },
-        save          : async (event) => {
+        save          : async (reiniciar=false) => {
+            console.log("reiniciar" , reiniciar);
             reiniciarErrorCampoGlobal();                                                    
             let raw = {
-                puntuacion_fija      : editarNota.puntuacion_fija!='' ? editarNota.puntuacion_fija : null,                
+                puntuacion_fija      : (editarNota.puntuacion_fija!='' && reiniciar===false) ? editarNota.puntuacion_fija : null,                
             };            
             const opcionesData = {   
                 method: 'PUT',
@@ -149,7 +150,7 @@ function FormularioCursoNotas() {
                 mensajesDeError(setPopup, responseRaw.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
             }
             setMostrarSpinner(false);                                                                        
-        }   
+        }
     }
 
     return (
@@ -183,7 +184,8 @@ function FormularioCursoNotas() {
                             </div>                                
                         </div>
                         <div className="modal-footer border-top-gray">
-                            <button type="button" className="btn theme-btn mb-2" onClick={handleEditarNota.save} >Guardar</button>
+                            <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={()=>{ handleEditarNota.save(true); }}> Eliminar nota fija actual </button>
+                            <button type="button" className="btn theme-btn mb-2" onClick={()=>{ handleEditarNota.save(false); }} >Guardar</button>
                             <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={handleEditarNota.close}> Cancelar </button>
                         </div>
                     </div>
