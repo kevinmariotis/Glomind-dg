@@ -121,7 +121,9 @@ function FormularioCursoNotas() {
             setEditarNota({...editarNota, mostrar: false})
         },
         load : (id_curso_contenido, id_usuario, puntuacion_fija) => {            
-            setEditarNota({...editarNota, mostrar:true, id_usuario:id_usuario, id_curso_contenido:id_curso_contenido, puntuacion_fija:puntuacion_fija})
+            if(curso.es_docente==1 || permissions[102]){
+                setEditarNota({...editarNota, mostrar:true, id_usuario:id_usuario, id_curso_contenido:id_curso_contenido, puntuacion_fija:puntuacion_fija})
+            }
         },
         save          : async (event) => {
             reiniciarErrorCampoGlobal();                                                    

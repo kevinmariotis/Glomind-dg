@@ -52,6 +52,7 @@ import PaginaTagNavegacion from './components/PaginaTagNavegacion';
 //import PaginaHome from './components/PaginaHome';
 import PaginaValidarEmail from './components/PaginaValidarEmail';
 import PaginaRecuperarContrasena from './components/PaginaRecuperarContrasena';
+import PaginaCursoNotas from './components/PaginaCursoNotas';
 
 import Pagina404 from './components/Pagina404';
 
@@ -104,6 +105,7 @@ const Rutas = () => {
                 <Route path="/curso/videopreview/:id" element={<ProtectedRoute permiso={validarPermisos([67])} ><PaginaEditarCursoVideoPreview/></ProtectedRoute>} />
                 <Route path="/curso/imagen/:id" element={<ProtectedRoute permiso={validarPermisos([66])} ><PaginaEditarCursoImagen/></ProtectedRoute>} />                
                 <Route path="/curso/usuarios/:id" element={<ProtectedRoute permiso={validarPermisos([44])} ><PaginaCursoUsuarios/></ProtectedRoute>} />                                
+                <Route path="/curso/notas/:id_curso/:url_amigable_volver?" element={<ProtectedRoute permiso={validarPermisos([101]) || esDocente} ><PaginaCursoNotas/></ProtectedRoute>} />                                                
                 { /* <Route path="/curso/:url_amigable" element={<PaginaDetallesDeCurso/>} /> */ }
                 <Route path="/play/:url_amigable" element={<ProtectedRoute permiso={authenticated} ><PaginaPlay/></ProtectedRoute>} />                
                 <Route path="/v/:codigo_registro" element={<ProtectedRoute permiso={true} ><PaginaValidarCertificado/></ProtectedRoute>} />                
