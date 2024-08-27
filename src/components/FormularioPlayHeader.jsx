@@ -175,6 +175,11 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
         }        
     }   
     
+    //Ir a la pagina de notas del curso
+    const verPaginaNotasCurso = (event) => {
+        navigate(`/curso/notas/${id_curso}/${curso_url_amigable}`);
+    }
+
     //Ir a la pagina de edicion de contenidos del curso si es docente
     const verPaginaEditarCurso = (event) => {
         navigate(`/curso/contenido/${id_curso}${curso_url_amigable!=null ? '/'+curso_url_amigable : ''}`);
@@ -315,6 +320,7 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                                         <Dropdown data={[
                                             {nombre:(favorito==1) ? 'Quitar de favorito' : 'Marcar como favorito', tipo_link:'funcion', 'href':()=>{ establecerQuitarFavorito(); }},
                                             {nombre:(archivado==1) ? 'Desarchivar curso' : 'Archivar curso', tipo_link:'funcion', 'href':()=>{ establecerArchivarCurso(); }},
+                                            {nombre:'Notas', tipo_link:'funcion', 'href':()=>{ verPaginaNotasCurso(); }},
                                             ...(instructor_edita_contenido==1 ? [{nombre:'Editar contenidos', tipo_link:'funcion', 'href':()=>{ verPaginaEditarCurso(); }}] : []),
                                         ]}/>                                        
                                     </div>
