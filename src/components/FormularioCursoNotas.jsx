@@ -15,7 +15,7 @@ function FormularioCursoNotas() {
     const {jwt, permissions} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
     
-    const [datos, setDatos] = useState({tiempo:0, cantidad_preguntas:0, tipo:0, intentos:'', nombre:'', descripcion:'', mejor_intento:'', peor_intento:'', promedio_intentos:'', promedio_global:'', intentos_realizados:''});
+    const [datos, setDatos] = useState({});
     const [curso, setCurso] = useState({nombre:'', instructor:'', url_amigable:'', imagen_pequena:null});
     
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
@@ -105,13 +105,7 @@ function FormularioCursoNotas() {
             console.error('Error en la solicitud al servidor', error);
         }
     };
-        
-    /*const handleConfirmarIntento = (event) => {        
-        event.preventDefault(); 
-        setPopup({mostrar:true, titulo:'Confirmar', tipo:3, contenido:'Confirma que desea iniciar un intento?', data_switch:'iniciar_intento'});
-    };*/
-       
-    
+                
     const handleEditarNota = {
         puntuacion_fija        : (event) => { setEditarNota({...editarNota, puntuacion_fija:event.target.value});  },        
         show          : (event) => { 

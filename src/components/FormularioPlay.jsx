@@ -37,7 +37,9 @@ function FormularioPlay() {
     const [contenidoActivadoAnterior, setContenidoActivadoAnterior] = useState(-1);  //el contenido anterior que estaba viendo, por si acaso hay que volver a señalarlo.
     const [pestanaActivada, setPestanaActivada] = useState(4);  //pestañas que estan debajo del video
     const [cargarActividadActual, setCargarActividadActual] = useState(false);
-            
+          
+    const [notas, setNotas] = useState({});
+    
     const refBloqueDescripcion = useRef(null);
     const refHiloComentarios = useRef(null);    
 
@@ -57,6 +59,9 @@ function FormularioPlay() {
     useEffect(() => {    
         if(dataCurso.id!=-1){
             obtenerContenidos({activar_actividad_actual:true});        
+            if(dataCurso.es_docente==0){                    
+                obtenerNotas();
+            }
         }        
     }, [dataCurso.id]);
 
@@ -146,7 +151,7 @@ function FormularioPlay() {
                 }
                 if(dataCurso.id==datos.curso.id){
                     setMostrarSpinner(false);
-                }                
+                }                                  
             } else {                
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
             }            
@@ -418,6 +423,28 @@ function FormularioPlay() {
         }
     };
 
+    const obtenerNotas = async () => {                  
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };            
+            const response = await fetch(`${urlBaseApi}/api/curso/getNotas/${dataCurso.id}`, opciones);            
+            const datos = await response.json();   
+            if (response.ok){                                                                           
+                setNotas(datos.datos);
+            } else {                      
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, false, {'titulo': '', 'contenido': ''});
+            }            
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
     const nivelHabilidad = ['', 'Básico', 'Intermedio', 'Avanzado'];
 
 
@@ -435,7 +462,7 @@ function FormularioPlay() {
                 funcionCerrar={handleFuncionCerrarPopUp}
                 textoCerrar="Cerrar"
             />
-            <FormularioPlayHeader id_curso={dataCurso.id} nombre_curso={dataCurso.nombre} instructor_edita_contenido={dataCurso.es_docente && dataCurso.instructor_edita_contenido ? true : false} curso_url_amigable={url_amigable} favorito={dataCurso.favorito} archivado={dataCurso.archivado} tiene_review={dataCurso.tiene_review} porcentaje_progreso={dataCurso.porcentaje_progreso} callBackFavoritoCambiado={obtenerDatosDelServidor}/>
+            <FormularioPlayHeader id_curso={dataCurso.id} es_docente={dataCurso.es_docente} nombre_curso={dataCurso.nombre} instructor_edita_contenido={dataCurso.es_docente && dataCurso.instructor_edita_contenido ? true : false} curso_url_amigable={url_amigable} favorito={dataCurso.favorito} archivado={dataCurso.archivado} tiene_review={dataCurso.tiene_review} porcentaje_progreso={dataCurso.porcentaje_progreso} callBackFavoritoCambiado={obtenerDatosDelServidor}/>
             
             <section className="course-dashboard">
                 <div className="course-dashboard-wrap">
@@ -543,6 +570,13 @@ function FormularioPlay() {
                                                 Vista general
                                             </a>
                                         </li>     
+                                        {!dataCurso.es_docente &&
+                                        <li className="nav-item">
+                                            <a onClick={(event)=>{ handleCambiarPestana(event, 5); }} className={`nav-link ${pestanaActivada==5 ? 'active': ''}`} id="grades-tab" data-toggle="tab" href="#grades" role="tab" aria-controls="grades" aria-selected="true">
+                                                Mis calificaciones
+                                            </a>
+                                        </li>     
+                                        }
                                     </ul>
                                 </div>
                                 <div className="lecture-video-detail-body" style={pestanaActivada==1 ? {padding: '0'} : pestanaActivada==3 ? {padding: '15px'} : {}}>
@@ -790,6 +824,98 @@ function FormularioPlay() {
                                                 </div>                                                
                                             </div>                                                                                        
                                             {dataCurso.id!=-1 && tipoContenidoHilo!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? contenidoActivado : dataContenidoViendo.id} tipo_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? 99 : tipoContenidoHilo} /> : ''}
+                                        </div>
+
+                                        <div className={`tab-pane fade show ${pestanaActivada==5 ? 'active': ''}`} id="grades" role="tabpanel" aria-labelledby="grades">                                                                                                                                    
+                                            <div className="lecture-overview-wrap">
+                                                <div className="lecture-overview-item">
+                                                    <h3 className="fs-24 font-weight-semi-bold pb-2">Mis calificaciones</h3>
+                                                    <p>En este espacio encontrarás las calificaciones, acompañadas de el nombre de la actividad, y el porcentaje en el total del curso de la actividad.</p>
+                                                </div>
+                                                <div className="section-block"></div>                                                
+                                                <div className="lecture-overview-item">
+                                                    <div className="lecture-overview-stats-wrap d-flex">
+                                                        <div className="lecture-overview-stats-item" style={{marginRight:'30px'}}>
+                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Actividad</h3>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item">
+                                                            <ul className="generic-list-item">
+                                                                <li><span>Porcentaje en el curso</span></li>                                                                
+                                                            </ul>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item">
+                                                            <ul className="generic-list-item">
+                                                                <li><span>Calificación</span></li>
+                                                            </ul>
+                                                        </div>                                                        
+                                                    </div>
+                                                </div>
+                                                <div className="section-block"></div>
+                                                <div className="lecture-overview-item">
+                                                    <div className="lecture-overview-stats-wrap d-flex">
+                                                        <div className="lecture-overview-stats-item" style={{marginRight:'30px'}}>
+                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Calificación del curso</h3>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item">
+                                                            <ul className="generic-list-item">
+                                                                <li><span></span></li>                                                                
+                                                            </ul>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item">
+                                                            <ul className="generic-list-item">
+                                                                {notas.usuarios &&
+                                                                <>
+                                                                {notas.usuarios.map((usuario) =>
+                                                                    <li><span>{usuario.calificacion_curso}</span></li>
+                                                                )}
+                                                                </>
+                                                                }
+                                                            </ul>
+                                                        </div>                                                        
+                                                    </div>
+                                                </div>
+                                                {notas.categorias && 
+                                                    <>  
+                                                        {notas.categorias.map((categoria) =>
+                                                            categoria.curso_contenido.map((curso_contenido, indexcc) => (
+                                                                <div className="lecture-overview-item" key={`curso_cont_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}_`}>
+                                                                    <div className="lecture-overview-stats-wrap d-flex">
+                                                                        <div className="lecture-overview-stats-item" style={{marginRight:'30px'}}>
+                                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">{curso_contenido.nombre}</h3>
+                                                                        </div>
+                                                                        <div className="lecture-overview-stats-item">
+                                                                            <ul className="generic-list-item">
+                                                                                <li><span>{curso_contenido.porcentaje_en_total_curso}%</span></li>                                                                
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div className="lecture-overview-stats-item">
+                                                                            <ul className="generic-list-item">
+                                                                                {notas.usuarios.map((usuario) =>{                                                                                                                                                                            
+                                                                                    const notaUsuario = usuario.notas.find(
+                                                                                        (nota) =>
+                                                                                            nota.tipo_contenido === curso_contenido.tipo_contenido &&
+                                                                                            nota.id_tipo_contenido === curso_contenido.id_tipo_contenido
+                                                                                    );
+                                                                                    return (
+                                                                                        <li key={`usuario_nota_${usuario.id_usuario}_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}`}>
+                                                                                            <span>{notaUsuario ? notaUsuario.puntuacion_fija!=null ? notaUsuario.puntuacion_fija: notaUsuario.puntuacion : '-'}</span>
+                                                                                        </li>
+                                                                                    );                                                                                            
+                                                                                }                                                                                )}
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div className="lecture-overview-stats-item" style={{display:'none'}}>
+                                                                            <ul className="generic-list-item">
+                                                                                <li><span>Tipo de actividad</span></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        )}
+                                                    </>
+                                                }
+                                            </div>
                                         </div>
                                         
                                         {dataCurso.instructor!='' ? <div className={`tab-pane fade show ${pestanaActivada==4 ? 'active': ''}`} id="announcements" role="tabpanel" aria-labelledby="announcements-tab">

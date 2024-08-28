@@ -9,7 +9,7 @@ import { mensajesDeError } from './utils';
 import Dropdown from './Dropdown';
 
 
-function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archivado=-1, tiene_review=-1, porcentaje_progreso=-1, instructor_edita_contenido=false, curso_url_amigable=null, callBackFavoritoCambiado=()=>{}, }) {        
+function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archivado=-1, tiene_review=-1, porcentaje_progreso=-1, instructor_edita_contenido=false, curso_url_amigable=null, es_docente=false, callBackFavoritoCambiado=()=>{}, }) {        
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;  
     const urlBase = import.meta.env.VITE_URL_BASE;          
     const navigate = useNavigate();            
@@ -319,8 +319,8 @@ function FormularioPlayHeader({id_curso=-1, nombre_curso='', favorito=-1, archiv
                                     <div className="generic-action-wrap generic--action-wrap">
                                         <Dropdown data={[
                                             {nombre:(favorito==1) ? 'Quitar de favorito' : 'Marcar como favorito', tipo_link:'funcion', 'href':()=>{ establecerQuitarFavorito(); }},
-                                            {nombre:(archivado==1) ? 'Desarchivar curso' : 'Archivar curso', tipo_link:'funcion', 'href':()=>{ establecerArchivarCurso(); }},
-                                            {nombre:'Notas', tipo_link:'funcion', 'href':()=>{ verPaginaNotasCurso(); }},
+                                            {nombre:(archivado==1) ? 'Desarchivar curso' : 'Archivar curso', tipo_link:'funcion', 'href':()=>{ establecerArchivarCurso(); }},                                            
+                                            ...(es_docente==1 ? [{nombre:'Informe de calificador', tipo_link:'funcion', 'href':()=>{ verPaginaNotasCurso(); }}] : []),
                                             ...(instructor_edita_contenido==1 ? [{nombre:'Editar contenidos', tipo_link:'funcion', 'href':()=>{ verPaginaEditarCurso(); }}] : []),
                                         ]}/>                                        
                                     </div>

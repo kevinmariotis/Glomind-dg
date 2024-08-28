@@ -368,7 +368,7 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
                                     xmlSpace="preserve"
                                 >
                                     <style type="text/css">
-                                    {`.st0 { fill: #C0C0C0; }`}
+                                    {`.st0 { fill: #E5E5E5; }`}
                                     </style>
                                     <g>
                                     <path
