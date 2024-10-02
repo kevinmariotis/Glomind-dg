@@ -38,6 +38,7 @@ function FormularioCrearExamenPreguntaFv() {
         'id_agrupacion':[], 
         'tipo_pregunta':[],      
         'respuesta':[],         
+        'archivo':[],         
     }    
         
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
@@ -113,7 +114,11 @@ function FormularioCrearExamenPreguntaFv() {
         if(typeof id_curso !== 'undefined'){
             formData.append('id_curso', id_curso);
         }
-                
+        let file = document.querySelector('input[name=archivo]').files[0]; 
+        if(file){
+            formData.append('archivo', file);
+        }    
+        
         const opcionesx = {
             method: 'POST',
             headers: {
@@ -205,6 +210,13 @@ function FormularioCrearExamenPreguntaFv() {
                                         <label className="label-text">Retroalimentación al contestar incorrectamente</label>
                                         <textarea onChange={handleRetroNevativaChange} value={retroalimentacionNegativa} name="texto_retro_negativa" className="form-control form--control user-text-editor pl-3" ></textarea>
                                         {erroresCampos['texto_retro_negativa'].length > 0 && (<SpamError mensaje={erroresCampos['texto_retro_negativa']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label className="label-text">Media (Imagen)</label>
+                                        <input type="file" name="archivo" className="form-control form--control user-text-editor pl-3"></input>
+                                        {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
                                     </div>
                                 </div>
                                 <div className="col-lg-12">

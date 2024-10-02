@@ -42,6 +42,7 @@ function FormularioCrearExamenPreguntaSmur() {
         'id_agrupacion':[], 
         'tipo_pregunta':[],      
         'pregunta_opcion':[],         
+        'archivo':[],
     }    
     for (let i = 0; i <= 15; i++) {
         camposErrores[`pregunta_opcion.${i}`] = [];
@@ -149,7 +150,11 @@ function FormularioCrearExamenPreguntaSmur() {
             formData.append('pregunta_opcion[]', item.respuesta);
             formData.append('porcentaje_opcion[]', item.porcentaje);
         });
-        
+        let file = document.querySelector('input[name=archivo]').files[0]; 
+        if(file){
+            formData.append('archivo', file);
+        }
+
         const opcionesx = {
             method: 'POST',
             headers: {
@@ -241,6 +246,13 @@ function FormularioCrearExamenPreguntaSmur() {
                                         <label className="label-text">Retroalimentación al contestar incorrectamente</label>
                                         <textarea onChange={handleRetroNevativaChange} value={retroalimentacionNegativa} name="texto_retro_negativa" className="form-control form--control user-text-editor pl-3" ></textarea>
                                         {erroresCampos['texto_retro_negativa'].length > 0 && (<SpamError mensaje={erroresCampos['texto_retro_negativa']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">
+                                        <label className="label-text">Media (Imagen)</label>
+                                        <input type="file" name="archivo" className="form-control form--control user-text-editor pl-3"></input>
+                                        {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
                                     </div>
                                 </div>
                             </div>

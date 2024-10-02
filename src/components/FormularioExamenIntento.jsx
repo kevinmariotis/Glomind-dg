@@ -254,6 +254,37 @@ function FormularioExamenIntento() {
         setPopup({mostrar:true, titulo:'Mensaje', contenido:'El archivo está siendo descargado, por favor revise su carpeta de descargas.'});
     };
 
+    const renderMedia = (media) => {
+        if (!media) {
+          return <></>;
+        }
+        
+        let processedMedia = media;
+        if (media.startsWith("public/")) {
+            processedMedia = `${urlBaseApi}/${media.replace("public/", "")}`;
+        }            
+        const fileExtension = processedMedia.split('.').pop().toLowerCase();
+            
+        if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
+            return <><br/><img src={processedMedia} alt="Imagen" style={{ maxWidth: '1000px', width:'100%', display: 'block', margin: '0 auto' }} /><br/></>;
+        }
+            
+        if (fileExtension === 'mp4') {
+            return (
+                <video controls style={{ maxWidth: '100%' }}>
+                    <source src={processedMedia} type="video/mp4" />
+                    Tu navegador no soporta la reproducción de videos.
+                </video>
+            );
+        }
+            
+        return (
+            <a href={processedMedia} target="_blank" rel="noopener noreferrer">
+                <button>Ver archivo en nueva pestaña</button>
+            </a>
+        );
+    };
+
     return (
         <>
             {mostrarSpinner && <Spinner />}
@@ -325,6 +356,7 @@ function FormularioExamenIntento() {
                         {preguntaActual!=-1 && <div className="breadcrumb-content pt-40px">
                             <div className="section-heading">
                                 {preguntaActual!=-1 && Object.keys(preguntas).length>1 ? <h2 className="section__title text-white fs-30 pb-2">Pregunta {parseInt(preguntaActual)+1} de {Object.keys(preguntas).length}</h2> : ''}
+                                {renderMedia(preguntas[preguntaActual].media)}
                                 <p className="section__desc text-white-50">{preguntas[preguntaActual].texto_pregunta.split('<br />').map((line, index) => (<span key={`textopre-${index}`}>{line}<br /></span> ))}</p>                                
                             </div>
                         </div>}

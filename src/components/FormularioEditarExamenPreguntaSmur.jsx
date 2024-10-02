@@ -17,9 +17,10 @@ function FormularioEditarExamenPreguntaSmur() {
     
     const [pregunta, setPregunta] = useState('');    
     const [retroalimentacionAfirmativa, setRetroalimentacionAfirmativa] = useState('');    
-    const [retroalimentacionNegativa, setRetroalimentacionNegativa] = useState(''); 
+    const [retroalimentacionNegativa, setRetroalimentacionNegativa] = useState('');     
     const [agrupacion, setAgrupacion] = useState(-1);    
-    const [estado, setEstado] = useState(0);    
+    const [media, setMedia] = useState(null);
+    const [estado, setEstado] = useState(0);        
     const [opciones, setOpciones] = useState([]);        
     const [idPreguntaFija, setIdPreguntaFija] = useState(0);        
     
@@ -43,6 +44,7 @@ function FormularioEditarExamenPreguntaSmur() {
         'tipo_pregunta':[],         
         'id_examen_pregunta':[],
         'pregunta_opcion':[],         
+        'archivo':[],         
     }    
     for (let i = 0; i <= 15; i++) {
         camposErrores[`pregunta_opcion.${i}`] = [];
@@ -165,7 +167,10 @@ function FormularioEditarExamenPreguntaSmur() {
                             });                   
                             nuevas_opciones.push({ id: element.id, respuesta: desc, porcentaje: element.porcentaje_puntuacion });
                         });
-                        setOpciones(nuevas_opciones);                        
+                        setOpciones(nuevas_opciones); 
+                        
+                        setMedia(datos2.pregunta.media);
+
                     }else{
                         setPopup({mostrar:true, titulo:'Error', contenido:'El examen no corresponde a la pregunta.'});
                     }
@@ -183,6 +188,27 @@ function FormularioEditarExamenPreguntaSmur() {
             console.error('Error en la solicitud al servidor', error);
         }
     };
+
+    const handleBorrarMedia = async (event) => {
+        event.preventDefault();
+        const opcionesArchivo = {   
+            method: 'DELETE',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },            
+        };
+        setMostrarSpinner(true);
+        const response = await fetch(`${urlBaseApi}/api/examenpregunta/borrarMedia/${id_examen_pregunta}`, opcionesArchivo);                    
+        setMostrarSpinner(false);
+        if (response.ok){                                                        
+            setPopup({mostrar:true, titulo:'Listo', contenido:'Media borrado.'});
+            obtenerDatosServidor();
+        }else{            
+            const datos = await response.json();
+            mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+            return;
+        }
+    }
 
     const handleEditarPregunta = async (event) => {
         event.preventDefault();
@@ -215,14 +241,38 @@ function FormularioEditarExamenPreguntaSmur() {
         
         try {
             setMostrarSpinner(true);
-            const response = await fetch(`${urlBaseApi}/api/examenpregunta/editarpreguntacompleta/${id_examen_pregunta}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`, opcionesx);
-            setMostrarSpinner(false);
+            const response = await fetch(`${urlBaseApi}/api/examenpregunta/editarpreguntacompleta/${id_examen_pregunta}${typeof id_curso !== 'undefined' ? `/${id_curso}` : ''}`, opcionesx);            
             const datos = await response.json();            
             if (response.ok){   
+
+                //Actualizamos el archivo
+                let file = document.querySelector('input[name=archivo]').files[0]; 
+                if(file){
+                    const resData = new FormData();                     
+                    resData.append('archivo', file);
+                    const opcionesArchivo = {   
+                        method: 'POST',
+                        headers: {
+                            'Authorization' : `Bearer ${jwt}`
+                        },
+                        body: resData
+                    };
+                    const response = await fetch(`${urlBaseApi}/api/examenpregunta/actualizarMedia/${id_examen_pregunta}`, opcionesArchivo);                    
+                    if (!response.ok){                                            
+                        setMostrarSpinner(false);
+                        const datos = await response.json();
+                        mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+                        return;
+                    }
+                }
+                //Fin de actualizar el archivo
+
+                setMostrarSpinner(false);
                 obtenerDatosServidor();
                 setPopup({mostrar:true, titulo:'Listo', contenido:'Pregunta guardada correctamente.'});                
                 return;
             } else {
+                setMostrarSpinner(false);
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Error al editar el examen', 'contenido': 'Revise los errores en el formulario.'});
             }                
         }catch (error) {
@@ -230,6 +280,37 @@ function FormularioEditarExamenPreguntaSmur() {
         }
 
     }
+
+    const renderMedia = () => {
+        if (!media) {
+          return <p>La pregunta no tiene media.</p>;
+        }
+        
+        let processedMedia = media;
+        if (media.startsWith("public/")) {
+            processedMedia = `${urlBaseApi}/${media.replace("public/", "")}`;
+        }            
+        const fileExtension = processedMedia.split('.').pop().toLowerCase();
+            
+        if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
+            return <img src={processedMedia} alt="Imagen" style={{ maxWidth: '300px' }} />;
+        }
+            
+        if (fileExtension === 'mp4') {
+            return (
+                <video controls style={{ maxWidth: '100%' }}>
+                    <source src={processedMedia} type="video/mp4" />
+                    Tu navegador no soporta la reproducción de videos.
+                </video>
+            );
+        }
+            
+        return (
+            <a href={processedMedia} target="_blank" rel="noopener noreferrer">
+                <button>Ver archivo en nueva pestaña</button>
+            </a>
+        );
+    };
 
     const porcentajesx = Array.from({ length: 101 }, (_, index) => index);
 
@@ -297,6 +378,17 @@ function FormularioEditarExamenPreguntaSmur() {
                                         <label className="label-text">Retroalimentación al contestar incorrectamente</label>
                                         <textarea onChange={handleRetroNevativaChange} value={retroalimentacionNegativa} name="texto_retro_negativa" className="form-control form--control user-text-editor pl-3" ></textarea>
                                         {erroresCampos['texto_retro_negativa'].length > 0 && (<SpamError mensaje={erroresCampos['texto_retro_negativa']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">                                        
+                                    <label className="label-text" style={{display:'block'}}>Media Imagen (Opcional)</label>
+                                        {renderMedia()}   
+                                        {media!=null &&
+                                            <button className="btn theme-btn" style={{marginLeft:'20px'}} type="button" onClick={handleBorrarMedia}><i className="la la-trash mr-2"></i> Borrar media</button>
+                                        }                                     
+                                        <input type="file" name="archivo" className="form-control form--control user-text-editor pl-3"></input>
+                                        {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
                                     </div>
                                 </div>
                                 <div className="col-lg-12">

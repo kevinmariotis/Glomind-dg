@@ -19,6 +19,7 @@ function FormularioEditarExamenPreguntaFv() {
     const [retroalimentacionAfirmativa, setRetroalimentacionAfirmativa] = useState('');    
     const [retroalimentacionNegativa, setRetroalimentacionNegativa] = useState('');
     const [agrupacion, setAgrupacion] = useState(-1);    
+    const [media, setMedia] = useState(null);
     const [estado, setEstado] = useState(0);        
     const [falsoVerdadero, setFalsoVerdadero] = useState(-1);
     const [idPreguntaFija, setIdPreguntaFija] = useState(0);        
@@ -42,7 +43,8 @@ function FormularioEditarExamenPreguntaFv() {
         'estado':[], 
         'tipo_pregunta':[],         
         'respuesta':[],    
-        'id_examen_pregunta':[],    
+        'id_examen_pregunta':[],
+        'archivo':[],      
     }        
     
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
@@ -152,6 +154,27 @@ function FormularioEditarExamenPreguntaFv() {
         }
     };
 
+    const handleBorrarMedia = async (event) => {
+        event.preventDefault();
+        const opcionesArchivo = {   
+            method: 'DELETE',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },            
+        };
+        setMostrarSpinner(true);
+        const response = await fetch(`${urlBaseApi}/api/examenpregunta/borrarMedia/${id_examen_pregunta}`, opcionesArchivo);                    
+        setMostrarSpinner(false);
+        if (response.ok){                                                        
+            setPopup({mostrar:true, titulo:'Listo', contenido:'Media borrado.'});
+            obtenerDatosServidor();
+        }else{            
+            const datos = await response.json();
+            mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+            return;
+        }
+    }
+
     const handleEditarPregunta = async (event) => {
         event.preventDefault();
         reiniciarErrorCampoGlobal();
@@ -185,6 +208,27 @@ function FormularioEditarExamenPreguntaFv() {
             setMostrarSpinner(false);
             const datos = await response.json();            
             if (response.ok){   
+                //Actualizamos el archivo
+                let file = document.querySelector('input[name=archivo]').files[0]; 
+                if(file){
+                    const resData = new FormData();                     
+                    resData.append('archivo', file);
+                    const opcionesArchivo = {   
+                        method: 'POST',
+                        headers: {
+                            'Authorization' : `Bearer ${jwt}`
+                        },
+                        body: resData
+                    };
+                    const response = await fetch(`${urlBaseApi}/api/examenpregunta/actualizarMedia/${id_examen_pregunta}`, opcionesArchivo);                    
+                    if (!response.ok){                                            
+                        setMostrarSpinner(false);
+                        const datos = await response.json();
+                        mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+                        return;
+                    }
+                }
+                //Fin de actualizar el archivo
                 obtenerDatosServidor();
                 setPopup({mostrar:true, titulo:'Listo', contenido:'Pregunta guardada correctamente.'});                
                 return;
@@ -198,6 +242,37 @@ function FormularioEditarExamenPreguntaFv() {
     }
 
     const porcentajesx = Array.from({ length: 101 }, (_, index) => index);
+
+    const renderMedia = () => {
+        if (!media) {
+          return <p>La pregunta no tiene media.</p>;
+        }
+        
+        let processedMedia = media;
+        if (media.startsWith("public/")) {
+            processedMedia = `${urlBaseApi}/${media.replace("public/", "")}`;
+        }            
+        const fileExtension = processedMedia.split('.').pop().toLowerCase();
+            
+        if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
+            return <img src={processedMedia} alt="Imagen" style={{ maxWidth: '300px' }} />;
+        }
+            
+        if (fileExtension === 'mp4') {
+            return (
+                <video controls style={{ maxWidth: '100%' }}>
+                    <source src={processedMedia} type="video/mp4" />
+                    Tu navegador no soporta la reproducción de videos.
+                </video>
+            );
+        }
+            
+        return (
+            <a href={processedMedia} target="_blank" rel="noopener noreferrer">
+                <button>Ver archivo en nueva pestaña</button>
+            </a>
+        );
+    };
 
     return (
         <>
@@ -274,6 +349,17 @@ function FormularioEditarExamenPreguntaFv() {
                                             <option value={1}>Verdadero</option>                                            
                                         </select>
                                         {erroresCampos['respuesta'].length > 0 && (<SpamError mensaje={erroresCampos['respuesta']} />)}
+                                    </div>
+                                </div>
+                                <div className="col-lg-12">
+                                    <div className="form-group">                                        
+                                    <label className="label-text" style={{display:'block'}}>Media Imagen (Opcional)</label>
+                                        {renderMedia()}     
+                                        {media!=null &&
+                                            <button className="btn theme-btn" style={{marginLeft:'20px'}} type="button" onClick={handleBorrarMedia}><i className="la la-trash mr-2"></i> Borrar media</button>
+                                        }                                   
+                                        <input type="file" name="archivo" className="form-control form--control user-text-editor pl-3"></input>
+                                        {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
                                     </div>
                                 </div>
                                 <div className="col-lg-12">

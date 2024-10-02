@@ -340,7 +340,7 @@ export default function Tarea({id_contenido, id_curso, es_docente}) {
                                     <Skeleton width={'55%'} height={20}  />
                                     <Skeleton width={'45%'} height={20}  />
                                 </>
-                                : <p className="section__desc">{popUpObjeto.descripcion.split('<br />').map((line, index) => (<span key={`description-e-${index}`}>{line}<br /></span> ))}</p>
+                                : <p className="section__desc">{popUpObjeto.descripcion.split('\n').map((line, index) => (<span key={`description-e-${index}`}>{line}<br /></span> ))}</p>
                             }
                         </div>                            
                     </div>
