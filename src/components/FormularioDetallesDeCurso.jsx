@@ -735,7 +735,7 @@ function FormularioDetallesDeCurso(){
                         <div className="col-lg-8 pb-5">
                             <div className="course-details-content-wrap pt-90px">
                                 {queAprenderas.length>0 && <div className="course-overview-card bg-gray p-4 rounded">
-                                    <h3 className="fs-24 font-weight-semi-bold pb-3">Qué aprenderás?</h3>
+                                    <h3 className="fs-24 font-weight-semi-bold pb-3">Área de formación</h3>
                                     <ul className="generic-list-item overview-list-item">
                                         {Object.keys(queAprenderas).map((key) => (                                               
                                             <li key={`queAprenderas${key}`}><i className="la la-check mr-1 text-black"></i>{queAprenderas[key]}</li>
@@ -743,7 +743,7 @@ function FormularioDetallesDeCurso(){
                                     </ul>
                                 </div>} 
                                 {listadoRequerimientos.length>0 && <div className="course-overview-card">
-                                    <h3 className="fs-24 font-weight-semi-bold pb-3">Requirementos</h3>
+                                    <h3 className="fs-24 font-weight-semi-bold pb-3">Fines de aprendizaje</h3>
                                     <ul className="generic-list-item generic-list-item-bullet fs-15">
                                         {Object.keys(listadoRequerimientos).map((key) => (                                               
                                             <li key={`requerimiento${key}`}>{listadoRequerimientos[key]}</li>

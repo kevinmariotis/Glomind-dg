@@ -27,6 +27,8 @@ function FormularioPlay() {
     const [dataCurso, setDataCurso] = useState({id:-1, nombre:'', desc_general:'', desc_general_corta:'', nivel:0, favorito:-1, archivado:-1, porcentaje_progreso:-1, estudiantes_cantidad:0, cantidad_examenes:0, cantidad_horas_de_video:'', expedir_certificado:0, curso_certificado_comprado_previamente:0, certificado_solo_pago:0, id_instructor:0, instructor:'', instructor_imagen_pequena:'', docente_descripcion:''});     //se accede por ejmplo: dataCurso.favorito
     const [cursoDescripcion, setCursoDescripcion] = useState([]);
     const [docenteDescripcion, setDocenteDescripcion] = useState([]);
+    const [queAprenderas, setQueAprenderas] = useState([]);
+    const [listadoRequerimientos, setListadoRequerimientos] = useState([]);
     
     const [mostrarMasCursoDescripcion, setMostrarMasCursoDescripcion]  = useState(false);
     const [contenido, setContenido] = useState([]);  
@@ -145,6 +147,8 @@ function FormularioPlay() {
                 setDataCurso(datos.curso);
                 setCursoDescripcion(datos.curso.desc_general.split("<br />"));
                 setDocenteDescripcion(datos.curso.docente_descripcion.split("<separador>"));
+                setQueAprenderas(datos.curso.desc_que_aprenderas.split("<separador>"));
+                setListadoRequerimientos(datos.curso.desc_requerimientos.split("<separador>"));
                 if(datos.curso.matriculado==0){
                     setMostrarSpinner(false);
                     navigate('/');
@@ -696,82 +700,27 @@ function FormularioPlay() {
                                         <div className={`tab-pane fade show ${pestanaActivada==2 ? 'active': ''}`} id="overview" role="tabpanel" aria-labelledby="overview-tab">
                                             <div className="lecture-overview-wrap">
                                                 <div className="lecture-overview-item">
-                                                    <h3 className="fs-24 font-weight-semi-bold pb-2">Acerca de este curso</h3>
+                                                    <h3 className="fs-24 font-weight-semi-bold pb-2">{dataCurso.nombre}</h3>
                                                     <p>{dataCurso.desc_general_corta.split('<br />').map((line, index2) => (<span key={`desc-general-corta-${index2}`}>{line}<br /></span> ))}</p>
                                                 </div>
                                                 <div className="section-block"></div>
+                                                
                                                 <div className="lecture-overview-item">
                                                     <div className="lecture-overview-stats-wrap d-flex">
                                                         <div className="lecture-overview-stats-item">
-                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">El curso en números</h3>
+                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Clave de la asignatura</h3>
                                                         </div>
                                                         <div className="lecture-overview-stats-item">
-                                                            <ul className="generic-list-item">
-                                                                <li><span>Nivel de habilidad:</span>{nivelHabilidad[dataCurso.nivel]}</li>
-                                                                <li><span>Estudiantes:</span>{dataCurso.estudiantes_cantidad}</li>
-                                                                <li><span>Idiomas:</span>Español</li>                                                                
-                                                            </ul>
-                                                        </div>
-                                                        <div className="lecture-overview-stats-item">
-                                                            <ul className="generic-list-item">
-                                                                <li><span>Exámenes:</span>{dataCurso.cantidad_examenes}</li>
-                                                                <li><span>Horas de video:</span>{dataCurso.cantidad_horas_de_video}</li>
-                                                                {/*<li><span>Certificado:</span>{dataCurso.expedir_certificado==1 ? 'Si' : 'No'}</li>*/}
-                                                            </ul>
+                                                            <p>{dataCurso.codigo}</p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {dataCurso.expedir_certificado==1 && ((dataCurso.certificado_solo_pago==1 && dataCurso.curso_certificado_comprado_previamente==1) || (dataCurso.certificado_solo_pago==0)) ? <><div className="section-block"></div>
-                                                <div className="lecture-overview-item">
-                                                    <div className="lecture-overview-stats-wrap d-flex">
-                                                        <div className="lecture-overview-stats-item">
-                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Certificado</h3>
-                                                        </div>
-                                                        <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
-                                                            <p className="pb-3">Obtén el certificado de EdukaLAB completando el curso</p>
-                                                            <button type="button" onClick={handleGenerarCertificado} className="btn theme-btn theme-btn-transparent">Descargar certificado</button>
-                                                        </div>
-                                                    </div>
-                                                </div></> : ''}
-                                                <div className="section-block" ref={refBloqueDescripcion} id="bloqueDescripcion"></div>
-                                                <div className="lecture-overview-item">
-                                                    <div className="lecture-overview-stats-wrap d-flex">
-                                                        <div className="lecture-overview-stats-item">
-                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Características</h3>
-                                                        </div>
-                                                        <div className="lecture-overview-stats-item">
-                                                            <p>Disponible en <a href="#" className="text-color hover-underline">Android</a></p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="section-block"></div>
-                                                <div className="lecture-overview-item">
-                                                    <div className="lecture-overview-stats-wrap d-flex">
-                                                        <div className="lecture-overview-stats-item">
-                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Descripción</h3>
-                                                        </div>
-                                                        <div className="lecture-overview-stats-item lecture-overview-stats-wide-item lecture-description">
 
-                                                            {Object.keys(cursoDescripcion).slice(0, 1).map((key) => (
-                                                                <p key={`desc_curso_${key}`} className="pb-3">{cursoDescripcion[key]}</p>
-                                                            ))} 
-                                                            {Object.keys(cursoDescripcion).length>1 && <div className={mostrarMasCursoDescripcion==0 ? "collapse" : ""} id="collapseMoreTwo">
-                                                                {Object.keys(cursoDescripcion).slice(1, cursoDescripcion.length).map((key) => (
-                                                                    <p key={`desc_curso_${key}`} className="pb-3">{cursoDescripcion[key]}</p>
-                                                                ))}
-                                                            </div>}  
-                                                            {Object.keys(cursoDescripcion).length>1 && <a className="collapse-btn collapse--btn fs-15" data-toggle="collapse" href="#collapseMoreTwo" role="button" aria-expanded={mostrarMasCursoDescripcion==0 ? "false" : "true"} aria-controls="collapseMoreTwo">
-                                                                <span className="collapse-btn-hide" onClick={handleMostrarMasDescripcionCurso}>Mostrar más<i className="la la-angle-down ml-1 fs-14"></i></span>
-                                                                <span className="collapse-btn-show" onClick={handleMostrarMasDescripcionCurso}>Mostrar menos<i className="la la-angle-up ml-1 fs-14"></i></span>
-                                                            </a>}
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 {dataCurso.id_instructor!=0 ? <><div className="section-block"></div>
                                                 <div className="lecture-overview-item">
                                                     <div className="lecture-overview-stats-wrap d-flex ">
                                                         <div className="lecture-overview-stats-item">
-                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Instructor</h3>
+                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Presentación docente</h3>
                                                         </div>
                                                         <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
                                                             <div className="media media-card align-items-center">
@@ -780,7 +729,7 @@ function FormularioPlay() {
                                                                 </Link>
                                                                 <div className="media-body">
                                                                     <h5><Link to={`/usuario/${dataCurso.id_instructor}`}>{dataCurso.instructor}</Link></h5>
-                                                                    <span className="d-block lh-18 pt-2">Instructor</span>
+                                                                    <span className="d-block lh-18 pt-2">Docente</span>
                                                                 </div>
                                                             </div>
                                                             <div className="lecture-owner-profile pt-4" style={{display:'none'}}>
@@ -799,6 +748,98 @@ function FormularioPlay() {
                                                         </div>
                                                     </div>
                                                 </div></> : ''}
+                                                
+                                                <div className="lecture-overview-item">
+                                                    <div className="lecture-overview-stats-wrap d-flex">
+                                                        <div className="lecture-overview-stats-item">
+                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Área de formación de la asignatura</h3>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
+                                                            <ul className="generic-list-item overview-list-item">
+                                                                {Object.keys(queAprenderas).map((key) => (                                               
+                                                                    <li key={`queAprenderas${key}`}><i className="la la-check mr-1 text-black"></i>{queAprenderas[key]}</li>
+                                                                ))}                                        
+                                                            </ul>                                                            
+                                                        </div>                                                        
+                                                    </div>
+                                                </div>
+
+                                                <div className="lecture-overview-item">
+                                                    <div className="lecture-overview-stats-wrap d-flex">
+                                                        <div className="lecture-overview-stats-item">
+                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Fines de aprendizaje de la asignatura</h3>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
+                                                            <ul className="generic-list-item generic-list-item-bullet fs-15">
+                                                                {Object.keys(listadoRequerimientos).map((key) => (                                               
+                                                                    <li key={`requerimiento${key}`}>{listadoRequerimientos[key]}</li>
+                                                                ))} 
+                                                            </ul>
+                                                        </div>                                                        
+                                                    </div>
+                                                </div>
+                                                                                                                                                
+                                                <div className="section-block"></div>
+                                                <div className="section-block" ref={refBloqueDescripcion} id="bloqueDescripcion"></div>
+                                                <div className="lecture-overview-item">
+                                                    <div className="lecture-overview-stats-wrap d-flex">
+                                                        <div className="lecture-overview-stats-item">
+                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Descripción completa de la asignatura</h3>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item lecture-overview-stats-wide-item lecture-description">
+
+                                                            {Object.keys(cursoDescripcion).slice(0, 1).map((key) => (
+                                                                <p key={`desc_curso_${key}`} className="pb-3">{cursoDescripcion[key]}</p>
+                                                            ))} 
+                                                            {Object.keys(cursoDescripcion).length>1 && <div className={mostrarMasCursoDescripcion==0 ? "collapse" : ""} id="collapseMoreTwo">
+                                                                {Object.keys(cursoDescripcion).slice(1, cursoDescripcion.length).map((key) => (
+                                                                    <p key={`desc_curso_${key}`} className="pb-3">{cursoDescripcion[key]}</p>
+                                                                ))}
+                                                            </div>}  
+                                                            {Object.keys(cursoDescripcion).length>1 && <a className="collapse-btn collapse--btn fs-15" data-toggle="collapse" href="#collapseMoreTwo" role="button" aria-expanded={mostrarMasCursoDescripcion==0 ? "false" : "true"} aria-controls="collapseMoreTwo">
+                                                                <span className="collapse-btn-hide" onClick={handleMostrarMasDescripcionCurso}>Mostrar más<i className="la la-angle-down ml-1 fs-14"></i></span>
+                                                                <span className="collapse-btn-show" onClick={handleMostrarMasDescripcionCurso}>Mostrar menos<i className="la la-angle-up ml-1 fs-14"></i></span>
+                                                            </a>}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+
+                                                <div className="lecture-overview-item">
+                                                    <div className="lecture-overview-stats-wrap d-flex">
+                                                        <div className="lecture-overview-stats-item">
+                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">La asignatura en números</h3>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item">
+                                                            <ul className="generic-list-item">
+                                                                <li><span>Nivel de habilidad:</span>{nivelHabilidad[dataCurso.nivel]}</li>
+                                                                <li><span>Estudiantes:</span>{dataCurso.estudiantes_cantidad}</li>
+                                                                <li><span>Idiomas:</span>Español</li>                                                                
+                                                            </ul>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item">
+                                                            <ul className="generic-list-item">
+                                                                <li><span>Exámenes:</span>{dataCurso.cantidad_examenes}</li>
+                                                                <li><span>Horas de video producidas:</span>{dataCurso.cantidad_horas_de_video}</li>
+                                                                {/*<li><span>Certificado:</span>{dataCurso.expedir_certificado==1 ? 'Si' : 'No'}</li>*/}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {dataCurso.expedir_certificado==1 && ((dataCurso.certificado_solo_pago==1 && dataCurso.curso_certificado_comprado_previamente==1) || (dataCurso.certificado_solo_pago==0)) ? <><div className="section-block"></div>
+                                                <div className="lecture-overview-item">
+                                                    <div className="lecture-overview-stats-wrap d-flex">
+                                                        <div className="lecture-overview-stats-item">
+                                                            <h3 className="fs-16 font-weight-semi-bold pb-2">Certificado</h3>
+                                                        </div>
+                                                        <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
+                                                            <p className="pb-3">Obtén el certificado de EdukaLAB completando el curso</p>
+                                                            <button type="button" onClick={handleGenerarCertificado} className="btn theme-btn theme-btn-transparent">Descargar certificado</button>
+                                                        </div>
+                                                    </div>
+                                                </div></> : ''}
+
                                             </div>
                                         </div>
         
