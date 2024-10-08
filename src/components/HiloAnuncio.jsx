@@ -11,8 +11,9 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const {jwt, esMovil} = useContext(AuthContext);
         
-    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
+    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', textoCerrar:'Aceptar', data_id:-1});
     const [mostrarSpinner, setMostrarSpinner] = useState(false);  
+    const [comentarioEditar, setComentarioEditar] = useState({id_comentario:-1, texto:'', media:null});
 
     const [seccionActivada, setSeccionActivada] = useState(es_creador==1 ? 2 : 1);    
 
@@ -31,6 +32,7 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
     const camposErrores = {        
         'texto':[],
         'id_comentario':[],
+        'archivo':[], 
     }        
     
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
@@ -79,8 +81,19 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
             reiniciarErrorCampoGlobal();
         }
     }, [idComentarioHijosViendo]);
-             
+      
+    useEffect(() => {            
+        if(comentarioEditar.id_comentario!=-1){            
+            handleEditar.get();            
+        }
+    }, [comentarioEditar.id_comentario]);
+    
     const handleFuncionAceptarPopUp = () => {                        
+        switch(popUp.data_switch){
+            case 'borrar-comentario':
+                borrarComentario(popUp.data_id);
+            break;
+        }
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
     };
     const handleFuncionCerrarPopUp = () => {                
@@ -124,7 +137,9 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
                         }                        
                     });
                     setDataComentariosHilo(mergedJson);                     
-                    setIdComentarioHijosViendo(mergedJson[0].id);   //debe de existir, de lo contario no hubiera entrado a esta funcion.                    
+                    if (typeof mergedJson[0] !== 'undefined') {
+                        setIdComentarioHijosViendo(mergedJson[0].id);   //debe de existir, de lo contario no hubiera entrado a esta funcion.                    
+                    }
                 }else{    
                     const mergedJson = {};  
                     Object.keys(datos.comentarios).forEach((key) => {
@@ -132,7 +147,9 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
                         mergedJson[key] = datos.comentarios[key];
                     });
                     setDataComentariosHilo(mergedJson);   
-                    setIdComentarioHijosViendo(mergedJson[0].id);                 
+                    if (typeof mergedJson[0] !== 'undefined') {
+                        setIdComentarioHijosViendo(mergedJson[0].id);                 
+                    }
                 }    
                                
                 setCantidadComentarios(datos.cantidad_comentarios[0]);
@@ -155,6 +172,10 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
             formData.append('texto', nuevaPregunta);
             if(idComentarioHijosViendo!=0){
                 formData.append('id_comentario_padre', idComentarioHijosViendo);
+            }
+            let file = document.querySelector('input[name=archivo]').files[0]; 
+            if(file){
+                formData.append('archivo', file);
             }
             //formData.append('id_comentario_padre', 0);            
             const opciones = {
@@ -188,7 +209,38 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
         }
 
     };
-                        
+        
+    const borrarComentario = async (id_comentario) => {                 
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'DELETE',
+                headers: headers,
+            };            
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/comentario/${id_comentario}`, opciones);            
+            setMostrarSpinner(false);            
+            const datos = await response.json();
+            if (response.ok){ 
+                if(idComentarioHijosViendo!=0){   
+                    cargarRespuestasComentario(idComentarioHijosViendo);
+                }else{
+                    if(id_hilo!=0){                        
+                        cargarHiloComentarios(id_hilo, true);            
+                    }
+                }
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});
+            }     
+                    
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
     const cargarRespuestasComentario = async (id_comentario_padre) => {
         const headers = {
             'Authorization':`Bearer ${jwt}`,
@@ -233,27 +285,177 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
     const handleEscribirPregunta = (event) => {                        
         setNuevaPregunta(event.target.value); 
     };
-                
+           
+    const handleEditarComentario = (event, id_comentario) => {
+        event.preventDefault();        
+        setComentarioEditar({...comentarioEditar, id_comentario:id_comentario});
+        setSeccionActivada(4);        
+        reiniciarErrorCampoGlobal();
+    };
+
     const reiniciarEstados  = () => {
-        setSeccionActivada(1);
+        setSeccionActivada(es_creador==1 ? 2 : 1);
         setPagina(1);
         setDataComentariosHilo({});        
         setDataComentariosHijos({});
         setNuevaPregunta('');        
     };
+
+    const renderMedia = (media) => {
+        if (!media) {
+          return <></>;
+        }
+        
+        let processedMedia = media;
+        if (media.startsWith("public/")) {
+            processedMedia = `${urlBaseApi}/${media.replace("public/", "")}`;
+        }            
+        const fileExtension = processedMedia.split('.').pop().toLowerCase();
+            
+        if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
+            return <><br/><img src={processedMedia} alt="Imagen" style={{ maxWidth: '1000px', width:'100%', display: 'block', margin: '0 auto' }} /><br/></>;
+        }
+            
+        if (fileExtension === 'mp4') {
+            return (
+                <video controls style={{ maxWidth: '100%' }}>
+                    <source src={processedMedia} type="video/mp4" />
+                    Tu navegador no soporta la reproducción de videos.
+                </video>
+            );
+        }
+            
+        return (
+            <a href={processedMedia} target="_blank" rel="noopener noreferrer">
+                <button>Ver archivo en nueva pestaña</button>
+            </a>
+        );
+    };
+
+    const handleEditar = {
+        id_comentario        : (event) => { setComentarioEditar({...comentarioEditar, id_comentario:event.target.value});  },
+        texto        : (event) => { setComentarioEditar({...comentarioEditar, texto:event.target.value});  },
+        media        : (event) => { setComentarioEditar({...comentarioEditar, media:event.target.value});  },                
+        get           : async (event) =>{
+            const headers = {
+                'Authorization':`Bearer ${jwt}`,
+            }        
+            try {               
+                const opciones = {
+                    method: 'GET',
+                    headers: headers,
+                };
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/comentario/${comentarioEditar.id_comentario}`, opciones);
+                setMostrarSpinner(false);
+                if (response.ok){                           
+                    const datos = await response.json();                                           
+                    setComentarioEditar({...comentarioEditar, texto:datos.texto, media:datos.media});                                        
+                } else {      
+                    const data = await response.json();          
+                    mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
+                }
+            }catch(error){
+                // Manejar el caso de error en la solicitud
+                console.error('Error en la solicitud al servidor', error);
+            }
+        },        
+        save          : async (event) => {
+            event.preventDefault();  
+            reiniciarErrorCampoGlobal();
+            let resRowData = {
+                texto      : comentarioEditar.texto,                
+            };
+                                                                
+            const opcionesData = {   
+                method: 'PUT',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: JSON.stringify(resRowData)
+            };
+
+            setMostrarSpinner(true);
+            const responseRaw = await fetch(`${urlBaseApi}/api/comentario/${comentarioEditar.id_comentario}`, opcionesData);
+            if (responseRaw.ok){                                                            
+                //Subimos la imagen si la tiene
+                let file = document.querySelector('input[name=archivo]').files[0]; 
+                if(file){
+                    const formData = new FormData();
+                    formData.append('archivo', file);
+                    const opciones = {
+                        method: 'POST',
+                        headers: {
+                            'Authorization' : `Bearer ${jwt}`
+                        },
+                        body: formData
+                    };        
+                    const response2 = await fetch(`${urlBaseApi}/api/comentario/actualizarMedia/${comentarioEditar.id_comentario}`, opciones);
+                    const datos2 = await response2.json();   
+                    if (response2.ok){                                                           
+                        setSeccionActivada(1);    
+                        cargarHiloComentarios(id_hilo, true);            
+                        setComentarioEditar({...comentarioEditar, id_comentario:-1, texto:'', media:null});
+                        setPopup({mostrar:true, titulo:'Listo', contenido: tipo_objeto_enlace!=6 ? 'Tu anuncio ha sido editado.' : 'Tu participación ha sido editada.' });                                        
+                    } else {
+                        mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+                    }           
+                }else{
+                    setSeccionActivada(1);                  
+                    cargarHiloComentarios(id_hilo, true);                  
+                    setComentarioEditar({...comentarioEditar, id_comentario:-1, texto:'', media:null});
+                    setPopup({mostrar:true, titulo:'Listo', contenido: tipo_objeto_enlace!=6 ? 'Tu anuncio ha sido editado.' : 'Tu participación ha sido editada.' });                                    
+                }
+            } else {
+                const datos = await responseRaw.json();
+                mensajesDeError(setPopup, responseRaw.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+            }
+            setMostrarSpinner(false);
+        }   
+    }
+
     return (
         <>
             {mostrarSpinner && <Spinner />}
             <Popup 
                 mostrarPopup={popUp.mostrar} 
                 tamano="xx"
-                tipo={2} 
+                tipo={popUp.tipo} 
                 titulo={popUp.titulo} 
                 mensaje={popUp.contenido} 
                 funcionAceptar={handleFuncionAceptarPopUp} 
                 funcionCerrar={handleFuncionCerrarPopUp}
-                textoCerrar="Aceptar"
-            />            
+                textoCerrar={popUp.textoCerrar} 
+            />    
+            {seccionActivada==4 ? <div className="new-question-wrap-2">
+                    <button onClick={event => handleCambiarSeccion(event, 1)} className="btn theme-btn theme-btn-transparent back-to-question-btn"><i className="la la-reply mr-1"></i>Volver a todas las {tipo_objeto_enlace!=6 ? 'preguntas' : 'participaciones'}</button>
+                    <div className="question-replay-input-wrap pt-20px">
+                        <div className="question-replay-body">
+                            <h3 className="fs-20 font-weight-semi-bold">Editar {tipo_objeto_enlace!=6 ? 'comentario' : 'participación'}</h3>
+                            <form method="post" className="pt-4">
+                                <div className="replay-action-bar">
+                                    <div className="btn-group">
+                                        <button style={{visibility:'hidden'}} className="btn" type="button" data-toggle="modal" data-target="#insertLinkModal" title="Insert link"><i className="la la-link"></i></button>
+                                        <button style={{visibility:'hidden'}} className="btn" type="button" data-toggle="modal" data-target="#uploadPhotoModal" title="Upload an image"><i className="la la-photo"></i></button>
+                                    </div>
+                                </div>
+                                <div className="form-group">                                    
+                                    <textarea onChange={handleEditar.texto} value={comentarioEditar.texto} className="form-control form--control pl-3" name="message_edit" rows="6" placeholder=""></textarea>
+                                    {erroresCampos['texto'].length > 0 && (<SpamError mensaje={erroresCampos['texto']} />)}
+                                </div>                                
+                                <div className="form-group">                                        
+                                    <label className="label-text" style={{display:'block'}}>Archivo adjunto (Opcional)</label>                                                                        
+                                    {renderMedia(comentarioEditar.media)} 
+                                    <input type="file" name="archivo" className="form-control form--control user-text-editor pl-3"></input>
+                                    {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
+                                </div>                                
+                                <div className="btn-box">
+                                    <button onClick={event => handleEditar.save(event)} type="button" className="btn theme-btn">Editar {tipo_objeto_enlace!=6 ? 'pregunta' : 'participación'} <i className="la la-save icon ml-1"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>                    
+                </div> : ''}        
             {seccionActivada==2 ? <div className="lecture-overview-wrap lecture-announcement-wrap">
                 <button onClick={event => handleCambiarSeccion(event, 1)} className="btn theme-btn theme-btn-transparent back-to-question-btn"><i className="la la-reply mr-1"></i>Volver a mi último anuncio</button>
                 <div className="question-replay-input-wrap pt-20px">
@@ -273,7 +475,11 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
                                 <textarea onChange={handleEscribirPregunta} value={nuevaPregunta} className="form-control form--control pl-3" name="message" rows="6" placeholder=""></textarea>
                                 {erroresCampos['texto'].length > 0 && (<SpamError mensaje={erroresCampos['texto']} />)}
                             </div>
-
+                            <div className="form-group">                                        
+                                <label className="label-text" style={{display:'block'}}>Archivo adjunto (Opcional)</label>                                                                        
+                                <input type="file" name="archivo" className="form-control form--control user-text-editor pl-3"></input>
+                                {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
+                            </div>
                             <div className="btn-box">
                                 <button onClick={event => handleCrearPregunta(event)} className="btn theme-btn">Publicar anuncio <i className="la la-arrow-right icon ml-1"></i></button>
                             </div>
@@ -299,7 +505,7 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
                                         <img src={dataComentariosHilo[key].imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHilo[key].imagen_pequena}`} alt="Instructor avatar" className="rounded-full" />
                                     </Link>
                                     <div className="media-body">
-                                        <h5 className="pb-1"><Link to={`${urlBase}/perfil/${dataComentariosHilo[key].id_usuario}`}>{dataComentariosHilo[key].nombres}</Link></h5>
+                                        <h5 className="pb-1"><Link to={`${urlBase}/perfil/${dataComentariosHilo[key].id_usuario}`}>{dataComentariosHilo[key].nombres}</Link></h5>                                        
                                         <div className="announcement-meta fs-15">
                                             <span>Publicado en anuncios</span>
                                             <span> · {dataComentariosHilo[key].fecha_hace} ·</span>                                        
@@ -308,7 +514,20 @@ function HiloAnuncio({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, es_
                                 </div>
 
                                 <div className="lecture-owner-decription pt-4">
+                                    <p className="fs-15 text-gray">
+                                        {renderMedia(dataComentariosHilo[key].media)}                                                        
+                                    </p>
                                     {dataComentariosHilo[key].texto.split('<br />').map((line, index2) => (<span key={`desc-general-corta-${index2}`}>{line}<br /></span> ))}
+
+                                    {es_creador==1 && dataComentariosHilo[key].puede_editar && <div className="number-upvotes question-response d-flex align-items-center">
+                                        <span></span>
+                                        <button onClick={e => setPopup({...popUp, mostrar:true, tipo:3, contenido:'Confirmar borrar este anuncio?', data_switch:'borrar-comentario', textoCerrar:'Cancelar', data_id:dataComentariosHilo[key].id}) }  type="button" className="question-replay-btn"><i className="la la-trash"></i></button>
+                                    </div>}
+                                    {es_creador==1 && dataComentariosHilo[key].puede_editar && <div className="number-upvotes question-response d-flex align-items-center">
+                                        <span></span>
+                                        <button onClick={event => handleEditarComentario(event, dataComentariosHilo[key].id)} type="button" className="question-replay-btn"><i className="la la-edit"></i></button>
+                                    </div>}
+
                                 </div>
                             
                                 <div className="lecture-announcement-comment-wrap pt-4">

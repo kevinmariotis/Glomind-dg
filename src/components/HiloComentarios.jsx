@@ -11,8 +11,9 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const {jwt, esMovil, temaActual} = useContext(AuthContext);
         
-    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
+    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', textoCerrar:'Aceptar', data_switch:'', data_id:-1});
     const [mostrarSpinner, setMostrarSpinner] = useState(false);  
+    const [comentarioEditar, setComentarioEditar] = useState({id_comentario:-1, texto:'', media:null});
 
     const [seccionActivada, setSeccionActivada] = useState(1);
     const [opcionesDeFiltradoActivado, setOpcionesDeFiltradoActivado] = useState(false);
@@ -40,6 +41,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
     const camposErrores = {        
         'texto':[],
         'id_comentario':[],
+        'archivo':[],        
     }        
     
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
@@ -121,12 +123,22 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
         }
     }, [seccionActivada]);
      
+    useEffect(() => {            
+        if(comentarioEditar.id_comentario!=-1){            
+            handleEditar.get();            
+        }
+    }, [comentarioEditar.id_comentario]);
     
-    const handleFuncionAceptarPopUp = () => {                        
-        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
+    const handleFuncionAceptarPopUp = () => {
+        switch(popUp.data_switch){
+            case 'borrar-comentario':
+                borrarComentario(popUp.data_id);
+            break;
+        }                        
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, textoCerrar:"Aceptar"});
     };
     const handleFuncionCerrarPopUp = () => {                
-        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
+        setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1, textoCerrar:"Aceptar"});
     };
 
     const cargarHiloComentarios = async (id_comentario_hilo, reiniciar_data=false) => {                  
@@ -211,6 +223,10 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
             if(idComentarioHijosViendo!=0){
                 formData.append('id_comentario_padre', idComentarioHijosViendo);
             }
+            let file = document.querySelector('input[name=archivo]').files[0]; 
+            if(file){
+                formData.append('archivo', file);
+            }
             //formData.append('id_comentario_padre', 0);            
             const opciones = {
                 method: 'POST',
@@ -239,6 +255,37 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
 
     };
     
+    const borrarComentario = async (id_comentario) => {                 
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'DELETE',
+                headers: headers,
+            };            
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/comentario/${id_comentario}`, opciones);            
+            setMostrarSpinner(false);            
+            const datos = await response.json();
+            if (response.ok){ 
+                if(idComentarioHijosViendo!=0){   
+                    cargarRespuestasComentario(idComentarioHijosViendo);
+                }else{
+                    if(id_hilo!=0){                        
+                        cargarHiloComentarios(id_hilo, true);            
+                    }
+                }
+            } else {                     
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});
+            }     
+                    
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
     const votarPorComentario  = async (id_comentario) => {        
         try {                                                          
             const opciones = {
@@ -425,6 +472,13 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
         setPagina(Math.abs(pagina)+1);        
     };
 
+    const handleEditarComentario = (event, id_comentario) => {
+        event.preventDefault();        
+        setComentarioEditar({...comentarioEditar, id_comentario:id_comentario});
+        setSeccionActivada(4);        
+        reiniciarErrorCampoGlobal();
+    };
+
     const actualizarCalificacionLocal = (id_comentario, calificacion) => {
         const mergedJson = { ...dataComentariosHilo };   
         Object.keys(mergedJson).forEach((key) => {                                
@@ -443,6 +497,119 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
             }
         });
         setDataComentariosHijos(mergedJson);
+    }
+
+    const renderMedia = (media) => {
+        if (!media) {
+          return <></>;
+        }
+        
+        let processedMedia = media;
+        if (media.startsWith("public/")) {
+            processedMedia = `${urlBaseApi}/${media.replace("public/", "")}`;
+        }            
+        const fileExtension = processedMedia.split('.').pop().toLowerCase();
+            
+        if (['png', 'jpeg', 'jpg'].includes(fileExtension)) {
+            return <><br/><img src={processedMedia} alt="Imagen" style={{ maxWidth: '1000px', width:'100%', display: 'block', margin: '0 auto' }} /><br/></>;
+        }
+            
+        if (fileExtension === 'mp4') {
+            return (
+                <video controls style={{ maxWidth: '100%' }}>
+                    <source src={processedMedia} type="video/mp4" />
+                    Tu navegador no soporta la reproducción de videos.
+                </video>
+            );
+        }
+            
+        return (
+            <a href={processedMedia} target="_blank" rel="noopener noreferrer">
+                <button>Ver archivo en nueva pestaña</button>
+            </a>
+        );
+    };
+
+    const handleEditar = {
+        id_comentario        : (event) => { setComentarioEditar({...comentarioEditar, id_comentario:event.target.value});  },
+        texto        : (event) => { setComentarioEditar({...comentarioEditar, texto:event.target.value});  },
+        media        : (event) => { setComentarioEditar({...comentarioEditar, media:event.target.value});  },                
+        get           : async (event) =>{
+            const headers = {
+                'Authorization':`Bearer ${jwt}`,
+            }        
+            try {               
+                const opciones = {
+                    method: 'GET',
+                    headers: headers,
+                };
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/comentario/${comentarioEditar.id_comentario}`, opciones);
+                setMostrarSpinner(false);
+                if (response.ok){                           
+                    const datos = await response.json();                                           
+                    setComentarioEditar({...comentarioEditar, texto:datos.texto, media:datos.media});                                        
+                } else {      
+                    const data = await response.json();          
+                    mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
+                }
+            }catch(error){
+                // Manejar el caso de error en la solicitud
+                console.error('Error en la solicitud al servidor', error);
+            }
+        },        
+        save          : async (event) => {
+            event.preventDefault();  
+            reiniciarErrorCampoGlobal();
+            let resRowData = {
+                texto      : comentarioEditar.texto,                
+            };
+                                                                
+            const opcionesData = {   
+                method: 'PUT',
+                headers: {
+                    'Authorization' : `Bearer ${jwt}`
+                },
+                body: JSON.stringify(resRowData)
+            };
+
+            setMostrarSpinner(true);
+            const responseRaw = await fetch(`${urlBaseApi}/api/comentario/${comentarioEditar.id_comentario}`, opcionesData);
+            if (responseRaw.ok){                                                            
+                //Subimos la imagen si la tiene
+                let file = document.querySelector('input[name=archivo]').files[0]; 
+                if(file){
+                    const formData = new FormData();
+                    formData.append('archivo', file);
+                    const opciones = {
+                        method: 'POST',
+                        headers: {
+                            'Authorization' : `Bearer ${jwt}`
+                        },
+                        body: formData
+                    };        
+                    const response2 = await fetch(`${urlBaseApi}/api/comentario/actualizarMedia/${comentarioEditar.id_comentario}`, opciones);
+                    const datos2 = await response2.json();   
+                    if (response2.ok){                                                           
+                        setSeccionActivada(1);    
+                        cargarHiloComentarios(id_hilo, true);            
+                        setComentarioEditar({...comentarioEditar, id_comentario:-1, texto:'', media:null});
+                        setPopup({mostrar:true, titulo:'Listo', contenido: tipo_objeto_enlace!=6 ? 'Tu pregunta ha sido editada.' : 'Tu participación ha sido editada.' });                                        
+                    } else {
+                        mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+                    }           
+                }else{
+                    setSeccionActivada(1);                  
+                    cargarHiloComentarios(id_hilo, true);                  
+                    setComentarioEditar({...comentarioEditar, id_comentario:-1, texto:'', media:null});
+                    setPopup({mostrar:true, titulo:'Listo', contenido: tipo_objeto_enlace!=6 ? 'Tu pregunta ha sido editada.' : 'Tu participación ha sido editada.' });                                    
+                }
+            } else {
+                const datos = await responseRaw.json();
+                mensajesDeError(setPopup, responseRaw.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
+            }
+            setMostrarSpinner(false);
+        }   
     }
 
     const reiniciarEstados  = () => {
@@ -468,14 +635,43 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
             <Popup 
                 mostrarPopup={popUp.mostrar} 
                 tamano="xx"
-                tipo={2} 
+                tipo={popUp.tipo} 
                 titulo={popUp.titulo} 
                 mensaje={popUp.contenido} 
                 funcionAceptar={handleFuncionAceptarPopUp} 
                 funcionCerrar={handleFuncionCerrarPopUp}
-                textoCerrar="Aceptar"
+                textoCerrar={popUp.textoCerrar} 
             />
-            <div className="lecture-overview-wrap lecture-quest-wrap">
+            <div className="lecture-overview-wrap lecture-quest-wrap">                
+                {seccionActivada==4 ? <div className="new-question-wrap-2">
+                    <button onClick={event => handleCambiarSeccion(event, 1)} className="btn theme-btn theme-btn-transparent back-to-question-btn"><i className="la la-reply mr-1"></i>Volver a todas las {tipo_objeto_enlace!=6 ? 'preguntas' : 'participaciones'}</button>
+                    <div className="question-replay-input-wrap pt-20px">
+                        <div className="question-replay-body">
+                            <h3 className="fs-20 font-weight-semi-bold">Editar {tipo_objeto_enlace!=6 ? 'comentario' : 'participación'}</h3>
+                            <form method="post" className="pt-4">
+                                <div className="replay-action-bar">
+                                    <div className="btn-group">
+                                        <button style={{visibility:'hidden'}} className="btn" type="button" data-toggle="modal" data-target="#insertLinkModal" title="Insert link"><i className="la la-link"></i></button>
+                                        <button style={{visibility:'hidden'}} className="btn" type="button" data-toggle="modal" data-target="#uploadPhotoModal" title="Upload an image"><i className="la la-photo"></i></button>
+                                    </div>
+                                </div>
+                                <div className="form-group">                                    
+                                    <textarea onChange={handleEditar.texto} value={comentarioEditar.texto} className="form-control form--control pl-3" name="message_edit" rows="6" placeholder=""></textarea>
+                                    {erroresCampos['texto'].length > 0 && (<SpamError mensaje={erroresCampos['texto']} />)}
+                                </div>                                
+                                <div className="form-group">                                        
+                                    <label className="label-text" style={{display:'block'}}>Archivo adjunto (Opcional)</label>                                                                        
+                                    {renderMedia(comentarioEditar.media)} 
+                                    <input type="file" name="archivo" className="form-control form--control user-text-editor pl-3"></input>
+                                    {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
+                                </div>                                
+                                <div className="btn-box">
+                                    <button onClick={event => handleEditar.save(event)} type="button" className="btn theme-btn">Editar {tipo_objeto_enlace!=6 ? 'pregunta' : 'participación'} <i className="la la-save icon ml-1"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>                    
+                </div> : ''}
                 {seccionActivada==2 ? <div className="new-question-wrap-2">
                     <button onClick={event => handleCambiarSeccion(event, 1)} className="btn theme-btn theme-btn-transparent back-to-question-btn"><i className="la la-reply mr-1"></i>Volver a todas las {tipo_objeto_enlace!=6 ? 'preguntas' : 'participaciones'}</button>
                     <div className="question-replay-input-wrap pt-20px">
@@ -491,8 +687,12 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                 <div className="form-group">
                                     <textarea onChange={handleEscribirPregunta} value={nuevaPregunta} className="form-control form--control pl-3" name="message" rows="6" placeholder=""></textarea>
                                     {erroresCampos['texto'].length > 0 && (<SpamError mensaje={erroresCampos['texto']} />)}
-                                </div>
-
+                                </div>                                
+                                <div className="form-group">                                        
+                                    <label className="label-text" style={{display:'block'}}>Archivo adjunto (Opcional)</label>                                                                        
+                                    <input type="file" name="archivo" className="form-control form--control user-text-editor pl-3"></input>
+                                    {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
+                                </div>                                
                                 <div className="btn-box">
                                     <button onClick={event => handleCrearPregunta(event)} className="btn theme-btn">Agregar {tipo_objeto_enlace!=6 ? 'pregunta' : 'participación'} <i className="la la-arrow-right icon ml-1"></i></button>
                                 </div>
@@ -518,11 +718,14 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                                         <p className="fs-15 text-gray">
                                                             {dataComentariosHilo[key].texto.split('<br />').map((line, index2) => (<span key={`desc-general-corta-${index2}`}>{line}<br /></span> ))}
                                                         </p>
+                                                        <p className="fs-15 text-gray">
+                                                            {renderMedia(dataComentariosHilo[key].media)}                                                        
+                                                        </p>
                                                         <p className="meta-tags fs-13">                                                            
                                                             <span>{dataComentariosHilo[key].fecha_hace}</span>
                                                         </p>                                        
                                                     </div>
-                                                    <div className="question-upvote-action">
+                                                    <div className="question-upvote-action">                                                        
                                                         <div className="number-upvotes pb-2 d-flex align-items-center generic-action-wrap">
                                                             <span>{dataComentariosHilo[key].puntuacion}</span>
                                                             <button onClick={e => votarPorComentario(dataComentariosHilo[key].id)} type="button"><i className="la la-arrow-up"></i></button>
@@ -535,6 +738,10 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        {dataComentariosHilo[key].puede_editar && <div className="number-upvotes question-response d-flex align-items-center">
+                                                            <span></span>
+                                                            <button onClick={e => setPopup({...popUp, mostrar:true, tipo:3, contenido:'Confirmar borrar este comentario?', data_switch:'borrar-comentario', textoCerrar:'Cancelar', data_id:dataComentariosHilo[key].id}) }  type="button" className="question-replay-btn"><i className="la la-trash"></i></button>
+                                                        </div>}
                                                     </div>
                                                 </div>
                                             </div>
@@ -556,21 +763,38 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                         <img className="rounded-full" src={dataComentariosHijos[key].imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHijos[key].imagen_pequena}`} data-src={`${urlBase}/images/small-avatar-1.jpg`} alt="Foto del usuario" />
                                         </div>
                                         <div className="media-body">
-                                            <h5 className="fs-16">{dataComentariosHijos[key].nombres}</h5>
-                                            <span className="fs-14">{dataComentariosHijos[key].fecha_hace}</span>
-                                            <p className="pt-1 fs-15">
-                                                {dataComentariosHijos[key].texto.split('<br />').map((line, index2) => (<span key={`desc-respuesta-${dataComentariosHijos[key].id}-${index2}`}>{line}<br /></span> ))}
-                                            </p>
-                                            {tipo_objeto_enlace==6 && <div className="number-upvotes pb-2 d-flex align-items-center">
-                                                {es_docente ? <select onChange={event => handleCalificacionChange(event, dataComentariosHijos[key].id, true)} value={dataComentariosHijos[key].calificacion} style={{width:'100px'}} name="horax" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
-                                                    <option value={-1}> -- </option>
-                                                    {options.map((option, index) => (
-                                                        <option key={index} value={option}>
-                                                            {option}
-                                                        </option>
-                                                    ))}
-                                                </select> : <span>{dataComentariosHijos[key].calificacion!=null ? 'Calificación: '+dataComentariosHijos[key].calificacion : 'Sin calif.'}</span>}
-                                            </div>}
+                                            <div className="d-flex align-items-center justify-content-between">
+                                                <div className="question-meta-content">
+                                                    <h5 className="fs-16">{dataComentariosHijos[key].nombres}</h5>
+                                                    <span className="fs-14">{dataComentariosHijos[key].fecha_hace}</span>
+                                                    <p className="fs-15 text-gray">
+                                                        {renderMedia(dataComentariosHijos[key].media)}                                                        
+                                                    </p>
+                                                    <p className="pt-1 fs-15">
+                                                        {dataComentariosHijos[key].texto.split('<br />').map((line, index2) => (<span key={`desc-respuesta-${dataComentariosHijos[key].id}-${index2}`}>{line}<br /></span> ))}
+                                                    </p>
+                                                </div>   
+                                                <div className="question-upvote-action">                                             
+                                                    {tipo_objeto_enlace==6 && <div className="number-upvotes pb-2 d-flex align-items-center">
+                                                        {es_docente ? <select onChange={event => handleCalificacionChange(event, dataComentariosHijos[key].id, true)} value={dataComentariosHijos[key].calificacion} style={{width:'100px'}} name="horax" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
+                                                            <option value={-1}> -- </option>
+                                                            {options.map((option, index) => (
+                                                                <option key={index} value={option}>
+                                                                    {option}
+                                                                </option>
+                                                            ))}
+                                                        </select> : <span>{dataComentariosHijos[key].calificacion!=null ? 'Calificación: '+dataComentariosHijos[key].calificacion : 'Sin calif.'}</span>}
+                                                    </div>}
+                                                    {dataComentariosHijos[key].puede_editar && <div className="number-upvotes question-response d-flex align-items-center">
+                                                        <span></span>
+                                                        <button onClick={e => setPopup({...popUp, mostrar:true, tipo:3, contenido:'Confirmar borrar este comentario?', data_switch:'borrar-comentario', textoCerrar:'Cancelar', data_id:dataComentariosHijos[key].id}) }  type="button" className="question-replay-btn"><i className="la la-trash"></i></button>
+                                                    </div>}
+                                                    {dataComentariosHijos[key].puede_editar && <div className="number-upvotes question-response d-flex align-items-center">
+                                                        <span></span>
+                                                        <button onClick={event => handleEditarComentario(event, dataComentariosHijos[key].id)}  type="button" className="question-replay-btn"><i className="la la-edit"></i></button>
+                                                    </div>}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 ))} 
@@ -588,6 +812,11 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                                 <textarea onChange={handleEscribirPregunta} value={nuevaPregunta}  className="form-control form--control pl-3" name="message" rows="6" placeholder=""></textarea>
                                                 {erroresCampos['texto'].length > 0 && (<SpamError mensaje={erroresCampos['texto']} />)}
                                             </div>
+                                            <div className="form-group">                                        
+                                                <label className="label-text" style={{display:'block'}}>Archivo adjunto (Opcional)</label>                                                                        
+                                                <input type="file" name="archivo" className="form-control form--control user-text-editor pl-3"></input>
+                                                {erroresCampos['archivo'].length > 0 && (<SpamError mensaje={erroresCampos['archivo']} />)}
+                                            </div>                                
                                             <div className="btn-box">
                                                 <button onClick={event => handleCrearPregunta(event)} className="btn theme-btn" type="submit">Agregar {tipo_objeto_enlace!=6 ? 'respuesta' : 'replica'} <i className="la la-arrow-right icon ml-1"></i></button>
                                             </div>
@@ -672,7 +901,10 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                         <div className="d-flex align-items-center justify-content-between">
                                             <div className="question-meta-content">
                                                 <div onClick={e => setIdComentarioHijosViendo(dataComentariosHilo[key].id) } className="d-block" style={{cursor:'pointer'}}>
-                                                    <h5 className="fs-16 pb-1">{dataComentariosHilo[key].nombres}</h5>
+                                                    <h5 className="fs-16 pb-1">{dataComentariosHilo[key].nombres}</h5>                                                    
+                                                    <p className="fs-15 text-gray">
+                                                        {renderMedia(dataComentariosHilo[key].media)}                                                        
+                                                    </p>
                                                     <p className="fs-15 text-gray">
                                                         {dataComentariosHilo[key].texto.split('<br />').map((line, index2) => (<span key={`desc-general-corta-${index2}`}>{line}<br /></span> ))}                                                                                        
                                                     </p>
@@ -687,6 +919,14 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                                     <span>{dataComentariosHilo[key].comentarios_hijos}</span>
                                                     <button onClick={e => setIdComentarioHijosViendo(dataComentariosHilo[key].id) }  type="button" className="question-replay-btn"><i className="la la-comments"></i></button>
                                                 </div>
+                                                {dataComentariosHilo[key].puede_editar && <div className="number-upvotes question-response d-flex align-items-center">
+                                                    <span></span>
+                                                    <button onClick={e => setPopup({...popUp, mostrar:true, tipo:3, contenido:'Confirmar borrar este comentario?', data_switch:'borrar-comentario', textoCerrar:'Cancelar', data_id:dataComentariosHilo[key].id}) }  type="button" className="question-replay-btn"><i className="la la-trash"></i></button>
+                                                </div>}
+                                                {dataComentariosHilo[key].puede_editar && <div className="number-upvotes question-response d-flex align-items-center">
+                                                    <span></span>
+                                                    <button onClick={event => handleEditarComentario(event, dataComentariosHilo[key].id)} type="button" className="question-replay-btn"><i className="la la-edit"></i></button>
+                                                </div>}
                                                 {tipo_objeto_enlace==6 && <div className="number-upvotes pb-2 d-flex align-items-center">
                                                     {es_docente ? <select onChange={event => handleCalificacionChange(event, dataComentariosHilo[key].id, false)} value={dataComentariosHilo[key].calificacion} name="hora" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
                                                         <option value={-1}> -- </option>
