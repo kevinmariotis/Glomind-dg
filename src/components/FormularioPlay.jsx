@@ -625,8 +625,15 @@ function FormularioPlay() {
                                                                             <li key={`contenido-mobil-${key}`} className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
                                                                                 <div className="course-item-content-wrap">
                                                                                     <div className="custom-control custom-checkbox">
-                                                                                        <input onChange={()=>{}} type="checkbox" className="custom-control-input" id={`mobileCourseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`}  />
-                                                                                        <label className="custom-control-label custom--control-label" htmlFor={`mobileCourseCheckbox${parseInt(key)+1}`}></label>
+                                                                                        {categoria.curso_contenido[key].cantidad_notificaciones>0
+                                                                                            ?
+                                                                                                <span class="product-count" style={{position:'relative', marginLeft: '-1.5rem', verticalAlign:'top'}}>{categoria.curso_contenido[key].cantidad_notificaciones}</span>
+                                                                                            :
+                                                                                            <>
+                                                                                                <input onChange={()=>{}} type="checkbox" className="custom-control-input" id={`mobileCourseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`}  />
+                                                                                                <label className="custom-control-label custom--control-label" htmlFor={`mobileCourseCheckbox${parseInt(key)+1}`}></label>
+                                                                                            </>
+                                                                                        }                                                                                                 
                                                                                     </div>
                                                                                     <div className="course-item-content" onClick={()=>{ cargarContenidoEspecifico(categoria.curso_contenido[key].id_contenido, false) }}>
 
@@ -997,8 +1004,15 @@ function FormularioPlay() {
                                                                 <li key={`contenido-desktop-${key}`} className={`course-item-link ${categoria.curso_contenido[key].id_contenido==contenidoActivado ? 'active' : '' }`}>
                                                                     <div className="course-item-content-wrap">
                                                                         <div className="custom-control custom-checkbox">
-                                                                            <input onChange={()=>{}} type="checkbox" className="custom-control-input" id={`courseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`} required />
-                                                                            <label className="custom-control-label custom--control-label" htmlFor={`courseCheckbox${parseInt(key)+1}`}></label>
+                                                                            {categoria.curso_contenido[key].cantidad_notificaciones>0
+                                                                                ?
+                                                                                    <span class="product-count" style={{position:'relative', marginLeft: '-1.5rem', verticalAlign:'top'}}>{categoria.curso_contenido[key].cantidad_notificaciones}</span>
+                                                                                :
+                                                                                <>
+                                                                                    <input onChange={()=>{}} type="checkbox" className="custom-control-input" id={`courseCheckbox${parseInt(key)+1}`} checked={`${categoria.curso_contenido[key].estado_consumo==1 ? 'checked' : ''}`} required />
+                                                                                    <label className="custom-control-label custom--control-label" htmlFor={`courseCheckbox${parseInt(key)+1}`}></label>
+                                                                                </>
+                                                                            }                                                                                                                                                                                                                                    
                                                                         </div>
                                                                         <div className="course-item-content" onClick={()=>{ cargarContenidoEspecifico(categoria.curso_contenido[key].id_contenido) }}>
 

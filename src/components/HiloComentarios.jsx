@@ -714,7 +714,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                             <div className="media-body">
                                                 <div className="d-flex justify-content-between">
                                                     <div className="question-meta-content">                                                                                                         
-                                                        <h5 className="fs-16 pb-1">{dataComentariosHilo[key].nombres}</h5>                                                        
+                                                        <h5 className="fs-16 pb-1">{dataComentariosHilo[key].nombres} {dataComentariosHilo[key].cantidad_comentarios>0 && <span class="product-count" style={{position:'relative'}}>{dataComentariosHilo[key].cantidad_comentarios}</span>}</h5>                                                        
                                                         <p className="fs-15 text-gray">
                                                             {dataComentariosHilo[key].texto.split('<br />').map((line, index2) => (<span key={`desc-general-corta-${index2}`}>{line}<br /></span> ))}
                                                         </p>
@@ -901,7 +901,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                         <div className="d-flex align-items-center justify-content-between">
                                             <div className="question-meta-content">
                                                 <div onClick={e => setIdComentarioHijosViendo(dataComentariosHilo[key].id) } className="d-block" style={{cursor:'pointer'}}>
-                                                    <h5 className="fs-16 pb-1">{dataComentariosHilo[key].nombres}</h5>                                                    
+                                                    <h5 className="fs-16 pb-1">{dataComentariosHilo[key].nombres}  {dataComentariosHilo[key].cantidad_notificaciones>0 && <span class="product-count" style={{position:'relative'}}>{dataComentariosHilo[key].cantidad_notificaciones}</span>}</h5>                                                    
                                                     <p className="fs-15 text-gray">
                                                         {renderMedia(dataComentariosHilo[key].media)}                                                        
                                                     </p>
