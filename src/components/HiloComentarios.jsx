@@ -376,10 +376,12 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                 setDataComentariosHijos(datos);
                 setSeccionActivada(3);   
                 if(recargarContenidosCruso){                    
-                    funcionRecargarContenidosCurso();
+                    if(funcionRecargarContenidosCurso!=null){
+                        funcionRecargarContenidosCurso();
+                    }
                     setTimeout(function(){
                         cargarHiloComentarios(id_hilo, true);
-                    }, 5000);                    
+                    }, 1000);                    
                     setRecargarContenidosCruso(false);
                 }                
             } else {  
