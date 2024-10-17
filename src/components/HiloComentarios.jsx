@@ -6,7 +6,7 @@ import SpamError from './SpamError';
 import Spinner from './Spinner';
 import Popup from './Popup';
 
-function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, id_curso=-1, es_docente=false}) {
+function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1, id_curso=-1, es_docente=false, funcionRecargarContenidosCurso=null}) {
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;      
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const {jwt, esMovil, temaActual} = useContext(AuthContext);
@@ -25,6 +25,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
     const [nuevaPregunta, setNuevaPregunta] = useState('');
 
     const [pagina, setPagina] = useState(1);
+    const [recargarContenidosCruso, setRecargarContenidosCruso] = useState(false);
     
     const [ordenarPor, setOrdenarPor] = useState('comentario.puntuacion-desc');
     const [filtrarPorPreguntasQueSigo, setFiltrarPorPreguntasQueSigo] = useState(false);
@@ -373,9 +374,17 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
             const datos = await response.json();            
             if (response.ok){
                 setDataComentariosHijos(datos);
-                setSeccionActivada(3);                
+                setSeccionActivada(3);   
+                if(recargarContenidosCruso){                    
+                    funcionRecargarContenidosCurso();
+                    setTimeout(function(){
+                        cargarHiloComentarios(id_hilo, true);
+                    }, 5000);                    
+                    setRecargarContenidosCruso(false);
+                }                
             } else {  
                 setDataComentariosHijos({});
+                setRecargarContenidosCruso(false);
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
             }            
         }catch(error){
@@ -612,6 +621,11 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
         }   
     }
 
+    const handleCargarComentariosHijos = (id_comentario, recargar_contenidos_curso) => {        
+        setIdComentarioHijosViendo(id_comentario);
+        setRecargarContenidosCruso(recargar_contenidos_curso);
+    };
+
     const reiniciarEstados  = () => {
         setSeccionActivada(1);
         setPagina(1);
@@ -707,7 +721,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                             {Object.keys(dataComentariosHilo).map((key) => (
                                 dataComentariosHilo[key].id==idComentarioHijosViendo ?
                                     <>                                                  
-                                        <div className="media media-card border-bottom border-bottom-gray py-4">
+                                        <div key={`comentario-hilo-${dataComentariosHilo[key].id}`} className="media media-card border-bottom border-bottom-gray py-4">
                                             <div className="media-img rounded-full flex-shrink-0 avatar-sm">
                                             <img className="rounded-full" src={dataComentariosHilo[key].imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${dataComentariosHilo[key].imagen_pequena}`} data-src={`${urlBase}/images/small-avatar-1.jpg`} alt="Foto del usuario" />
                                             </div>
@@ -900,7 +914,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                     <div className="media-body">
                                         <div className="d-flex align-items-center justify-content-between">
                                             <div className="question-meta-content">
-                                                <div onClick={e => setIdComentarioHijosViendo(dataComentariosHilo[key].id) } className="d-block" style={{cursor:'pointer'}}>
+                                                <div onClick={e => handleCargarComentariosHijos(dataComentariosHilo[key].id, dataComentariosHilo[key].cantidad_notificaciones>0 ? true : false) } className="d-block" style={{cursor:'pointer'}}>
                                                     <h5 className="fs-16 pb-1">{dataComentariosHilo[key].nombres}  {dataComentariosHilo[key].cantidad_notificaciones>0 && <span class="product-count" style={{position:'relative'}}>{dataComentariosHilo[key].cantidad_notificaciones}</span>}</h5>                                                    
                                                     <p className="fs-15 text-gray">
                                                         {renderMedia(dataComentariosHilo[key].media)}                                                        
@@ -917,7 +931,7 @@ function HiloComentarios({id_hilo=0, id_objeto_enlace=-1, tipo_objeto_enlace=-1,
                                                 </div>
                                                 <div className="number-upvotes question-response d-flex align-items-center">
                                                     <span>{dataComentariosHilo[key].comentarios_hijos}</span>
-                                                    <button onClick={e => setIdComentarioHijosViendo(dataComentariosHilo[key].id) }  type="button" className="question-replay-btn"><i className="la la-comments"></i></button>
+                                                    <button onClick={e => handleCargarComentariosHijos(dataComentariosHilo[key].id, dataComentariosHilo[key].cantidad_notificaciones>0 ? true : false) }  type="button" className="question-replay-btn"><i className="la la-comments"></i></button>
                                                 </div>
                                                 {dataComentariosHilo[key].puede_editar && <div className="number-upvotes question-response d-flex align-items-center">
                                                     <span></span>

@@ -513,7 +513,7 @@ function FormularioPlay() {
                                                             }
                                                         </div>                            
                                                     </div>
-                                                    <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={dataContenidoViendo.tipo_contenido} id_curso={dataCurso.id} es_docente={dataCurso.es_docente} />             
+                                                    <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={dataContenidoViendo.id} tipo_objeto_enlace={dataContenidoViendo.tipo_contenido} id_curso={dataCurso.id} es_docente={dataCurso.es_docente} funcionRecargarContenidosCurso={()=>{ obtenerContenidos({activar_actividad_actual:true}); }} />             
                                                 </div>   
                                                 
                                             </div>                                                                                        
@@ -871,7 +871,7 @@ function FormularioPlay() {
 
                                                 </div>                                                
                                             </div>                                                                                        
-                                            {dataCurso.id!=-1 && tipoContenidoHilo!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? contenidoActivado : dataContenidoViendo.id} tipo_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? 99 : tipoContenidoHilo} /> : ''}
+                                            {dataCurso.id!=-1 && tipoContenidoHilo!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? contenidoActivado : dataContenidoViendo.id} tipo_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? 99 : tipoContenidoHilo} funcionRecargarContenidosCurso={()=>{ obtenerContenidos({activar_actividad_actual:true}); }} /> : ''}
                                         </div>
 
                                         <div className={`tab-pane fade show ${pestanaActivada==5 ? 'active': ''}`} id="grades" role="tabpanel" aria-labelledby="grades">                                                                                                                                    
