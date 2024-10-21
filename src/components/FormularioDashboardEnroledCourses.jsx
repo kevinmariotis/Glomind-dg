@@ -6,6 +6,7 @@ import TarjetaCursoAdmin from './TarjetaCursoAdmin';
 import Paginador from './Paginador';
 import Popup from './Popup';
 import BotonDashboardNavegacionMovil from './BotonDashboardNavegacionMovil';
+import TarjetaCategoriaAdmin from './TarjetaCategoriaAdmin';
 import DashboardFooter from './DashboardFooter';
 
 function FormularioDashboardEnroledCourses() {
@@ -21,6 +22,11 @@ function FormularioDashboardEnroledCourses() {
     const [paginaNavegacion, setPaginaNavegacion] = useState(1);
     const [totalCursos, setTotalCursos] = useState(1);
 
+    const [categorias, setCategorias] = useState({});  
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(0);  
+    const [categoriasMatriculadas, setCategoriasMatriculadas] = useState([]);
+    const [listaCategoriaNavegacion, setListaCategoriaNavegacion] = useState([]);
+
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
 
     useEffect(() => {           
@@ -29,12 +35,22 @@ function FormularioDashboardEnroledCourses() {
     }, []);
 
     useEffect(() => {         
-        obtenerDatosCursos();
+        obtenerDatosCursos();        
     }, [pestanaActivada]);
 
     useEffect(() => {         
         obtenerDatosCursos();
     }, [paginaNavegacion]);
+
+    useEffect(() => {         
+        obtenerCategorias(categoriaSeleccionada);
+    }, [categoriaSeleccionada]);
+
+    useEffect(() => {         
+        if(listaCategoriaNavegacion.length>0){
+            console.log("categoria anterior", listaCategoriaNavegacion);
+        }
+    }, [listaCategoriaNavegacion]);
     
 
     const handleFuncionAceptarPopUp = () => {        
@@ -45,8 +61,11 @@ function FormularioDashboardEnroledCourses() {
     };
 
     const handleCambiarPestana = ({numero}) => (event) =>{    
-          event.preventDefault();   
-          setPestanaActivada(numero);
+        event.preventDefault();  
+        setCategoriasMatriculadas([]);      
+        setListaCategoriaNavegacion([]); 
+        setCategoriaSeleccionada(0);
+        setPestanaActivada(numero);
     };
 
     const obtenerDatosDelServidor = async () => {                  
@@ -87,7 +106,7 @@ function FormularioDashboardEnroledCourses() {
             
             //buscamos los datos de los cursos a mostrar
             setMostrarSpinner(true);
-            const response2 = await fetch(`${urlBaseApi}/api/usuario/cursos/0/${paginaNavegacion}/${pestanaActivada}/nombre-asc/9`, opciones);
+            const response2 = await fetch(`${urlBaseApi}/api/usuario/cursos/0/${paginaNavegacion}/${pestanaActivada}/nombre-asc/200`, opciones);
             setMostrarSpinner(false);
             if (response2.ok){   
                     const datos2 = await response2.json();   
@@ -103,6 +122,18 @@ function FormularioDashboardEnroledCourses() {
                         break;
                     }
                     setTotalCursos(datos2.total_cursos);
+
+                    //Se guardan los ids de las categorias (de todo el abrol) a las que pertenecen todos los cursos
+                    let copiaarray = categoriasMatriculadas;
+                    datos2.cursos.forEach((curso, index) => {
+                        curso.categorias_perteneciente.forEach((cate, index2) => {                            
+                            if (!copiaarray.includes(cate)) {
+                                copiaarray.push(cate);                                
+                            }
+                        });                                
+                    });
+                    setCategoriasMatriculadas(copiaarray);
+
             } else {     
                     const datos2 = await response2.json();            
                     mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {});                    
@@ -113,6 +144,62 @@ function FormularioDashboardEnroledCourses() {
             console.error('Error en la solicitud al servidor', error);
         }
     };
+
+    const contarCursosCategoria = (id_categoria) => {
+        let contador = 0;
+        datosCursosTodos.forEach((curso, index) => {            
+            curso.categorias_perteneciente.forEach((cate, index2) => {                                            
+                if(cate==id_categoria){                    
+                    contador++;
+                }                
+            });                                
+        });
+        return contador;
+    }
+
+    const obtenerCategorias = async (id_padre) => {                  
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };
+                        
+            //buscamos los datos de los cursos a mostrar
+            //setMostrarSpinner(true);
+            const response2 = await fetch(`${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${id_padre}/1`, opciones);
+            //setMostrarSpinner(false);
+            if (response2.ok){   
+                const datos2 = await response2.json();   
+                setCategorias(datos2);                
+            } else {     
+                const datos2 = await response2.json();            
+                mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {});                    
+            }     
+                     
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+    const cambiarCategoria = (id_categoria_destino) => { 
+        if(categoriaSeleccionada!=-1){
+            let copia = listaCategoriaNavegacion;
+            copia.push(categoriaSeleccionada);
+            setListaCategoriaNavegacion(copia);
+        }
+        setCategoriaSeleccionada(id_categoria_destino);        
+    }
+
+    const handleVolverCategoriaAnterior = () => {
+        let copialista = listaCategoriaNavegacion;
+        let ultima = copialista.pop();
+        setListaCategoriaNavegacion(copialista);
+        setCategoriaSeleccionada(ultima);        
+    }
 
     return (
         <>
@@ -173,62 +260,146 @@ function FormularioDashboardEnroledCourses() {
                     </li>
                 </ul>
                 <div className="tab-content" id="myTabContent">
+
+                    {listaCategoriaNavegacion.length>0 && <div className="more-btn-box mt-4 text-left">
+                        <button onClick={handleVolverCategoriaAnterior} className="btn theme-btn"><i className="la la-arrow-left icon ml-1"></i> Atrás</button>
+                    </div>}
+
                     <div className={`tab-pane fade ${pestanaActivada==1 ? 'show active': ''}`} id="all-course" role="tabpanel" aria-labelledby="all-course-tab">
+                        <div className="category-wrapper mt-30px">
+                            <div className="row">
+                                {Object.keys(categorias).map((key) => {
+                                    const categoria = categorias[key];                                    
+                                    if (categoriasMatriculadas.includes(categoria.id)) {
+                                        return (
+                                            <TarjetaCategoriaAdmin 
+                                                key={`tarjeta-categoria-admin-${categoria.id}`} 
+                                                id_categoria={categoria.id} 
+                                                nombre={categoria.nombre} 
+                                                imagen={categoria.imagen_pequena} 
+                                                funcionNavegar={cambiarCategoria}
+                                                funcionCantidadCursos={contarCursosCategoria}
+                                            />
+                                        );
+                                    }
+                                    // Si no está en categoriasMostrar, no se renderiza nada
+                                    return null;
+                                })}
+                            </div>
+                        </div>    
                         <div className="row">
-                            {Object.keys(datosCursosTodos).map((key) => (
-                                <TarjetaCursoAdmin
-                                    key={`tarjeta${datosCursosTodos[key].id}`}
-                                    idcurso={datosCursosTodos[key].id}
-                                    url_amigable={datosCursosTodos[key].url_amigable}
-                                    nombre={datosCursosTodos[key].nombre}
-                                    imagen={datosCursosTodos[key].imagen_pequena}
-                                    instructor={datosCursosTodos[key].instructor}
-                                    id_instructor={datosCursosTodos[key].id_instructor}
-                                    descripcion_instructor={datosCursosTodos[key].docente_descripcion}
-                                    reviews_puntuacion={datosCursosTodos[key].reviews_puntuacion}  
-                                    porcentaje_progreso={datosCursosTodos[key].porcentaje_progreso}
-                                />
-                            ))} 
+                            {Object.keys(datosCursosTodos).map((key) => {
+                                const curso = datosCursosTodos[key];                                                                
+                                if (curso.id_categoria === categoriaSeleccionada) {
+                                    return (
+                                        <TarjetaCursoAdmin
+                                        key={`tarjeta${curso.id}`}
+                                        idcurso={curso.id}
+                                        url_amigable={curso.url_amigable}
+                                        nombre={curso.nombre}
+                                        imagen={curso.imagen_pequena}
+                                        instructor={curso.instructor}
+                                        id_instructor={curso.id_instructor}
+                                        descripcion_instructor={curso.docente_descripcion}
+                                        reviews_puntuacion={curso.reviews_puntuacion}
+                                        porcentaje_progreso={curso.porcentaje_progreso}
+                                        />
+                                    );
+                                }
+                                // Si no coincide, no renderiza nada
+                                return null;
+                            })}
                         </div>
                     </div>
                     <div className={`tab-pane fade ${pestanaActivada==4 ? 'show active': ''}`} id="active-course" role="tabpanel" aria-labelledby="active-course-tab">
+                        <div className="category-wrapper mt-30px">
+                            <div className="row">
+                                {Object.keys(categorias).map((key) => {
+                                    const categoria = categorias[key];                                    
+                                    if (categoriasMatriculadas.includes(categoria.id)) {
+                                        return (
+                                            <TarjetaCategoriaAdmin 
+                                                key={`tarjeta-categoria-admin-${categoria.id}`} 
+                                                id_categoria={categoria.id} 
+                                                nombre={categoria.nombre} 
+                                                imagen={categoria.imagen_pequena} 
+                                                funcionNavegar={cambiarCategoria}
+                                                funcionCantidadCursos={contarCursosCategoria}
+                                            />
+                                        );
+                                    }
+                                    // Si no está en categoriasMostrar, no se renderiza nada
+                                    return null;
+                                })}
+                            </div>
+                        </div>
                         <div className="row">
-                            {Object.keys(datosCursosProceso).map((key) => (
-                                <TarjetaCursoAdmin
-                                    key={`tarjeta${datosCursosProceso[key].id}`}
-                                    idcurso={datosCursosProceso[key].id}
-                                    url_amigable={datosCursosProceso[key].url_amigable}
-                                    nombre={datosCursosProceso[key].nombre}
-                                    imagen={datosCursosProceso[key].imagen_pequena}
-                                    instructor={datosCursosProceso[key].instructor}
-                                    id_instructor={datosCursosProceso[key].id_instructor}
-                                    descripcion_instructor={datosCursosProceso[key].docente_descripcion}
-                                    reviews_puntuacion={datosCursosProceso[key].reviews_puntuacion}  
-                                    porcentaje_progreso={datosCursosProceso[key].porcentaje_progreso}
-                                />
-                            ))} 
+                            {Object.keys(datosCursosProceso).map((key) => {     
+                                const curso = datosCursosProceso[key];       
+                                if (curso.id_categoria === categoriaSeleccionada) {
+                                    return (                           
+                                        <TarjetaCursoAdmin
+                                            key={`tarjeta${curso.id}`}
+                                            idcurso={curso.id}
+                                            url_amigable={curso.url_amigable}
+                                            nombre={curso.nombre}
+                                            imagen={curso.imagen_pequena}
+                                            instructor={curso.instructor}
+                                            id_instructor={curso.id_instructor}
+                                            descripcion_instructor={curso.docente_descripcion}
+                                            reviews_puntuacion={curso.reviews_puntuacion}  
+                                            porcentaje_progreso={curso.porcentaje_progreso}
+                                        />
+                                    );
+                                }
+                            })}
                         </div>
                     </div>
                     <div className={`tab-pane fade ${pestanaActivada==5 ? 'show active': ''}`} id="completed-course" role="tabpanel" aria-labelledby="completed-course-tab">
+                        <div className="category-wrapper mt-30px">
+                            <div className="row">
+                                {Object.keys(categorias).map((key) => {
+                                    const categoria = categorias[key];                                    
+                                    if (categoriasMatriculadas.includes(categoria.id)) {
+                                        return (
+                                            <TarjetaCategoriaAdmin 
+                                                key={`tarjeta-categoria-admin-${categoria.id}`} 
+                                                id_categoria={categoria.id} 
+                                                nombre={categoria.nombre} 
+                                                imagen={categoria.imagen_pequena} 
+                                                funcionNavegar={cambiarCategoria}
+                                                funcionCantidadCursos={contarCursosCategoria}
+                                            />
+                                        );
+                                    }
+                                    // Si no está en categoriasMostrar, no se renderiza nada
+                                    return null;
+                                })}
+                            </div>
+                        </div>
                         <div className="row">
-                            {Object.keys(datosCursosCompletados).map((key) => (
-                                <TarjetaCursoAdmin
-                                    key={`tarjeta${datosCursosCompletados[key].id}`}
-                                    idcurso={datosCursosCompletados[key].id}
-                                    url_amigable={datosCursosCompletados[key].url_amigable}
-                                    nombre={datosCursosCompletados[key].nombre}
-                                    imagen={datosCursosCompletados[key].imagen_pequena}
-                                    instructor={datosCursosCompletados[key].instructor}
-                                    id_instructor={datosCursosCompletados[key].id_instructor}
-                                    descripcion_instructor={datosCursosCompletados[key].docente_descripcion}
-                                    reviews_puntuacion={datosCursosCompletados[key].reviews_puntuacion}  
-                                    porcentaje_progreso={datosCursosCompletados[key].porcentaje_progreso}
-                                />
-                            ))} 
+                            {Object.keys(datosCursosCompletados).map((key) => {                                 
+                                const curso = datosCursosCompletados[key];      
+                                if (curso.id_categoria === categoriaSeleccionada) {
+                                    return (                           
+                                        <TarjetaCursoAdmin
+                                            key={`tarjeta${curso.id}`}
+                                            idcurso={curso.id}
+                                            url_amigable={curso.url_amigable}
+                                            nombre={curso.nombre}
+                                            imagen={curso.imagen_pequena}
+                                            instructor={curso.instructor}
+                                            id_instructor={curso.id_instructor}
+                                            descripcion_instructor={curso.docente_descripcion}
+                                            reviews_puntuacion={curso.reviews_puntuacion}  
+                                            porcentaje_progreso={curso.porcentaje_progreso}
+                                        />
+                                    );
+                                }
+                            })}
                         </div>
                     </div>
-                </div>
-                <Paginador elemetosTotales={totalCursos} elementosPorPagina={9} paginaActual={paginaNavegacion} callbackCambioPagina={setPaginaNavegacion} />
+                </div>                
                 <DashboardFooter />
             </div>
         </div>
