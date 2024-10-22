@@ -20,7 +20,7 @@ function FormularioDashboardEnroledCourses() {
     const [datosCursosProceso, setDatosCursosProceso] = useState([]);
     const [datosCursosCompletados, setDatosCursosCompletados] = useState([]);
     const [paginaNavegacion, setPaginaNavegacion] = useState(1);
-    const [totalCursos, setTotalCursos] = useState(1);
+    const [totalCursos, setTotalCursos] = useState(0);
 
     const [categorias, setCategorias] = useState({});  
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(0);  
@@ -35,24 +35,28 @@ function FormularioDashboardEnroledCourses() {
     }, []);
 
     useEffect(() => {         
-        obtenerDatosCursos();        
+        //obtenerDatosCursos();                
+        obtenerIdsCategoriasMatriculadas();
     }, [pestanaActivada]);
 
     useEffect(() => {         
-        obtenerDatosCursos();
+        if(categoriaSeleccionada!=0){
+            obtenerDatosCursos();
+        }else{
+            setDatosCursosTodos([]);
+            setDatosCursosProceso([]);                
+            setDatosCursosCompletados([]);                            
+            setTotalCursos(0);  
+        }
     }, [paginaNavegacion]);
 
     useEffect(() => {         
-        obtenerCategorias(categoriaSeleccionada);
-    }, [categoriaSeleccionada]);
-
-    useEffect(() => {         
-        if(listaCategoriaNavegacion.length>0){
-            console.log("categoria anterior", listaCategoriaNavegacion);
+        obtenerCategorias(categoriaSeleccionada);        
+        if(categoriaSeleccionada!=0){
+            obtenerDatosCursos();
         }
-    }, [listaCategoriaNavegacion]);
-    
-
+    }, [categoriaSeleccionada]);
+        
     const handleFuncionAceptarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };
@@ -106,37 +110,64 @@ function FormularioDashboardEnroledCourses() {
             
             //buscamos los datos de los cursos a mostrar
             setMostrarSpinner(true);
-            const response2 = await fetch(`${urlBaseApi}/api/usuario/cursos/0/${paginaNavegacion}/${pestanaActivada}/nombre-asc/200`, opciones);
+            const response2 = await fetch(`${urlBaseApi}/api/usuario/cursos/0/${paginaNavegacion}/${pestanaActivada}/nombre-asc/9/${categoriaSeleccionada}`, opciones);
             setMostrarSpinner(false);
             if (response2.ok){   
                     const datos2 = await response2.json();   
+                    //Filtramos por los cursos que tienen su categoria final en categoriaSeleccionada
+                    let cursos_almacenar = [];
+                    let contador = 0;
+                    datos2.cursos.forEach((curso, index) => {
+                        if (curso.id_categoria === categoriaSeleccionada) {
+                            cursos_almacenar.push(curso);
+                            contador++;
+                        }
+                    });
                     switch(pestanaActivada){
                         case 1:                            
-                            setDatosCursosTodos(datos2.cursos);
+                            setDatosCursosTodos(cursos_almacenar);
                         break;
                         case 4:                        
-                            setDatosCursosProceso(datos2.cursos);
+                            setDatosCursosProceso(cursos_almacenar);
                         break;
                         case 5:
-                            setDatosCursosCompletados(datos2.cursos);
+                            setDatosCursosCompletados(cursos_almacenar);
                         break;
                     }
-                    setTotalCursos(datos2.total_cursos);
-
-                    //Se guardan los ids de las categorias (de todo el abrol) a las que pertenecen todos los cursos
-                    let copiaarray = categoriasMatriculadas;
-                    datos2.cursos.forEach((curso, index) => {
-                        curso.categorias_perteneciente.forEach((cate, index2) => {                            
-                            if (!copiaarray.includes(cate)) {
-                                copiaarray.push(cate);                                
-                            }
-                        });                                
-                    });
-                    setCategoriasMatriculadas(copiaarray);
-
+                    setTotalCursos(contador);                                        
             } else {     
                     const datos2 = await response2.json();            
                     mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {});                    
+            }  
+                
+            obtenerIdsCategoriasMatriculadas();
+        }catch(error){
+            // Manejar el caso de error en la solicitud
+            console.error('Error en la solicitud al servidor', error);
+        }
+    };
+
+
+    const obtenerIdsCategoriasMatriculadas = async () => {                  
+        const headers = {
+            'Authorization':`Bearer ${jwt}`,
+        }        
+        try {            
+            const opciones = {
+                method: 'GET',
+                headers: headers,
+            };
+                        
+            //buscamos los datos de los cursos a mostrar
+            //setMostrarSpinner(true);
+            const response2 = await fetch(`${urlBaseApi}/api/usuario/getCategoriasSistemaCursos/0/${pestanaActivada}`, opciones);
+            //setMostrarSpinner(false);
+            if (response2.ok){   
+                const datos2 = await response2.json();   
+                setCategoriasMatriculadas(datos2);                    
+            } else {     
+                const datos2 = await response2.json();            
+                mensajesDeError(setPopup, response2.status, (typeof datos2.datos !== 'undefined') ? datos2.datos : {});                    
             }     
                      
         }catch(error){
@@ -147,13 +178,19 @@ function FormularioDashboardEnroledCourses() {
 
     const contarCursosCategoria = (id_categoria) => {
         let contador = 0;
-        datosCursosTodos.forEach((curso, index) => {            
+
+        categoriasMatriculadas.forEach((catx, index) => {            
+            if(catx==id_categoria){                    
+                contador++;
+            }
+        });
+        /*datosCursosTodos.forEach((curso, index) => {            
             curso.categorias_perteneciente.forEach((cate, index2) => {                                            
                 if(cate==id_categoria){                    
                     contador++;
                 }                
             });                                
-        });
+        });*/
         return contador;
     }
 
@@ -259,10 +296,10 @@ function FormularioDashboardEnroledCourses() {
                         </a>
                     </li>
                 </ul>
-                <div className="tab-content" id="myTabContent">
+                <div className="tab-content" id="myTabContent" style={{marginBottom: totalCursos==0 ? '100px' : '0px'}}>
 
-                    {listaCategoriaNavegacion.length>0 && <div className="more-btn-box mt-4 text-left">
-                        <button onClick={handleVolverCategoriaAnterior} className="btn theme-btn"><i className="la la-arrow-left icon ml-1"></i> Atrás</button>
+                    {listaCategoriaNavegacion.length>0 && <div className="more-btn-box mt-4 text-left" style={{marginBottom:'50px'}}>
+                        <button onClick={handleVolverCategoriaAnterior} className="btn theme-btn"><i className="la la-arrow-left icon ml-1"></i> Atrás</button> <h3 className="fs-22 font-weight-semi-bold" style={{marginLeft:'120px'}}></h3>
                     </div>}
 
                     <div className={`tab-pane fade ${pestanaActivada==1 ? 'show active': ''}`} id="all-course" role="tabpanel" aria-labelledby="all-course-tab">
@@ -399,7 +436,8 @@ function FormularioDashboardEnroledCourses() {
                             })}
                         </div>
                     </div>
-                </div>                
+                </div>                    
+                <Paginador elemetosTotales={totalCursos} elementosPorPagina={9} paginaActual={paginaNavegacion} callbackCambioPagina={setPaginaNavegacion} />
                 <DashboardFooter />
             </div>
         </div>

@@ -28,7 +28,7 @@ function TarjetaCategoriaAdmin(
 
         //console.log("Este es el favorito ", estadoFavorito);
         return (<div className="col-lg-4 responsive-column-half">
-                    <div className="category-item">
+                    <div className="category-item" onClick={()=>{ funcionNavegar(id_categoria) }} style={{cursor:'pointer'}}>
                         <img  className="cat__img lazy" src={imagen!=null ? urlBaseApi+'/'+imagen : '/images/img8.jpg'} data-src={imagen!=null ? urlBaseApi+'/'+imagen : '/images/img8.jpg'} alt="Category image" />
                         <div className="category-content">
                             <div className="category-inner">
