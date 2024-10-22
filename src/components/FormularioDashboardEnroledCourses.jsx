@@ -56,7 +56,12 @@ function FormularioDashboardEnroledCourses() {
             obtenerDatosCursos();
         }
     }, [categoriaSeleccionada]);
-        
+
+    useEffect(() => {         
+        console.log("cambio la lista: ", listaCategoriaNavegacion);
+    }, [listaCategoriaNavegacion]);
+           
+
     const handleFuncionAceptarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };
@@ -223,19 +228,19 @@ function FormularioDashboardEnroledCourses() {
     };
 
     const cambiarCategoria = (id_categoria_destino) => { 
-        if(categoriaSeleccionada!=-1){
-            let copia = listaCategoriaNavegacion;
+        if (categoriaSeleccionada !== -1) {
+            let copia = [...listaCategoriaNavegacion];
             copia.push(categoriaSeleccionada);
             setListaCategoriaNavegacion(copia);
         }
-        setCategoriaSeleccionada(id_categoria_destino);        
+        setCategoriaSeleccionada(id_categoria_destino);
     }
 
     const handleVolverCategoriaAnterior = () => {
-        let copialista = listaCategoriaNavegacion;
+        let copialista = [...listaCategoriaNavegacion];
         let ultima = copialista.pop();
         setListaCategoriaNavegacion(copialista);
-        setCategoriaSeleccionada(ultima);        
+        setCategoriaSeleccionada(ultima);
     }
 
     return (
