@@ -9,7 +9,7 @@ function PaginaCrearVideo() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioCrearVideo />
             </DashboardArea>                   
         </>);

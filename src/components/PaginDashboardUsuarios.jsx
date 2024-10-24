@@ -9,7 +9,7 @@ function PaginDashboardUsuarios() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioDashboardUsuarios />
             </DashboardArea>                   
         </>);

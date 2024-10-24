@@ -9,7 +9,7 @@ function PaginaEditarCupon() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioEditarCupon/>
             </DashboardArea>                   
         </>);

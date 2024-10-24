@@ -9,7 +9,7 @@ function PaginaDashboardEnroledCourses() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioDashboardEnroledCourses />
             </DashboardArea>                   
         </>);

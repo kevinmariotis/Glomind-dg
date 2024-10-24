@@ -9,7 +9,7 @@ function PaginaHistorialDeCompras() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioFavoritos />
             </DashboardArea>                   
         </>);

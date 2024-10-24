@@ -9,7 +9,7 @@ function PaginaDashboardCertificado() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioDashboardCertificado />
             </DashboardArea>                   
         </>);

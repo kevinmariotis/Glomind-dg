@@ -9,7 +9,7 @@ function PaginaEditarPerfil() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioEditarPerfil />
             </DashboardArea>                   
         </>);

@@ -9,7 +9,7 @@ function PaginaDashboardFacturas() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioDashboardFacturas />
             </DashboardArea>                   
         </>);

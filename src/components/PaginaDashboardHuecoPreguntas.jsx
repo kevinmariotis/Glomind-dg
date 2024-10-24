@@ -9,7 +9,7 @@ function PaginaDashboardHuecoPreguntas() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioDashboardHuecoPreguntas />
             </DashboardArea>                   
         </>);

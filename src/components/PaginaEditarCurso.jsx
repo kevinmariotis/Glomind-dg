@@ -9,7 +9,7 @@ function PaginaEditarCurso() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioEditarCurso />
             </DashboardArea>                   
         </>);

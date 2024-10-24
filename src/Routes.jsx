@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, Suspense} from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
@@ -55,6 +55,7 @@ import PaginaRecuperarContrasena from './components/PaginaRecuperarContrasena';
 import PaginaCursoNotas from './components/PaginaCursoNotas';
 
 import Pagina404 from './components/Pagina404';
+import DashboardMenu from './components/DashboardMenu';
 
 //import About from './components/About';
 //import Home from './components/Home';
@@ -72,7 +73,8 @@ const Rutas = () => {
     };
     
     return (        
-        <BrowserRouter>            
+        <BrowserRouter>
+            { authenticated && <DashboardMenu /> }
             <Routes>                                
                 {/* <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} />  */}
                 <Route path="/recover/:id_usuario?/:hash?" element={<ProtectedRoute permiso={!authenticated} ><PaginaRecuperarContrasena/></ProtectedRoute>} />                

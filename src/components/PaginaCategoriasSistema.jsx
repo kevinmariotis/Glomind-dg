@@ -9,7 +9,7 @@ function PaginaCategoriasSistema() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioCategoriasSistema />
             </DashboardArea>                   
         </>);

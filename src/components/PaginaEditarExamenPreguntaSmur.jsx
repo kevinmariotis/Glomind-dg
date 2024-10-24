@@ -9,7 +9,7 @@ function PaginaEditarExamenPreguntaSmur() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioEditarExamenPreguntaSmur />
             </DashboardArea>                   
         </>);

@@ -1,8 +1,10 @@
-import React, {useContext} from 'react';
-import { Link } from 'react-router-dom';
+import React, {useContext, useEffect} from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 
 function DashboardMenu() {
+    const location = useLocation();
+
     const urlBase = import.meta.env.VITE_URL_BASE;   
     const currentMenu = location.pathname;    
     const {permissions} = useContext(AuthContext);    
@@ -16,6 +18,9 @@ function DashboardMenu() {
         });
         return retornar;
     };
+    useEffect(() => {
+        //  Sirve para detectar cambios de ruta, así el sidebarMenu se actualizará
+    }, [location]);
 
     return (
       <div className="off-canvas-menu dashboard-off-canvas-menu off--canvas-menu custom-scrollbar-styled pt-20px">

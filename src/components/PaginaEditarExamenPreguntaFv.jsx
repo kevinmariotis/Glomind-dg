@@ -9,7 +9,7 @@ function PaginaEditarExamenPreguntaFv() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioEditarExamenPreguntaFv />
             </DashboardArea>                   
         </>);

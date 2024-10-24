@@ -9,7 +9,7 @@ function PaginaEditarCursoVideoPreview() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioEditarCursoVideoPreview />
             </DashboardArea>                   
         </>);

@@ -9,7 +9,7 @@ function PaginaPerfilesPermisos() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioPerfilesPermisos />
             </DashboardArea>                   
         </>);

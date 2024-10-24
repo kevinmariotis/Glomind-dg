@@ -9,7 +9,7 @@ function PaginaCrearCupon() {
         <>              
             <DashboardHeader/>  
             <DashboardArea>
-                <DashboardMenu />
+                {/* <DashboardMenu /> */}
                 <FormularioCrearCupon />
             </DashboardArea>                   
         </>);
