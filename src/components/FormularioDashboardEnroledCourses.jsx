@@ -57,11 +57,7 @@ function FormularioDashboardEnroledCourses() {
         }
     }, [categoriaSeleccionada]);
 
-    useEffect(() => {         
-        console.log("cambio la lista: ", listaCategoriaNavegacion);
-    }, [listaCategoriaNavegacion]);
-           
-
+               
     const handleFuncionAceptarPopUp = () => {        
         setPopup({...popUp, mostrar:false});
     };

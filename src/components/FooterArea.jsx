@@ -104,68 +104,16 @@ function FooterArea() {
             textoCerrar="Cerrar"
         />
         <section className="footer-area pt-100px bg-gray">
-            <div className="container">
-                <div className="row">
-                    <div className="col-lg-3 responsive-column-half">
-                        <div className="footer-item">
-                            <h3 className="fs-20 font-weight-semi-bold pb-2">Empresa</h3>
-                            <div className="divider border-bottom-0"><span></span></div>
-                            <ul className="generic-list-item">
-                                <li><a href="https://americana.edu.co/barranquilla" target="_blank">Acerca de nosotros</a></li>
-                                <li><a href="#">Contáctanos</a></li>                                
-                                <li><a href="#">Soporte</a></li>
-                                <li><a href="#">Preguntas Frecuentes</a></li>                                
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="col-lg-3 responsive-column-half">
-                        <div className="footer-item">
-                            <h3 className="fs-20 font-weight-semi-bold pb-2">Ofrecemos</h3>
-                            <div className="divider border-bottom-0"><span></span></div>
-                            <ul className="generic-list-item">
-                                <li>Doctorado en Derecho</li>
-                                <li>Doctorado en Educación</li>
-                                <li>Licenciatura en Ingeniería en Ciencia de Datos</li>
-                                <li>Licenciatura en Ingeniería en Desarrollo de Software</li>
-                                <li>Licenciatura en Ingeniería en Desarrollo de Software</li>                                
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="col-lg-3 responsive-column-half">
-                        <div className="footer-item">
-                            <h3 className="fs-20 font-weight-semi-bold pb-2">Descarga la App</h3>
-                            <div className="divider border-bottom-0"><span></span></div>
-                            <div className="mobile-app">
-                                <p className="pb-3 lh-24">Descarga nuestra aplicación móvil y aprende sobre la marcha.</p>                                
-                                <a href="#" onClick={handleMostrarPopUpAplicacion} className="d-block hover-s"><img src={`${urlBase}/images/googleplay.png`} alt="Google play store" className="img-fluid" /></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-3 responsive-column-half">
-                        <div className="footer-item">
-                            <h3 className="fs-20 font-weight-semi-bold pb-2">Boletín informativo</h3>
-                            <div className="divider border-bottom-0"><span></span></div>
-                            <form method="post" className="subscriber-form">
-                                <p className="pb-3 lh-24">¿Quiere que le enviemos un correo electrónico sobre ofertas especiales y actualizaciones?</p>
-                                <div className="form-group">
-                                    <input onChange={handleSetEmail} type="email" name="email" maxLength="64" className="form-control form--control pl-3" placeholder="Escriba su email" />
-                                    <button onClick={handleSuscribirBoletin} className="btn theme-btn w-100 mt-3" type="button">Suscribirme <i className="la la-arrow-right icon ml-1"></i></button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="section-block"></div>
+                        
             <div className="copyright-content py-4">
                 <div className="container">
                     <div className="row align-items-center">
                         <div className="col-lg-6">
                             <div className="d-flex flex-wrap align-items-center">
                                 <a href="index.html" className="pr-4">
-                                    <img src={`${urlBase}/images/edukalab_logo.png`} alt="footer logo" className="footer__logo" />
+                                    <img src={`${urlBase}/images/logo_principal.png`} alt="footer logo" className="footer__logo" />
                                 </a>
-                                <p className="copy-desc">Copyright &copy; 2024 <a href="https://google.com.co" target="_blank">Desarrolladores</a></p>
+                                <p className="copy-desc">2024 Glomind &copy;. Todos los derechos reservados</p>
                             </div>
                         </div>
                         <div className="col-lg-6">
