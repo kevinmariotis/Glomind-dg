@@ -418,7 +418,7 @@ export default function FormularioEstudianteDetalles() {
                                         }    
                                     </div>
                                     <h4 className="counter__title counter text-color-4">{datos.es_docente==0 ? datos.cantidad_cursos : datos.docente_cantidad_cursos}</h4>
-                                    <p className="counter__meta">{datos.es_docente==0 ? 'Cursos matriculados' : 'Cursos enseñando'}</p>
+                                    <p className="counter__meta">{datos.es_docente==0 ? 'Cursos ofertados' : 'Cursos enseñando'}</p>
                                 </div>
                             </div>
                         </div>

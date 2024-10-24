@@ -5818,7 +5818,7 @@ div.datedropper .picker .pick-lg-b li {
     transition: all 0.3s; }
   .off-canvas-menu-list li a {
     background-color: #fff;
-    color: #1d0959;
+    color: #958BB6;
     text-transform: capitalize;
     display: -webkit-flex;
     display: -ms-flex;
@@ -5842,17 +5842,17 @@ div.datedropper .picker .pick-lg-b li {
   padding-bottom: 12px;
   justify-content: flex-start; }
   .off--canvas-menu-list li a:hover {
-    color: #358FF7; }
+    color: #1d0959; }
     .off--canvas-menu-list li a:hover svg {
-      fill: #358FF7; }
+      fill: #1d0959; }
 
 .off--canvas-menu-list li.page-active svg {
   fill: #358FF7; }
 
 .off--canvas-menu-list li.page-active a {
-  background-color: rgba(53, 143, 227, 0.04);
-  color: #358FF7;
-  border-right-color: #358FF7; }
+  background-color: #F6F5FA;
+  color: #1D0959;
+  border-right-color: #1D0959; }
 
 .mobile-search-form {
   background-color: #fff;
@@ -7586,8 +7586,8 @@ div.datedropper .picker .pick-lg-b li {
     border-left-color: rgba(238, 238, 238, 0.1) !important; }
   .dark-theme .footer__logo,
   .dark-theme .logo img {
-    /*-webkit-filter: brightness(900%) brightness(200%);
-    filter: brightness(900%) brightness(200%);*/ }
+    -webkit-filter: brightness(1000%) brightness(1000%);
+    filter: brightness(1000%) brightness(1000%); }
   .dark-theme .menu-category > ul > li a,
   .dark-theme .shop-cart-btn,
   .dark-theme .media-card .media-body h5 a,
