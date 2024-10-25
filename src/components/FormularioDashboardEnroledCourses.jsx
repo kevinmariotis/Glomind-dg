@@ -278,9 +278,9 @@ function FormularioDashboardEnroledCourses() {
                 </div>
                 <div className="section-block mb-5"></div>
                 <div className="dashboard-heading mb-5">
-                    <h3 className="fs-22 font-weight-semi-bold">Cursos matriculados</h3>
+                    <h3 className="fs-22 font-weight-semi-bold">Cursos ofertados</h3>
                 </div>
-                <ul className="nav nav-tabs generic-tab pb-30px" id="myTab" role="tablist">
+                <ul className="nav nav-tabs generic-tab pb-30px" id="myTab" role="tablist" style={{display:'none'}}>
                     <li className="nav-item">
                         <a className={`nav-link ${pestanaActivada==1 ? 'active': ''}`} onClick={()=>{ handleCambiarPestana({numero:1})(event); }} id="all-course-tab" data-toggle="tab" href="#" role="tab" aria-controls="all-course" aria-selected="false">
                             Todos los cursos

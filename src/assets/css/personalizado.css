@@ -323,3 +323,15 @@
   top: 0;
   transform: translate(0, -100%);
 }
+
+/*cambiar el color delboton primario del sitio, el que originalmente es azul */
+.btn-primary {
+  color: #fff;
+  background-color: #1d0959;
+  border-color: #1d0959;
+}
+.btn-primary:hover {
+  color: #fff;
+  background-color: #8547ff;
+  border-color: #8547ff;
+}

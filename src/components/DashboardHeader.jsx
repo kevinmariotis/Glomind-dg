@@ -465,7 +465,7 @@ function DashboardHeader({expandir_ancho=false}) {
                                                                 <ul className="generic-list-item">
                                                                     <li>
                                                                         <Link to="/cursos/matriculados">
-                                                                            <i className="la la-file-video-o mr-1"></i> Mis cursos matriculados
+                                                                            <i className="la la-file-video-o mr-1"></i> Mis cursos ofertados
                                                                         </Link>
                                                                     </li>
                                                                     { /* <li>
@@ -562,8 +562,8 @@ function DashboardHeader({expandir_ancho=false}) {
                 <h4 className="off-canvas-menu-heading pt-90px">Cuenta</h4>
                 <ul className="generic-list-item off-canvas-menu-list pt-1 pb-2 border-bottom border-bottom-gray">
                     <li style={{display:'none'}}><a href="dashboard-settings.html">Account settings</a></li>
-                    <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/cursos/matriculados'); }}>Cursos Matriculados</a></li>
-                    <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/cursos/favoritos'); }}>Cursos Favoritos</a></li>
+                    <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/cursos/matriculados'); }}>Cursos Ofertados</a></li>
+                    { /*<li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/cursos/favoritos'); }}>Cursos Favoritos</a></li>*/}
                     { /*<li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/factura/historial'); }}>Historial de compras</a></li>   */}                   
                 </ul>
                 <h4 className="off-canvas-menu-heading pt-20px">Perfil</h4>
