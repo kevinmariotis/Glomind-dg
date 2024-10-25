@@ -56,6 +56,8 @@ import PaginaCursoNotas from './components/PaginaCursoNotas';
 
 import Pagina404 from './components/Pagina404';
 import DashboardMenu from './components/DashboardMenu';
+import Login from './components/login/Login';
+import SignUp from './components/signUp/SignUp';
 
 //import About from './components/About';
 //import Home from './components/Home';
@@ -129,7 +131,9 @@ const Rutas = () => {
 
                 {/*Agregados nuevos para anular el home : */}         
                 <Route path="/" element={!authenticated ? <ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute> : <ProtectedRoute permiso={authenticated} ><PaginaDashboardEnroledCourses/></ProtectedRoute>} />
-                <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} />
+                {/* <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} /> */}
+                <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><Login/></ProtectedRoute>} />
+                <Route path="/sign-up" element={<ProtectedRoute permiso={!authenticated} ><SignUp/></ProtectedRoute>} />
 
 
                 <Route path="*" component={<Pagina404/>} />

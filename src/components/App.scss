@@ -1,0 +1,492 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* NUEVO CSS DE UVIRTUAL */
+
+:root {
+  /* BLANCO */
+  --colorWhite: #ffffff;
+
+  /* BEIGE */
+  --colorBeige: #f9f5ef;
+
+  /* GRIS */
+  --colorGrey: #8a8a8e;
+
+  /* AZUL */
+  --colorBlueLight: #3c70ba;
+  --colorBlueDark: #0a3d96;
+
+  /* NARANJA */
+  --colorOrange: #ffa600;
+  --colorOrangeDark: #e95d0f;
+
+  /* DEGRADADO NARANJA */
+  --gradiantOrange: linear-gradient(94deg, #ffa600 0%, #e95d0f 100%);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* BODY */
+body {
+  margin: 0;
+  font-family: "Poppins";
+  background-color: var(--colorBeige);
+}
+
+/*************/
+/* FONT-SIZE */
+/*************/
+/* 70px */
+.size70 {
+  font-size: clamp(25px, 4dvw, 70px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 64px */
+.size64 {
+  font-size: clamp(18px, 4dvw, 64px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 60px */
+.size60 {
+  font-size: clamp(20px, 4dvw, 60px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 54px */
+.size54 {
+  font-size: clamp(30px, 3dvw, 54px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 50px */
+.size50 {
+  font-size: clamp(30px, 3dvw, 50px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 45px */
+.size45 {
+  font-size: clamp(25px, 3dvw, 45px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 40px */
+.size40 {
+  font-size: clamp(20px, 3dvw, 40px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 32px */
+.size32 {
+  font-size: clamp(18px, 2dvw, 32px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 30px */
+.size30 {
+  font-size: clamp(18px, 2dvw, 30px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 35px */
+.size35 {
+  font-size: clamp(20px, 2dvw, 35px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 30px */
+.size30 {
+  font-size: clamp(15px, 2dvw, 30px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 25px */
+.size25 {
+  font-size: clamp(15px, 2dvw, 25px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 22px */
+.size22 {
+  font-size: clamp(14px, 2dvw, 22px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 20px */
+.size20 {
+  font-size: clamp(12px, 2dvw, 20px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 18px */
+.size18 {
+  font-size: clamp(12px, 2dvw, 18px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 16px */
+.size16 {
+  font-size: clamp(12px, 2vw, 16px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 15px */
+.size15 {
+  font-size: clamp(11px, 2vw, 15px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 14px */
+.size14 {
+  font-size: clamp(10px, 2vw, 14px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 13px */
+.size13 {
+  font-size: clamp(10px, 2vw, 13px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 12px */
+.size12 {
+  font-size: clamp(10px, 2vw, 12px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* 11px */
+.size11 {
+  font-size: clamp(9px, 2vw, 11px) !important;
+  font-family: Poppins !important;
+  font-style: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/********************/
+
+/***********/
+/* BOTONES */
+/***********/
+/* CUADRADO NARANJA */
+.btnGradientOrangeSquare {
+  background: linear-gradient(105deg, #ffa600 0%, #e95d0f 100%);
+  border-radius: 9px !important;
+  text-transform: capitalize !important;
+  color: var(--colorWhite) !important;
+  font-family: Poppins !important;
+  font-weight: 500 !important;
+}
+
+/* CIRCULAR NARANJA */
+.btnGradientOrangeCircle {
+  background: linear-gradient(105deg, #ffa600 0%, #e95d0f 100%);
+  border-radius: 50px !important;
+  text-transform: capitalize !important;
+  color: var(--colorWhite) !important;
+  font-family: Poppins !important;
+  font-weight: 500 !important;
+}
+
+/* CIRCULAR BORDE NARANJA */
+.btnGradientBorderOrangeCircle {
+  $border: 2px;
+  background-color: #ffffff !important;
+  background-clip: padding-box !important;
+  border: solid $border transparent !important;
+  border-radius: 50px !important;
+  color: var(--colorOrangeDark) !important;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    margin: -$border; /* !importanté */
+    border-radius: inherit; /* !importanté */
+    background: linear-gradient(105deg, #ffa600 0%, #e95d0f 100%);
+  }
+
+  p {
+    background: linear-gradient(94deg, #ffa600 0%, #e95d0f 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* CIRCULAR BLANCO */
+.btnGradientWhiteCircle {
+  background: var(--colorWhite) !important;
+  border-radius: 50px !important;
+  text-transform: capitalize !important;
+
+  p {
+    background: var(--Style, linear-gradient(94deg, #ffa600 0%, #e95d0f 100%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: Poppins !important;
+    font-weight: 500 !important;
+  }
+}
+
+.mainContent {
+  padding: 4.3% 5.9% /* 80px 110px */;
+  display: grid;
+  gap: 80px /* 80px 4.3% */;
+}
+
+/* SELECT BLANCO */
+.selectWhite {
+  width: 100%;
+  max-width: 450px;
+
+  /* LABEL */
+  .MuiInputLabel-root {
+    color: var(--colorGrey);
+    line-height: 110%; /* 19.8px */
+    letter-spacing: -0.18px;
+    transform: translate(30px, 23px) scale(1);
+  }
+  .MuiInputLabel-shrink {
+    display: none;
+  }
+
+  /* SELECT */
+  .MuiInputBase-root {
+    border-radius: 10.667px;
+    background: #fff;
+
+    .MuiSelect-select {
+      padding: 23px 30px;
+    }
+
+    fieldset {
+      display: none;
+    }
+  }
+}
+
+/* SELECT BORDE */
+.selectBorder {
+  width: 100%;
+  max-width: 400px;
+
+  /* LABEL */
+  .MuiInputLabel-root {
+    color: var(--colorGrey);
+    line-height: 110%; /* 19.8px */
+    letter-spacing: -0.18px;
+    transform: translate(23px, 19px) scale(1);
+  }
+  .MuiInputLabel-shrink {
+    display: none;
+  }
+
+  /* SELECT */
+  .MuiInputBase-root {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--colorGrey);
+
+    .MuiSelect-select {
+      padding: 15px 22px /* 23px 30px */;
+    }
+
+    fieldset {
+      display: none;
+    }
+  }
+}
+
+/* INPUT BLANCO */
+.inputWhite {
+  background-color: var(--colorWhite);
+  width: 100%;
+  max-width: 800px;
+  border-radius: 10.667px;
+
+  input {
+    font-size: clamp(12px, 2dvw, 18px);
+    font-family: Poppins;
+    font-weight: 400;
+    padding: 23px 30px;
+    color: var(--colorGrey);
+  }
+  input::placeholder {
+    color: var(--colorGrey);
+  }
+
+  div > button:hover {
+    background-color: transparent;
+  }
+
+  /* FIELDSET */
+  fieldset {
+    display: none;
+  }
+}
+
+/* INPUT BORDE */
+.inputBorder {
+  background-color: var(--colorWhite);
+  border: 1px solid var(--colorGrey);
+  width: 100%;
+  max-width: 400px;
+  border-radius: 10px !important;
+
+  input {
+    font-size: clamp(12px, 2vw, 16px);
+    font-family: Poppins;
+    font-weight: 400;
+    padding: 15px 22px /* 23px 30px */;
+    color: var(--colorGrey);
+  }
+  input::placeholder {
+    color: var(--colorGrey);
+  }
+
+  div > button:hover {
+    background-color: transparent;
+  }
+
+  /* FIELDSET */
+  fieldset {
+    display: none;
+  }
+}
+
+/* BOTON */
+.MuiButton-root {
+  min-width: auto !important;
+}

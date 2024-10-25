@@ -1,0 +1,76 @@
+.contentLogin {
+  // background-color: aqua;
+  padding: 50px;
+  height: 100%;
+  height: fill-available;
+  height: -o-available;
+  height: -moz-available;
+  height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  color: var(--colorWhite);
+
+  h1 {
+    font-weight: 500;
+  }
+  h4 {
+    font-weight: 300;
+    a {
+      font-family: Poppins;
+      font-weight: 500;
+      color: var(--colorWhite);
+    }
+  }
+
+  // FORMULARIO
+  .formLogin {
+    .MuiInputBase-root {
+      background-color: var(--colorWhite);
+      border-radius: 9px;
+      margin-bottom: 20px;
+      input {
+        font-size: clamp(10px, 2vw, 14px);
+        font-family: Poppins;
+        font-weight: 300;
+        padding: 15px 25px;
+      }
+
+      div > button:hover {
+        background-color: transparent;
+      }
+
+      // FIELDSET
+      fieldset {
+        display: none;
+      }
+    }
+
+    a {
+      color: var(--colorWhite);
+      text-decoration: none;
+    }
+  }
+
+  button {
+    min-height: 54px;
+  }
+}
+
+/**************/
+/* RESPONSIVE */
+/**************/
+@media (max-width: 800px) {
+  .contentLogin {
+    gap: 30px;
+    padding: 40px;
+    .formLogin {
+      .MuiInputBase-root {
+        input {
+          padding: 10px 15px;
+        }
+      }
+    }
+  }
+}
