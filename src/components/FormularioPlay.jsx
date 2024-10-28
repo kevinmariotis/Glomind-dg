@@ -13,6 +13,7 @@ import { mensajesDeError } from './utils';
 import DropdownContenido from './DropdownContenido';
 import HiloComentarios from './HiloComentarios';
 import HiloAnuncio from './HiloAnuncio';
+import Calendario from './Calendario';
 import { sideBarAbrirCerrar } from './comun';
 
 function FormularioPlay() {        
@@ -581,6 +582,11 @@ function FormularioPlay() {
                                             </a>
                                         </li>     
                                         }
+                                        <li className="nav-item">
+                                            <a onClick={(event)=>{ handleCambiarPestana(event, 6); }} className={`nav-link ${pestanaActivada==6 ? 'active': ''}`} id="calendar-tab" data-toggle="tab" href="#calendar" role="tab" aria-controls="calendar" aria-selected="true">
+                                                Calendario
+                                            </a>
+                                        </li>     
                                     </ul>
                                 </div>
                                 <div className="lecture-video-detail-body" style={pestanaActivada==1 ? {padding: '0'} : pestanaActivada==3 ? {padding: '15px'} : {}}>
@@ -872,6 +878,19 @@ function FormularioPlay() {
                                                 </div>                                                
                                             </div>                                                                                        
                                             {dataCurso.id!=-1 && tipoContenidoHilo!=-1 ? <HiloComentarios id_hilo={dataContenidoViendo.id_comentario_hilo} id_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? contenidoActivado : dataContenidoViendo.id} tipo_objeto_enlace={[2, 3].includes(tipoContenidoHilo) ? 99 : tipoContenidoHilo} funcionRecargarContenidosCurso={()=>{ obtenerContenidos({activar_actividad_actual:true}); }} /> : ''}
+                                        </div>
+
+                                        <div className={`tab-pane fade show ${pestanaActivada==6 ? 'active': ''}`} id="calendar" role="tabpanel-calendar" aria-labelledby="calendar">
+                                            <div className="lecture-overview-wrap">  
+                                                <div className="lecture-overview-item">
+                                                    <h3 className="fs-24 font-weight-semi-bold pb-2">Calendario</h3>
+                                                    <p>En este espacio encontrarás toda las actividades de tareas y foros y las fechas y horas en las cuales se deben entregar o participar.</p>
+                                                </div>
+                                                <div className="section-block"></div>                                                
+                                                <div className="lecture-overview-item">
+                                                        <Calendario id_curso={dataCurso.id} funcionCargarContenido={cargarContenidoEspecifico} />
+                                                </div>                                                 
+                                            </div>
                                         </div>
 
                                         <div className={`tab-pane fade show ${pestanaActivada==5 ? 'active': ''}`} id="grades" role="tabpanel" aria-labelledby="grades">                                                                                                                                    

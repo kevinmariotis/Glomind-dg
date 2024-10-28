@@ -10,6 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
     "@minoru/react-dnd-treeview": "^3.4.4",
     "bootstrap": "^4.6.0",
     "bootstrap-switch-button-react": "^1.2.0",
