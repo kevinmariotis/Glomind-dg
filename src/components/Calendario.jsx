@@ -109,9 +109,9 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
     }
 
     const coloresEventos = {
-        '2' : '#e074ad',
-        '5' : '#73B746',
-        '6' : '#ffa042'
+        '2' : '#958BB6',
+        '5' : '#8547FF',
+        '6' : '#2C3E50'
     }
 
     // a custom render function
