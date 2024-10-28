@@ -118,9 +118,7 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
     function renderEventContent(eventInfo) {
         return (
             <>                
-                <i>{eventInfo.event.extendedProps.tipo_evento}: {eventInfo.event.title}</i><br/>
-                <i>{eventInfo.event.extendedProps.description}</i>
-                <i>{eventInfo.event.extendedProps.fecha_hora_inicio_esp} a {eventInfo.event.extendedProps.fecha_hora_fin_esp}</i>
+                <i>{eventInfo.event.extendedProps.tipo_evento}: {eventInfo.event.title}</i><br/>                
             </>
         )
     }
