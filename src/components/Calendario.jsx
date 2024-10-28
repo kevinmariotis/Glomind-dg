@@ -162,7 +162,7 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
                                 right: 'today'       // Agrega el botón "Hoy" para volver al mes actual
                             }                                    
                         }		            					            
-                        firstDay={1}						
+                        firstDay={2}						
                         businessHours={{
                                 daysOfWeek: [ 1, 2, 3, 4, 5, 6],
                                 startTime: '8:00',
