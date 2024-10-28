@@ -162,7 +162,7 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
                                 right: 'today'       // Agrega el botón "Hoy" para volver al mes actual
                             }                                    
                         }		            					            
-                        firstDay={2}						
+                        firstDay={1}						
                         businessHours={{
                                 daysOfWeek: [ 1, 2, 3, 4, 5, 6],
                                 startTime: '8:00',
@@ -179,15 +179,15 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
                             list: "Agenda"
                         }}
                         dayHeaderContent={({ date }) => {
-                            const dayName = date.toLocaleDateString('es-ES', { weekday: 'long' });
+                            const daysNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+                            const dayName = daysNames[date.getUTCDay()];                            
                             return (
                                 <div style={{  color: '#1d0959', textAlign: 'center' }}>
                                     {dayName.charAt(0).toUpperCase() + dayName.slice(1)} {/* Capitaliza la primera letra */}
                                 </div>
                             );
                         }}
-                        allDayText="Todo el día"
-                        //dayHeaderContent={({ date }) => renderDayHeader(date)}                             
+                        allDayText="Todo el día"                        
                         dayCellContent={arg => {
                             const today = new Date().toISOString().split('T')[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
                             const cellDate = arg.date.toISOString().split('T')[0]; // Obtener la fecha de la celda
