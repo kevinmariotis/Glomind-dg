@@ -87,7 +87,7 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
 						allDay: false,						
 						editable:false,
 						startEditable:false,
-                        backgroundColor: rango.tipo_contenido=6 ? '#FFA042' : rango.tipo_contenido==5 ? '#73B746'  : '#E074AD'
+                        backgroundColor: coloresEventos[rango.tipo_contenido]
 					};
                     eventos.push(evento);
                     //console.log('Elemento:', element);
@@ -106,6 +106,12 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
         '2' : 'Examen',
         '5' : 'Tarea',
         '6' : 'Foro'
+    }
+
+    const coloresEventos = {
+        '2' : '#e074ad',
+        '5' : '#73B746',
+        '6' : '#ffa042'
     }
 
     // a custom render function
@@ -177,13 +183,13 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
                         dayHeaderContent={({ date }) => {
                             const dayName = date.toLocaleDateString('es-ES', { weekday: 'long' });
                             return (
-                                <div style={{ backgroundColor: '#4CAF50', color: 'white', padding: '10px', textAlign: 'center' }}>
+                                <div style={{  color: '#1d0959', textAlign: 'center' }}>
                                     {dayName.charAt(0).toUpperCase() + dayName.slice(1)} {/* Capitaliza la primera letra */}
                                 </div>
                             );
                         }}
                         allDayText="Todo el día"
-                        dayHeaderContent={({ date }) => renderDayHeader(date)}                             
+                        //dayHeaderContent={({ date }) => renderDayHeader(date)}                             
                         dayCellContent={arg => {
                             const today = new Date().toISOString().split('T')[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
                             const cellDate = arg.date.toISOString().split('T')[0]; // Obtener la fecha de la celda
@@ -191,7 +197,8 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
                                 <div style={{ 
                                     backgroundColor: today === cellDate ? '#d0e0ff' : 'transparent', // Color de fondo si es el día actual
                                     padding: '5px', 
-                                    borderRadius: '5px'
+                                    borderRadius: '5px',
+                                    color: today === cellDate ? '#1d0959' : temaActual==1 ? '#1d0959' : 'white'
                                 }}>
                                     {arg.dayNumberText}
                                 </div>
