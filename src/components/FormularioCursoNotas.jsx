@@ -236,7 +236,7 @@ function FormularioCursoNotas() {
                                                             <th scope="col" className="px-3" style={{width:'100px'}}>Calificación curso</th>
                                                             {datos.categorias.map((categoria) =>
                                                                 categoria.curso_contenido.map((curso_contenido, indexcc) => (
-                                                                    <th style={{maxWidth:'100px'}} key={`curso_cont_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}_`} className="px-3"><i class={`la ${iconos_tipo_contenido[curso_contenido.tipo_contenido]}`}></i> {curso_contenido.nombre} ({curso_contenido.porcentaje_en_total_curso}%)</th>
+                                                                    <th style={{maxWidth:'150px'}} key={`curso_cont_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}_`} className="px-3"><i class={`la ${iconos_tipo_contenido[curso_contenido.tipo_contenido]}`}></i> {curso_contenido.nombre} ({curso_contenido.porcentaje_en_total_curso}%)</th>
                                                                 ))
                                                             )}
                                                         </tr>
@@ -261,7 +261,7 @@ function FormularioCursoNotas() {
                                                                                 nota.id_tipo_contenido === curso_contenido.id_tipo_contenido
                                                                         );
                                                                         return (
-                                                                            <td style={{maxWidth:'100px'}} key={`usuario_nota_${usuario.id_usuario}_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}`} className="px-3">
+                                                                            <td style={{maxWidth:'150px'}} key={`usuario_nota_${usuario.id_usuario}_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}`} className="px-3">
                                                                                 <span style={{cursor:'pointer'}} onClick={()=> { handleEditarNota.load(curso_contenido.id_contenido, usuario.id_usuario, notaUsuario ? notaUsuario.puntuacion_fija!=null ? notaUsuario.puntuacion_fija : notaUsuario.puntuacion : '')}}>{notaUsuario ? notaUsuario.puntuacion_fija!=null ? <span style={{backgroundColor:'#FFE365'}}>{notaUsuario.puntuacion_fija}</span>: notaUsuario.puntuacion : '-'}</span>
                                                                             </td>
                                                                         );
