@@ -231,8 +231,8 @@ function FormularioCursoNotas() {
                                                 <table className="table generic-table table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col" className="px-3" style={{width:'70px'}}></th>
-                                                            <th scope="col" className="px-3" style={{width:'200px'}}>Estudiante</th>
+                                                            <th scope="col" className="px-3 sticky-column" style={{width:'70px'}}></th>
+                                                            <th scope="col" className="px-3 sticky-column" style={{width:'200px'}}>Estudiante</th>
                                                             <th scope="col" className="px-3" style={{width:'100px'}}>Calificación curso</th>
                                                             {datos.categorias.map((categoria) =>
                                                                 categoria.curso_contenido.map((curso_contenido, indexcc) => (
@@ -244,14 +244,14 @@ function FormularioCursoNotas() {
                                                     <tbody >
                                                         {datos.usuarios.map((usuario) =>
                                                             <tr key={`usuario_${usuario.id_usuario}`} className="px-3">
-                                                                <td style={{width:'70px'}}>
+                                                                <td style={{width:'70px'}} className="sticky-column">
                                                                     <div className="media media-card align-items-center">
                                                                         <div className="media-img media--img media-img-md rounded-full">
                                                                             <img className="rounded-full" src={usuario.imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${usuario.imagen_pequena}`} alt="Foto del usuario" />
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                                <td style={{width:'200px'}}>{usuario.nombres} {usuario.apellidos}</td>
+                                                                <td className="sticky-column" style={{width:'200px'}}>{usuario.nombres} {usuario.apellidos}</td>
                                                                 <td style={{width:'100px'}}>{usuario.calificacion_curso}</td>
                                                                 {datos.categorias.map((categoria) =>
                                                                     categoria.curso_contenido.map((curso_contenido, indexcc) => {
