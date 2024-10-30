@@ -147,6 +147,13 @@ function FormularioCursoNotas() {
         }
     }
 
+    //2examen, 5tarea, 6foro
+    const iconos_tipo_contenido = {
+        '2' : 'la-pencil',
+        '5' : 'la-home',
+        '6' : 'la-comments',
+    }
+
     return (
         <>
             {mostrarSpinner && <Spinner />}
@@ -221,23 +228,31 @@ function FormularioCursoNotas() {
                                         <div className="col-lg-12">
                                             <div className="table-responsive">
                                                 {datos.categorias && 
-                                                <table className="table generic-table">
+                                                <table className="table generic-table table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col" className="text-nowrap px-3">Estudiante</th>
-                                                            <th scope="col" className="text-nowrap px-3">Calificación curso</th>
+                                                            <th scope="col" className="px-3" style={{width:'70px'}}></th>
+                                                            <th scope="col" className="px-3" style={{width:'200px'}}>Estudiante</th>
+                                                            <th scope="col" className="px-3" style={{width:'100px'}}>Calificación curso</th>
                                                             {datos.categorias.map((categoria) =>
                                                                 categoria.curso_contenido.map((curso_contenido, indexcc) => (
-                                                                    <th key={`curso_cont_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}_`} className="text-nowrap px-3">{curso_contenido.nombre} ({curso_contenido.porcentaje_en_total_curso}%)</th>
+                                                                    <th style={{maxWidth:'100px'}} key={`curso_cont_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}_`} className="px-3"><i class={`la ${iconos_tipo_contenido[curso_contenido.tipo_contenido]}`}></i> {curso_contenido.nombre} ({curso_contenido.porcentaje_en_total_curso}%)</th>
                                                                 ))
                                                             )}
                                                         </tr>
                                                     </thead>
                                                     <tbody >
                                                         {datos.usuarios.map((usuario) =>
-                                                            <tr key={`usuario_${usuario.id_usuario}`} className="text-nowrap px-3">
-                                                                <td>{usuario.nombres} {usuario.apellidos}</td>
-                                                                <td>{usuario.calificacion_curso}</td>
+                                                            <tr key={`usuario_${usuario.id_usuario}`} className="px-3">
+                                                                <td style={{width:'70px'}}>
+                                                                    <div className="media media-card align-items-center">
+                                                                        <div className="media-img media--img media-img-md rounded-full">
+                                                                            <img className="rounded-full" src={usuario.imagen_pequena==null ? `${urlBase}/images/avatar_docente.jpg` : `${urlBaseApi}/${usuario.imagen_pequena}`} alt="Foto del usuario" />
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td style={{width:'200px'}}>{usuario.nombres} {usuario.apellidos}</td>
+                                                                <td style={{width:'100px'}}>{usuario.calificacion_curso}</td>
                                                                 {datos.categorias.map((categoria) =>
                                                                     categoria.curso_contenido.map((curso_contenido, indexcc) => {
                                                                         const notaUsuario = usuario.notas.find(
@@ -246,7 +261,7 @@ function FormularioCursoNotas() {
                                                                                 nota.id_tipo_contenido === curso_contenido.id_tipo_contenido
                                                                         );
                                                                         return (
-                                                                            <td key={`usuario_nota_${usuario.id_usuario}_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}`} className="text-nowrap px-3">
+                                                                            <td style={{maxWidth:'100px'}} key={`usuario_nota_${usuario.id_usuario}_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}`} className="px-3">
                                                                                 <span style={{cursor:'pointer'}} onClick={()=> { handleEditarNota.load(curso_contenido.id_contenido, usuario.id_usuario, notaUsuario ? notaUsuario.puntuacion_fija!=null ? notaUsuario.puntuacion_fija : notaUsuario.puntuacion : '')}}>{notaUsuario ? notaUsuario.puntuacion_fija!=null ? <span style={{backgroundColor:'#FFE365'}}>{notaUsuario.puntuacion_fija}</span>: notaUsuario.puntuacion : '-'}</span>
                                                                             </td>
                                                                         );
