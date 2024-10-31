@@ -14,6 +14,8 @@ import DropdownContenido from './DropdownContenido';
 import HiloComentarios from './HiloComentarios';
 import HiloAnuncio from './HiloAnuncio';
 import Calendario from './Calendario';
+import CountdownTimer from './CoundDownTimer';
+import CrearEditarVideollamada from './CrearEditarVideollamada';
 import { sideBarAbrirCerrar } from './comun';
 
 function FormularioPlay() {        
@@ -23,6 +25,7 @@ function FormularioPlay() {
     const navigate = useNavigate();            
     const {jwt, esMovil, setCargarMisCursos} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
+    const [popUpVideollamada, setPopupVideollamada] = useState({mostrar:false});
     const [mostrarSpinner, setMostrarSpinner] = useState(false);  
 
     const [dataCurso, setDataCurso] = useState({id:-1, nombre:'', desc_general:'', desc_general_corta:'', nivel:0, favorito:-1, archivado:-1, porcentaje_progreso:-1, estudiantes_cantidad:0, cantidad_examenes:0, cantidad_horas_de_video:'', expedir_certificado:0, curso_certificado_comprado_previamente:0, certificado_solo_pago:0, id_instructor:0, instructor:'', instructor_imagen_pequena:'', docente_descripcion:''});     //se accede por ejmplo: dataCurso.favorito
@@ -41,6 +44,8 @@ function FormularioPlay() {
     const [pestanaActivada, setPestanaActivada] = useState(4);  //pestañas que estan debajo del video
     const [cargarActividadActual, setCargarActividadActual] = useState(false);
           
+    const [entrarVideollamada, setEntrarVideollamada] = useState({mostrar:false, url:null});
+
     const [notas, setNotas] = useState({});
     
     const refBloqueDescripcion = useRef(null);
@@ -157,6 +162,13 @@ function FormularioPlay() {
                 if(dataCurso.id==datos.curso.id){
                     setMostrarSpinner(false);
                 }                                  
+
+                if(datos.curso?.videollamadas?.length>0){
+                    if(datos.curso.videollamadas[0].segundos_restantes_inicio<=0 &&datos.curso.videollamadas[0].segundos_restantes_fin>0){
+                        setEntrarVideollamada({mostrar:true, url:datos.curso.videollamadas[0].url});
+                    }
+                }                
+
             } else {                
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});  
             }            
@@ -468,7 +480,7 @@ function FormularioPlay() {
                 textoCerrar="Cerrar"
             />
             <FormularioPlayHeader id_curso={dataCurso.id} es_docente={dataCurso.es_docente} nombre_curso={dataCurso.nombre} instructor_edita_contenido={dataCurso.es_docente && dataCurso.instructor_edita_contenido ? true : false} curso_url_amigable={url_amigable} favorito={dataCurso.favorito} archivado={dataCurso.archivado} tiene_review={dataCurso.tiene_review} porcentaje_progreso={dataCurso.porcentaje_progreso} callBackFavoritoCambiado={obtenerDatosDelServidor}/>
-            
+            {popUpVideollamada.mostrar==1 && <CrearEditarVideollamada id_curso={dataCurso?.id ? dataCurso.id : -1} es_docente={dataCurso.es_docente} funcionMostrarPopUp={()=>{ setPopupVideollamada({...popUpVideollamada, mostrar:0}); obtenerDatosDelServidor(); }} />}
             <section className="course-dashboard">
                 <div className="course-dashboard-wrap">
                     <div className="course-dashboard-container d-flex">
@@ -611,6 +623,20 @@ function FormularioPlay() {
                                         <div className={`tab-pane fade show ${pestanaActivada==1 ? 'active': ''}`} id="course-content" role="tabpanel" aria-labelledby="course-content-tab">
                                             <div className="mobile-course-menu pt-4">
                                                 <div className="accordion generic-accordion generic--accordion" id="mobileCourseAccordionCourseExample">
+
+                                                {dataCurso?.videollamadas?.length>0 ? <div className="course-dashboard-side-heading" style={{backgroundColor:'#8547FF'}}>
+                                    <div className="d-flex align-items-center justify-content-between" style={{width:'100%'}} >
+                                        <h3 className="fs-18 font-weight-semi-bold" style={{color:'#ffffff'}}>Siguiente Videoclase</h3>                                    
+                                        <div className="courser-item-meta-wrap">
+                                            <p className="course-item-meta" style={{color:'#ffffff'}}>{dataCurso?.videollamadas[0].fecha_hora_inicio_esp}</p>
+                                        </div>
+                                    </div>
+                                    <div className="d-flex align-items-center justify-content-between" style={{width:'100%'}} >
+                                        {dataCurso.videollamadas[0].segundos_restantes_inicio<172800 ? <CountdownTimer segundosRestantesInicio={dataCurso.videollamadas[0].segundos_restantes_inicio} segundosRestantesFin={dataCurso.videollamadas[0].segundos_restantes_fin}  functionTimeUp={()=>{ setEntrarVideollamada({mostrar: true, url:dataCurso.videollamadas[0].url }); }} />: ''}
+                                        {entrarVideollamada.mostrar==true ? <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => window.open(entrarVideollamada.url, '_blank')}> Entrar </button> : ''}
+                                    </div>
+                                </div> : ''}
+
                                                     {contenido.map((categoria, index) => (
                                                         <div key={`seccion-contenidos-movil-${index}`} className="card">
                                                             <div className="card-header" id={`mobileCourseHeading${parseInt(index)+1}`}>
@@ -886,9 +912,15 @@ function FormularioPlay() {
                                                     <h3 className="fs-24 font-weight-semi-bold pb-2">Calendario</h3>
                                                     <p>En este espacio encontrarás toda las actividades de tareas y foros y las fechas y horas en las cuales se deben entregar o participar.</p>
                                                 </div>
-                                                <div className="section-block"></div>                                                
+                                                <div className="section-block"></div>                                                                                                
+                                                <div className="d-flex align-items-center justify-content-end" style={{ width: '100%' }} >
+                                                    <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={()=>{ setPopupVideollamada({...popUpVideollamada, mostrar:1}) }}>{dataCurso?.es_docente==true ? `Programar videollamadas` : `Ver videollamadas programadas`}</button>
+                                                </div>
                                                 <div className="lecture-overview-item">
-                                                        <Calendario id_curso={dataCurso.id} funcionCargarContenido={cargarContenidoEspecifico} />
+
+                                                    
+
+                                                    <Calendario id_curso={dataCurso.id} funcionCargarContenido={cargarContenidoEspecifico} />
                                                 </div>                                                 
                                             </div>
                                         </div>
@@ -997,6 +1029,20 @@ function FormularioPlay() {
                         <div className="course-dashboard-sidebar-column">
                             <button className="sidebar-open" type="button"><i className="la la-angle-left"></i> Contenido&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
                             <div className="course-dashboard-sidebar-wrap custom-scrollbar-styled">
+
+                                {dataCurso?.videollamadas?.length>0 ? <div className="course-dashboard-side-heading" style={{backgroundColor:'#8547FF'}}>
+                                    <div className="d-flex align-items-center justify-content-between" style={{width:'100%'}} >
+                                        <h3 className="fs-18 font-weight-semi-bold" style={{color:'#ffffff'}}>Siguiente Videoclase</h3>                                    
+                                        <div className="courser-item-meta-wrap">
+                                            <p className="course-item-meta" style={{color:'#ffffff'}}>{dataCurso?.videollamadas[0].fecha_hora_inicio_esp}</p>
+                                        </div>
+                                    </div>
+                                    <div className="d-flex align-items-center justify-content-between" style={{width:'100%'}} >
+                                        {dataCurso.videollamadas[0].segundos_restantes_inicio<172800 ? <CountdownTimer segundosRestantesInicio={dataCurso.videollamadas[0].segundos_restantes_inicio} segundosRestantesFin={dataCurso.videollamadas[0].segundos_restantes_fin}  functionTimeUp={()=>{ setEntrarVideollamada({mostrar: true, url:dataCurso.videollamadas[0].url }); }} />: ''}
+                                        {entrarVideollamada.mostrar==true ? <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={() => window.open(entrarVideollamada.url, '_blank')}> Entrar </button> : ''}
+                                    </div>
+                                </div> : ''}
+
                                 <div className="course-dashboard-side-heading d-flex align-items-center justify-content-between">
                                     <h3 className="fs-18 font-weight-semi-bold">Contenido del curso</h3>
                                     <button className="sidebar-close" type="button"><i className="la la-times"></i></button>

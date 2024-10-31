@@ -13,7 +13,7 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
     
-    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1});
+    const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id2:null});
     const [events, setEvents] = useState([]); 
     
     const navigate = useNavigate(); 
@@ -27,7 +27,11 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
     const handleFuncionAceptarPopUp = () => {                
         switch(popUp.data_switch){
             case 'abrir_curso_contenido':                
-                funcionCargarContenido(popUp.data_id, true);                
+                if(popUp.data_id2==null){
+                    funcionCargarContenido(popUp.data_id, true);                
+                }else{
+                    window.open(popUp.data_id2, '_blank');
+                }
             break;            
         }
         setPopup({...popUp, mostrar:false, tipo:2, data_switch:'', data_id:-1});
@@ -74,14 +78,14 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
                         fecha_hora_inicio_esp: rango.fecha_hora_inicio_esp,
                         fecha_hora_fin_esp: rango.fecha_hora_fin_esp,
                         tipo_evento : tiposEventos[rango.tipo_contenido],
+                        url_navegar : rango.url ?? null,
 						description: '',													
 						constraint:{
 							start: fecha_inicio_formateada,   //Ya viene con el 'T00:00:00'
 							end: fecha_fin_formateada
 						},
 						start: new Date(fecha_inicio_formateada),
-						end: new Date(fecha_fin_formateada),							
-						backgroundColor:'#358FF7',
+						end: new Date(fecha_fin_formateada),													
 						color:'#FFFFFF',
 						textColor:'#FFFFFF',
 						allDay: false,						
@@ -92,8 +96,7 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
                     eventos.push(evento);
                     //console.log('Elemento:', element);
                     //console.log('Índice:', index);
-                });
-                console.log("colocando eventos ", eventos);
+                });                
                 setEvents(eventos);
             }                          
         }catch(error){
@@ -105,13 +108,15 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
     const tiposEventos = {
         '2' : 'Examen',
         '5' : 'Tarea',
-        '6' : 'Foro'
+        '6' : 'Foro',
+        '98' : 'Videollamada'
     }
 
     const coloresEventos = {
         '2' : '#958BB6',
         '5' : '#8547FF',
-        '6' : '#2C3E50'
+        '6' : '#2C3E50',
+        '98' : '#8547FF',
     }
 
     // a custom render function
@@ -203,7 +208,7 @@ function Calendario({id_curso=-1, funcionCargarContenido=null}) {
                             );
                         }}
                         eventClick={(info)=>{
-                            setPopup({...popUp, mostrar:true, tipo:3, titulo:'Abrir la actividad?', data_switch:'abrir_curso_contenido', contenido:`${info.event.title}, ${info.event.extendedProps.fecha_hora_inicio_esp} a ${info.event.extendedProps.fecha_hora_fin_esp}`, data_id: info.event.extendedProps.id_curso_contenido});                            
+                            setPopup({...popUp, mostrar:true, tipo:3, titulo:'Abrir la actividad?', data_switch:'abrir_curso_contenido', contenido:`${info.event.title}, ${info.event.extendedProps.fecha_hora_inicio_esp} a ${info.event.extendedProps.fecha_hora_fin_esp}`, data_id: info.event.extendedProps.id_curso_contenido, data_id2:info.event.extendedProps.url_navegar});                            
                         }}                           
                     />
                 </div>                        
