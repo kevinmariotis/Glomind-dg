@@ -228,7 +228,33 @@ export default function CrearEditarVideollamada({funcionMostrarPopUp, id_curso=-
 
             }
             
-        }   
+        },
+        delete           : async (event) =>{
+            const headers = {
+                'Authorization':`Bearer ${jwt}`,
+            }        
+            try {               
+                const opciones = {
+                    method: 'DELETE',
+                    headers: headers,
+                };
+                setMostrarSpinner(true);
+                const response = await fetch(`${urlBaseApi}/api/cursovideollamada/${popUpVideollamada.id_editando}`, opciones);
+                setMostrarSpinner(false);
+                if (response.ok){                           
+                    setPopup({mostrar:true, titulo:'Listo', contenido:'Videollamada borrada.', data_switch:''});
+                    setPopupVideollamada({...popUpVideollamada, formulario:'listado'});
+                    handleVideollamada.getTodos();
+                    return;
+                } else {      
+                    const data = await response.json();          
+                    mensajesDeError(setPopup, response.status, (typeof data.datos !== 'undefined') ? data.datos : {});                
+                }
+            }catch(error){
+                // Manejar el caso de error en la solicitud
+                console.error('Error en la solicitud al servidor', error);
+            }
+        },
     }
 
     const horas = Array.from({ length: 24 }, (_, index) => index);
@@ -332,13 +358,13 @@ export default function CrearEditarVideollamada({funcionMostrarPopUp, id_curso=-
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <button type="button" className="btn theme-btn mb-2" onClick={handleVideollamada.save} >{popUpVideollamada.id_editando != -1 ? 'Guardar' : 'Crear'}</button>                             
+                                        {popUpVideollamada.id_editando != -1 ? <>&nbsp;<button type="button" className="btn theme-btn mb-2" onClick={handleVideollamada.delete} >Eliminar</button></>: ''}
                                         &nbsp;<button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={()=>{ setPopupVideollamada({...popUpVideollamada, formulario:'listado', id_editando:-1}); }}>Volver</button>
                                     </div>
                                 </div>
                             </>
                         :   <>
-                                <div className="table-responsive">
-                                    
+                                <div className="table-responsive">                                    
                                     <table className="table generic-table table-striped">
                                         <thead>
                                             <tr>
@@ -360,6 +386,7 @@ export default function CrearEditarVideollamada({funcionMostrarPopUp, id_curso=-
                                         </tbody>
                                     </table>
                                 </div>
+                                {es_docente ? <button type="button" className="btn theme-btn mb-2" onClick={()=>{ setPopupVideollamada({...popUpVideollamada, formulario:'crear-editar', id_editando:-1, fecha_hora_inicio:'', cantidad_minutos:-1, url:'', url_grabacion:'', fecha_inicio:today, hora_inicio:'', minuto_inicio:''}); }} >Crear</button> : ''}
                             </>
                         }
                     </div>
