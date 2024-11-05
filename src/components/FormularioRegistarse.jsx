@@ -269,8 +269,8 @@ function FormularioRegistrarse(){
                                             <div className="custom-control custom-checkbox mb-4 fs-15">
                                                 <input type="checkbox" onChange={handleTerminosCondiciones} checked={terminosCondiciones} className="custom-control-input" id="agreeCheckbox" required />
                                                 <label className="custom-control-label custom--control-label" htmlFor="agreeCheckbox">Al registrarme acepto los&nbsp;
-                                                    <a href="terms-and-conditions.html" className="text-color hover-underline">términos y condiciones</a> y la&nbsp;
-                                                    <a href="privacy-policy.html" className="text-color hover-underline">política de privacidad</a>
+                                                    <a href="#" className="text-color hover-underline">términos y condiciones</a> y la&nbsp;
+                                                    <a href="#" className="text-color hover-underline">política de privacidad</a>
                                                 </label><br/>
                                                 {erroresCampos['terminos_y_condiciones'].length > 0 && (<SpamError mensaje={erroresCampos['terminos_y_condiciones']} />)}
                                             </div>

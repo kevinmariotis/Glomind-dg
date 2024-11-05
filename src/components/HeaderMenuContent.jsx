@@ -244,7 +244,7 @@ function HeaderMenuContent() {
                                                         {tags.datos[key].tags.length > 0 && (
                                                             <ul className="dropdown-menu-item">                                                                
                                                                 {tags.datos[key].tags.map((sub_tag) => {       
-                                                                    return <li key={`menu-subtag-agrupacion-${sub_tag.id}`} ><Link to={`${urlBase}/tag/${sub_tag.url_amigable}`} href="index.html">{sub_tag.nombre}</Link></li>
+                                                                    return <li key={`menu-subtag-agrupacion-${sub_tag.id}`} ><Link to={`${urlBase}/tag/${sub_tag.url_amigable}`}>{sub_tag.nombre}</Link></li>
                                                                 })}
                                                             </ul>
                                                         )}                                                        

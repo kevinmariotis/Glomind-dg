@@ -10,7 +10,7 @@ function DashboardFooter() {
         </div>
         <div className="col-lg-6">
             <ul className="generic-list-item d-flex flex-wrap align-items-center fs-14 justify-content-end">
-                <li className="mr-3"><a href="terms-and-conditions.html">Terminos y condiciones</a></li>
+                <li className="mr-3"><a href="#">Terminos y condiciones</a></li>
                 <li><a href="privacy-policy.html">Políticas de privacidad</a></li>
             </ul>
         </div>

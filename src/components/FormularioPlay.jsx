@@ -914,7 +914,7 @@ function FormularioPlay() {
                                                 </div>
                                                 <div className="section-block"></div>                                                                                                
                                                 <div className="d-flex align-items-center justify-content-end" style={{ width: '100%' }} >
-                                                    <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={()=>{ setPopupVideollamada({...popUpVideollamada, mostrar:1}) }}>{dataCurso?.es_docente==true ? `Programar videollamadas` : `Ver videollamadas programadas`}</button>
+                                                    <button type="button" className="btn theme-btn theme-btn-white mb-2" onClick={()=>{ setPopupVideollamada({...popUpVideollamada, mostrar:1}) }}>{dataCurso?.es_docente==true ? `Programar videoclases` : `Ver videoclases programadas`}</button>
                                                 </div>
                                                 <div className="lecture-overview-item">
 
