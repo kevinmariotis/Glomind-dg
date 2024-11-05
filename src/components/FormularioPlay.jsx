@@ -711,8 +711,8 @@ function FormularioPlay() {
                                                                                                         
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 3 ? ''                                                                                                    
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 4 ? ''
-                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
-                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 6 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio_esp} hasta ${categoria.curso_contenido[key].fecha_hora_fin_esp}`
+                                                                                                    : categoria.curso_contenido[key].tipo_contenido === 6 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio_esp} hasta ${categoria.curso_contenido[key].fecha_hora_fin_esp}`
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 7 ? ` Link externo`
                                                                                                     : ''
                                                                                                 }    
@@ -1124,8 +1124,8 @@ function FormularioPlay() {
                                                                                             
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 3 ? ''
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 4 ? ''
-                                                                                        : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
-                                                                                        : categoria.curso_contenido[key].tipo_contenido === 6 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio} hasta ${categoria.curso_contenido[key].fecha_hora_fin}`
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 5 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio_esp} hasta ${categoria.curso_contenido[key].fecha_hora_fin_esp}`
+                                                                                        : categoria.curso_contenido[key].tipo_contenido === 6 ? ` desde ${categoria.curso_contenido[key].fecha_hora_inicio_esp} hasta ${categoria.curso_contenido[key].fecha_hora_fin_esp}`
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 7 ? ` Link externo`
                                                                                         : ''
                                                                                     }                                                                                        
