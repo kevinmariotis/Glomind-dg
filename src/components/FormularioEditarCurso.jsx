@@ -731,7 +731,7 @@ function FormularioEditarCurso() {
                     </div>                    
                     <div className="card card-item">
                         <div className="card-body">
-                            <h3 className="fs-22 font-weight-semi-bold pb-2">Qué aprenderás</h3>
+                            <h3 className="fs-22 font-weight-semi-bold pb-2">Área de formación</h3>
                             <div className="divider"><span></span></div>
                             {erroresCampos['desc_que_aprenderas'].length > 0 && (<SpamError mensaje={erroresCampos['desc_que_aprenderas']} />)}
                             <div className="row">                                
@@ -754,7 +754,7 @@ function FormularioEditarCurso() {
                     </div>
                     <div className="card card-item">
                         <div className="card-body">
-                            <h3 className="fs-22 font-weight-semi-bold pb-2">Requerimientos</h3>
+                            <h3 className="fs-22 font-weight-semi-bold pb-2">Fines de aprendizaje</h3>
                             <div className="divider"><span></span></div>
                             {erroresCampos['desc_requerimientos'].length > 0 && (<SpamError mensaje={erroresCampos['desc_requerimientos']} />)}
                             <div className="row">                                
