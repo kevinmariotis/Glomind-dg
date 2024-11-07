@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 
 function TarjetaCategoriaAdmin(

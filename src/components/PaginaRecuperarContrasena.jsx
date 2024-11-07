@@ -1,6 +1,5 @@
 import {React} from 'react';
 import Header from './Header';
-import BreadCrumbArea from './BreadCrumbArea';
 import FormularioRecuperarContrasena from './FormularioRecuperarContrasena';
 import FooterArea from './FooterArea';
 
