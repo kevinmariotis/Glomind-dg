@@ -436,9 +436,9 @@ function FormularioHome() {
                         <span class="section-divider"></span>
                     </div>
                     <div class="client-logo-carousel pt-4">
-                        <a href="https://litoral.edu.co/" target="_blank" class="client-logo-item"><img src="/images/empresas/litoral.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
-                        <a href="https://scv.edu.co/" target="_blank" class="client-logo-item"><img src="/images/empresas/system_center.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
-                        <a href="https://americana.edu.co/barranquilla" target="_blank" class="client-logo-item"><img src="/images/empresas/americana.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>                        
+                        <a href="https://google.com/" target="_blank" class="client-logo-item"><img src="/images/empresas/litoral.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
+                        <a href="https://google.com/" target="_blank" class="client-logo-item"><img src="/images/empresas/system_center.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
+                        <a href="https://google.com" target="_blank" class="client-logo-item"><img src="/images/empresas/americana.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>                        
                     </div>
                 </div>
             </section>

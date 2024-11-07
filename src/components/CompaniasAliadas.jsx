@@ -20,9 +20,9 @@ function CompaniasAliadas() {
                     </div>
                     <div className="col-lg-6">
                         <div className="client-logo-wrap text-right">
-                            <a href="https://litoral.edu.co/" target="_blank" className="client-logo-item client--logo-item-2 pr-3"><img src={`${urlBase}/images/empresas/litoral.png`} alt="Logo de Litoral"/></a>
-                            <a href="https://scv.edu.co/" target="_blank" className="client-logo-item client--logo-item-2 pr-3"><img src={`${urlBase}/images/empresas/system_center.png`} alt="Logo de System Center"/></a>
-                            <a href="https://americana.edu.co/barranquilla" className="client-logo-item client--logo-item-2 pr-3"><img src={`${urlBase}/images/empresas/americana.png`} alt="Logo de Americana"/></a>
+                            <a href="https://google.com/" target="_blank" className="client-logo-item client--logo-item-2 pr-3"><img src={`${urlBase}/images/empresas/litoral.png`} alt="Logo de Litoral"/></a>
+                            <a href="https://google.com/" target="_blank" className="client-logo-item client--logo-item-2 pr-3"><img src={`${urlBase}/images/empresas/system_center.png`} alt="Logo de System Center"/></a>
+                            <a href="https://google.com" className="client-logo-item client--logo-item-2 pr-3"><img src={`${urlBase}/images/empresas/americana.png`} alt="Logo de Americana"/></a>
                         </div>
                     </div>
                 </div>
