@@ -257,7 +257,7 @@ function FormularioRegistrarse(){
                                         </div>                                        
                                         <div className="input-box">
                                             <div className="input-group mb-3">                  
-                                                <ReCAPTCHA theme={`${temaActual==1 ? 'light' : 'dark'}`} key={resetKey} onChange={handleCaptchaChange} sitekey="6LfyHT0mAAAAADE_ZAEDvGr4Z6QBa8WWbuBJ8WzA" />                                                
+                                                <ReCAPTCHA theme={`${temaActual==1 ? 'light' : 'dark'}`} key={resetKey} onChange={handleCaptchaChange} sitekey="6LeOBnkqAAAAAAPGh4vTCkuVsoGMuWh6EVppzYN-" />                                                
                                             </div>
                                             {erroresCampos['g-recaptcha-response'].length > 0 && (<SpamError mensaje={erroresCampos['g-recaptcha-response']} />)}
                                         </div>

@@ -3,7 +3,7 @@ import { AuthContext } from '../AuthContext';
 import Popup from './Popup';
 
 function Recurso({id_contenido}){
-    const {jwt} = useContext(AuthContext);
+    const {jwt, esMovil} = useContext(AuthContext);
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;              
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});    
     const [mimeType, setMimeType] = useState("");
@@ -109,8 +109,8 @@ function Recurso({id_contenido}){
                 textoCerrar="Aceptar"
             />
             <div style={ fileType == 'pdf' ? style_pdf : style_nopdf }>
-                {fileType == 'pdf' && <iframe width="100%" height="100%" src={ rutaArchivo }  frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>}
-                {(fileType != 'pdf' && (fileType != 'jpg' && fileType != 'jpeg' && fileType != 'png')) && <div style={{marginBottom:'300px', marginTop:'150px'}}><div style={{marginBottom:'10px'}}>El archivo no se puede abrir en el navegador</div><button onClick={() => handleItemClick()} href="#" className="btn theme-btn">Descargar archivo</button></div>}
+                {(fileType == 'pdf' && !esMovil) && <iframe width="100%" height="100%" src={ rutaArchivo }  frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>}
+                {( (fileType != 'pdf' || (fileType == 'pdf' && esMovil)) && (fileType != 'jpg' && fileType != 'jpeg' && fileType != 'png')) && <div style={{marginBottom:'300px', marginTop:'150px'}}><div style={{marginBottom:'10px'}}>El archivo no se puede abrir en el navegador</div><button onClick={() => handleItemClick()} href="#" className="btn theme-btn">Descargar archivo</button></div>}
                 {(fileType != 'pdf' && (fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png')) && <div><img src={ rutaArchivo } className='img-fluid m-3'/></div>}
             </div>
         </>
