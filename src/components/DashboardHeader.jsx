@@ -570,7 +570,7 @@ function DashboardHeader({expandir_ancho=false}) {
                 <ul className="generic-list-item off-canvas-menu-list pt-1 pb-2 border-bottom border-bottom-gray">
                     <li style={{display:'none'}}><a href="student-detail.html">Public profile</a></li>
                     <li><a onClick={()=>{ handleAbrirLinkMenuPrincipal('/usuario/editar'); }}>Editar perfil</a></li>
-                    <li><a onClick={handleCerrarSesion} style={{ cursor: 'pointer' }}>Cerrar sesión</a></li>
+                    <li><a href="#" onClick={handleCerrarSesion}>Cerrar sesión</a></li>
                 </ul>                
                 <h4 style={{display:'none'}} className="off-canvas-menu-heading pt-20px">More from Aduca</h4>
                 <ul style={{display:'none'}} className="generic-list-item off-canvas-menu-list pt-1">

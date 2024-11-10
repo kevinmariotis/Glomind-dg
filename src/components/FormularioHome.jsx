@@ -373,7 +373,7 @@ function FormularioHome() {
                             <div className="about-content pb-5">
                                 <div className="section-heading">
                                     <h5 className="ribbon ribbon-lg mb-2">Acerca de nosotros</h5>
-                                    <h2 className="section__title">Beneficios de aprender con EdukaLAB</h2>
+                                    <h2 className="section__title">Beneficios de aprender con Glomind</h2>
                                     <span className="section-divider"></span>
                                     <p className="section__desc">
                                         La flexibilidad en cuanto a horarios, permite a los estudiantes adaptar su aprendizaje a sus compromisos existentes. 
@@ -431,14 +431,14 @@ function FormularioHome() {
                 <div class="container">
                     <div class="section-heading">
                         <h5 class="ribbon ribbon-lg mb-2">Aliados</h5>
-                        <h2 class="section__title">Las mejores empresas eligen <span class="text-color">EdukaLAB</span> para construir sus
+                        <h2 class="section__title">Las mejores empresas eligen <span class="text-color">Glomind</span> para construir sus
                             <br /> habilidades profesionales en demanda</h2>
                         <span class="section-divider"></span>
                     </div>
                     <div class="client-logo-carousel pt-4">
-                        <a href="https://litoral.edu.co/" target="_blank" class="client-logo-item"><img src="/images/empresas/litoral.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
-                        <a href="https://scv.edu.co/" target="_blank" class="client-logo-item"><img src="/images/empresas/system_center.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
-                        <a href="https://americana.edu.co/barranquilla" target="_blank" class="client-logo-item"><img src="/images/empresas/americana.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>                        
+                        <a href="https://google.com/" target="_blank" class="client-logo-item"><img src="/images/empresas/litoral.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
+                        <a href="https://google.com/" target="_blank" class="client-logo-item"><img src="/images/empresas/system_center.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>
+                        <a href="https://google.com" target="_blank" class="client-logo-item"><img src="/images/empresas/americana.png" alt="brand image" style={{maxWidth:'140px', marginRight:'60px'}} /></a>                        
                     </div>
                 </div>
             </section>

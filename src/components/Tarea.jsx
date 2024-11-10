@@ -12,7 +12,7 @@ export default function Tarea({id_contenido, id_curso, es_docente}) {
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
     const {jwt, permissions, esMovil} = useContext(AuthContext);
     const [popUp, setPopup] = useState({mostrar:false, tipo:2, titulo:'', contenido:'', data_switch:'', data_id:-1, data_id_2:-1});                        
-    const [popUpObjeto, setPopupObjeto] = useState({mostrar:true, id:-1, consumo_estado:0, consumo_puntuacion:-1, nombre:'', descripcion:'',  fecha_hora_inicio:'', fecha_hora_fin:'', reenviar_post_calificacion:0, permitir_enviar:'no', id_curso:-1, id_categoria: -1});
+    const [popUpObjeto, setPopupObjeto] = useState({mostrar:true, id:-1, consumo_estado:0, consumo_puntuacion:-1, nombre:'', descripcion:'',  fecha_hora_inicio:'', fecha_hora_fin:'', fecha_hora_inicio_esp:'', fecha_hora_fin_esp:'', reenviar_post_calificacion:0, permitir_enviar:'no', id_curso:-1, id_categoria: -1});
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
         
     const [entregas, setEntregas] = useState([]);    //Se cargan el listado de todas las entregas    
@@ -229,6 +229,8 @@ export default function Tarea({id_contenido, id_curso, es_docente}) {
                             descripcion:datos.descripcion.replace(/<br\s*\/?>/gi,'\n'),                            
                             fecha_hora_inicio:datos.fecha_hora_inicio, 
                             fecha_hora_fin:datos.fecha_hora_fin, 
+                            fecha_hora_inicio_esp:datos.fecha_hora_inicio_esp, 
+                            fecha_hora_fin_esp:datos.fecha_hora_fin_esp, 
                             reenviar_post_calificacion:datos.reenviar_post_calificacion,
                             permitir_enviar:datos.permitir_enviar
                         });  
@@ -386,13 +388,13 @@ export default function Tarea({id_contenido, id_curso, es_docente}) {
                             <div className="col-lg-4 responsive-column-half">
                                 <div className="quiz-result-content text-center">
                                     <p className="section__desc text-white-50 pb-2">Fecha hora inicio</p>
-                                    <h2 className="section__title text-white">{popUpObjeto.fecha_hora_inicio}</h2>
+                                    <h2 className="section__title text-white">{popUpObjeto.fecha_hora_inicio_esp}</h2>
                                 </div>
                             </div>
                             <div className="col-lg-4 responsive-column-half">
                                 <div className="quiz-result-content text-center">
                                     <p className="section__desc text-white-50 pb-2">Fecha hora finalización</p>
-                                    <h2 className="section__title text-white">{popUpObjeto.fecha_hora_fin}</h2>
+                                    <h2 className="section__title text-white">{popUpObjeto.fecha_hora_fin_esp}</h2>
                                 </div>
                             </div>                        
                         </div>

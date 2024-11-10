@@ -110,7 +110,7 @@ function FooterArea() {
                     <div className="row align-items-center">
                         <div className="col-lg-6">
                             <div className="d-flex flex-wrap align-items-center">
-                                <a href="index.html" className="pr-4">
+                                <a href={urlBase} className="pr-4">
                                     <img src={`${urlBase}/images/logo_principal.png`} alt="footer logo" className="footer__logo" />
                                 </a>
                                 <p className="copy-desc">2024 Glomind &copy;. Todos los derechos reservados</p>
@@ -119,8 +119,8 @@ function FooterArea() {
                         <div className="col-lg-6">
                             <div className="d-flex flex-wrap align-items-center justify-content-end">
                                 <ul className="generic-list-item d-flex flex-wrap align-items-center fs-14">
-                                    <li className="mr-3"><a href="terms-and-conditions.html">Términos y condiciones</a></li>
-                                    <li className="mr-3"><a href="privacy-policy.html">Política de privacidad</a></li>
+                                    <li className="mr-3"><a href="#">Términos y condiciones</a></li>
+                                    <li className="mr-3"><a href="#">Política de privacidad</a></li>
                                 </ul>                                
                             </div>
                         </div>
