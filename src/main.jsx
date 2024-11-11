@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom/client'
 import App from './components/App.jsx'
+import './index.css'
 
 const link = document.createElement('link');
 link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap';
@@ -22,6 +23,16 @@ import './assets/css/plyr.css';
 import './assets/css/style.css';
 import './assets/css/tooltipster.bundle.css';
 import './assets/css/personalizado.css';
+// Fuente DM Sans
+import '@fontsource/dm-sans/100.css'
+import '@fontsource/dm-sans/200.css'
+import '@fontsource/dm-sans/300.css'
+import '@fontsource/dm-sans/400.css'
+import '@fontsource/dm-sans/500.css'
+import '@fontsource/dm-sans/600.css'
+import '@fontsource/dm-sans/700.css'
+import '@fontsource/dm-sans/800.css'
+import '@fontsource/dm-sans/900.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App/>);

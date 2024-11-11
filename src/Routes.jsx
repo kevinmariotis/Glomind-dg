@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 
@@ -6,7 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import PaginaRegistrarse from './components/PaginaRegistrarse';
 import PaginaIniciarSesion from './components/PaginaIniciarSesion';
 import PaginaCategoriaNavegacion from './components/PaginaCategoriaNavegacion';
-import PaginaDetallesDeCurso from './components/PaginaDetallesDeCurso';
+// import PaginaDetallesDeCurso from './components/PaginaDetallesDeCurso';
 import PaginaCarrito from './components/PaginaCarrito';
 import PaginaCheckout from './components/PaginaCheckout';
 import PaginaDashboardHome from './components/PaginaDashboardHome';
@@ -34,16 +34,16 @@ import PaginaExamenIntentoResultados from './components/PaginaExamenIntentoResul
 import PaginaExamenHistorial from './components/PaginaExamenHistorial';
 import PaginaValidarCertificado from './components/PaginaValidarCertificado';
 import PaginaEditarPerfil from './components/PaginaEditarPerfil';
-import PaginaHistorialDeCompras from './components/PaginaHistorialDeCompras';
+// import PaginaHistorialDeCompras from './components/PaginaHistorialDeCompras';
 import PaginaFavoritos from './components/PaginaFavoritos';
 import PaginaPerfilesPermisos from './components/PaginaPerfilesPermisos';
 import PaginaCategoriasSistema from './components/PaginaCategoriasSistema';
 import PaginDashboardUsuarios from './components/PaginDashboardUsuarios';
-import PaginaDashboardFacturas from './components/PaginaDashboardFacturas';
+// import PaginaDashboardFacturas from './components/PaginaDashboardFacturas';
 import PaginaEstudianteDetalles from './components/PaginaEstudianteDetalles';
-import PaginaDashboardCupon from './components/PaginaDashboardCupon';
-import PaginaCrearCupon from './components/PaginaCrearCupon';
-import PaginaEditarCupon from './components/PaginaEditarCupon';
+// import PaginaDashboardCupon from './components/PaginaDashboardCupon';
+// import PaginaCrearCupon from './components/PaginaCrearCupon';
+// import PaginaEditarCupon from './components/PaginaEditarCupon';
 import PaginaDashboardCertificado from './components/PaginaDashboardCertificado';
 import PaginaCrearCertificado from './components/PaginaCrearCertificado';
 import PaginaEditarCertificado from './components/PaginaEditarCertificado';
@@ -56,7 +56,7 @@ import PaginaCursoNotas from './components/PaginaCursoNotas';
 
 import Pagina404 from './components/Pagina404';
 import DashboardMenu from './components/DashboardMenu';
-import Login from './components/login/Login';
+// import Login from './components/login/Login';
 import SignUp from './components/signUp/SignUp';
 
 //import About from './components/About';
@@ -131,8 +131,8 @@ const Rutas = () => {
 
                 {/*Agregados nuevos para anular el home : */}         
                 <Route path="/" element={!authenticated ? <ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute> : <ProtectedRoute permiso={authenticated} ><PaginaDashboardEnroledCourses/></ProtectedRoute>} />
-                {/* <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} /> */}
-                <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><Login/></ProtectedRoute>} />
+                <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} />
+                {/* <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><Login/></ProtectedRoute>} /> */}
                 <Route path="/sign-up" element={<ProtectedRoute permiso={!authenticated} ><SignUp/></ProtectedRoute>} />
 
 
