@@ -1,19 +1,15 @@
-import {React} from 'react';
-import Header from './Header';
-import BreadCrumbArea from './BreadCrumbArea';
-import FormularioIniciarSesion from './FormularioIniciarSesion';
-import FooterArea from './FooterArea';
+import Header from "./Header";
+import FormularioIniciarSesion from "./FormularioIniciarSesion";
+import FooterArea from "./FooterArea";
 
-function PaginaIniciarSesion() {  
-
-    const breadCrumb = [{'link':'/login', 'nombre':'Iniciar sesión'}];
-
-    return (        
-        <>              
-            <Header/>            
-            <FormularioIniciarSesion/>
-            <FooterArea />
-        </>    );
+function PaginaIniciarSesion() {
+  return (
+    <>
+      <Header />
+      <FormularioIniciarSesion />
+      <FooterArea />
+    </>
+  );
 }
 
 export default PaginaIniciarSesion;

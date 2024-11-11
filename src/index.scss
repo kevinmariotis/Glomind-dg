@@ -1,0 +1,16 @@
+:root {
+  --CornerExtra-large: 28px;
+  --Radiuss: 12px
+}
+
+* {
+  font-family: "DM Sans" !important;
+}
+
+.btn-round {
+  border-radius: var(--Radiuss) !important;
+}
+.card-round {
+  border-radius: var(--CornerExtra-large) !important;
+  padding: 40px !important;
+}

@@ -1,4 +1,3 @@
-import React from 'react';
 import HeaderTop from './HeaderTop';
 import HeaderMenuContent from './HeaderMenuContent';
 
