@@ -981,7 +981,7 @@ export default function FormularioCategoriasSistema() {
                     </div>
                     <div className="modal-body">                        
                         <div className="form-group">
-                            <label className="label-text">Imágen (Solo 1920x450)</label>
+                            <label className="label-text">Imágen (Solo 370x247)</label>
                             
                             <div {...getRootProps()}>
                                 {imagenPequenaCategoriaSistema!=null && 
@@ -1011,7 +1011,7 @@ export default function FormularioCategoriasSistema() {
                     </div>
                     <div className="modal-body">                        
                         <div className="form-group">
-                            <label className="label-text">Imágen (Solo 1920x450)</label>                            
+                            <label className="label-text">Imágen (Solo 370x247)</label>                            
                             <div {...getRootProps()}>
                                 {imagenPequenaTag!=null && 
                                     <><img className="mr-3" src={`${urlBaseApi}/${imagenPequenaTag}`} style={{width:'100%'}} alt="Imagen del tag"/><br/></>
