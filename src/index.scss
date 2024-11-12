@@ -1,6 +1,7 @@
 :root {
   --CornerExtra-large: 28px;
-  --Radiuss: 12px
+  --Radiuss: 12px;
+  --Azul-petroleo: #1d0959;
 }
 
 * {
@@ -10,7 +11,31 @@
 .btn-round {
   border-radius: var(--Radiuss) !important;
 }
+
 .card-round {
   border-radius: var(--CornerExtra-large) !important;
   padding: 40px !important;
+}
+
+.card-user {
+  padding: 30px !important;
+  color: white;
+  background: var(--Azul-petroleo);
+  border-radius: var(--CornerExtra-large);
+
+  .legend {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20.83px;
+    letter-spacing: 4px;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .text {
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 50px;
+    text-align: left;
+  }
 }
