@@ -7,7 +7,6 @@ import { AuthContext } from "../AuthContext";
 import SpamError from "./SpamError";
 import Popup from "./Popup";
 import Spinner from "./Spinner";
-import IconArrowRight from "../assets/icons/IconArrowRight";
 
 function FormularioIniciarSesion() {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
@@ -358,10 +357,10 @@ function FormularioIniciarSesion() {
                       onClick={fetchData}
                     >
                       Iniciar sesión
-                      <IconArrowRight />
+                      <i className="la la-arrow-right icon ml-1"></i>
                     </button>
-                    <p className="fs-14 pt-2">
-                      No tiene una cuenta?{" "}
+                    <p className="fs-14 pt-2 mt-2">
+                      ¿No tiene una cuenta?{" "}
                       <Link
                         to="/signup"
                         className="text-color hover-underline"
