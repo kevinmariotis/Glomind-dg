@@ -356,8 +356,8 @@ export default function FormularioCategoriasSistema() {
                     setPopup({mostrar:true, titulo:'Listo', contenido:'Imagen actualizada.'});
                     return;
                 } else {
-                    if(datos.codigo=='no-puede-ser-redimensioada-a-1920-450'){
-                        setPopup({mostrar:true, titulo:'Error', contenido:'La imagen no es de 1920 x 450 o no puede ser redimensionada equitativamente a este tamaño.'});
+                    if(datos.codigo=='no-puede-ser-redimensioada-a-370-247'){
+                        setPopup({mostrar:true, titulo:'Error', contenido:'La imagen no es de 370 x 247 o no puede ser redimensionada equitativamente a este tamaño.'});
                     }else{   
                         mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
                     }                        
@@ -395,8 +395,8 @@ export default function FormularioCategoriasSistema() {
                     setPopup({mostrar:true, titulo:'Listo', contenido:'Imagen actualizada.'});
                     return;
                 } else {
-                    if(datos.codigo=='no-puede-ser-redimensioada-a-1920-450'){
-                        setPopup({mostrar:true, titulo:'Error', contenido:'La imagen no es de 1920 x 450 o no puede ser redimensionada equitativamente a este tamaño.'});
+                    if(datos.codigo=='no-puede-ser-redimensioada-a-370-247'){
+                        setPopup({mostrar:true, titulo:'Error', contenido:'La imagen no es de 370 x 247 o no puede ser redimensionada equitativamente a este tamaño.'});
                     }else{   
                         mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': '', 'contenido': ''});
                     }                        
