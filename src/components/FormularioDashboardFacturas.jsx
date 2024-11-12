@@ -380,7 +380,7 @@ function FormularioDashboardFacturas() {
                                         </div>
                                     </div>
                                     <div className="input-box col-lg-6">
-                                        <label className="label-text">Departamento</label>
+                                        <label className="label-text">Estado</label>
                                         <div className="form-group">
                                             <span className="rating-total pl-1">{detallesFacturacion.departamento}</span>
                                         </div>
