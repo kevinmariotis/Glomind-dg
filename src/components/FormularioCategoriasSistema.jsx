@@ -10,6 +10,7 @@ import Popup from './Popup';
 import Paginador from './Paginador';
 import BotonDashboardNavegacionMovil from './BotonDashboardNavegacionMovil';
 import DashboardFooter from './DashboardFooter';
+import VideoPicker from './VideoPicker';
 
 /*Import para el arbol de categorias*/
 import { Tree, getBackendOptions, MultiBackend, } from "@minoru/react-dnd-treeview";
@@ -50,7 +51,9 @@ export default function FormularioCategoriasSistema() {
     const [opcionesCurso, setOpcionesCurso] = useState({});
 
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
-    
+    const [mostrarPopUpAgregarVideo, setMostrarPopUpAgregarVideo] = useState(false);
+    const [vistaPreviaVideo, setVistaPreviaVideo] = useState(null);
+
     useEffect(() => {           
         window.scrollTo(0, 0);
         switch(pestanaActivada){
@@ -218,6 +221,12 @@ export default function FormularioCategoriasSistema() {
         event.preventDefault();   
         setPalabraBuscarCurso(event.target.value);
     };
+
+    const handleAgregarVideo = (id_categoria, video_pequeno) => {                 
+        setMostrarPopUpAgregarVideo(true);
+        setVistaPreviaVideo(video_pequeno);
+        setFormIdCategoriaEditando(id_categoria);
+    }
 
     const onDrop = (acceptedFiles) => {
         // Lógica para procesar los archivos aceptados
@@ -437,6 +446,36 @@ export default function FormularioCategoriasSistema() {
         }
     };
 
+    const handleSeleccionarVideo = async (id_video) => {
+        //event.preventDefault();
+        reiniciarErrorCampoGlobal();
+                       
+        const raw = {            
+            'id_video_preview': id_video+'',            
+        };
+                            
+        const opciones = {
+            method: 'PUT',
+            headers: {
+                'Authorization' : `Bearer ${jwt}`
+            },
+            body: JSON.stringify(raw),
+        };
+        
+        try {
+            setMostrarSpinner(true);
+            const response = await fetch(`${urlBaseApi}/api/categoriasistema/editarVideoPreview/${formIdCategoriaEditando}`, opciones);
+            setMostrarSpinner(false);
+            const datos = await response.json();            
+            if (response.ok){    
+                setPopup({mostrar:true, titulo:'Listo', contenido:'Video asignado correctamente.'});
+            } else {
+                mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {}, setErrorCampoGlobal, {'titulo': 'Revisar formulario', 'contenido': 'Por favor rellene todos los campos del formulario correctamente.'});                                                                    
+            }                
+        }catch (error) {
+            console.error('Error de conexión:', error);
+        }              
+    };
 
     /*
         Mueve un curso de una categoria a otra
@@ -856,7 +895,7 @@ export default function FormularioCategoriasSistema() {
             funcionCerrar={handleFuncionCerrarPopUp}
             textoCerrar="Cerrar"
         />
-
+        {mostrarPopUpAgregarVideo && <VideoPicker funcionMostrarPopUp={setMostrarPopUpAgregarVideo} funcionSetVideoSeleccionado={handleSeleccionarVideo} />}
         <div className={`modal fade modal-container ${verPopUpBuscarCurso==true ? 'show' : ''}`} style={{ background: 'rgba(0, 0, 0, 0.7)' }} id="comprarModal3" tabIndex="-1" role="dialog" aria-labelledby="comprarModalTitle" aria-hidden="true">
             <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div className="modal-content">
@@ -1203,7 +1242,7 @@ export default function FormularioCategoriasSistema() {
                                                 {node.droppable && (
                                                     <span onClick={onToggle}>{isOpen ? "[-]" : "[+]"}</span>
                                                 )}
-                                                <CustomNode permiso_crear={permissions[15]} permiso_editar={permissions[16]} permiso_editar_imagen={permissions[75]} tipo={node.data.tipo} id_real={node.data.id_real} nombre={node.text} estado={node.data.estado} imagen_pequena={node.data.imagen_pequena} handleClickEditar={handleClickEditar} handleClickCrear={handleClickCrear} handleClickEditarImagen={handleClickEditarImagen} handleClickBorrar={handleClickBorrarCategoriaSistema} />
+                                                <CustomNode permiso_crear={permissions[15]} permiso_editar={permissions[16]} permiso_editar_imagen={permissions[75]} tipo={node.data.tipo} id_real={node.data.id_real} nombre={node.text} estado={node.data.estado} imagen_pequena={node.data.imagen_pequena} video_pequeno={node.video_pequeno} handleClickEditar={handleClickEditar} handleClickCrear={handleClickCrear} handleClickEditarImagen={handleClickEditarImagen} handleClickBorrar={handleClickBorrarCategoriaSistema} handleAgregarVideo={handleAgregarVideo} />
                                             </div>
                                         )}
                                     />
@@ -1309,9 +1348,9 @@ export default function FormularioCategoriasSistema() {
 };
 
 
-export const CustomNode = ({tipo, id_real, nombre, estado, imagen_pequena, handleClickEditar, handleClickCrear, handleClickEditarImagen, handleClickBorrar, permiso_crear, permiso_editar, permiso_editar_imagen}) => {
+export const CustomNode = ({tipo, id_real, nombre, estado, imagen_pequena, video_pequeno, handleClickEditar, handleClickCrear, handleClickEditarImagen, handleClickBorrar, handleAgregarVideo, permiso_crear, permiso_editar, permiso_editar_imagen}) => {
     const [hover, setHover] = useState(false);                    
     return (
-        <span onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} >{nombre} {tipo=='categoria' && hover ? <> [{permiso_editar && <span style={{cursor:'pointer'}} onClick={()=> handleClickEditar(tipo, id_real, nombre, estado)}> Editar | </span>} {permiso_crear && <span onClick={()=> handleClickCrear(id_real, nombre)} style={{cursor:'pointer'}}>Crear | </span>} {permiso_editar && <span style={{cursor:'pointer'}} onClick={()=> handleClickBorrar(id_real, nombre)}>Borrar | </span>}  {permiso_editar_imagen && <span style={{cursor:'pointer'}} onClick={()=> handleClickEditarImagen(id_real, imagen_pequena)}>Imagen</span>} ]</> : ''}</span>
+        <span onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} >{nombre} {tipo=='categoria' && hover ? <> [{permiso_editar && <span style={{cursor:'pointer'}} onClick={()=> handleClickEditar(tipo, id_real, nombre, estado)}> Editar | </span>} {permiso_crear && <span onClick={()=> handleClickCrear(id_real, nombre)} style={{cursor:'pointer'}}>Crear | </span>} {permiso_editar && <span style={{cursor:'pointer'}} onClick={()=> handleClickBorrar(id_real, nombre)}>Borrar | </span>}  {permiso_editar_imagen && <span style={{cursor:'pointer'}} onClick={()=> handleClickEditarImagen(id_real, imagen_pequena)}>Imagen |</span>} {permiso_editar_imagen && <span style={{cursor:'pointer'}} onClick={()=> handleAgregarVideo(id_real, video_pequeno)}>Video</span>} ]</> : ''}</span>
     );
 };
