@@ -1,10 +1,7 @@
-import React from 'react';
-import HeaderTop from './HeaderTop';
-import HeaderMenuContent from './HeaderMenuContent';
 
 function DashboardFooter() {
   return (
-    <div className="row align-items-center dashboard-copyright-content pb-4">
+    <div className="row align-items-center dashboard-copyright-content pb-4 footer">
         <div className="col-lg-6">
             <p className="copy-desc">2024 Glomind &copy;. Todos los derechos reservados.</p>
         </div>

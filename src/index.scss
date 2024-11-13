@@ -1,7 +1,10 @@
 :root {
+  // Estilos
   --CornerExtra-large: 28px;
   --Radiuss: 12px;
+  // Colores
   --Azul-petroleo: #1d0959;
+  --Gris-oscuro: #958bb6;
 }
 
 * {
@@ -18,9 +21,15 @@
 }
 
 .card-user {
-  padding: 30px !important;
+  max-width: 600px !important;
+  padding: 40px !important;
   color: white;
-  background: var(--Azul-petroleo);
+  // background: var(--Azul-petroleo);
+  background: radial-gradient(
+    circle,
+    rgba(133, 71, 255, 1) 0%,
+    rgba(29, 9, 89, 1) 100%
+  );
   border-radius: var(--CornerExtra-large);
 
   .legend {
@@ -38,4 +47,8 @@
     line-height: 50px;
     text-align: left;
   }
+}
+
+.footer {
+  width: 100%;
 }
