@@ -6,7 +6,7 @@ import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
-import TarjetaCursoAdmin from './TarjetaCursoAdmin';
+import TarjetaCursoAdmin from './cards/TarjetaCursoAdmin';
 import Paginador from './Paginador';
 import Popup from './Popup';
 import DashboardFooter from './DashboardFooter';

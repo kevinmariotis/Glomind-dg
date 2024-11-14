@@ -3,11 +3,11 @@ import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../AuthContext";
 import { mensajesDeError } from "./utils";
 import Spinner from "./Spinner";
-import TarjetaCursoAdmin from "./TarjetaCursoAdmin";
+import TarjetaCursoAdmin from "./cards/TarjetaCursoAdmin";
 import Paginador from "./Paginador";
 import Popup from "./Popup";
 // import BotonDashboardNavegacionMovil from "./BotonDashboardNavegacionMovil";
-import TarjetaCategoriaAdmin from "./TarjetaCategoriaAdmin";
+import TarjetaCategoriaAdmin from "./cards/TarjetaCategoriaAdmin";
 import DashboardFooter from "./DashboardFooter";
 
 function FormularioDashboardEnroledCourses() {

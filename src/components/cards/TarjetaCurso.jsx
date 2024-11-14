@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../AuthContext';
+import { AuthContext } from '../../AuthContext';
 
-function TarjetaCursoHorizontal(
+function TarjetaCurso(
     {
         idcurso=0,
         url_amigable='',
@@ -21,6 +21,7 @@ function TarjetaCursoHorizontal(
         precio_actual=0.00,
         precio_anterior=0.00,
         favorito=-1,
+        col_lg=6,
     }) {
         const {jwt, setCargarFavoritos} = useContext(AuthContext);
         const urlBase = import.meta.env.VITE_URL_BASE;    
@@ -144,39 +145,41 @@ function TarjetaCursoHorizontal(
             }
         };   
 
-        return (<div className="card card-item card-item-list-layout border border-gray shadow-none">
-                    <div className="card-image">
-                         <Link to={`${urlBase}/curso/${url_amigable}`} className="d-block">
-                            <img className="card-img-top" src={`${urlBaseApi}/${imagen}`} alt="Card image cap" />
-                        </Link>
-                        <div className="course-badge-labels">
-                            {bestseller==1 && <div className="course-badge">Más vendidos</div>}
-                            {promocionado==1 && <div className="course-badge red">Promocionado</div>}
-                            {gratis==1 && <div className="course-badge green">Gratis</div>}
-                            {alto_valorado==1 && <div className="course-badge sky-blue">Mejores reseñas</div>}
-                            {porcentaje_descuento!=0 && <div className="course-badge blue">-{porcentaje_descuento}%</div>}
-                        </div>
-                    </div>
-                    <div className="card-body">
-                        <h6 className="ribbon ribbon-blue-bg fs-14 mb-3">{niveles[nivel]}</h6>
-                        <h5 className="card-title"><Link to={`${urlBase}/curso/${url_amigable}`}>{nombre}</Link></h5>
-                        {instructor!='' && <p className="card-text"><Link to={`${urlBase}/usuario/${id_instructor}`}>{instructor}</Link></p>}
-                        <div className="rating-wrap d-flex align-items-center py-2">
-                            <div className="review-stars">
-                                <span className="rating-number">{reviews_puntuacion}</span>
-                                {estrellas.map((number) => (                                                                                
-                                    <span key={`estrella-${idcurso}-${number}`} className={`la la-star${reviews_puntuacion < number ? "-o" : ""}`}></span>
-                                ))}
+        //console.log("Este es el favorito ", estadoFavorito);
+        return (<div className={`col-lg-${col_lg} responsive-column-half`}>
+                    <div className="card card-item card-preview" data-tooltip-content="#tooltip_content_1">
+                        <div className="card-image">
+                            <Link to={`${urlBase}/curso/${url_amigable}`} className="d-block">
+                                <img className="card-img-top lazy" src={imagen!='/images/img8.jpg' && imagen!=null ? urlBaseApi+'/'+imagen : '/images/img8.jpg'} data-src={imagen} alt={nombre} />
+                            </Link>
+                            <div className="course-badge-labels">
+                                {bestseller==1 && <div className="course-badge">Más vendidos</div>}
+                                {promocionado==1 && <div className="course-badge red">Promocionado</div>}
+                                {gratis==1 && <div className="course-badge green">Gratis</div>}
+                                {alto_valorado==1 && <div className="course-badge sky-blue">Mejores reseñas</div>}
+                                {porcentaje_descuento!=0 && <div className="course-badge blue">-{porcentaje_descuento}%</div>}
                             </div>
-                            <span className="rating-total pl-1">({reviews_cantidad})</span>
                         </div>
-                        <div className="d-flex justify-content-between align-items-center">
-                            <p className="card-price text-black font-weight-bold">{precio_actual} {precio_anterior!=0 && <span className="before-price font-weight-medium">{precio_anterior}</span>}</p>
-                            {estadoFavorito!=-1 && <div className="icon-element icon-element-sm shadow-sm cursor-pointer" title="Agregar a favoritos" onClick={handleSetFavorito}><i className={`la la-heart${estadoFavorito==0 ? '-o' : '' }`}></i></div>}
+                        <div className="card-body">
+                            <h6 className="ribbon ribbon-blue-bg fs-14 mb-3">{niveles[nivel]}</h6>
+                            <h5 className="card-title"><Link to={`${urlBase}/curso/${url_amigable}`}>{nombre}</Link></h5>
+                            {instructor!='' && <p className="card-text"><Link to={`${urlBase}/usuario/${id_instructor}`} >{instructor}</Link></p>}
+                            <div className="rating-wrap d-flex align-items-center py-2">
+                                <div className="review-stars">
+                                    <span className="rating-number">{reviews_puntuacion}</span>                                    
+                                    {estrellas.map((number) => (                                                                                
+                                        <span key={`estrella-${idcurso}-${number}`} className={`la la-star${reviews_puntuacion < number ? "-o" : ""}`}></span>
+                                    ))}                                    
+                                </div>
+                                <span className="rating-total pl-1">({reviews_cantidad})</span>
+                            </div>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <p className="card-price text-black font-weight-bold">{precio_actual!=0 ? precio_actual : 'Gratis!'} {precio_anterior!=0 && <span className="before-price font-weight-medium">{precio_anterior}</span>}</p>
+                                {estadoFavorito!=-1 && <div className="icon-element icon-element-sm shadow-sm cursor-pointer" title="Agregar a favoritos" onClick={handleSetFavorito}><i className={`la la-heart${estadoFavorito==0 ? '-o' : '' }`}></i></div>}
+                            </div>
                         </div>
                     </div>
-                </div>            
-        );           
+                </div>);          
 }
 
-export default TarjetaCursoHorizontal;
+export default TarjetaCurso;

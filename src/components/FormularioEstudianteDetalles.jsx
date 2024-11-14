@@ -10,7 +10,7 @@ import Paginador from './Paginador';
 import DashboardFooter from './DashboardFooter';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import TarjetaCurso from './TarjetaCurso';
+import TarjetaCurso from './cards/TarjetaCurso';
 
 export default function FormularioEstudianteDetalles() {
     const urlBase = import.meta.env.VITE_URL_BASE;  

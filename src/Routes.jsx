@@ -58,7 +58,7 @@ import Pagina404 from './components/Pagina404';
 import DashboardMenu from './components/DashboardMenu';
 // import Login from './components/login/Login';
 import SignUp from './components/signUp/SignUp';
-import InicioPage from './pages/inicio/InicioPage';
+import PaginaInicio from './pages/inicio/PaginaInicio';
 
 //import About from './components/About';
 //import Home from './components/Home';
@@ -131,7 +131,7 @@ const Rutas = () => {
                 {/* <Route exact path="/" element={<PaginaHome/>} />  */}
 
                 {/*Agregados nuevos para anular el home : */}         
-                <Route path="/" element={!authenticated ? <ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute> : <ProtectedRoute permiso={authenticated} ><InicioPage/></ProtectedRoute>} />
+                <Route path="/" element={!authenticated ? <ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute> : <ProtectedRoute permiso={authenticated} ><PaginaInicio/></ProtectedRoute>} />
                 <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} />
                 {/* <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><Login/></ProtectedRoute>} /> */}
                 <Route path="/sign-up" element={<ProtectedRoute permiso={!authenticated} ><SignUp/></ProtectedRoute>} />

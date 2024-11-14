@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import { mensajesDeError } from './utils';
 import Spinner from './Spinner';
-import TarjetaVideoAdmin from './TarjetaVideoAdmin';
+import TarjetaVideoAdmin from './cards/TarjetaVideoAdmin';
 import Paginador from './Paginador';
 import Popup from './Popup';
 import BotonDashboardNavegacionMovil from './BotonDashboardNavegacionMovil';

@@ -1,10 +1,13 @@
 :root {
   // Estilos
+  --Corner-medium: 12px;
+  --CornerLarge: 18px;
   --CornerExtra-large: 28px;
-  --Radiuss: 12px;
+  --CornerExtra-large: 28px;
   // Colores
   --Azul-petroleo: #1d0959;
   --Gris-oscuro: #958bb6;
+  --Gris-sombra: #958bb680;
 }
 
 * {
@@ -12,7 +15,30 @@
 }
 
 .btn-round {
-  border-radius: var(--Radiuss) !important;
+  border-radius: var(--Corner-medium) !important;
+}
+
+.card-basic {
+  // max-width: 325px;
+  height: 200px;
+  padding: 10px;
+  border-radius: var(--CornerLarge);
+  box-shadow: 0px 0px 3.13px 0px var(--Gris-sombra);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.1s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.card-course {
+  min-height: 487px;
+  border-radius: var(--CornerLarge) !important;
 }
 
 .card-round {
@@ -47,6 +73,11 @@
     line-height: 50px;
     text-align: left;
   }
+}
+.content-card-course {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .footer {

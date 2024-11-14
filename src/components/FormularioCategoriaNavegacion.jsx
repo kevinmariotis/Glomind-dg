@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
-import TarjetaCurso from './TarjetaCurso';
+import TarjetaCurso from './cards/TarjetaCurso';
 import Paginador from './Paginador';
 import Popup from './Popup';
 import { mensajesDeError } from './utils';

@@ -5,7 +5,7 @@ import { mensajesDeError } from './utils';
 import Spinner from './Spinner';
 import SpamError from './SpamError';
 import Popup from './Popup';
-import TarjetaCurso from './TarjetaCurso';
+import TarjetaCurso from './cards/TarjetaCurso';
 import Paginador from './Paginador';
 import BotonDashboardNavegacionMovil from './BotonDashboardNavegacionMovil';
 import DashboardFooter from './DashboardFooter';
