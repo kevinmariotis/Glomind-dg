@@ -398,7 +398,7 @@ function FormularioCheckout() {
                                             </div>
                                         </div>
                                         <div className="input-box col-lg-6">
-                                            <label className="label-text">Departamento</label>
+                                            <label className="label-text">Estado</label>
                                             <div className="form-group">
                                                 <select value={formIdDepartamento} onChange={handleDepartamentoChange} className={`form-control form--control ${temaActual==1 ? '' : 'select-dark'}`} type="text" name="id_departamento">
                                                     <option value="" >Seleccione departamento</option>
