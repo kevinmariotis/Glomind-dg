@@ -31,7 +31,7 @@ const CursosRecientes = () => {
       //buscamos los datos de los cursos a mostrar
       // setMostrarSpinner(true);
       const response2 = await fetch(
-        `${urlBaseApi}/api/usuario/cursos/0/${1}/${3}/nombre-asc/9/${0}`,
+        `${urlBaseApi}/api/usuario/cursos/0/${1}/${2}/ultima_visita-asc`,
         opciones
       );
       // setMostrarSpinner(false);
@@ -52,59 +52,62 @@ const CursosRecientes = () => {
 
   return (
     <div>
-      <h3
-        className="fs-22 font-weight-semi-bold my-4 mt-5"
-        style={{
-          alignContent: "center",
-          color: "var(--Azul-petroleo)",
-        }}
-      >
-        Continuar viendo
-      </h3>
-      <Carousel
-        interval={null}
-        controls
-        prevIcon={
-          <Button
-            style={{ borderRadius: "50%", width: "50px", height: "50px" }}
+      {cursosRecientes?.length > 0 && (
+        <>
+          <h3
+            className="fs-22 font-weight-semi-bold my-4 mt-5"
+            style={{
+              alignContent: "center",
+              color: "var(--Azul-petroleo)",
+            }}
           >
-            <i className="la la-arrow-left icon"></i>
-          </Button>
-        }
-        nextIcon={
-          <Button
-            style={{ borderRadius: "50%", width: "50px", height: "50px" }}
+            Continuar viendo
+          </h3>
+          <Carousel
+            interval={null}
+            controls={cursosRecientes?.length > 1}
+            prevIcon={
+              <Button
+                style={{ borderRadius: "50%", width: "50px", height: "50px" }}
+              >
+                <i className="la la-arrow-left icon"></i>
+              </Button>
+            }
+            nextIcon={
+              <Button
+                style={{ borderRadius: "50%", width: "50px", height: "50px" }}
+              >
+                <i className="la la-arrow-right icon"></i>
+              </Button>
+            }
           >
-            <i className="la la-arrow-right icon"></i>
-          </Button>
-        }
-      >
-        {cursosRecientes?.length > 0 &&
-          cursosRecientes?.map((slide, index) => (
-            <Carousel.Item
-              key={`slide-item-${index}`}
-              style={{ height: "550px" }}
-            >
-              <div className="card-wrapper container-sm d-flex  justify-content-start">
-                {slide?.map((curso) => (
-                  <TarjetaCursoAdmin
-                    key={`tarjeta${curso.id}`}
-                    idcurso={curso.id}
-                    url_amigable={curso.url_amigable}
-                    nombre={curso.nombre}
-                    imagen={curso.imagen_pequena}
-                    instructor={curso.instructor}
-                    id_instructor={curso.id_instructor}
-                    descripcion_instructor={curso.docente_descripcion}
-                    labelButton={"Continuar"}
-                    btnVideo={false}
-                    curso={curso}
-                  />
-                ))}
-              </div>
-            </Carousel.Item>
-          ))}
-      </Carousel>
+            {cursosRecientes?.map((slide, index) => (
+              <Carousel.Item
+                key={`slide-item-${index}`}
+                style={{ height: "550px" }}
+              >
+                <div className="card-wrapper container-sm d-flex  justify-content-start">
+                  {slide?.map((curso) => (
+                    <TarjetaCursoAdmin
+                      key={`tarjeta${curso.id}`}
+                      idcurso={curso.id}
+                      url_amigable={curso.url_amigable}
+                      nombre={curso.nombre}
+                      imagen={curso.imagen_pequena}
+                      instructor={curso.instructor}
+                      id_instructor={curso.id_instructor}
+                      descripcion_instructor={curso.docente_descripcion}
+                      labelButton={"Continuar"}
+                      btnVideo={false}
+                      curso={curso}
+                    />
+                  ))}
+                </div>
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        </>
+      )}
     </div>
   );
 };
