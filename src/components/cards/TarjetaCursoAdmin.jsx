@@ -11,8 +11,8 @@ function TarjetaCursoAdmin({
   instructor = "",
   id_instructor = 0,
   descripcion_instructor = "",
-  // reviews_puntuacion = 0.0,
-  // porcentaje_progreso = 0,
+  labelButton = null,
+  btnVideo = true,
   curso = {},
 }) {
   // const { jwt } = useContext(AuthContext);
@@ -95,23 +95,34 @@ function TarjetaCursoAdmin({
               className="card-text lh-22 pt-"
               style={{ color: "var(--Gris-oscuro)" }}
             >
-              Fecha de inicio: {curso.fecha_matriculacion.split(" ")[0]}
+              Fecha de inicio: {curso.fecha_matriculacion?.split(" ")[0]}
             </p>
             <p
               className="card-text lh-22 pt-"
               style={{ color: "var(--Gris-oscuro)" }}
             >
-              Fecha final: {curso.fecha_vencimiento.split(" ")[0]}
+              Fecha final: {curso.fecha_vencimiento?.split(" ")[0]}
             </p>
           </div>
           <div>
-            <button
-              className="btn theme-btn btn-round w-100 py 3"
-              onClick={() => navigate(`/play/${url_amigable}`)}
-            >
-              Ir al curso
-              <i className="la la-arrow-right icon ml-1"></i>
-            </button>
+            <div className="d-flex ">
+              <button
+                className="btn theme-btn btn-round w-100 py 3"
+                onClick={() => navigate(`/play/${url_amigable}`)}
+              >
+                {labelButton || "Ir al curso"}
+                <i className="la la-arrow-right icon ml-1"></i>
+              </button>
+              {btnVideo && (
+                <button
+                  className="btn theme-btn btn-round py 3"
+                  onClick={() => navigate(`/play/${url_amigable}`)}
+                  style={{ width: "70px !important", marginLeft: "10px" }}
+                >
+                  <i className="la la-play icon"></i>
+                </button>
+              )}
+            </div>
           </div>
           {/* <div className="my-course-progress-bar-wrap d-flex align-items-center pt-3">
             <p className="skillbar-title">Completado:</p>

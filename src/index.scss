@@ -37,8 +37,9 @@
 }
 
 .card-course {
-  min-height: 487px;
+  min-height: 500px;
   border-radius: var(--CornerLarge) !important;
+  box-shadow: 0px 0px 3.13px 0px var(--Gris-sombra) !important;
 }
 
 .card-round {
@@ -74,6 +75,13 @@
     text-align: left;
   }
 }
+.carousel-control-prev{
+  width: 4% !important;
+}
+.carousel-control-next{
+  width: 4% !important;
+}
+
 .content-card-course {
   display: flex;
   flex-direction: column;

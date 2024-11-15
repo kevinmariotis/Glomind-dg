@@ -5,6 +5,7 @@ import { AuthContext } from "../../AuthContext";
 import TarjetaCategoriaAdmin from "../../components/cards/TarjetaCategoriaAdmin";
 import DashboardFooter from "../../components/DashboardFooter";
 import TarjetaCursoAdmin from "../../components/cards/TarjetaCursoAdmin";
+import CursosRecientes from "./CursosRecientes";
 
 const FormularioInicio = () => {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
@@ -117,6 +118,7 @@ const FormularioInicio = () => {
   return (
     <div className="dashboard-content-wrap">
       {/* {esMovil && <BotonDashboardNavegacionMovil />} */}
+      {/* Breadcrumb de seguimiento */}
       {categoriaSeleccionada === 0 && (
         <div className="card-user col-lg-6">
           <p className="legend">el aprendizaje impulsa tu crecimiento</p>
@@ -124,6 +126,7 @@ const FormularioInicio = () => {
           <p className="text">Bienvenido(a) a Glomind!</p>
         </div>
       )}
+      {/* Boton atras */}
       <div className="container-fluid my-5">
         {categoriaSeleccionada !== 0 && (
           <div
@@ -195,6 +198,8 @@ const FormularioInicio = () => {
               />
             ))}
         </div>
+        {/* Cursos recientes */}
+        {categoriasNiveles.length === 1 && <CursosRecientes />}
       </div>
       <DashboardFooter />
     </div>
