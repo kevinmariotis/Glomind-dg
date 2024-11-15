@@ -121,7 +121,7 @@ const FormularioInicio = () => {
       {/* Breadcrumb de seguimiento */}
       {categoriaSeleccionada === 0 && (
         <div className="card-user col-lg-6">
-          <p className="legend">el aprendizaje impulsa tu crecimiento</p>
+          <p className="legend">EL APRENDIZAJE IMPULSA TU CRECIMIENTO</p>
           <p className="text">{nombres}</p>
           <p className="text">Bienvenido(a) a Glomind!</p>
         </div>

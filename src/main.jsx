@@ -11,6 +11,7 @@ import "./assets/css/fancybox.css";
 import "./assets/css/intlTelInput.min.css";
 import "./assets/css/jquery-te-1.4.0.css";
 import "./assets/css/leaflet.css";
+import "./assets/css/line-awesome.css";
 import "./assets/css/owl.carousel.min.css";
 import "./assets/css/owl.theme.default.min.css";
 import "./assets/css/plyr.css";
@@ -29,13 +30,8 @@ import "@fontsource/dm-sans/700.css";
 import "@fontsource/dm-sans/800.css";
 import "@fontsource/dm-sans/900.css";
 
-// Iconos
-import "font-awesome/css/font-awesome.min.css";
-import "./assets/css/line-awesome.css";
-
 const link = document.createElement("link");
-link.href =
-  "https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap";
+link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap";
 link.rel = "stylesheet";
 document.head.appendChild(link);
 
