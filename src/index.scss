@@ -8,6 +8,7 @@
   --Azul-petroleo: #1d0959;
   --Gris-oscuro: #958bb6;
   --Gris-sombra: #958bb680;
+  --Blanco-fondo: #f6f5fa;
 }
 
 * {
@@ -30,6 +31,7 @@
   text-align: center;
   cursor: pointer;
   transition: 0.1s ease-in-out;
+  background-color: white;
 
   &:hover {
     transform: scale(1.05);
@@ -93,6 +95,13 @@
     border-radius: var(--CornerExtra-large) !important;
     padding: 20px;
   }
+}
+
+.dashboard-area {
+  background-color: var(--Blanco-fondo);
+  position: fixed;
+  overflow: auto;
+  width: 100%;  
 }
 
 .footer {
