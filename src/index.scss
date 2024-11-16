@@ -1,6 +1,6 @@
 :root {
   // Estilos
-  --Corner-medium: 12px;
+  --CornerMedium: 12px;
   --CornerLarge: 18px;
   --CornerExtra-large: 28px;
   --CornerExtra-large: 28px;
@@ -15,7 +15,7 @@
 }
 
 .btn-round {
-  border-radius: var(--Corner-medium) !important;
+  border-radius: var(--CornerMedium) !important;
 }
 
 .card-basic {
@@ -86,6 +86,13 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.custom-modal {
+  > div > div {
+    border-radius: var(--CornerExtra-large) !important;
+    padding: 20px;
+  }
 }
 
 .footer {

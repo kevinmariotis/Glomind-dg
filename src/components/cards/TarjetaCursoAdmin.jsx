@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 // import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import ModalVideoCurso from "../modals/ModalVideoCurso";
 // import { AuthContext } from "../../AuthContext";
 
 function TarjetaCursoAdmin({
@@ -114,13 +115,9 @@ function TarjetaCursoAdmin({
                 <i className="la la-arrow-right icon ml-1"></i>
               </button>
               {btnVideo && (
-                <button
-                  className="btn theme-btn btn-round py 3"
-                  onClick={() => navigate(`/play/${url_amigable}`)}
-                  style={{ width: "70px !important", marginLeft: "10px" }}
-                >
-                  <i className="la la-play icon"></i>
-                </button>
+                <div>
+                  <ModalVideoCurso curso={curso} />
+                </div>
               )}
             </div>
           </div>
