@@ -707,7 +707,7 @@ function FormularioPlay() {
 
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                                     ? 
-                                                                                                        categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? ' de duración '+categoria.curso_contenido[key].tiempo_resumido : ''
+                                                                                                        categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? ' desde '+categoria.curso_contenido[key].fecha_hora_inicio_esp+' hasta '+categoria.curso_contenido[key].fecha_hora_fin_esp+' | '+categoria.curso_contenido[key].tiempo_resumido : ''
                                                                                                         
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 3 ? ''                                                                                                    
                                                                                                     : categoria.curso_contenido[key].tipo_contenido === 4 ? ''
@@ -1120,7 +1120,7 @@ function FormularioPlay() {
 
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 2
                                                                                         ? 
-                                                                                            categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? ' de duración: '+categoria.curso_contenido[key].tiempo_resumido : ''
+                                                                                            categoria.curso_contenido[key].tipo==1 ? '' : categoria.curso_contenido[key].cantidad_horas_de_video!='00:00:00' ? ' desde '+categoria.curso_contenido[key].fecha_hora_inicio_esp+' hasta '+categoria.curso_contenido[key].fecha_hora_fin_esp+' | '+categoria.curso_contenido[key].tiempo_resumido : ''
                                                                                             
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 3 ? ''
                                                                                         : categoria.curso_contenido[key].tipo_contenido === 4 ? ''

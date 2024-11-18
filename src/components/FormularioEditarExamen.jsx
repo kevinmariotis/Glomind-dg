@@ -7,9 +7,17 @@ import SpamError from './SpamError';
 import Popup from './Popup';
 import DashboardFooter from './DashboardFooter';
 
+//para el date picker
+import { DayPicker } from 'react-day-picker';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import 'react-day-picker/dist/style.css';
+//fin de para el date picker
+
 function FormularioEditarExamen() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
     const urlBaseApi = import.meta.env.VITE_URL_BASE_API;       
+    const today = new Date();
     const navigate = useNavigate(); 
     const {jwt, permissions, temaActual} = useContext(AuthContext);
     const { id, id_curso } = useParams();
@@ -29,10 +37,19 @@ function FormularioEditarExamen() {
     const [idExamenCreado, setIdExamenCreado] = useState(-1);
     
     const [mostrarSpinner, setMostrarSpinner] = useState(false);    
-    
+    const [mostrarFechaInicio, setMostrarFechaInicio] = useState(false);    
+    const [mostrarFechaFin, setMostrarFechaFin] = useState(false);    
+    const [datos, setDatos] = useState({mostrar:true, fecha_hora_inicio:'', fecha_inicio:today, hora_inicio:'', minuto_inicio:'', fecha_hora_fin:'', fecha_fin:today, hora_fin:'', minuto_fin:'', mostrar_fecha_inicio:false, mostrar_fecha_fin:false, });
+
     useEffect(() => {           
         window.scrollTo(0, 0);
         obtenerDatosServidor();
+
+        document.addEventListener('click', handleObjeto.hideSelects);
+        return () => {
+            document.removeEventListener('click', handleObjeto.hideSelects);
+        };
+
     }, []);
 
     useEffect(() => {           
@@ -57,7 +74,16 @@ function FormularioEditarExamen() {
         'tipo':[],
         'nota':[],
         'porcentaje_en_total_curso':[],        
-        'politica_retroalimentacion':[],        
+        'politica_retroalimentacion':[], 
+        
+        'fecha_hora_inicio':[],
+        'fecha_inicio':[],
+        'hora_inicio':[],
+        'minuto_inicio':[],
+        'fecha_hora_fin':[],        
+        'fecha_fin':[],
+        'hora_fin':[],
+        'minuto_fin':[],
     }    
     const [erroresCampos, setErrorCampo] = useState(camposErrores);
     const setErrorCampoGlobal = (index, newValue) => {
@@ -139,7 +165,19 @@ function FormularioEditarExamen() {
                 setMinuto(parseInt(tiempo.minutos));                
                 if (typeof id_curso !== 'undefined') {
                     setPorcentajeEnTotalCurso(datos.porcentaje_en_total_curso);                    
-                }                
+                }    
+                
+                const partes_inicio = datos.fecha_hora_inicio.split(" ");
+                const partes_inicio2 = partes_inicio[0].split("-"); 
+                const partes_inicio_hora = partes_inicio[1].split(":");
+                
+                const partes_fin = datos.fecha_hora_fin.split(" ");
+                const partes_fin2 = partes_fin[0].split("-");
+                const partes_fin_hora = partes_fin[1].split(":");
+                
+                setDatos({...datos, fecha_inicio:new Date(partes_inicio2[0], partes_inicio2[1]-1, partes_inicio2[2]), hora_inicio:partes_inicio_hora[0], minuto_inicio:partes_inicio_hora[1], fecha_fin:new Date(partes_fin2[0], partes_fin2[1]-1, partes_fin2[2]), hora_fin:partes_fin_hora[0], minuto_fin:partes_fin_hora[1], fecha_hora_inicio:datos.fecha_hora_inicio, fecha_hora_fin:datos.fecha_hora_fin});
+
+
             } else {                     
                 mensajesDeError(setPopup, response.status, (typeof datos.datos !== 'undefined') ? datos.datos : {});                    
             }     
@@ -170,6 +208,11 @@ function FormularioEditarExamen() {
             raw.porcentaje_en_total_curso = porcentajeEnTotalCurso;
         }    
         
+        if(["2", "3", 2, 3].includes(tipo)){
+            raw.fecha_hora_inicio = format(datos.fecha_inicio, 'yyyy-MM-dd')+' '+datos.hora_inicio+':'+datos.minuto_inicio+':00';
+            raw.fecha_hora_fin = format(datos.fecha_fin, 'yyyy-MM-dd')+' '+datos.hora_fin+':'+datos.minuto_fin+':00';
+        }
+
         const opciones = {
             method: 'PUT',
             headers: {
@@ -199,9 +242,35 @@ function FormularioEditarExamen() {
 
     }
 
+    const handleObjeto = {
+        fecha_hora_inicio   : (event) => { setDatos({...datos, fecha_hora_inicio:event.target.value});  },
+        fecha_inicio   : (fecha_establecer) => { setDatos({...datos, fecha_inicio:fecha_establecer});  },
+        hora_inicio   : (event) => { setDatos({...datos, hora_inicio:event.target.value});  },
+        minuto_inicio   : (event) => { setDatos({...datos, minuto_inicio:event.target.value});  },
+        fecha_hora_fin   : (event) => { setDatos({...datos, fecha_hora_fin:event.target.value});  },        
+        fecha_fin   : (fecha_establecer) => { setDatos({...datos, fecha_fin:fecha_establecer});  },
+        hora_fin   : (event) => { setDatos({...datos, hora_fin:event.target.value});  },
+        minuto_fin   : (event) => { setDatos({...datos, minuto_fin:event.target.value});  },
+        toogleMostrarFechaInicio : (event) => {
+            setMostrarFechaInicio(!mostrarFechaInicio);            
+        },
+        toogleMostrarFechaFin : (event) => {
+            setMostrarFechaFin(!mostrarFechaFin);            
+        },
+        hideSelects : (event) => {            
+            if(event.target.name===undefined){
+                console.log("ejecutandso");                
+                setMostrarFechaInicio(false);
+                setMostrarFechaFin(false);
+            }
+        }
+    };
+
     const horas = Array.from({ length: 4 }, (_, index) => index);
     const minutos = Array.from({ length: 60 }, (_, index) => index);
     const porcentaje_en_total_curso = Array.from({ length: 100 }, (_, index) => index + 1);
+
+    const horas_fechas = Array.from({ length: 24 }, (_, index) => index);
 
     return (
         <>
@@ -258,6 +327,72 @@ function FormularioEditarExamen() {
                                         {erroresCampos['tipo'].length > 0 && (<SpamError mensaje={erroresCampos['tipo']} />)}
                                     </div>
                                 </div>
+
+                                {["2", "3", 2, 3].includes(tipo) ?
+                                    <><div className="col-lg-12">
+                                        <div className="form-group">
+                                            <label className="label-text" style={{'display':'block'}}>Fecha de inicio</label>                                        
+                                            <input onClick={handleObjeto.toogleMostrarFechaInicio} value={format(datos.fecha_inicio, 'yyyy-MM-dd')} style={{width:'50%', float:'left'}} readOnly className="form-control form--control pl-3" type="text" name="fecha_inicio" maxLength="64" placeholder="" />
+                                            <select onChange={handleObjeto.hora_inicio} style={{width:'25%', height:'50px', float:'left'}} value={datos.hora_inicio} name="hora_inicio" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
+                                                <option value=""> -- Hora --</option>   
+                                                {horas_fechas.map((hora) => (
+                                                    <option key={`h-inicio-${hora}`} value={hora.toString().padStart(2, '0')}>
+                                                        {hora.toString().padStart(2, '0')}
+                                                    </option>
+                                                ))}                                                                                     
+                                            </select>
+                                            <select onChange={handleObjeto.minuto_inicio} style={{width:'25%', height:'50px'}} value={datos.minuto_inicio} name="minuto_inicio" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
+                                                <option value=""> -- Minuto --</option>                                                                                        
+                                                {minutos.map((minuto) => (
+                                                    <option key={`m-inicio-${minuto}`} value={minuto.toString().padStart(2, '0')}>
+                                                        {minuto.toString().padStart(2, '0')}
+                                                    </option>
+                                                ))}
+                                            </select>                                        
+                                            <div style={{position:'absolute',  zIndex:'999', backgroundColor: temaActual ? '#ffffff' : '#1B1B1B', display:mostrarFechaInicio ? 'block' : 'none'}}>
+                                                <DayPicker
+                                                    mode="single"
+                                                    selected={datos.fecha_inicio}
+                                                    onSelect={handleObjeto.fecha_inicio} 
+                                                    locale={es}                       
+                                                />
+                                            </div>
+                                            {erroresCampos['fecha_hora_inicio'].length > 0 && (<SpamError mensaje={erroresCampos['fecha_hora_inicio']} />)}
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-12">
+                                        <div className="form-group">
+                                            <label className="label-text" style={{'display':'block'}}>Fecha de finalización</label>                                        
+                                            <input onClick={handleObjeto.toogleMostrarFechaFin} value={format(datos.fecha_fin, 'yyyy-MM-dd')} style={{width:'50%', float:'left'}} readOnly className="form-control form--control pl-3" type="text" name="fecha_fin" maxLength="64" placeholder="" />
+                                            <select onChange={handleObjeto.hora_fin} style={{width:'25%', height:'50px', float:'left'}} value={datos.hora_fin} name="hora_fin" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
+                                                <option value=""> -- Hora --</option>   
+                                                {horas_fechas.map((hora) => (
+                                                    <option key={`h-fin-${hora}`} value={hora.toString().padStart(2, '0')}>
+                                                        {hora.toString().padStart(2, '0')}
+                                                    </option>
+                                                ))}                                                                                     
+                                            </select>
+                                            <select onChange={handleObjeto.minuto_fin} style={{width:'25%', height:'50px'}} value={datos.minuto_fin} name="minuto_fin" className={`form-control ${temaActual==1 ? '' : 'select-dark'}`}>
+                                                <option value=""> -- Minuto --</option>                                                                                        
+                                                {minutos.map((minuto) => (
+                                                    <option key={`m-fin-${minuto}`} value={minuto.toString().padStart(2, '0')}>
+                                                        {minuto.toString().padStart(2, '0')}
+                                                    </option>
+                                                ))}
+                                            </select>                                        
+                                            <div style={{position:'absolute',  zIndex:'999', backgroundColor: temaActual ? '#ffffff' : '#1B1B1B', display:mostrarFechaFin ? 'block' : 'none'}}>
+                                                <DayPicker
+                                                    mode="single"
+                                                    selected={datos.fecha_fin}
+                                                    onSelect={handleObjeto.fecha_fin} 
+                                                    locale={es}                       
+                                                />
+                                            </div>
+                                            {erroresCampos['fecha_hora_fin'].length > 0 && (<SpamError mensaje={erroresCampos['fecha_hora_fin']} />)}
+                                        </div>
+                                    </div></>
+                                : ''}
+
                                 <div className="col-lg-12">
                                     <div className="form-group">
                                         <label className="label-text">Política de retroalimentación</label>
