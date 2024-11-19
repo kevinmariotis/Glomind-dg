@@ -5050,7 +5050,7 @@ div.datedropper .picker .pick-lg-b li {
   z-index: 1023; }
 
 .dashboard-menu-content {
-  width: calc(100% - 320px);
+  width: calc(100% - 250px);
   margin-left: auto; }
   @media (max-width: 1199px) {
     .dashboard-menu-content {
@@ -5946,7 +5946,7 @@ div.datedropper .picker .pick-lg-b li {
 .dashboard-content-wrap {
   height: 100vh;
   padding-top: 45px;
-  width: calc(100% - 325px);
+  width: calc(100% - 250px);
   margin-left: auto;
   padding-right: 30px;
   padding-left: 30px; }

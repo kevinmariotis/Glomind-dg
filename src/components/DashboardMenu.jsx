@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 
@@ -7,7 +7,8 @@ function DashboardMenu() {
 
   const urlBase = import.meta.env.VITE_URL_BASE;
   const currentMenu = location.pathname;
-  const { permissions } = useContext(AuthContext);
+  const { permissions, esMovil } = useContext(AuthContext);
+  const [isSm, setIsSm] = useState(false);
 
   const validarPermisos = (lista = []) => {
     let retornar = false;
@@ -18,12 +19,26 @@ function DashboardMenu() {
     });
     return retornar;
   };
+
+  const getIsSm = () => {
+    console.log(location.pathname?.split("/"));
+    if (location.pathname?.split("/")[1] === "play" || esMovil) {
+      setIsSm(true);
+    } else {
+      setIsSm(false);
+    }
+  };
+
   useEffect(() => {
-    //  Sirve para detectar cambios de ruta, así el sidebarMenu se actualizará
+    getIsSm();
   }, [location]);
 
   return (
-    <div className="off-canvas-menu dashboard-off-canvas-menu off--canvas-menu custom-scrollbar-styled pt-20px">
+    <div
+      className={`off-canvas-menu dashboard-off-canvas-menu off--canvas-menu custom-scrollbar-styled pt-20px ${
+        isSm ? "sidebar-sm" : "sidebar-lg"
+      }`}
+    >
       <div
         className="off-canvas-menu-close dashboard-menu-close icon-element icon-element-sm shadow-sm"
         data-toggle="tooltip"
@@ -32,24 +47,28 @@ function DashboardMenu() {
       >
         <i className="la la-times"></i>
       </div>
-      <div className="logo-box px-4">
+      <div className="logo-box px-4 mt-3">
         <Link to="/" className="logo">
-          <img src={`${urlBase}/images/logo_principal.png`} alt="logo" />
+          <img
+            src={`${urlBase}/images/logo_principal.png`}
+            alt="logo"
+            className="logo-sm"
+          />
         </Link>
       </div>
-      <ul className="generic-list-item off-canvas-menu-list off--canvas-menu-list pt-35px">
-        <li
-          className={
-            currentMenu === "/" ? "page-active" : ""
-          }
-        >
+      <ul className="generic-list-item off-canvas-menu-list off--canvas-menu-list pt-35px list-sm">
+        <li className={currentMenu === "/" ? "page-active" : ""}>
           <Link to="/">
-            <i className="la la-home mr-2"></i> Inicio
+            <i className="la la-home mr-2"></i> <span>Inicio</span>
           </Link>
         </li>
-        <li className={currentMenu === "/cursos/matriculados" ? "page-active" : ""}>
+        <li
+          className={
+            currentMenu === "/cursos/matriculados" ? "page-active" : ""
+          }
+        >
           <Link to="/cursos/matriculados">
-            <i className="la la-book mr-2"></i> Cursos Ofertados
+            <i className="la la-book mr-2"></i> <span>Cursos matriculados</span>
           </Link>
         </li>
         {/* <li className={currentMenu === '/cursos/favoritos' ? 'page-active' : ''}><Link to="/cursos/favoritos"><svg className="mr-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/></svg> Curso Favoritos</Link></li> */}
@@ -70,7 +89,8 @@ function DashboardMenu() {
             }
           >
             <Link to="/cursos">
-              <i className="la la-th-large mr-2"></i> Cursos del sistema
+              <i className="la la-th-large mr-2"></i>{" "}
+              <span>Cursos del sistema</span>
             </Link>
           </li>
         )}
@@ -85,19 +105,21 @@ function DashboardMenu() {
             }
           >
             <Link to="/video">
-              <i className="la la la-video-camera mr-2"></i> Video
+              <i className="la la la-video-camera mr-2"></i> <span>Video</span>
             </Link>
           </li>
         )}
         <li className={currentMenu === "/usuario/editar" ? "page-active" : ""}>
           <Link to="/usuario/editar">
-            <i className="la la-user mr-2"></i> Mi Cuenta
+            <i className="la la-user mr-2"></i>
+            <span>Mi Cuenta</span>
           </Link>
         </li>
         {validarPermisos([11, 12, 13, 37, 38, 39, 40, 41, 42]) && (
           <li className={currentMenu === "/permisos" ? "page-active" : ""}>
             <Link to="/permisos">
-              <i className="la la-user-plus mr-2"></i> Perfiles y permisos
+              <i className="la la-user-plus mr-2"></i>{" "}
+              <span>Perfiles y permisos</span>
             </Link>
           </li>
         )}
@@ -106,14 +128,16 @@ function DashboardMenu() {
             className={currentMenu === "/categoriasistema" ? "page-active" : ""}
           >
             <Link to="/categoriasistema">
-              <i className="la la-tag mr-2"></i> Categorías y Tags
+              <i className="la la-tag mr-2"></i>
+              <span>Categorías y Tags</span>
             </Link>
           </li>
         )}
         {validarPermisos([17, 18, 19]) && (
           <li className={currentMenu === "/usuario" ? "page-active" : ""}>
             <Link to="/usuario">
-              <i className="la la-user-secret mr-2"></i> Usuarios
+              <i className="la la-user-secret mr-2"></i>
+              <span>Usuarios</span>
             </Link>
           </li>
         )}
@@ -130,7 +154,8 @@ function DashboardMenu() {
             }
           >
             <Link to="/certificado">
-              <i className="la la-certificate mr-2"></i> Certificados
+              <i className="la la-certificate mr-2"></i>
+              <span>Certificados</span>
             </Link>
           </li>
         )}

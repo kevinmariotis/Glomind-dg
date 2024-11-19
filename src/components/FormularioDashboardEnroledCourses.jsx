@@ -9,6 +9,7 @@ import Popup from "./Popup";
 // import BotonDashboardNavegacionMovil from "./BotonDashboardNavegacionMovil";
 import TarjetaCategoriaAdmin from "./cards/TarjetaCategoriaAdmin";
 import DashboardFooter from "./DashboardFooter";
+import CustomBreandcrumb from "./BreadCrumb/CustomBreandcrumb";
 
 function FormularioDashboardEnroledCourses() {
   // const urlBase = import.meta.env.VITE_URL_BASE;
@@ -282,15 +283,8 @@ function FormularioDashboardEnroledCourses() {
       />
       <div className="dashboard-content-wrap">
         {/* {esMovil && <BotonDashboardNavegacionMovil />} */}
-        <div className="card-user col-lg-6">
-          <p className="legend">el aprendizaje impulsa tu crecimiento</p>
-          <p className="text">{nombres}</p>
-          <p className="text">Bienvenido(a) a Glomind!</p>
-        </div>
         <div className="container-fluid mt-5">
-          <div className="dashboard-heading mb-5">
-            <h3 className="fs-22 font-weight-semi-bold">Oferta acádemica</h3>
-          </div>
+          <CustomBreandcrumb titles={["Cursos matriculados"]} />
           <ul
             className="nav nav-tabs generic-tab pb-30px"
             id="myTab"
