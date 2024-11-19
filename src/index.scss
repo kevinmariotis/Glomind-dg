@@ -5,6 +5,7 @@
   --CornerExtra-large: 28px;
   --CornerExtra-large: 28px;
   // Colores
+  --Lavander: #8547ff;
   --Azul-petroleo: #1d0959;
   --Gris-oscuro: #958bb6;
   --Gris-sombra: #958bb680;
@@ -101,9 +102,14 @@
   background-color: var(--Blanco-fondo);
   position: fixed;
   overflow: auto;
-  width: 100%;  
+  width: 100%;
 }
 
 .footer {
   width: 100%;
+}
+
+.nav-link.active {
+  background-color: var(--Lavander)!important;
+  color: white !important;
 }
