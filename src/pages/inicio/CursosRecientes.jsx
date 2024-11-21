@@ -5,7 +5,7 @@ import { AuthContext } from "../../AuthContext";
 import { Button, Carousel } from "react-bootstrap";
 
 const CursosRecientes = () => {
-  const { jwt } = useContext(AuthContext);
+  const { jwt,  } = useContext(AuthContext);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const [cursosRecientes, setCursosRecientes] = useState([]);
 
@@ -31,7 +31,7 @@ const CursosRecientes = () => {
       //buscamos los datos de los cursos a mostrar
       // setMostrarSpinner(true);
       const response2 = await fetch(
-        `${urlBaseApi}/api/usuario/cursos/0/${1}/${2}/ultima_visita-asc`,
+        `${urlBaseApi}/api/usuario/cursos/0/1/1/ultima_visita-desc`,
         opciones
       );
       // setMostrarSpinner(false);

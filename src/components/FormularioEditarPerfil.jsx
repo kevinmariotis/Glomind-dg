@@ -745,7 +745,7 @@ function FormularioEditarPerfil() {
       </div>
       <div className="dashboard-content-wrap">
         {esMovil && <BotonDashboardNavegacionMovil />}
-        <div className="container-fluid">
+        <div className="container-fluid edit-perfil-content">
           {/* {id == undefined && (
             <>
               <div className="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between mb-5">
