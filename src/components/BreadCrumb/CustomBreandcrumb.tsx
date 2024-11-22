@@ -1,8 +1,8 @@
 import React from "react";
 
-const CustomBreandcrumb = ({ titles = [] }) => {
+const CustomBreandcrumb = ({ titles = [] }: any) => {
   return (
-    <div className="dashboard-heading mb-3 d-flex aling-items-center">
+    <div className="dashboard-heading mb-2 d-flex aling-items-center">
       {titles.map((item, index) => (
         <>
           {index > 0 && (
@@ -11,7 +11,7 @@ const CustomBreandcrumb = ({ titles = [] }) => {
             </h3>
           )}
           <h3
-            className="fs-22 font-weight-semi-bold mx-2"
+            className="fs-2 font-weight-semi-bold mx-2"
             style={{
               alignContent: "center",
               color:

@@ -59,6 +59,7 @@ import DashboardMenu from './components/DashboardMenu';
 // import Login from './components/login/Login';
 import SignUp from './components/signUp/SignUp';
 import PaginaInicio from './pages/inicio/PaginaInicio';
+import PaginaCalificaciones from './pages/calificaciones/PaginaCalificaciones';
 
 //import About from './components/About';
 //import Home from './components/Home';
@@ -111,6 +112,7 @@ const Rutas = () => {
                 <Route path="/curso/imagen/:id" element={<ProtectedRoute permiso={validarPermisos([66])} ><PaginaEditarCursoImagen/></ProtectedRoute>} />                
                 <Route path="/curso/usuarios/:id" element={<ProtectedRoute permiso={validarPermisos([44])} ><PaginaCursoUsuarios/></ProtectedRoute>} />                                
                 <Route path="/curso/notas/:id_curso/:url_amigable_volver?" element={<ProtectedRoute permiso={validarPermisos([101]) || esDocente} ><PaginaCursoNotas/></ProtectedRoute>} />                                                
+                <Route path="/calificaciones" element={<ProtectedRoute permiso={authenticated} ><PaginaCalificaciones/></ProtectedRoute>} />                                                
                 { /* <Route path="/curso/:url_amigable" element={<PaginaDetallesDeCurso/>} /> */ }
                 <Route path="/play/:url_amigable" element={<ProtectedRoute permiso={authenticated} ><PaginaPlay/></ProtectedRoute>} />                
                 <Route path="/v/:codigo_registro" element={<ProtectedRoute permiso={true} ><PaginaValidarCertificado/></ProtectedRoute>} />                

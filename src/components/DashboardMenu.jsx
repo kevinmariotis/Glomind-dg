@@ -109,6 +109,12 @@ function DashboardMenu() {
             </Link>
           </li>
         )}
+        <li className={currentMenu === "/calificaciones" ? "page-active" : ""}>
+          <Link to="/calificaciones">
+            <i className="la la-book mr-2"></i>
+            <span>Calificaciones</span>
+          </Link>
+        </li>
         <li className={currentMenu === "/usuario/editar" ? "page-active" : ""}>
           <Link to="/usuario/editar">
             <i className="la la-user mr-2"></i>

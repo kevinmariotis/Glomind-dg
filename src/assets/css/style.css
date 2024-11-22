@@ -5948,8 +5948,8 @@ div.datedropper .picker .pick-lg-b li {
   padding-top: 45px;
   width: calc(100% - 250px);
   margin-left: auto;
-  padding-right: 30px;
-  padding-left: 30px; }
+  padding-right: 70px;
+  padding-left: 70px; }
   @media (max-width: 1199px) {
     .dashboard-content-wrap {
       padding-top: 30px;
