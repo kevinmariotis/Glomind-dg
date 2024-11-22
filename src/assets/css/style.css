@@ -5944,7 +5944,7 @@ div.datedropper .picker .pick-lg-b li {
 
 /*======== dashboard-content-wrap =========*/
 .dashboard-content-wrap {
-  height: 100vh;
+  height: calc(100vh - 100px);
   padding-top: 45px;
   width: calc(100% - 250px);
   margin-left: auto;
