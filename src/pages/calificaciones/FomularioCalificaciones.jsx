@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect, useState } from "react";
 import CustomBreandcrumb from "../../components/BreadCrumb/CustomBreandcrumb";
 import { AuthContext } from "../../AuthContext";
 import DashboardFooter from "../../components/DashboardFooter";
@@ -6,9 +7,9 @@ import DashboardFooter from "../../components/DashboardFooter";
 const FomularioCalificaciones = () => {
   const { jwt } = useContext(AuthContext);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-  const [cursos, setCursos] = useState<any>([]);
-  const [cursoSeleccionado, setCursoSeleccionado] = useState<any>(null);
-  const [actividades, setActividades] = useState<any>([]);
+  const [cursos, setCursos] = useState([]);
+  const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
+  const [actividades, setActividades] = useState([]);
 
   const obtenerCursos = async () => {
     const headers = {
@@ -59,19 +60,18 @@ const FomularioCalificaciones = () => {
       if (response2.ok) {
         const datos = await response2.json();
         // Reestructar los datos para una mejor lectura de la tabla
-        const result = datos.datos?.categorias.flatMap((cat: any) => {
+        const result = datos.datos?.categorias.flatMap((cat) => {
           const { curso_contenido, resto } = cat;
-          return curso_contenido.map((c: any) => {
+          return curso_contenido.map((c) => {
             return {
               ...c,
               nota: datos.datos?.usuarios[0]?.notas?.find(
-                (item: any) => item.id_curso_contenido === c.id_contenido
+                (item) => item.id_curso_contenido === c.id_contenido
               )?.puntuacion,
               padre: resto,
             };
           });
         });
-        const result2 = datos.datos?.usuarios[0]?.notas;
         setActividades(result);
       }
     } catch (error) {
@@ -80,7 +80,7 @@ const FomularioCalificaciones = () => {
     }
   };
 
-  const verCalificaciones = (idCurso: any) => {
+  const verCalificaciones = (idCurso) => {
     setCursoSeleccionado(idCurso);
   };
 
@@ -109,13 +109,12 @@ const FomularioCalificaciones = () => {
         titles={[
           cursoSeleccionado === null
             ? "Calificaciones"
-            : cursos.find((curso: any) => curso.id === cursoSeleccionado)
-                .nombre,
+            : cursos.find((curso) => curso.id === cursoSeleccionado).nombre,
         ]}
       />
       {cursoSeleccionado !== null && (
         <p className="mx-2">
-          {cursos.find((curso: any) => curso.id === cursoSeleccionado).codigo}
+          {cursos.find((curso) => curso.id === cursoSeleccionado).codigo}
         </p>
       )}
       {cursoSeleccionado === null ? (
@@ -139,12 +138,12 @@ const FomularioCalificaciones = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cursos.map((curso: any) => (
-                    <tr>
+                  {cursos.map((curso, index) => (
+                    <tr key={`c-${index}`}>
                       <td>{curso.nombre}</td>
                       <td>{curso.categoria_nombre}</td>
                       <td>{curso.codigo}</td>
-                      <td>{curso.calificacion_curso}</td>
+                      <td>{curso.calificacion_curso ?? "-"}</td>
                       <td>
                         <button
                           className="btn theme-btn btn-round w-100 px-0"
@@ -178,11 +177,11 @@ const FomularioCalificaciones = () => {
                 </tr>
               </thead>
               <tbody>
-                {actividades.map((actividad: any) => (
-                  <tr>
+                {actividades.map((actividad, index) => (
+                  <tr key={`a-${index}`}>
                     <td>{actividad.nombre}</td>
                     <td>{actividad.porcentaje_en_total_curso}</td>
-                    <td>{actividad.nota ?? "0.00"}</td>
+                    <td>{actividad.nota ?? "-"}</td>
                   </tr>
                 ))}
               </tbody>

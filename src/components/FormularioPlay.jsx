@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 
 import FormularioPlayHeader from "./FormularioPlayHeader";
 import VideoPlayerPrisma from "./VideoPlayerPrisma";
 import { AuthContext } from "../AuthContext";
 import Spinner from "./Spinner";
-import SpamError from "./SpamError";
 import Popup from "./Popup";
 import Recurso from "./Recurso";
 import Tarea from "./Tarea";
@@ -2028,8 +2028,8 @@ function FormularioPlay() {
                               <ul className="generic-list-item">
                                 {notas.usuarios && (
                                   <>
-                                    {notas.usuarios.map((usuario) => (
-                                      <li>
+                                    {notas.usuarios.map((usuario, index) => (
+                                      <li key={`u-${index}`}>
                                         <span>
                                           {usuario.calificacion_curso}
                                         </span>
@@ -2045,7 +2045,7 @@ function FormularioPlay() {
                           <>
                             {notas.categorias.map((categoria) =>
                               categoria.curso_contenido.map(
-                                (curso_contenido, indexcc) => (
+                                (curso_contenido) => (
                                   <div
                                     className="lecture-overview-item"
                                     key={`curso_cont_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}_`}
@@ -2241,6 +2241,7 @@ function FormularioPlay() {
                         <div
                           className="card-header"
                           id={`heading${parseInt(index) + 1}`}
+                          style={{backgroundColor: "var(--Azul-petroleo)"}}
                         >
                           <button
                             aria-expanded={activeTab === index}
@@ -2252,6 +2253,7 @@ function FormularioPlay() {
                             data-toggle="collapse"
                             data-target={`#collapse${parseInt(index) + 1}`}
                             aria-controls={`collapse${parseInt(index) + 1}`}
+                            style={{color: "#fff"}}
                           >
                             <i
                               className="la la-angle-down"
@@ -2262,7 +2264,6 @@ function FormularioPlay() {
                               style={{ display: "none" }}
                             ></i>
                             <span className="fs-15">
-                              {" "}
                               Unidad {parseInt(index) + 1}: {categoria.nombre}{" "}
                             </span>
                             <span className="course-duration">
@@ -2306,7 +2307,7 @@ function FormularioPlay() {
                                         {categoria.curso_contenido[key]
                                           .cantidad_notificaciones > 0 ? (
                                           <span
-                                            class="product-count"
+                                            className="product-count"
                                             style={{
                                               position: "relative",
                                               marginLeft: "-1.5rem",

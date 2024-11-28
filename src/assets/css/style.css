@@ -7241,7 +7241,7 @@ div.datedropper .picker .pick-lg-b li {
 
 .course-duration span {
   font-size: 13px;
-  color: #958BB6;
+  color: var(--Blanco-fondo);
   position: relative;
   padding-right: 12px;
   padding-left: 2px;

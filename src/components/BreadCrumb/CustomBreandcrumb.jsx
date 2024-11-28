@@ -1,6 +1,5 @@
-import React from "react";
-
-const CustomBreandcrumb = ({ titles = [] }: any) => {
+/* eslint-disable react/prop-types */
+const CustomBreandcrumb = ({ titles = [] }) => {
   return (
     <div className="dashboard-heading mb-2 d-flex aling-items-center">
       {titles.map((item, index) => (
