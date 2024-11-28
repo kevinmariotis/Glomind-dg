@@ -57,14 +57,21 @@ const FomularioCalificaciones = () => {
       );
       // setMostrarSpinner(false);
       if (response2.ok) {
-        const datos2 = await response2.json();
+        const datos = await response2.json();
         // Reestructar los datos para una mejor lectura de la tabla
-        const result = datos2.datos?.categorias.flatMap((cat: any) => {
+        const result = datos.datos?.categorias.flatMap((cat: any) => {
           const { curso_contenido, resto } = cat;
           return curso_contenido.map((c: any) => {
-            return { ...c, padre: resto };
+            return {
+              ...c,
+              nota: datos.datos?.usuarios[0]?.notas?.find(
+                (item: any) => item.id_curso_contenido === c.id_contenido
+              )?.puntuacion,
+              padre: resto,
+            };
           });
         });
+        const result2 = datos.datos?.usuarios[0]?.notas;
         setActividades(result);
       }
     } catch (error) {
@@ -117,10 +124,6 @@ const FomularioCalificaciones = () => {
             <button className="btn theme-btn-white btn-round py 3 mr-3">
               <i className="la la-filter icon mr-1"></i>
               Categoria
-            </button>
-            <button className="btn theme-btn-white btn-round py 3">
-              <i className="la la-filter icon mr-1"></i>
-              Semestre
             </button>
           </div>
           <div className="card custom-card mt-4">
@@ -179,7 +182,7 @@ const FomularioCalificaciones = () => {
                   <tr>
                     <td>{actividad.nombre}</td>
                     <td>{actividad.porcentaje_en_total_curso}</td>
-                    <td>{actividad.nota}</td>
+                    <td>{actividad.nota ?? "0.00"}</td>
                   </tr>
                 ))}
               </tbody>
