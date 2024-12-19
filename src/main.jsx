@@ -29,11 +29,17 @@ import "@fontsource/dm-sans/600.css";
 import "@fontsource/dm-sans/700.css";
 import "@fontsource/dm-sans/800.css";
 import "@fontsource/dm-sans/900.css";
+import { BrowserRouter } from "react-router-dom";
 
 const link = document.createElement("link");
-link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap";
+link.href =
+  "https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap";
 link.rel = "stylesheet";
 document.head.appendChild(link);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);

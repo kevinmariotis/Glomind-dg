@@ -9,7 +9,7 @@ import CursosRecientes from "./CursosRecientes";
 
 const FormularioInicio = () => {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-  const { jwt, nombres } = useContext(AuthContext);
+  const { jwt, nombres, esDocente} = useContext(AuthContext);
 
   const [categoriasNiveles, setCategoriasNiveles] = useState([
     {
@@ -199,7 +199,7 @@ const FormularioInicio = () => {
             ))}
         </div>
         {/* Cursos recientes */}
-        {categoriasNiveles.length === 1 && <CursosRecientes />}
+        {categoriasNiveles.length === 1 && !esDocente && <CursosRecientes />}
       </div>
       <DashboardFooter />
     </div>

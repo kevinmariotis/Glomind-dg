@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
@@ -17,6 +19,7 @@ import Calendario from "./Calendario";
 import CountdownTimer from "./CoundDownTimer";
 import CrearEditarVideollamada from "./CrearEditarVideollamada";
 import { sideBarAbrirCerrar } from "./comun";
+import { Skeleton } from "@mui/material";
 
 function FormularioPlay() {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
@@ -61,6 +64,8 @@ function FormularioPlay() {
   const [docenteDescripcion, setDocenteDescripcion] = useState([]);
   const [queAprenderas, setQueAprenderas] = useState([]);
   const [listadoRequerimientos, setListadoRequerimientos] = useState([]);
+  const [participantes, setParticipantes] = useState([]);
+  const [calificaciones, setCalificaciones] = useState([]);
 
   const [mostrarMasCursoDescripcion, setMostrarMasCursoDescripcion] =
     useState(false);
@@ -71,7 +76,7 @@ function FormularioPlay() {
   const [contenidoActivado, setContenidoActivado] = useState(-1); //el contenido que se está viendo
   const [contenidoActivadoAnterior, setContenidoActivadoAnterior] =
     useState(-1); //el contenido anterior que estaba viendo, por si acaso hay que volver a señalarlo.
-  const [pestanaActivada, setPestanaActivada] = useState(4); //pestañas que estan debajo del video
+  const [pestanaActivada, setPestanaActivada] = useState(2); //pestañas que estan debajo del video
   const [cargarActividadActual, setCargarActividadActual] = useState(false);
 
   const [entrarVideollamada, setEntrarVideollamada] = useState({
@@ -513,6 +518,36 @@ function FormularioPlay() {
     }
   };
 
+  const obtenerParticipantes = async () => {
+    const opciones = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    };
+    try {
+      const response = await fetch(
+        `${urlBaseApi}/api/curso/getMatriculadosLista/${dataCurso.id}/1/usuario.nombres-asc/`,
+        opciones
+      );
+      const datos = await response.json();
+      if (response.ok) {
+        setParticipantes(datos.matriculados);
+        return;
+      } else {
+        mensajesDeError(
+          setPopup,
+          response.status,
+          typeof datos.datos !== "undefined" ? datos.datos : {},
+          false,
+          { titulo: "", contenido: "" }
+        );
+      }
+    } catch (error) {
+      console.error("Error de conexión:", error);
+    }
+  };
+
   //manejo del acordeon
   const [activeTab, setActiveTab] = useState(null);
 
@@ -649,6 +684,12 @@ function FormularioPlay() {
 
   const nivelHabilidad = ["", "Básico", "Intermedio", "Avanzado"];
 
+  useEffect(() => {
+    if (pestanaActivada === 6) {
+      obtenerParticipantes();
+    }
+  }, [pestanaActivada]);
+
   return (
     <>
       {mostrarSpinner && <Spinner />}
@@ -737,12 +778,6 @@ function FormularioPlay() {
                     <Recurso id_contenido={contenidoActivado} />
                   ) : dataContenidoViendo.tipo_contenido == 4 ? (
                     <Iframex frame={dataContenidoViendo} />
-                  ) : dataContenidoViendo.tipo_contenido == 5 ? (
-                    <Tarea
-                      id_contenido={contenidoActivado}
-                      id_curso={dataCurso.id}
-                      es_docente={dataCurso.es_docente}
-                    />
                   ) : dataContenidoViendo.tipo_contenido == 6 ? (
                     <>
                       <div className="pt-60px pb-60px">
@@ -933,28 +968,6 @@ function FormularioPlay() {
                         Contenido del curso
                       </a>
                     </li>
-                    {dataCurso.instructor != "" ? (
-                      <li className="nav-item">
-                        <a
-                          onClick={(event) => {
-                            handleCambiarPestana(event, 4);
-                          }}
-                          className={`nav-link ${
-                            pestanaActivada == 4 ? "active" : ""
-                          }`}
-                          id="announcements-tab"
-                          data-toggle="tab"
-                          href="#announcements"
-                          role="tab"
-                          aria-controls="announcements"
-                          aria-selected="false"
-                        >
-                          Anuncios
-                        </a>
-                      </li>
-                    ) : (
-                      ""
-                    )}
                     <li className="nav-item">
                       <a
                         onClick={(event) => {
@@ -973,7 +986,8 @@ function FormularioPlay() {
                         Vista general
                       </a>
                     </li>
-                    {!dataCurso.es_docente && (
+
+                    {!dataCurso.es_docente ? (
                       <li className="nav-item">
                         <a
                           onClick={(event) => {
@@ -992,14 +1006,60 @@ function FormularioPlay() {
                           Mis calificaciones
                         </a>
                       </li>
+                    ) : (
+                      ""
+                    )}
+                    {dataCurso.es_docente ? (
+                      <li className="nav-item">
+                        <a
+                          onClick={(event) => {
+                            handleCambiarPestana(event, 6);
+                          }}
+                          className={`nav-link ${
+                            pestanaActivada == 6 ? "active" : ""
+                          }`}
+                          id="grades-tab"
+                          data-toggle="tab"
+                          href="#grades"
+                          role="tab"
+                          aria-controls="grades"
+                          aria-selected="true"
+                        >
+                          Participantes
+                        </a>
+                      </li>
+                    ) : (
+                      ""
+                    )}
+                    {dataCurso.es_docente ? (
+                      <li className="nav-item">
+                        <a
+                          onClick={(event) => {
+                            handleCambiarPestana(event, 7);
+                          }}
+                          className={`nav-link ${
+                            pestanaActivada == 7 ? "active" : ""
+                          }`}
+                          id="grades-tab"
+                          data-toggle="tab"
+                          href="#grades"
+                          role="tab"
+                          aria-controls="grades"
+                          aria-selected="true"
+                        >
+                          Calificaciones
+                        </a>
+                      </li>
+                    ) : (
+                      ""
                     )}
                     <li className="nav-item">
                       <a
                         onClick={(event) => {
-                          handleCambiarPestana(event, 6);
+                          handleCambiarPestana(event, 8);
                         }}
                         className={`nav-link ${
-                          pestanaActivada == 6 ? "active" : ""
+                          pestanaActivada == 8 ? "active" : ""
                         }`}
                         id="calendar-tab"
                         data-toggle="tab"
@@ -1011,8 +1071,34 @@ function FormularioPlay() {
                         Calendario
                       </a>
                     </li>
+                    <li className="nav-item">
+                      <a
+                        onClick={(event) => {
+                          handleCambiarPestana(event, 4);
+                        }}
+                        className={`nav-link ${
+                          pestanaActivada == 4 ? "active" : ""
+                        }`}
+                        id="announcements-tab"
+                        data-toggle="tab"
+                        href="#announcements"
+                        role="tab"
+                        aria-controls="announcements"
+                        aria-selected="false"
+                      >
+                        Anuncios
+                      </a>
+                    </li>
                   </ul>
                 </div>
+                {/* Vista para actividades de tipo tarea */}
+                {dataContenidoViendo.tipo_contenido == 5 && (
+                  <Tarea
+                    id_contenido={contenidoActivado}
+                    id_curso={dataCurso.id}
+                    es_docente={dataCurso.es_docente}
+                  />
+                )}
                 <div
                   className="lecture-video-detail-body"
                   style={
@@ -1055,6 +1141,7 @@ function FormularioPlay() {
                       </div>
                     </div>
                     <div ref={refHiloComentarios}></div>
+
                     <div
                       className={`tab-pane fade show ${
                         pestanaActivada == 1 ? "active" : ""
@@ -1217,7 +1304,7 @@ function FormularioPlay() {
                                               {categoria.curso_contenido[key]
                                                 .cantidad_notificaciones > 0 ? (
                                                 <span
-                                                  class="product-count"
+                                                  className="product-count"
                                                   style={{
                                                     position: "relative",
                                                     marginLeft: "-1.5rem",
@@ -1914,50 +2001,22 @@ function FormularioPlay() {
 
                     <div
                       className={`tab-pane fade show ${
-                        pestanaActivada == 6 ? "active" : ""
+                        pestanaActivada == 4 ? "active" : ""
                       }`}
-                      id="calendar"
-                      role="tabpanel-calendar"
-                      aria-labelledby="calendar"
+                      id="announcements"
+                      role="tabpanel"
+                      aria-labelledby="announcements-tab"
                     >
-                      <div className="lecture-overview-wrap">
-                        <div className="lecture-overview-item">
-                          <h3 className="fs-24 font-weight-semi-bold pb-2">
-                            Calendario
-                          </h3>
-                          <p>
-                            En este espacio encontrarás toda las actividades de
-                            tareas y foros y las fechas y horas en las cuales se
-                            deben entregar o participar.
-                          </p>
-                        </div>
-                        <div className="section-block"></div>
-                        <div
-                          className="d-flex align-items-center justify-content-end"
-                          style={{ width: "100%" }}
-                        >
-                          <button
-                            type="button"
-                            className="btn theme-btn theme-btn-white mb-2"
-                            onClick={() => {
-                              setPopupVideollamada({
-                                ...popUpVideollamada,
-                                mostrar: 1,
-                              });
-                            }}
-                          >
-                            {dataCurso?.es_docente == true
-                              ? `Programar videoclases`
-                              : `Ver videoclases programadas`}
-                          </button>
-                        </div>
-                        <div className="lecture-overview-item">
-                          <Calendario
-                            id_curso={dataCurso.id}
-                            funcionCargarContenido={cargarContenidoEspecifico}
-                          />
-                        </div>
-                      </div>
+                      {dataCurso.id != -1 ? (
+                        <HiloAnuncio
+                          id_hilo={dataCurso.id_anuncios_hilo}
+                          id_objeto_enlace={dataCurso.id}
+                          tipo_objeto_enlace={1}
+                          es_creador={dataCurso.es_docente}
+                        />
+                      ) : (
+                        ""
+                      )}
                     </div>
 
                     <div
@@ -2118,30 +2177,182 @@ function FormularioPlay() {
                         )}
                       </div>
                     </div>
-
-                    {dataCurso.instructor != "" ? (
-                      <div
-                        className={`tab-pane fade show ${
-                          pestanaActivada == 4 ? "active" : ""
-                        }`}
-                        id="announcements"
-                        role="tabpanel"
-                        aria-labelledby="announcements-tab"
-                      >
-                        {dataCurso.id != -1 ? (
-                          <HiloAnuncio
-                            id_hilo={dataCurso.id_anuncios_hilo}
-                            id_objeto_enlace={dataCurso.id}
-                            tipo_objeto_enlace={1}
-                            es_creador={dataCurso.es_docente}
-                          />
-                        ) : (
-                          ""
-                        )}
+                    <div
+                      className={`tab-pane fade show ${
+                        pestanaActivada == 6 ? "active" : ""
+                      }`}
+                      id="grades"
+                      role="tabpanel"
+                      aria-labelledby="grades"
+                    >
+                      <div className="lecture-overview-wrap">
+                        <div className="lecture-overview-item">
+                          <h3 className="fs-24 font-weight-semi-bold pb-2">
+                            Participantes
+                          </h3>
+                          <p>
+                            En este espacio encontrarás a los usuarios
+                            participantes del curso con su información básica de
+                            cada uno de ellos.
+                          </p>
+                        </div>
+                        <div className="section-block"></div>
+                        <div className="lecture-overview-item">
+                          <div className="row mt-5">
+                            <div className="col-lg-6">
+                              <div className="form-group">
+                                <input
+                                  // onChange={handleSetPalabraBuscar}
+                                  className="form-control form--control pl-3"
+                                  type="text"
+                                  name="buscar_video"
+                                  maxLength="32"
+                                  placeholder="Buscar participante"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="table-responsive mb-5">
+                            <table className="table custom-table">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Nombre / Apellido(s) </th>
+                                  <th scope="col">Numero ID</th>
+                                  <th scope="col">Correo electronico</th>
+                                  <th scope="col">Ultimo acceso</th>
+                                  <th scope="col">Estatus</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {participantes.map((item, index) => (
+                                  <tr key={`c-${index}`}>
+                                    <td>{item.nombres}</td>
+                                    <td>{item.identificacion}</td>
+                                    <td>{item.email}</td>
+                                    <td>{item.ultima_visita}</td>
+                                    <td>{item.estado}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
                       </div>
-                    ) : (
-                      ""
-                    )}
+                    </div>
+                    <div
+                      className={`tab-pane fade show ${
+                        pestanaActivada == 7 ? "active" : ""
+                      }`}
+                      id="grades"
+                      role="tabpanel"
+                      aria-labelledby="grades"
+                    >
+                      <div className="lecture-overview-wrap">
+                        <div className="lecture-overview-item">
+                          <h3 className="fs-24 font-weight-semi-bold pb-2">
+                            Calificaciones
+                          </h3>
+                          <p>
+                            En este espacio encontrarás las calificaciones de
+                            los participantes de este curso.
+                          </p>
+                        </div>
+                        <div className="section-block"></div>
+                        <div className="lecture-overview-item">
+                          <div className="row mt-5">
+                            <div className="col-lg-6">
+                              <div className="form-group">
+                                <input
+                                  // onChange={handleSetPalabraBuscar}
+                                  className="form-control form--control pl-3"
+                                  type="text"
+                                  name="buscar_video"
+                                  placeholder="Buscar participante"
+                                  maxLength="32"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="table-responsive mb-5">
+                            <table className="table custom-table">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Nombre / Apellido(s) </th>
+                                  <th scope="col">Numero ID</th>
+                                  <th scope="col">Correo electronico</th>
+                                  <th scope="col">Ultimo acceso</th>
+                                  <th scope="col">Nota final</th>
+                                  {/* <th scope="col"></th> */}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {calificaciones.map((item, index) => (
+                                  <tr key={`c-${index}`}>
+                                    <td>{item.nombres}</td>
+                                    <td>{item.identificacion}</td>
+                                    <td>{item.email}</td>
+                                    <td>{item.ultimo_acceso}</td>
+                                    <td>{item.nota ?? "--"}</td>
+                                    {/* <td>
+                                      <i className="la la-book-open mr-2"></i>
+                                      <i className="la la-pen"></i>
+                                    </td> */}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`tab-pane fade show ${
+                        pestanaActivada == 8 ? "active" : ""
+                      }`}
+                      id="calendar"
+                      role="tabpanel-calendar"
+                      aria-labelledby="calendar"
+                    >
+                      <div className="lecture-overview-wrap">
+                        <div className="lecture-overview-item">
+                          <h3 className="fs-24 font-weight-semi-bold pb-2">
+                            Calendario
+                          </h3>
+                          <p>
+                            En este espacio encontrarás toda las actividades de
+                            tareas y foros y las fechas y horas en las cuales se
+                            deben entregar o participar.
+                          </p>
+                        </div>
+                        <div className="section-block"></div>
+                        <div
+                          className="d-flex align-items-center justify-content-end"
+                          style={{ width: "100%" }}
+                        >
+                          <button
+                            type="button"
+                            className="btn theme-btn theme-btn-white mb-2"
+                            onClick={() => {
+                              setPopupVideollamada({
+                                ...popUpVideollamada,
+                                mostrar: 1,
+                              });
+                            }}
+                          >
+                            {dataCurso?.es_docente == true
+                              ? `Programar videoclases`
+                              : `Ver videoclases programadas`}
+                          </button>
+                        </div>
+                        <div className="lecture-overview-item">
+                          <Calendario
+                            id_curso={dataCurso.id}
+                            funcionCargarContenido={cargarContenidoEspecifico}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2241,7 +2452,7 @@ function FormularioPlay() {
                         <div
                           className="card-header"
                           id={`heading${parseInt(index) + 1}`}
-                          style={{backgroundColor: "var(--Azul-petroleo)"}}
+                          style={{ backgroundColor: "var(--Azul-petroleo)" }}
                         >
                           <button
                             aria-expanded={activeTab === index}
@@ -2253,7 +2464,7 @@ function FormularioPlay() {
                             data-toggle="collapse"
                             data-target={`#collapse${parseInt(index) + 1}`}
                             aria-controls={`collapse${parseInt(index) + 1}`}
-                            style={{color: "#fff"}}
+                            style={{ color: "#fff" }}
                           >
                             <i
                               className="la la-angle-down"

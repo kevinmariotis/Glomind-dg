@@ -112,9 +112,10 @@
   margin-bottom: 0;
   thead {
     th {
+      font-size: 18px;
       border: none;
       font-weight: 700;
-      border-bottom: 2px solid var(--Gris-oscuro) !important;
+      border-bottom: 1px solid var(--Gris-oscuro) !important;
     }
   }
   tbody {
@@ -124,7 +125,7 @@
       padding-bottom: 20px;
       border-top: none;
       vertical-align: middle;
-      border-bottom: 2px solid var(--Gris-oscuro) !important;
+      border-bottom: 1px solid var(--Gris-oscuro) !important;
     }
   }
 }
