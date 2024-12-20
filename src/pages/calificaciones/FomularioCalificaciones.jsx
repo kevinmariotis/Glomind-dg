@@ -108,7 +108,7 @@ const FomularioCalificaciones = () => {
       <CustomBreandcrumb
         titles={[
           cursoSeleccionado === null
-            ? "Calificaciones"
+            ? "Mis calificaciones"
             : cursos.find((curso) => curso.id === cursoSeleccionado).nombre,
         ]}
       />

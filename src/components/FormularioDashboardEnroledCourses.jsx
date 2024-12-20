@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../AuthContext";
@@ -14,7 +15,7 @@ import CustomBreandcrumb from "./BreadCrumb/CustomBreandcrumb";
 function FormularioDashboardEnroledCourses() {
   // const urlBase = import.meta.env.VITE_URL_BASE;
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-  const { jwt, nombres, esMovil } = useContext(AuthContext);
+  const { jwt } = useContext(AuthContext);
   const [popUp, setPopup] = useState({
     mostrar: false,
     titulo: "",
@@ -284,7 +285,7 @@ function FormularioDashboardEnroledCourses() {
       <div className="dashboard-content-wrap">
         {/* {esMovil && <BotonDashboardNavegacionMovil />} */}
         <div className="container-fluid mt-5">
-          <CustomBreandcrumb titles={["Cursos matriculados"]} />
+          <CustomBreandcrumb titles={["Mis Cursos"]} />
           <ul
             className="nav nav-tabs generic-tab pb-30px"
             id="myTab"
