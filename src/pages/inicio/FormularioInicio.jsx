@@ -9,7 +9,7 @@ import CursosRecientes from "./CursosRecientes";
 
 const FormularioInicio = () => {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-  const { jwt, nombres, esDocente } = useContext(AuthContext);
+  const { jwt, nombres, esDocente} = useContext(AuthContext);
 
   const [categoriasNiveles, setCategoriasNiveles] = useState([
     {
@@ -18,7 +18,6 @@ const FormularioInicio = () => {
     },
   ]);
   const [categorias, setCategorias] = useState([]);
-  const [categoriasActuales, setCategoriasActuales] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(0);
   const [cursos, setCursos] = useState([]);
 
@@ -35,15 +34,18 @@ const FormularioInicio = () => {
       //buscamos los datos de los cursos a mostrar
       //setMostrarSpinner(true);
       const response = await fetch(
-        `${urlBaseApi}/api/categoriasistema/getTodas/1`,
+        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${categoriaSeleccionada}/1`,
         opciones
       );
       //setMostrarSpinner(false);
       if (response.ok) {
-        const datos = await response.json();
-        if (datos.length > 0) {
-          setCategorias(datos);
-          setCategoriasActuales()
+        if (categoriaSeleccionada === 0) {
+          obtenerDatosCursos();
+        }
+        obtenerDatosCursos();
+        const datos2 = await response.json();
+        if (datos2.length > 0) {
+          setCategorias(datos2);
         }
       } else {
         // const datos2 = await response2.json();
@@ -52,6 +54,34 @@ const FormularioInicio = () => {
         //   response2.status,
         //   typeof datos2.datos !== "undefined" ? datos2.datos : {}
         // );
+      }
+    } catch (error) {
+      // Manejar el caso de error en la solicitud
+      console.error("Error en la solicitud al servidor", error);
+    }
+  };
+
+  const obtenerDatosCursos = async () => {
+    const headers = {
+      Authorization: `Bearer ${jwt}`,
+    };
+    try {
+      const opciones = {
+        method: "GET",
+        headers: headers,
+      };
+      // setMostrarSpinner(true);
+
+      //buscamos los datos de los cursos a mostrar
+      // setMostrarSpinner(true);
+      const response2 = await fetch(
+        `${urlBaseApi}/api/usuario/cursos/0/${1}/${3}/nombre-asc/9/${categoriaSeleccionada}`,
+        opciones
+      );
+      // setMostrarSpinner(false);
+      if (response2.ok) {
+        const datos2 = await response2.json();
+        setCursos(datos2.cursos);
       }
     } catch (error) {
       // Manejar el caso de error en la solicitud
