@@ -8,8 +8,4 @@ export default defineConfig({
     // Importa CSS global en todos los archivos
     include: ['./src/**/*.css'],
   },
-  server: {
-    host: '0.0.0.0', // Esto hace que Vite escuche en todas las interfaces de red
-    port: 3000, // Puedes cambiar el puerto si lo deseas
-  },
 })

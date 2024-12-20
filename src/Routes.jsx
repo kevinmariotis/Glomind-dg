@@ -67,7 +67,13 @@ import PaginaCalificaciones from "./pages/calificaciones/PaginaCalificaciones";
 const Rutas = () => {
   const { authenticated, permissions, esDocente } = useContext(AuthContext); //se obtiene los datos del contexto de la sesion (AuthContext)
   const location = useLocation();
-  const urlSinMenu = ["examen/presentacion", "examen/intento", "curso/notas"];
+  const urlSinMenu = [
+    "examen/presentacion",
+    "examen/intento",
+    "curso/notas",
+    "examen/resultados",
+    "examen/historial"
+  ];
 
   const validarPermisos = (lista = []) => {
     let retornar = false;

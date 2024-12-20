@@ -433,7 +433,7 @@ function FormularioExamenIntento() {
         textoCerrar="Cerrar"
       />
       <section className="breadcrumb-area">
-        <div className="bg-white py-3 pattern-bg" style={{ zIndex: "0" }} >
+        <div className="bg-white py-3 pattern-bg" style={{ zIndex: "0" }}>
           <div className="container">
             <div className="breadcrumb-content">
               <ul className="quiz-nav d-flex flex-wrap align-items-center">
@@ -490,10 +490,7 @@ function FormularioExamenIntento() {
           </div>
         </div>
         {configuracion.descargables && configuracion.descargables.length > 0 ? (
-          <div
-            className=" pb-40px"
-            style={{ background: "var(--Lavander)" }}
-          >
+          <div className=" pb-40px" style={{ background: "var(--Lavander)" }}>
             <div className="container">
               <div className="breadcrumb-content pt-40px text-center">
                 <div className="section-heading">
@@ -503,7 +500,7 @@ function FormularioExamenIntento() {
                       className="btn theme-btn btn-round"
                       style={{
                         background: "#fff",
-                        color: "var(--Lavander)"
+                        color: "var(--Lavander)",
                       }}
                       onClick={(event) => {
                         event.preventDefault();
@@ -529,7 +526,7 @@ function FormularioExamenIntento() {
           <div className="container">
             {preguntaActual != -1 && Object.keys(preguntas).length > 1 ? (
               <ul
-                className="quiz-course-nav d-flex align-items-center justify-content-between list_preguntas"
+                className="d-flex align-items-center justify-content-between list_preguntas"
                 style={{
                   overflowX: "auto",
                   whiteSpace: "nowrap",
@@ -541,7 +538,21 @@ function FormularioExamenIntento() {
                     <span
                       onClick={(e) => cambiarPregunta(key)}
                       className="icon-element icon-element-sm"
-                      style={{ cursor: "pointer" }}
+                      style={{
+                        cursor: "pointer",
+                        background: `${
+                          preguntas[key].id_pregunta_opcion_seleccionada ||
+                          preguntaActual === parseInt(key)
+                            ? "White"
+                            : "transparent"
+                        }`,
+                        border: "1px solid white",
+                        color: `${
+                          preguntaActual === parseInt(key)
+                            ? "var(--Azul-petroleo)"
+                            : "white"
+                        }`,
+                      }}
                       data-toggle="tooltip"
                       data-placement="top"
                       title={`Pregunta ${parseInt(key) + 1}`}
@@ -550,14 +561,7 @@ function FormularioExamenIntento() {
                       null ? (
                         parseInt(key) + 1
                       ) : (
-                        <span
-                          className="icon-element icon-element-sm text-success"
-                          data-toggle="tooltip"
-                          data-placement="top"
-                          title={`Pregunta ${parseInt(key) + 1}`}
-                        >
-                          <i className="la la-check"></i>
-                        </span>
+                        <i className="la la-check text-success"></i>
                       )}
                     </span>
                   </li>
@@ -655,7 +659,8 @@ function FormularioExamenIntento() {
                       href="#"
                       className="btn theme-btn theme-btn-transparent mr-2 btn-round"
                     >
-                      Pregunta Anterior
+                      <i className="la la-angle-left icon mr-1"></i>
+                      Anterior
                     </a>
                   ) : (
                     ""
@@ -670,7 +675,7 @@ function FormularioExamenIntento() {
                       href="#"
                       className="btn theme-btn btn-round"
                     >
-                      Siguiente pregunta{" "}
+                      Siguiente{" "}
                       <i className="la la-angle-right icon ml-1"></i>
                     </a>
                   ) : (

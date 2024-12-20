@@ -65,7 +65,9 @@ function FormularioPlay() {
   const [queAprenderas, setQueAprenderas] = useState([]);
   const [listadoRequerimientos, setListadoRequerimientos] = useState([]);
   const [participantes, setParticipantes] = useState([]);
+  const [buscarParticipante, setBuscarParticipante] = useState("");
   const [calificaciones, setCalificaciones] = useState([]);
+  const [buscarCalificacion, setBuscarCalificacion] = useState("");
 
   const [mostrarMasCursoDescripcion, setMostrarMasCursoDescripcion] =
     useState(false);
@@ -527,12 +529,46 @@ function FormularioPlay() {
     };
     try {
       const response = await fetch(
-        `${urlBaseApi}/api/curso/getMatriculadosLista/${dataCurso.id}/1/usuario.nombres-asc/`,
+        `${urlBaseApi}/api/curso/getMatriculadosLista/${
+          dataCurso.id
+        }/1/usuario.nombres-asc${
+          buscarParticipante !== "" ? `/${buscarParticipante}` : "/"
+        }`,
         opciones
       );
       const datos = await response.json();
       if (response.ok) {
         setParticipantes(datos.matriculados);
+        return;
+      } else {
+        mensajesDeError(
+          setPopup,
+          response.status,
+          typeof datos.datos !== "undefined" ? datos.datos : {},
+          false,
+          { titulo: "", contenido: "" }
+        );
+      }
+    } catch (error) {
+      console.error("Error de conexión:", error);
+    }
+  };
+
+  const obtenerCalificaciones = async () => {
+    const opciones = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    };
+    try {
+      const response = await fetch(
+        `${urlBaseApi}/api/curso/getNotas/${dataCurso.id}`,
+        opciones
+      );
+      const datos = await response.json();
+      if (response.ok) {
+        setCalificaciones(datos.datos?.usuarios);
         return;
       } else {
         mensajesDeError(
@@ -684,9 +720,23 @@ function FormularioPlay() {
 
   const nivelHabilidad = ["", "Básico", "Intermedio", "Avanzado"];
 
+  const handleSetBuscarParticipante = (e) => {
+    setBuscarParticipante(e.target.value);
+  };
+  
+  const handleSetBuscarCalificacion = (e) => {
+    setBuscarCalificacion(e.target.value);
+  };
+
   useEffect(() => {
     if (pestanaActivada === 6) {
       obtenerParticipantes();
+    }
+  }, [pestanaActivada, buscarParticipante]);
+
+  useEffect(() => {
+    if (pestanaActivada === 7) {
+      obtenerCalificaciones();
     }
   }, [pestanaActivada]);
 
@@ -2202,7 +2252,7 @@ function FormularioPlay() {
                             <div className="col-lg-6">
                               <div className="form-group">
                                 <input
-                                  // onChange={handleSetPalabraBuscar}
+                                  onChange={handleSetBuscarParticipante}
                                   className="form-control form--control pl-3"
                                   type="text"
                                   name="buscar_video"
@@ -2263,7 +2313,7 @@ function FormularioPlay() {
                             <div className="col-lg-6">
                               <div className="form-group">
                                 <input
-                                  // onChange={handleSetPalabraBuscar}
+                                  onChange={handleSetBuscarCalificacion}
                                   className="form-control form--control pl-3"
                                   type="text"
                                   name="buscar_video"
@@ -2278,21 +2328,17 @@ function FormularioPlay() {
                               <thead>
                                 <tr>
                                   <th scope="col">Nombre / Apellido(s) </th>
-                                  <th scope="col">Numero ID</th>
                                   <th scope="col">Correo electronico</th>
-                                  <th scope="col">Ultimo acceso</th>
                                   <th scope="col">Nota final</th>
                                   {/* <th scope="col"></th> */}
                                 </tr>
                               </thead>
                               <tbody>
-                                {calificaciones.map((item, index) => (
+                                {calificaciones.filter((item) => item.nombres?.toLowerCase()?.includes(buscarCalificacion)).map((item, index) => (
                                   <tr key={`c-${index}`}>
                                     <td>{item.nombres}</td>
-                                    <td>{item.identificacion}</td>
                                     <td>{item.email}</td>
-                                    <td>{item.ultimo_acceso}</td>
-                                    <td>{item.nota ?? "--"}</td>
+                                    <td>{item.calificacion_curso ?? "--"}</td>
                                     {/* <td>
                                       <i className="la la-book-open mr-2"></i>
                                       <i className="la la-pen"></i>

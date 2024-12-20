@@ -311,11 +311,11 @@ function FormularioExamenIntentoResultados() {
           </div>
         </div>
         {configuracion.tipo_examen != 1 ? (
-          <div className="bg-dark pt-60px pb-60px">
+          <div className="pt-60px pb-60px" style={{background: "var(--Lavander)"}}>
             <div className="container">
               <div className="breadcrumb-content text-center">
                 <div className="section-heading">
-                  <p className="section__desc text-white-50">
+                  <p className="section__desc text-white">
                     Enviado el {configuracion.fecha_hora_fin_formateada}
                   </p>
                   <h2 className="section__title text-white pt-2">
@@ -325,13 +325,13 @@ function FormularioExamenIntentoResultados() {
                 <div className="breadcrumb-btn-box pt-30px">
                   <button
                     onClick={handleConfirmarIntento}
-                    className="btn theme-btn theme-btn-transparent text-white-50 mr-2 mb-2"
+                    className="btn theme-btn btn-outline text-white mr-2 mb-2 btn-round"
                   >
                     Reintentar
                   </button>
                   <button
-                    onClick={handleVerHistorial}
-                    className="btn theme-btn theme-btn-transparent text-white-50 mb-2"
+                    onClick={handleVerHistorial} 
+                    className="btn theme-btn btn-outline text-white mb-2 btn-round"
                   >
                     Ver historial
                   </button>
