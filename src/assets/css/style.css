@@ -5943,7 +5943,7 @@ div.datedropper .picker .pick-lg-b li {
     background-color: rgba(127, 136, 151, 0.1); }
 
 /*======== dashboard-content-wrap =========*/
-.dashboard-content-wrap {
+/* .dashboard-content-wrap {
   height: calc(100vh - 100px);
   padding-top: 45px;
   width: calc(100% - 250px);
@@ -5955,7 +5955,7 @@ div.datedropper .picker .pick-lg-b li {
       padding-top: 30px;
       padding-left: 0;
       padding-right: 0;
-      width: 100%; } }
+      width: 100%; } } */
 
 /*======== profile-detail =========*/
 .profile-detail .generic-list-item li {

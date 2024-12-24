@@ -127,7 +127,7 @@ const FormularioInicio = () => {
         </div>
       )}
       {/* Boton atras */}
-      <div className="container-fluid my-5">
+      <div className="my-5">
         {categoriaSeleccionada !== 0 && (
           <div
             className="more-btn-box mt-4 text-left"

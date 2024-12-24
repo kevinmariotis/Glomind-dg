@@ -12,7 +12,7 @@ function TarjetaCursoAdmin({
   instructor = "",
   id_instructor = 0,
   descripcion_instructor = "",
-  labelButton = null,
+  labelButton = "",
   btnVideo = true,
   curso = {},
 }) {
@@ -25,7 +25,7 @@ function TarjetaCursoAdmin({
 
   //console.log("Este es el favorito ", estadoFavorito);
   return (
-    <div className="col-lg-3 responsive-column-half">
+    <div className="col">
       <div className="card card-item card-course">
         <div className="card-image">
           {/* <Link to={`${urlBase}/play/${url_amigable}`} className="d-block"> */}
@@ -111,7 +111,7 @@ function TarjetaCursoAdmin({
                 className="btn theme-btn btn-round w-100 py 3"
                 onClick={() => navigate(`/play/${url_amigable}`)}
               >
-                {labelButton || "Ir al curso"}
+                {labelButton !== "" ? labelButton : "Ir al curso"}
                 <i className="la la-arrow-right icon ml-1"></i>
               </button>
               {btnVideo && (

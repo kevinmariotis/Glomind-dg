@@ -3,19 +3,15 @@ import { useContext, useEffect, useState } from "react";
 import TarjetaCursoAdmin from "../../components/cards/TarjetaCursoAdmin";
 import { AuthContext } from "../../AuthContext";
 import { Button, Carousel } from "react-bootstrap";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 const CursosRecientes = () => {
   const { jwt } = useContext(AuthContext);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const [cursosRecientes, setCursosRecientes] = useState([]);
-
-  const dividirArray = (arr, size) => {
-    const result = [];
-    for (let i = 0; i < arr.length; i += size) {
-      result.push(arr.slice(i, i + size));
-    }
-    return result;
-  };
 
   const obtenerDatosCursos = async () => {
     const headers = {
@@ -37,8 +33,7 @@ const CursosRecientes = () => {
       // setMostrarSpinner(false);
       if (response2.ok) {
         const datos2 = await response2.json();
-        const result = dividirArray(datos2.cursos, 4);
-        setCursosRecientes(result);
+        setCursosRecientes(datos2.cursos);
       }
     } catch (error) {
       // Manejar el caso de error en la solicitud
@@ -63,7 +58,49 @@ const CursosRecientes = () => {
           >
             Cursos vistos recientemente
           </h3>
-          <Carousel
+
+          <Swiper
+            modules={[Navigation]}
+            navigation
+            spaceBetween={20}
+            slidesPerView={3}
+            breakpoints={{
+              0: {
+                slidesPerView: 1,
+              },
+              640: {
+                slidesPerView: 2,
+              },
+              768: {
+                slidesPerView: 2,
+              },
+              1024: {
+                slidesPerView: 3,
+              },
+              1600: {
+                slidesPerView: 4,
+              },
+            }}
+          >
+            {cursosRecientes.map((curso) => (
+              <SwiperSlide key={curso.id}>
+                <TarjetaCursoAdmin
+                  key={`tarjeta${curso.id}`}
+                  idcurso={curso.id}
+                  url_amigable={curso.url_amigable}
+                  nombre={curso.nombre}
+                  imagen={curso.imagen_pequena}
+                  instructor={curso.instructor}
+                  id_instructor={curso.id_instructor}
+                  descripcion_instructor={curso.docente_descripcion}
+                  labelButton={"Continuar"}
+                  btnVideo={false}
+                  curso={curso}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          {/* <Carousel
             interval={null}
             controls={cursosRecientes?.length > 1}
             prevIcon={
@@ -105,7 +142,7 @@ const CursosRecientes = () => {
                 </div>
               </Carousel.Item>
             ))}
-          </Carousel>
+          </Carousel> */}
         </>
       )}
     </div>
