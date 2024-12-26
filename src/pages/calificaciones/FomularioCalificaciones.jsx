@@ -132,7 +132,6 @@ const FomularioCalificaciones = () => {
                   <tr>
                     <th scope="col">Nombre de la asignatura/curso</th>
                     <th scope="col">Categoria</th>
-                    <th scope="col">Codigo</th>
                     <th scope="col">Calificación</th>
                     <th scope="col"></th>
                   </tr>
@@ -142,7 +141,6 @@ const FomularioCalificaciones = () => {
                     <tr key={`c-${index}`}>
                       <td>{curso.nombre}</td>
                       <td>{curso.categoria_nombre}</td>
-                      <td>{curso.codigo}</td>
                       <td>{curso.calificacion_curso ?? "-"}</td>
                       <td>
                         <button

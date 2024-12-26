@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 
@@ -60,6 +60,7 @@ import DashboardMenu from "./components/DashboardMenu";
 import SignUp from "./components/signUp/SignUp";
 import PaginaInicio from "./pages/inicio/PaginaInicio";
 import PaginaCalificaciones from "./pages/calificaciones/PaginaCalificaciones";
+import IntroScreen from "./components/intro/IntroScreen";
 
 //import About from './components/About';
 //import Home from './components/Home';
@@ -72,7 +73,7 @@ const Rutas = () => {
     "examen/intento",
     "curso/notas",
     "examen/resultados",
-    "examen/historial"
+    "examen/historial",
   ];
 
   const validarPermisos = (lista = []) => {
@@ -85,8 +86,17 @@ const Rutas = () => {
     return retornar;
   };
 
+  const [showIntro, setShowIntro] = useState(true);
+
+  const handleIntroFinish = () => {
+    setShowIntro(false);
+  };
+
   return (
     <>
+      {showIntro && (
+        <IntroScreen logo="/ruta/a/tu/logo.png" onFinish={handleIntroFinish} />
+      )}
       {authenticated &&
         urlSinMenu.every((item) => !location.pathname?.includes(item)) && (
           <DashboardMenu />

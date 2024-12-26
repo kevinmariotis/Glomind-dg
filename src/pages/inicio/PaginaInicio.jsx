@@ -3,12 +3,15 @@ import DashboardHeader from "../../components/DashboardHeader";
 import FormularioInicio from "./FormularioInicio";
 
 const PaginaInicio = () => {
+  
   return (
     <>
-      <DashboardHeader />
-      <DashboardArea>
-        <FormularioInicio />
-      </DashboardArea>
+      <>
+        <DashboardHeader />
+        <DashboardArea>
+          <FormularioInicio />
+        </DashboardArea>
+      </>
     </>
   );
 };
