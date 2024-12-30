@@ -20,6 +20,7 @@ import CountdownTimer from "./CoundDownTimer";
 import CrearEditarVideollamada from "./CrearEditarVideollamada";
 import { sideBarAbrirCerrar } from "./comun";
 import { Skeleton } from "@mui/material";
+import ReactPlayer from "react-player";
 
 function FormularioPlay() {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
@@ -78,7 +79,7 @@ function FormularioPlay() {
   const [contenidoActivado, setContenidoActivado] = useState(-1); //el contenido que se está viendo
   const [contenidoActivadoAnterior, setContenidoActivadoAnterior] =
     useState(-1); //el contenido anterior que estaba viendo, por si acaso hay que volver a señalarlo.
-  const [pestanaActivada, setPestanaActivada] = useState(2); //pestañas que estan debajo del video
+  const [pestanaActivada, setPestanaActivada] = useState(9); //pestañas que estan debajo del video
   const [cargarActividadActual, setCargarActividadActual] = useState(false);
 
   const [entrarVideollamada, setEntrarVideollamada] = useState({
@@ -723,7 +724,7 @@ function FormularioPlay() {
   const handleSetBuscarParticipante = (e) => {
     setBuscarParticipante(e.target.value);
   };
-  
+
   const handleSetBuscarCalificacion = (e) => {
     setBuscarCalificacion(e.target.value);
   };
@@ -1016,6 +1017,24 @@ function FormularioPlay() {
                         aria-selected="false"
                       >
                         Contenido del curso
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        onClick={(event) => {
+                          handleCambiarPestana(event, 9);
+                        }}
+                        className={`nav-link ${
+                          pestanaActivada == 9 ? "active" : ""
+                        }`}
+                        id="overview-tab"
+                        data-toggle="tab"
+                        href="#overview"
+                        role="tab"
+                        aria-controls="overview"
+                        aria-selected="true"
+                      >
+                        Presentación
                       </a>
                     </li>
                     <li className="nav-item">
@@ -2334,17 +2353,23 @@ function FormularioPlay() {
                                 </tr>
                               </thead>
                               <tbody>
-                                {calificaciones.filter((item) => item.nombres?.toLowerCase()?.includes(buscarCalificacion)).map((item, index) => (
-                                  <tr key={`c-${index}`}>
-                                    <td>{item.nombres}</td>
-                                    <td>{item.email}</td>
-                                    <td>{item.calificacion_curso ?? "--"}</td>
-                                    {/* <td>
+                                {calificaciones
+                                  .filter((item) =>
+                                    item.nombres
+                                      ?.toLowerCase()
+                                      ?.includes(buscarCalificacion)
+                                  )
+                                  .map((item, index) => (
+                                    <tr key={`c-${index}`}>
+                                      <td>{item.nombres}</td>
+                                      <td>{item.email}</td>
+                                      <td>{item.calificacion_curso ?? "--"}</td>
+                                      {/* <td>
                                       <i className="la la-book-open mr-2"></i>
                                       <i className="la la-pen"></i>
                                     </td> */}
-                                  </tr>
-                                ))}
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>
@@ -2396,6 +2421,34 @@ function FormularioPlay() {
                             id_curso={dataCurso.id}
                             funcionCargarContenido={cargarContenidoEspecifico}
                           />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className={`tab-pane fade show ${
+                        pestanaActivada == 9 ? "active" : ""
+                      }`}
+                      id="calendar"
+                      role="tabpanel-calendar"
+                      aria-labelledby="calendar"
+                    >
+                      <div className="lecture-overview-wrap">
+                        <div className="lecture-overview-item">
+                          <h3 className="fs-24 font-weight-semi-bold pb-2">
+                            Presentación
+                          </h3>
+                          <p>{dataCurso.desc_general ?? ""}</p>
+                        </div>
+                        <div className="section-block"></div>
+                        <div className="lecture-overview-item">
+                          <div className="frame-container">
+                            <ReactPlayer
+                              url={`${urlBaseApi}/${dataCurso.video_vista_previa}`}
+                              controls
+                              width={"100%"}
+                              height={"auto"}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
