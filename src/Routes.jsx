@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 
@@ -61,12 +61,16 @@ import SignUp from "./components/signUp/SignUp";
 import PaginaInicio from "./pages/inicio/PaginaInicio";
 import PaginaCalificaciones from "./pages/calificaciones/PaginaCalificaciones";
 import IntroScreen from "./components/intro/IntroScreen";
+import { useDispatch, useSelector } from "react-redux";
+import { setShowIntro } from "./redux/slices/AuthSlice";
 
 //import About from './components/About';
 //import Home from './components/Home';
 
 const Rutas = () => {
   const { authenticated, permissions, esDocente } = useContext(AuthContext); //se obtiene los datos del contexto de la sesion (AuthContext)
+  const { showIntro } = useSelector((state) => state.auth);
+  const dispatch = useDispatch()
   const location = useLocation();
   const urlSinMenu = [
     "examen/presentacion",
@@ -86,10 +90,8 @@ const Rutas = () => {
     return retornar;
   };
 
-  const [showIntro, setShowIntro] = useState(true);
-
   const handleIntroFinish = () => {
-    setShowIntro(false);
+    dispatch(setShowIntro(false));
   };
 
   return (
