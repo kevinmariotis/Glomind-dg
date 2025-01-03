@@ -130,9 +130,15 @@ const FomularioCalificaciones = () => {
               <table className="table custom-table">
                 <thead>
                   <tr>
-                    <th scope="col">Nombre de la asignatura/curso</th>
-                    <th scope="col">Categoria</th>
-                    <th scope="col">Calificación</th>
+                    <th scope="col">
+                      <span>Nombre de la asignatura/curso</span>
+                    </th>
+                    <th scope="col">
+                      <span>Categoria</span>
+                    </th>
+                    <th scope="col">
+                      <span>Calificación</span>
+                    </th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
