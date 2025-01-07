@@ -35,6 +35,12 @@ function FormularioDashboardEnroledCourses() {
   const [listaCategoriaNavegacion, setListaCategoriaNavegacion] = useState([]);
 
   const [mostrarSpinner, setMostrarSpinner] = useState(false);
+  const [categoriasNiveles, setCategoriasNiveles] = useState([
+    {
+      idCategoria: 0,
+      nombre: "Mis cursos",
+    },
+  ]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -260,6 +266,13 @@ function FormularioDashboardEnroledCourses() {
       setListaCategoriaNavegacion(copia);
     }
     setCategoriaSeleccionada(id_categoria_destino);
+    setCategoriasNiveles([
+      ...categoriasNiveles,
+      {
+        id_categoria_destino,
+        nombre: categorias.find((item) => item.id === id_categoria_destino).nombre,
+      },
+    ]);
   };
 
   const handleVolverCategoriaAnterior = () => {
@@ -267,6 +280,9 @@ function FormularioDashboardEnroledCourses() {
     let ultima = copialista.pop();
     setListaCategoriaNavegacion(copialista);
     setCategoriaSeleccionada(ultima);
+    let copialistaNiveles = [...categoriasNiveles];
+    copialistaNiveles.pop();
+    setCategoriasNiveles(copialistaNiveles);
   };
 
   return (
@@ -285,7 +301,9 @@ function FormularioDashboardEnroledCourses() {
       <div className="dashboard-content-wrap">
         {/* {esMovil && <BotonDashboardNavegacionMovil />} */}
         <div className="container-fluid mt-5">
-          <CustomBreandcrumb titles={["Mis Cursos"]} />
+          <CustomBreandcrumb
+            titles={[...categoriasNiveles.map((item) => item.nombre)]}
+          />
           <ul
             className="nav nav-tabs generic-tab pb-30px"
             id="myTab"

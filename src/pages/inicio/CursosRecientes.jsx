@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react";
 import TarjetaCursoAdmin from "../../components/cards/TarjetaCursoAdmin";
 import { AuthContext } from "../../AuthContext";
@@ -21,21 +20,17 @@ const CursosRecientes = () => {
         method: "GET",
         headers: headers,
       };
-      // setMostrarSpinner(true);
 
-      //buscamos los datos de los cursos a mostrar
-      // setMostrarSpinner(true);
       const response2 = await fetch(
         `${urlBaseApi}/api/usuario/cursos/0/1/1/ultima_visita-desc`,
         opciones
       );
-      // setMostrarSpinner(false);
+
       if (response2.ok) {
         const datos2 = await response2.json();
         setCursosRecientes(datos2.cursos);
       }
     } catch (error) {
-      // Manejar el caso de error en la solicitud
       console.error("Error en la solicitud al servidor", error);
     }
   };
@@ -45,7 +40,7 @@ const CursosRecientes = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ position: "relative" }}>
       {cursosRecientes?.length > 0 && (
         <>
           <h3
@@ -60,7 +55,6 @@ const CursosRecientes = () => {
 
           <Swiper
             modules={[Navigation]}
-            navigation
             spaceBetween={20}
             slidesPerView={3}
             breakpoints={{
@@ -79,6 +73,10 @@ const CursosRecientes = () => {
               1600: {
                 slidesPerView: 4,
               },
+            }}
+            navigation={{
+              nextEl: "#nextBtn",
+              prevEl: "#prevBtn",
             }}
           >
             {cursosRecientes.map((curso) => (
@@ -99,49 +97,42 @@ const CursosRecientes = () => {
               </SwiperSlide>
             ))}
           </Swiper>
-          {/* <Carousel
-            interval={null}
-            controls={cursosRecientes?.length > 1}
-            prevIcon={
-              <Button
-                style={{ borderRadius: "50%", width: "50px", height: "50px" }}
-              >
-                <i className="la la-arrow-left icon"></i>
-              </Button>
-            }
-            nextIcon={
-              <Button
-                style={{ borderRadius: "50%", width: "50px", height: "50px" }}
-              >
-                <i className="la la-arrow-right icon"></i>
-              </Button>
-            }
+
+          {/* Botones de navegación personalizados */}
+          <button
+            id="prevBtn"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "10px",
+              zIndex: 10,
+              backgroundColor: "var(--Lavander)",
+              border: "none",
+              fontSize: "30px",
+              color: "white",
+              padding: "10px",
+              borderRadius: "50%",
+            }}
           >
-            {cursosRecientes?.map((slide, index) => (
-              <Carousel.Item
-                key={`slide-item-${index}`}
-                style={{ height: "550px" }}
-              >
-                <div className="card-wrapper container-sm d-flex  justify-content-start">
-                  {slide?.map((curso) => (
-                    <TarjetaCursoAdmin
-                      key={`tarjeta${curso.id}`}
-                      idcurso={curso.id}
-                      url_amigable={curso.url_amigable}
-                      nombre={curso.nombre}
-                      imagen={curso.imagen_pequena}
-                      instructor={curso.instructor}
-                      id_instructor={curso.id_instructor}
-                      descripcion_instructor={curso.docente_descripcion}
-                      labelButton={"Continuar"}
-                      btnVideo={false}
-                      curso={curso}
-                    />
-                  ))}
-                </div>
-              </Carousel.Item>
-            ))}
-          </Carousel> */}
+            <i className="la la-arrow-left"></i>
+          </button>
+          <button
+            id="nextBtn"
+            style={{
+              position: "absolute",
+              top: "50%",
+              right: "10px",
+              zIndex: 10,
+              backgroundColor: "var(--Lavander)",
+              border: "none",
+              fontSize: "30px",
+              color: "white",
+              padding: "10px",
+              borderRadius: "50%",
+            }}
+          >
+            <i className="la la-arrow-right"></i>
+          </button>
         </>
       )}
     </div>

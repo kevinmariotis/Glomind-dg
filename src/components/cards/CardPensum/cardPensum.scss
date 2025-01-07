@@ -1,0 +1,88 @@
+.contentCardPensum {
+  background-color: #fff;
+  width: 100%;
+  max-width: 300px;
+  height: 450px;
+  max-height: 652px;
+  border-radius: 40px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  // IMAGEN
+  .img {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    
+    div {
+      position: relative;
+      .title {
+        width: 315px;
+        text-align: center;
+        color: #fff;
+        padding: 40px;
+        transition: ease-out 200ms;
+        opacity: 1;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+    }
+  }
+
+  // INFO
+  .info {
+    background-color: transparent;
+    height: 100%;
+    height: fill-available;
+    height: -moz-available;
+    height: -webkit-fill-available;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: -5000px;
+    transition: ease-out 400ms;
+
+    .title {
+      color: var(--colorBlueDark);
+      margin-bottom: 20px;
+    }
+
+    .description {
+      margin-bottom: 10px;
+    }
+
+    .stackInfo {
+      border-top: thin solid var(--colorGrey);
+    }
+  }
+
+  // VALUE
+  .value {
+    background-color: var(--colorBlueLight);
+    padding: 20px;
+    text-align: center;
+    background-color: var(--Lavander);
+
+    p {
+      color: #fff;
+    }
+  }
+}
+
+.contentCardPensum:hover {
+  .img {
+    .title {
+      opacity: 0;
+    }
+  }
+  .info {
+    margin-bottom: 0px /* 900px */;
+    background-color: #fff;
+  }
+}
