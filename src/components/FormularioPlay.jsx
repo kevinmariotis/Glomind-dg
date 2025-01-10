@@ -2293,15 +2293,19 @@ function FormularioPlay() {
                               </div>
                             </div>
                             <div className="tbody">
-                            {participantes.map((item, index) => (
-                                  <div className="row" key={`c-${index}`}>
-                                    <div className="col">{item.nombres}</div>
-                                    <div className="col">{item.identificacion}</div>
-                                    <div className="col">{item.email}</div>
-                                    <div className="col">{item.ultima_visita}</div>
-                                    <div className="col">{item.estado}</div>
+                              {participantes.map((item, index) => (
+                                <div className="row" key={`c-${index}`}>
+                                  <div className="col">{item.nombres}</div>
+                                  <div className="col">
+                                    {item.identificacion}
                                   </div>
-                                ))}
+                                  <div className="col">{item.email}</div>
+                                  <div className="col">
+                                    {item.ultima_visita}
+                                  </div>
+                                  <div className="col">{item.estado}</div>
+                                </div>
+                              ))}
                             </div>
                           </div>
                         </div>
