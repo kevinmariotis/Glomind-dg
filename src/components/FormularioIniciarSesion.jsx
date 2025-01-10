@@ -110,8 +110,8 @@ function FormularioIniciarSesion() {
             sessionStorage.removeItem("recordarme");
           }
         }
-        window.location.href = "/"; //se recarga la aplicacion de nuevo para que el AuthContext valide la cookie y cargue los permisos
         dispatch(setShowIntro(true));
+        window.location.href = "/"; //se recarga la aplicacion de nuevo para que el AuthContext valide la cookie y cargue los permisos
         return;
       } else {
         // Obtener el código de error de la respuesta

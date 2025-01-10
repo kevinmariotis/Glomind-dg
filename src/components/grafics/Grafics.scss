@@ -1,0 +1,29 @@
+.circleGrafic {
+  .line {
+    // background-color: var(--Azul-petroleo);
+    // background-color: var(--Lavander);
+    padding: 3px;
+    border-radius: 50%;
+    .external-section {
+      background-color: var(--Lavander-100);
+      border-radius: 50%;
+      padding: 7px;
+    }
+    .internal-section {
+      // background-color: var(--Lavander);
+      background-color: var(--Lavander-500);
+      opacity: 0.5;
+      border-radius: 50%;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50px;
+      height: 50px;
+      .text {
+        color: white;
+        font-size: 14px;
+      }
+    }
+  }
+}

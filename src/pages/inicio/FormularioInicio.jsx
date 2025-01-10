@@ -6,6 +6,7 @@ import DashboardFooter from "../../components/DashboardFooter";
 import CursosRecientes from "./CursosRecientes";
 import CardPensum from "../../components/cards/CardPensum/CardPensum";
 import Spinner from "../../components/Spinner";
+import TarjetaCategoriaAdmin from "../../components/cards/TarjetaCategoriaAdmin";
 
 const FormularioInicio = () => {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
@@ -58,6 +59,24 @@ const FormularioInicio = () => {
       console.error("Error en la solicitud al servidor", error);
     }
     setLoading(false);
+  };
+
+  const contarCursosCategoria = (id_categoria) => {
+    let contador = 0;
+
+    categorias.forEach((catx) => {
+      if (catx == id_categoria) {
+        contador++;
+      }
+    });
+    /*datosCursosTodos.forEach((curso, index) => {            
+            curso.categorias_perteneciente.forEach((cate, index2) => {                                            
+                if(cate==id_categoria){                    
+                    contador++;
+                }                
+            });                                
+        });*/
+    return contador;
   };
 
   const cambiarCategoria = (idCategoria) => {
@@ -127,22 +146,30 @@ const FormularioInicio = () => {
           <div className="row">
             {categoriasNiveles.length !== 2 &&
               categorias.map((categoria, index) => (
-                <div key={`cat-${index}`} className="col-lg-3 p-3">
-                  <div
-                    className="card-basic"
-                    onClick={() => cambiarCategoria(categoria.id)}
-                  >
-                    <div>
-                      <h2>{categoria.nombre}</h2>
-                      {categoriaSeleccionada !== 0 && (
-                        <p>
-                          ( {cursos.length}{" "}
-                          {cursos.length === 1 ? "Resultado" : "Resultados"})
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <TarjetaCategoriaAdmin
+                  key={`tarjeta-categoria-admin-${categoria.id}`}
+                  id_categoria={categoria.id}
+                  nombre={categoria.nombre}
+                  imagen={categoria.imagen_pequena}
+                  funcionNavegar={cambiarCategoria}
+                  funcionCantidadCursos={contarCursosCategoria}
+                />
+                // <div key={`cat-${index}`} className="col-lg-3 p-3">
+                //   <div
+                //     className="card-basic"
+                //     onClick={() => cambiarCategoria(categoria.id)}
+                //   >
+                //     <div>
+                //       <h2>{categoria.nombre}</h2>
+                //       {categoriaSeleccionada !== 0 && (
+                //         <p>
+                //           ( {cursos.length}{" "}
+                //           {cursos.length === 1 ? "Resultado" : "Resultados"})
+                //         </p>
+                //       )}
+                //     </div>
+                //   </div>
+                // </div>
               ))}
             {categoriasNiveles.length === 2 &&
               categorias.map((categoria) => (
@@ -157,9 +184,14 @@ const FormularioInicio = () => {
                         ? urlBaseApi + "/" + categoria.imagen_pequena
                         : "/images/img8.jpg"
                     }
-                    description={categoria.description}
-                    value="0,0"
+                    description={categoria.descripcion}
                     path="https://uvirtualad.mx"
+                    course={categoria.personalizado_1}
+                    state={categoria.personalizado_2}
+                    time={categoria.personalizado_3}
+                    dateFirst={categoria.personalizado_4}
+                    dateLast={categoria.personalizado_5}
+                    value={categoria.personalizado_6 ?? "0,0"}
                     // footer="Precio Completo"
                   />
                 </div>

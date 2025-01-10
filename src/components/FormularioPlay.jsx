@@ -21,6 +21,7 @@ import CrearEditarVideollamada from "./CrearEditarVideollamada";
 import { sideBarAbrirCerrar } from "./comun";
 import { Skeleton } from "@mui/material";
 import ReactPlayer from "react-player";
+import GraficCircle from "./grafics/GraficCircle";
 
 function FormularioPlay() {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
@@ -2281,29 +2282,27 @@ function FormularioPlay() {
                               </div>
                             </div>
                           </div>
-                          <div className="table-responsive mb-5">
-                            <table className="table custom-table">
-                              <thead>
-                                <tr>
-                                  <th scope="col">Nombre / Apellido(s) </th>
-                                  <th scope="col">Numero ID</th>
-                                  <th scope="col">Correo electronico</th>
-                                  <th scope="col">Ultimo acceso</th>
-                                  <th scope="col">Estatus</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {participantes.map((item, index) => (
-                                  <tr key={`c-${index}`}>
-                                    <td>{item.nombres}</td>
-                                    <td>{item.identificacion}</td>
-                                    <td>{item.email}</td>
-                                    <td>{item.ultima_visita}</td>
-                                    <td>{item.estado}</td>
-                                  </tr>
+                          <div className="custom-table">
+                            <div className="thead">
+                              <div className="row">
+                                <div className="col">Nombre / Apellido(s) </div>
+                                <div className="col">Numero ID</div>
+                                <div className="col">Correo electronico</div>
+                                <div className="col">Ultimo acceso</div>
+                                <div className="col">Estatus</div>
+                              </div>
+                            </div>
+                            <div className="tbody">
+                            {participantes.map((item, index) => (
+                                  <div className="row" key={`c-${index}`}>
+                                    <div className="col">{item.nombres}</div>
+                                    <div className="col">{item.identificacion}</div>
+                                    <div className="col">{item.email}</div>
+                                    <div className="col">{item.ultima_visita}</div>
+                                    <div className="col">{item.estado}</div>
+                                  </div>
                                 ))}
-                              </tbody>
-                            </table>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -2342,36 +2341,34 @@ function FormularioPlay() {
                               </div>
                             </div>
                           </div>
-                          <div className="table-responsive mb-5">
-                            <table className="table custom-table">
-                              <thead>
-                                <tr>
-                                  <th scope="col">Nombre / Apellido(s) </th>
-                                  <th scope="col">Correo electronico</th>
-                                  <th scope="col">Nota final</th>
-                                  {/* <th scope="col"></th> */}
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {calificaciones
-                                  .filter((item) =>
-                                    item.nombres
-                                      ?.toLowerCase()
-                                      ?.includes(buscarCalificacion)
-                                  )
-                                  .map((item, index) => (
-                                    <tr key={`c-${index}`}>
-                                      <td>{item.nombres}</td>
-                                      <td>{item.email}</td>
-                                      <td>{item.calificacion_curso ?? "--"}</td>
-                                      {/* <td>
-                                      <i className="la la-book-open mr-2"></i>
-                                      <i className="la la-pen"></i>
-                                    </td> */}
-                                    </tr>
-                                  ))}
-                              </tbody>
-                            </table>
+                          <div className="custom-table">
+                            <div className="thead">
+                              <div className="row">
+                                <div className="col">Nombre / Apellido(s)</div>
+                                <div className="col">Correo electronico</div>
+                                <div className="col">Nota final </div>
+                              </div>
+                            </div>
+                            <div className="tbody">
+                              {calificaciones
+                                .filter((item) =>
+                                  item.nombres
+                                    ?.toLowerCase()
+                                    ?.includes(buscarCalificacion)
+                                )
+                                .map((item, index) => (
+                                  <div className="row" key={`a-${index}`}>
+                                    <div className="col">{item.nombres}</div>
+                                    <div className="col">{item.email}</div>
+                                    <div className="col">
+                                      <GraficCircle
+                                        value={item.calificacion_curso}
+                                        maxValue={10}
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -2447,7 +2444,7 @@ function FormularioPlay() {
                               controls
                               width={"100%"}
                               height={"auto"}
-                            />
+                            />{" "}
                           </div>
                         </div>
                       </div>

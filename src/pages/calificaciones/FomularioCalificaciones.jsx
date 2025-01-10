@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import CustomBreandcrumb from "../../components/BreadCrumb/CustomBreandcrumb";
 import { AuthContext } from "../../AuthContext";
 import DashboardFooter from "../../components/DashboardFooter";
+import GraficCircle from "../../components/grafics/GraficCircle";
 
 const FomularioCalificaciones = () => {
   const { jwt } = useContext(AuthContext);
@@ -125,77 +126,64 @@ const FomularioCalificaciones = () => {
               Categoria
             </button>
           </div>
-          <div className="card custom-card mt-4">
-            <div className="table-responsive mb-5">
-              <table className="table custom-table">
-                <thead>
-                  <tr>
-                    <th scope="col">
-                      <span>Nombre de la asignatura/curso</span>
-                    </th>
-                    <th scope="col">
-                      <span>Categoria</span>
-                    </th>
-                    <th scope="col">
-                      <span>Calificación</span>
-                    </th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cursos.map((curso, index) => (
-                    <tr key={`c-${index}`}>
-                      <td>{curso.nombre}</td>
-                      <td>{curso.categoria_nombre}</td>
-                      <td>{curso.calificacion_curso ?? "-"}</td>
-                      <td>
-                        <button
-                          className="btn theme-btn btn-round w-100 px-0"
-                          onClick={() => verCalificaciones(curso.id)}
-                        >
-                          Ver calificaciones
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/* <Paginador
-            elemetosTotales={totalCertificados}
-            elementosPorPagina={15}
-            paginaActual={paginaNavegacion}
-            callbackCambioPagina={setPaginaNavegacion}
-          /> */}
+          <div className="custom-table">
+            <div className="thead">
+              <div className="row">
+                <div className="col col-6">
+                  <span>Nombre de la asignatura/curso</span>
+                </div>
+                <div className="col">
+                  <span>Categoria</span>
+                </div>
+                <div className="col">
+                  <span>Calificación</span>
+                </div>
+                <div className="col col-1"></div>
+              </div>
+            </div>
+            <div className="tbody">
+              {cursos.map((curso, index) => (
+                <div className="row" key={`c-${index}`}>
+                  <div className="col col-6">{curso.nombre}</div>
+                  <div className="col">{curso.categoria_nombre}</div>
+                  <div className="col">
+                    <GraficCircle
+                      value={curso.calificacion_curso}
+                      maxValue={10}
+                    />
+                  </div>
+                  <div className="col col-1">
+                    <span
+                      className="icon-button"
+                      onClick={() => verCalificaciones(curso.id)}
+                    >
+                      <i className="la la-search" />
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </>
       ) : (
-        <div className="card custom-card mt-4">
-          <div className="table-responsive mb-5">
-            <table className="table custom-table">
-              <thead>
-                <tr>
-                  <th scope="col">Nombre de la actividad</th>
-                  <th scope="col">Porcentaje del curso</th>
-                  <th scope="col">Calificación</th>
-                </tr>
-              </thead>
-              <tbody>
-                {actividades.map((actividad, index) => (
-                  <tr key={`a-${index}`}>
-                    <td>{actividad.nombre}</td>
-                    <td>{actividad.porcentaje_en_total_curso}</td>
-                    <td>{actividad.nota ?? "-"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {/* <Paginador
-            elemetosTotales={totalCertificados}
-            elementosPorPagina={15}
-            paginaActual={paginaNavegacion}
-            callbackCambioPagina={setPaginaNavegacion}
-          /> */}
+        <div className="custom-table">
+          <div className="thead">
+            <div className="row">
+              <div className="col">Nombre de la actividad</div>
+              <div className="col">Porcentaje del curso</div>
+              <div className="col">Calificación</div>
+            </div>
+          </div>
+          <div className="tbody">
+            {actividades.map((actividad, index) => (
+              <div className="row" key={`a-${index}`}>
+                <div className="col">{actividad.nombre}</div>
+                <div className="col">{actividad.porcentaje_en_total_curso}</div>
+                <div className="col">
+                  <GraficCircle value={actividad.nota} maxValue={10} />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

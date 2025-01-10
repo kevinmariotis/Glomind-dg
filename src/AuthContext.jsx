@@ -3,11 +3,14 @@
 import { createContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import LoadingAnimation from "./components/LoadingAnimation";
+import { useDispatch } from "react-redux";
+import { setConfig } from "./redux/slices/ConfigSlice";
 // Crea el contexto de autenticación
 export const AuthContext = createContext();
 
 // Crea el proveedor de autenticación
 export const AuthProvider = ({ children }) => {
+  const dispatch = useDispatch()
   const [authenticated, setAuthenticated] = useState(false);
   const [permissions, setPermissions] = useState([]);
   const [esDocente, setEsDocente] = useState(false);
@@ -99,6 +102,20 @@ export const AuthProvider = ({ children }) => {
               setCorreo(data.correo);
               setImagenPequena(data.imagen_pequena);
               setCargado(true);
+              const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
+
+              const opciones = {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${jwt}`,
+                },
+              };
+              const response = await fetch(
+                `${urlBaseApi}/api/categoriasistema/getCamposPersonalizables/1`,
+                opciones
+              );
+              const dataConfig = await response.json();
+              dispatch(setConfig(dataConfig))
             } else {
               Cookies.remove("jwt");
               console.log("El token no es valido");

@@ -83,13 +83,13 @@ const CardPensum = ({
           spacing={{ xs: 1, sm: 2 }}
         >
           <Item>
-            <Typography className="size16">{course}</Typography>
+            <Typography className="size16 text-dark">{course}</Typography>
           </Item>
           <Item>
-            <Typography className="size16">{state}</Typography>
+            <Typography className="size16 text-dark">{state}</Typography>
           </Item>
           <Item>
-            <Typography className="size16" sx={{ textWrap: "nowrap" }}>
+            <Typography className="size16 text-dark" sx={{ textWrap: "nowrap" }}>
               {time}
             </Typography>
           </Item>
@@ -105,12 +105,12 @@ const CardPensum = ({
           spacing={{ xs: 1, sm: 2 }}
         >
           <Item>
-            <Typography className="size16" sx={{ textWrap: "nowrap" }}>
+            <Typography className="size16 text-dark" sx={{ textWrap: "nowrap" }}>
               Inicio: {dateFirst}
             </Typography>
           </Item>
           <Item>
-            <Typography className="size16" sx={{ textWrap: "nowrap" }}>
+            <Typography className="size16 text-dark" sx={{ textWrap: "nowrap" }}>
               Fin: {dateLast}
             </Typography>
           </Item>
