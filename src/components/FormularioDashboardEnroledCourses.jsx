@@ -239,12 +239,17 @@ function FormularioDashboardEnroledCourses() {
       //setMostrarSpinner(true);
       const response2 = await fetch(
         `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${id_padre}/1`,
+        // `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${id_padre}/1/personalizado_1:programa`,
+        // `${urlBaseApi}/api/categoriasistema/getCursos/0/1/1/precio_actual-asc/1/filtro_inicial:categorias_pantalla_inicio`,
         opciones
       );
       //setMostrarSpinner(false);
       if (response2.ok) {
         const datos2 = await response2.json();
+        // console.log(datos2)
         setCategorias(datos2);
+        // console.log(datos2.subcategorias)
+        // setCategorias(datos2.subcategorias);
       } else {
         const datos2 = await response2.json();
         mensajesDeError(
@@ -427,6 +432,7 @@ function FormularioDashboardEnroledCourses() {
                         descripcion_instructor={curso.docente_descripcion}
                         reviews_puntuacion={curso.reviews_puntuacion}
                         porcentaje_progreso={curso.porcentaje_progreso}
+                        curso={curso}
                       />
                     );
                   }

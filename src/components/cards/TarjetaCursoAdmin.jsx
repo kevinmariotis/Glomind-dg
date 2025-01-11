@@ -116,7 +116,7 @@ function TarjetaCursoAdmin({
               </button>
               {btnVideo && (
                 <div>
-                  <ModalVideoCurso curso={curso} />
+                  <ModalVideoCurso curso={curso} video={curso.video_grande} />
                 </div>
               )}
             </div>
