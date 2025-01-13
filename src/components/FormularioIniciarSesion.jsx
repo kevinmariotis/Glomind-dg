@@ -8,7 +8,7 @@ import { AuthContext } from "../AuthContext";
 import SpamError from "./SpamError";
 import Popup from "./Popup";
 import Spinner from "./Spinner";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setShowIntro } from "../redux/slices/AuthSlice";
 
 function FormularioIniciarSesion() {
@@ -110,7 +110,7 @@ function FormularioIniciarSesion() {
             sessionStorage.removeItem("recordarme");
           }
         }
-        dispatch(setShowIntro(true));
+        // 0
         window.location.href = "/"; //se recarga la aplicacion de nuevo para que el AuthContext valide la cookie y cargue los permisos
         return;
       } else {

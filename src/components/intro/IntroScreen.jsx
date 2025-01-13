@@ -1,15 +1,16 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import "./IntroScreenStyles.scss";
-import video from "./animation.mp4";
+import { FrameAnimation } from "../frameAnimations/FrameAnimation";
+import audio from "./glomindAudioIntro.mp3";
 
-const IntroScreen = ({ logo, onFinish }) => {
+const IntroScreen = ({ onFinish }) => {
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimate(true);
-    }, 6000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, [onFinish]);
 
@@ -25,9 +26,13 @@ const IntroScreen = ({ logo, onFinish }) => {
   return (
     <>
       <div className={`intro-screen ${animate ? "animate" : ""}`}>
-        {/* <img src={logo} alt="Logo" className="logo" /> */}
-        <video src={video} muted autoPlay controls={false} />
-        <div className="inner"></div>
+        <FrameAnimation
+          duration={5000}
+          frames={200}
+          location="GlomindLogoSecuencia"
+          format="png"
+        />
+        <audio src={audio} autoPlay />
       </div>
     </>
   );

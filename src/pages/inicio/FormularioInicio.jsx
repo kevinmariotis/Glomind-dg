@@ -37,7 +37,7 @@ const FormularioInicio = () => {
       //buscamos los datos de los cursos a mostrar
       //setMostrarSpinner(true);
       const response = await fetch(
-        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${categoriaSeleccionada}/1`,
+        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${categoriaSeleccionada}/1/filtro_inicial:categorias_pantalla_inicio-`,
         opciones
       );
       //setMostrarSpinner(false);
@@ -145,7 +145,7 @@ const FormularioInicio = () => {
         ) : categorias.length > 0 ? (
           <div className="row">
             {categoriasNiveles.length !== 2 &&
-              categorias.map((categoria, index) => (
+              categorias.map((categoria) => (
                 <TarjetaCategoriaAdmin
                   key={`tarjeta-categoria-admin-${categoria.id}`}
                   id_categoria={categoria.id}

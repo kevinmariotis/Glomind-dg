@@ -8,6 +8,7 @@ interface FrameAnimationProps {
   frames?: number;
   format?: string;
   hoverAnimation?: boolean;
+  loop: boolean;
 }
 
 export const FrameAnimation = ({
@@ -16,6 +17,7 @@ export const FrameAnimation = ({
   location = "",
   format = "webp",
   hoverAnimation = false,
+  loop = false,
 }: FrameAnimationProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [frame, setFrame] = useState(0);
@@ -25,7 +27,10 @@ export const FrameAnimation = ({
   const animation = useCallback(() => {
     const loadedImages = Array.from(
       { length: frames },
-      (_, index) => `/animations/${location}/frame${index + 1}.${format}`
+      (_, index) =>
+        `/src/assets/Animations/${location}/glomind${
+          index < 10 ? `00${index}` : index < 100 ? `0${index}` : index
+        }.${format}`
     );
     setImages(loadedImages);
   }, [frames, location, format]);
@@ -57,6 +62,11 @@ export const FrameAnimation = ({
             return direction === 1 ? frames - 1 : 0;
           }
         }
+        if (!loop) {
+          if (nextFrame + 1 === frames) {
+            setIsAnimating(false);
+          }
+        }
         return (nextFrame + frames) % frames;
       });
     }, time);
@@ -84,7 +94,7 @@ export const FrameAnimation = ({
         <img
           key={index}
           src={src}
-          alt="animation"
+          alt={`Frame${index}`}
           className="frameAnimation"
           style={{ display: index === frame ? "block" : "none" }}
         />

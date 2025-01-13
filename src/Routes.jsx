@@ -70,7 +70,7 @@ import { setShowIntro } from "./redux/slices/AuthSlice";
 const Rutas = () => {
   const { authenticated, permissions, esDocente } = useContext(AuthContext); //se obtiene los datos del contexto de la sesion (AuthContext)
   const { showIntro } = useSelector((state) => state.auth);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const location = useLocation();
   const urlSinMenu = [
     "examen/presentacion",
@@ -100,6 +100,7 @@ const Rutas = () => {
         <IntroScreen logo="/ruta/a/tu/logo.png" onFinish={handleIntroFinish} />
       )}
       {authenticated &&
+        !showIntro &&
         urlSinMenu.every((item) => !location.pathname?.includes(item)) && (
           <DashboardMenu />
         )}

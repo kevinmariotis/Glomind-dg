@@ -3,14 +3,16 @@
 import { createContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import LoadingAnimation from "./components/LoadingAnimation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setConfig } from "./redux/slices/ConfigSlice";
+import { setAuth, setLogout, setShowIntro } from "./redux/slices/AuthSlice";
 // Crea el contexto de autenticación
 export const AuthContext = createContext();
 
 // Crea el proveedor de autenticación
 export const AuthProvider = ({ children }) => {
-  const dispatch = useDispatch()
+  const { isAuth } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [authenticated, setAuthenticated] = useState(false);
   const [permissions, setPermissions] = useState([]);
   const [esDocente, setEsDocente] = useState(false);
@@ -39,11 +41,16 @@ export const AuthProvider = ({ children }) => {
     setPermissions(permisos_array);
     setEsDocente(es_docente);
     setJwt(jwt);
+    if (!isAuth) {
+      dispatch(setShowIntro(true));
+    }
+    dispatch(setAuth());
   };
 
   // Función para dar la sesion por cerrada
   const logout = () => {
     // Lógica para cerrar la sesión del usuario
+    dispatch(setLogout());
     setAuthenticated(false);
     setPermissions([]);
     setJwt(null);
@@ -115,7 +122,7 @@ export const AuthProvider = ({ children }) => {
                 opciones
               );
               const dataConfig = await response.json();
-              dispatch(setConfig(dataConfig))
+              dispatch(setConfig(dataConfig));
             } else {
               Cookies.remove("jwt");
               console.log("El token no es valido");
@@ -126,6 +133,7 @@ export const AuthProvider = ({ children }) => {
           //reject(new Error('No está el token establecido'));
           console.log("No está el token establecido");
           setCargado(true);
+          dispatch(setLogout());
         }
       } catch (error) {
         console.log(error);
