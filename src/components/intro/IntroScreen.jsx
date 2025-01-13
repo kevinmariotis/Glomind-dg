@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import "./IntroScreenStyles.scss";
-import { FrameAnimation } from "../frameAnimations/FrameAnimation";
+// import { FrameAnimation } from "../frameAnimations/FrameAnimation";
 import audio from "./glomindAudioIntro.mp3";
+import video from "./animation.mp4"
 
 const IntroScreen = ({ onFinish }) => {
   const [animate, setAnimate] = useState(false);
@@ -26,12 +27,13 @@ const IntroScreen = ({ onFinish }) => {
   return (
     <>
       <div className={`intro-screen ${animate ? "animate" : ""}`}>
-        <FrameAnimation
+        {/* <FrameAnimation
           duration={5000}
           frames={200}
           location="GlomindLogoSecuencia"
           format="png"
-        />
+        /> */}
+        <video src={video} muted autoPlay/>
         <audio src={audio} autoPlay />
       </div>
     </>
