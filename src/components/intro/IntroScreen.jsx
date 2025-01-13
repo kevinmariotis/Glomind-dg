@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import "./IntroScreenStyles.scss";
 // import { FrameAnimation } from "../frameAnimations/FrameAnimation";
 import audio from "./glomindAudioIntro.mp3";
-import video from "./animation.mp4"
+import video from "./animation.mp4";
+import curve from "./curva_concava.svg";
 
 const IntroScreen = ({ onFinish }) => {
   const [animate, setAnimate] = useState(false);
@@ -11,7 +12,7 @@ const IntroScreen = ({ onFinish }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimate(true);
-    }, 5000);
+    }, 6000);
     return () => clearTimeout(timer);
   }, [onFinish]);
 
@@ -33,7 +34,8 @@ const IntroScreen = ({ onFinish }) => {
           location="GlomindLogoSecuencia"
           format="png"
         /> */}
-        <video src={video} muted autoPlay/>
+        <video src={video} muted autoPlay />
+        <img src={curve} alt="curve" />
         <audio src={audio} autoPlay />
       </div>
     </>
