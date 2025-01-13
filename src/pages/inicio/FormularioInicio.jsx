@@ -37,7 +37,7 @@ const FormularioInicio = () => {
       //buscamos los datos de los cursos a mostrar
       //setMostrarSpinner(true);
       const response = await fetch(
-        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${categoriaSeleccionada}/1/filtro_inicial:categorias_pantalla_inicio-`,
+        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${categoriaSeleccionada}/1`,
         opciones
       );
       //setMostrarSpinner(false);
