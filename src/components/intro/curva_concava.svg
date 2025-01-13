@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Capa_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1920 211">
-  <!-- Generator: Adobe Illustrator 29.1.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 142)  -->
+<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 211">
   <defs>
     <style>
-      .st0 {
-        fill: #cdcdcd;
+      .cls-1 {
+        fill: url(#Degradado_sin_nombre_28);
       }
     </style>
+    <linearGradient id="Degradado_sin_nombre_28" data-name="Degradado sin nombre 28" x1="0" y1="105.5" x2="1920" y2="105.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d4d2d1"/>
+      <stop offset=".99" stop-color="#cbcbcb"/>
+    </linearGradient>
   </defs>
-  <path class="st0" d="M0,0h1920v211s-479.8-142.1-959.9-142.1S0,211,0,211V0Z"/>
+  <path class="cls-1" d="M0,0h1920v211s-479.8-142.1-959.9-142.1S0,211,0,211V0Z"/>
 </svg>

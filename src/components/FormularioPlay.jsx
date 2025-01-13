@@ -2557,23 +2557,15 @@ function FormularioPlay() {
                           <button
                             aria-expanded={activeTab === index}
                             onClick={() => toggleTab(index)}
-                            className={`btn btn-link ${
-                              activeTab !== index ? "collapsed" : ""
-                            }`}
+                            className={`btn btn-link`}
                             type="button"
                             data-toggle="collapse"
                             data-target={`#collapse${parseInt(index) + 1}`}
                             aria-controls={`collapse${parseInt(index) + 1}`}
                             style={{ color: "#fff" }}
                           >
-                            <i
-                              className="la la-angle-down"
-                              style={{ display: "none" }}
-                            ></i>
-                            <i
-                              className="la la-angle-up"
-                              style={{ display: "none" }}
-                            ></i>
+                            <i className="la la-angle-down"></i>
+                            <i className="la la-angle-up"></i>
                             <span className="fs-15">
                               Unidad {parseInt(index) + 1}: {categoria.nombre}{" "}
                             </span>
@@ -2588,14 +2580,8 @@ function FormularioPlay() {
                         </div>
                         <div
                           id={`collapse${parseInt(index) + 1}`}
-                          className={`show ${
-                            collapsing && activeTab === index
-                              ? "collapsing2"
-                              : ""
-                          }${activeTab !== index ? "collapse2" : ""}${
-                            activeTab === index && !collapsing
-                              ? "collapse2 show"
-                              : ""
+                          className={`collapse ${
+                            activeTab === index ? "show" : ""
                           }`}
                           aria-labelledby={`heading${parseInt(index) + 1}`}
                           data-parent="#accordionCourseExample"
