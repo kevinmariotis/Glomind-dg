@@ -37,7 +37,7 @@ const FormularioInicio = () => {
       //buscamos los datos de los cursos a mostrar
       //setMostrarSpinner(true);
       const response = await fetch(
-        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${categoriaSeleccionada}/1`,
+        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${categoriaSeleccionada}/1/${categoriaSeleccionada === 0 ? 'personalizado_1:tipo_de_programa' : ''}`,
         opciones
       );
       //setMostrarSpinner(false);
@@ -64,11 +64,16 @@ const FormularioInicio = () => {
   const contarCursosCategoria = (id_categoria) => {
     let contador = 0;
 
-    categorias.forEach((catx) => {
-      if (catx == id_categoria) {
-        contador++;
-      }
+    categorias?.forEach((catx) => {
+      // For de padres
+      catx?.categorias_hijas?.forEach((catx2) => {
+        // For de hijos 
+        if (catx2.id_padre == id_categoria) {
+          contador++;
+        }
+      })
     });
+
     /*datosCursosTodos.forEach((curso, index) => {            
             curso.categorias_perteneciente.forEach((cate, index2) => {                                            
                 if(cate==id_categoria){                    

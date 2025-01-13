@@ -9,6 +9,7 @@ function TarjetaCategoriaAdmin({
   funcionNavegar = null,
   funcionCantidadCursos = null,
   totalCursos = 0,
+  tipo = "",
 }) {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const [cantidadCursos, setCantidadCursos] = useState(totalCursos);
@@ -19,6 +20,21 @@ function TarjetaCategoriaAdmin({
       setCantidadCursos(cantidad);
     }
   }, []);
+
+  useEffect(() => {
+    if (tipo === "semestre") {
+      const style = document.createElement("style");
+      style.textContent = `
+        .category-item::after {
+          background-color: transparent;
+        }
+      `;
+      document.head.appendChild(style);
+      return () => {
+        document.head.removeChild(style); // Limpieza
+      };
+    }
+  }, [tipo]);
 
   /*const handleNavegar = () => {            
 
@@ -32,7 +48,7 @@ function TarjetaCategoriaAdmin({
         onClick={() => {
           funcionNavegar(id_categoria);
         }}
-        style={{ cursor: "pointer", borderRadius: "var(--CornerLarge)"}}
+        style={{ cursor: "pointer", borderRadius: "var(--CornerLarge)" }}
       >
         <img
           className="cat__img lazy"
@@ -44,12 +60,17 @@ function TarjetaCategoriaAdmin({
         />
         <div className="category-content">
           <div className="category-inner px-3">
-            <h3 className="cat__title">
-              <a href="#">{nombre}</a>
-            </h3>
-            <p className="cat__meta">
-              {cantidadCursos} {cantidadCursos === 1 ? "Resultado" : "Resultados"}
-            </p>
+            {tipo !== "semestre" && (
+              <>
+                <h3 className="cat__title">
+                  <a href="#">{nombre}</a>
+                </h3>
+                <p className="cat__meta">
+                  {cantidadCursos}{" "}
+                  {cantidadCursos === 1 ? "Resultado" : "Resultados"}
+                </p>
+              </>
+            )}
             <button
               onClick={() => {
                 funcionNavegar(id_categoria);
