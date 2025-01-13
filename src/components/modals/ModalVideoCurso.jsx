@@ -4,9 +4,11 @@ import ReactPlayer from "react-player";
 import video from "../../assets/videos/video-login-reduced.mp4";
 
 // eslint-disable-next-line react/prop-types
-const ModalVideoCurso = ({ curso = {} }) => {
+const ModalVideoCurso = ({ curso = {}, video }) => {
   const [show, setShow] = useState(false);
+  const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
 
+  console.log(curso.video_grande)
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -33,7 +35,7 @@ const ModalVideoCurso = ({ curso = {} }) => {
             }}
           >
             <ReactPlayer
-              url={video}
+              url={`${urlBaseApi}/${video}`}
               controls
               width="100%"
               height="100%"
