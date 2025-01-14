@@ -2,9 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import TarjetaCursoAdmin from "../../components/cards/TarjetaCursoAdmin";
 import { AuthContext } from "../../AuthContext";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import "swiper/css/autoplay";
 
 const CursosRecientes = () => {
   const { jwt } = useContext(AuthContext);
@@ -54,7 +55,13 @@ const CursosRecientes = () => {
           </h3>
 
           <Swiper
-            modules={[Navigation]}
+            loop={true}
+            autoplay={{
+              delay: 0,
+              pauseOnMouseEnter: true,
+            }}
+            speed={2000}
+            modules={[Navigation, Autoplay]}
             spaceBetween={20}
             slidesPerView={3}
             breakpoints={{
@@ -93,6 +100,7 @@ const CursosRecientes = () => {
                   labelButton={"Continuar"}
                   btnVideo={false}
                   curso={curso}
+                  loop={true} // Habilita el bucle infinito
                 />
               </SwiperSlide>
             ))}

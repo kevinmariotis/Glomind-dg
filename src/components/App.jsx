@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import store from "../redux/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+import CustomCursor from "./CustomCursor/CustomCursor";
 
 function App() {
   useEffect(() => {
@@ -19,6 +20,7 @@ function App() {
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <AuthProvider>
+            <CustomCursor />
             <Rutas />
           </AuthProvider>
         </PersistGate>

@@ -93,6 +93,14 @@ function FormularioPlay() {
   const refBloqueDescripcion = useRef(null);
   const refHiloComentarios = useRef(null);
 
+  const [showControls, setShowControls] = useState({});
+  const handleShowControls = () => {
+    setShowControls(true);
+  };
+  const handleHideControls = () => {
+    setShowControls(false);
+  };
+
   function Iframex({ frame }) {
     console.log(frame);
     return (
@@ -587,7 +595,7 @@ function FormularioPlay() {
   };
 
   //manejo del acordeon
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeTab, setActiveTab] = useState([]);
 
   /*const toggleTab = (tabIndex) => {
         setActiveTab((prevTab) => (prevTab === tabIndex ? null : tabIndex));
@@ -595,12 +603,13 @@ function FormularioPlay() {
 
   const [collapsing, setCollapsing] = useState(false);
   const toggleTab = (tabIndex) => {
-    if (activeTab === tabIndex) {
-      setActiveTab(null);
+    if (activeTab.includes(tabIndex)) {
+      const copyActiveTabs = activeTab.filter((item) => item !== tabIndex);
+      setActiveTab(copyActiveTabs);
       setCollapsing(false);
     } else {
       setCollapsing(true);
-      setActiveTab(tabIndex);
+      setActiveTab([...activeTab, tabIndex]);
       setTimeout(() => {
         setCollapsing(false);
       }, 350); // Desactivar "collapsing" después de 0.35 segundos
@@ -1311,7 +1320,7 @@ function FormularioPlay() {
                               >
                                 <button
                                   onClick={() => toggleTab(index)}
-                                  aria-expanded={activeTab === index}
+                                  aria-expanded={activeTab.includes(index)}
                                   className="btn btn-link"
                                   type="button"
                                   data-toggle="collapse"
@@ -2109,142 +2118,85 @@ function FormularioPlay() {
                           </p>
                         </div>
                         <div className="section-block"></div>
-                        <div className="lecture-overview-item">
-                          <div className="lecture-overview-stats-wrap d-flex">
-                            <div
-                              className="lecture-overview-stats-item"
-                              style={{ marginRight: "30px" }}
-                            >
-                              <h3 className="fs-16 font-weight-semi-bold pb-2">
-                                Actividad
-                              </h3>
-                            </div>
-                            <div className="lecture-overview-stats-item">
-                              <ul className="generic-list-item">
-                                <li>
-                                  <span>Porcentaje en el curso</span>
-                                </li>
-                              </ul>
-                            </div>
-                            <div className="lecture-overview-stats-item">
-                              <ul className="generic-list-item">
-                                <li>
-                                  <span>Calificación</span>
-                                </li>
-                              </ul>
+                        <div className="custom-table centered">
+                          <div className="thead">
+                            <div className="row">
+                              <div className="col">Nombre de la actividad</div>
+                              <div className="col">Porcentaje del curso</div>
+                              <div className="col">Calificación</div>
                             </div>
                           </div>
-                        </div>
-                        <div className="section-block"></div>
-                        <div className="lecture-overview-item">
-                          <div className="lecture-overview-stats-wrap d-flex">
-                            <div
-                              className="lecture-overview-stats-item"
-                              style={{ marginRight: "30px" }}
-                            >
-                              <h3 className="fs-16 font-weight-semi-bold pb-2">
-                                Calificación del curso
-                              </h3>
-                            </div>
-                            <div className="lecture-overview-stats-item">
-                              <ul className="generic-list-item">
-                                <li>
-                                  <span></span>
-                                </li>
-                              </ul>
-                            </div>
-                            <div className="lecture-overview-stats-item">
-                              <ul className="generic-list-item">
-                                {notas.usuarios && (
-                                  <>
-                                    {notas.usuarios.map((usuario, index) => (
-                                      <li key={`u-${index}`}>
-                                        <span>
-                                          {usuario.calificacion_curso}
-                                        </span>
-                                      </li>
-                                    ))}
-                                  </>
-                                )}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        {notas.categorias && (
-                          <>
-                            {notas.categorias.map((categoria) =>
-                              categoria.curso_contenido.map(
-                                (curso_contenido) => (
-                                  <div
-                                    className="lecture-overview-item"
-                                    key={`curso_cont_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}_`}
-                                  >
-                                    <div className="lecture-overview-stats-wrap d-flex">
-                                      <div
-                                        className="lecture-overview-stats-item"
-                                        style={{ marginRight: "30px" }}
-                                      >
-                                        <h3 className="fs-16 font-weight-semi-bold pb-2">
-                                          {curso_contenido.nombre}
-                                        </h3>
-                                      </div>
-                                      <div className="lecture-overview-stats-item">
-                                        <ul className="generic-list-item">
-                                          <li>
-                                            <span>
-                                              {
-                                                curso_contenido.porcentaje_en_total_curso
-                                              }
-                                              %
-                                            </span>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                      <div className="lecture-overview-stats-item">
-                                        <ul className="generic-list-item">
-                                          {notas.usuarios.map((usuario) => {
-                                            const notaUsuario =
-                                              usuario.notas.find(
-                                                (nota) =>
-                                                  nota.tipo_contenido ===
-                                                    curso_contenido.tipo_contenido &&
-                                                  nota.id_tipo_contenido ===
-                                                    curso_contenido.id_tipo_contenido
-                                              );
-                                            return (
-                                              <li
-                                                key={`usuario_nota_${usuario.id_usuario}_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}`}
-                                              >
-                                                <span>
-                                                  {notaUsuario
-                                                    ? notaUsuario.puntuacion_fija !=
-                                                      null
-                                                      ? notaUsuario.puntuacion_fija
-                                                      : notaUsuario.puntuacion
-                                                    : "-"}
-                                                </span>
-                                              </li>
-                                            );
-                                          })}
-                                        </ul>
-                                      </div>
-                                      <div
-                                        className="lecture-overview-stats-item"
-                                        style={{ display: "none" }}
-                                      >
-                                        <ul className="generic-list-item">
-                                          <li>
-                                            <span>Tipo de actividad</span>
-                                          </li>
-                                        </ul>
-                                      </div>
+                          <div className="tbody">
+                            {notas.usuarios && (
+                              <>
+                                {notas.usuarios.map((usuario, index) => (
+                                  <div className="row" key={`u-${index}`}>
+                                    <div className="col">
+                                      Calificación del curso
+                                    </div>
+                                    <div className="col"></div>
+                                    <div className="col">
+                                      <GraficCircle
+                                        value={usuario.calificacion_curso}
+                                        maxValue={10}
+                                      />
                                     </div>
                                   </div>
-                                )
-                              )
+                                ))}
+                              </>
                             )}
-                          </>
-                        )}
+
+                            {notas.categorias && (
+                              <>
+                                {notas.categorias.map((categoria) =>
+                                  categoria.curso_contenido.map(
+                                    (curso_contenido, index) => (
+                                      <div className="row" key={`a-${index}`}>
+                                        <div className="col">
+                                          {curso_contenido.nombre}
+                                        </div>
+                                        <div className="col">
+                                          {
+                                            curso_contenido.porcentaje_en_total_curso
+                                          }
+                                        </div>
+                                        <div className="col">
+                                          <GraficCircle
+                                            value={notas.usuarios.map(
+                                              (usuario) => {
+                                                const notaUsuario =
+                                                  usuario.notas.find(
+                                                    (nota) =>
+                                                      nota.tipo_contenido ===
+                                                        curso_contenido.tipo_contenido &&
+                                                      nota.id_tipo_contenido ===
+                                                        curso_contenido.id_tipo_contenido
+                                                  );
+                                                return (
+                                                  <span
+                                                    key={`usuario_nota_${usuario.id_usuario}_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}`}
+                                                  >
+                                                    {notaUsuario
+                                                      ? notaUsuario.puntuacion_fija !=
+                                                        null
+                                                        ? notaUsuario.puntuacion_fija
+                                                        : notaUsuario.puntuacion
+                                                      : "0.00"}
+                                                  </span>
+                                                );
+                                              }
+                                            )}
+                                            maxValue={10}
+                                          />
+                                        </div>
+                                      </div>
+                                    )
+                                  )
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div
@@ -2442,12 +2394,16 @@ function FormularioPlay() {
                         </div>
                         <div className="section-block"></div>
                         <div className="lecture-overview-item">
-                          <div className="frame-container">
+                          <div
+                            className="frame-container"
+                            onMouseMove={handleShowControls}
+                          >
                             <ReactPlayer
                               url={`${urlBaseApi}/${dataCurso.video_vista_previa}`}
-                              controls
+                              controls={showControls}
                               width={"100%"}
                               height={"auto"}
+                              onPlay={handleHideControls}
                             />{" "}
                           </div>
                         </div>
@@ -2555,7 +2511,7 @@ function FormularioPlay() {
                           style={{ backgroundColor: "var(--Azul-petroleo)" }}
                         >
                           <button
-                            aria-expanded={activeTab === index}
+                            aria-expanded={activeTab.includes(index)}
                             onClick={() => toggleTab(index)}
                             className={`btn btn-link`}
                             type="button"
@@ -2581,7 +2537,7 @@ function FormularioPlay() {
                         <div
                           id={`collapse${parseInt(index) + 1}`}
                           className={`collapse ${
-                            activeTab === index ? "show" : ""
+                            activeTab.includes(index) ? "show" : ""
                           }`}
                           aria-labelledby={`heading${parseInt(index) + 1}`}
                           data-parent="#accordionCourseExample"

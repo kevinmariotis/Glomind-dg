@@ -1,16 +1,23 @@
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import ReactPlayer from "react-player";
-import video from "../../assets/videos/video-login-reduced.mp4";
 
 // eslint-disable-next-line react/prop-types
 const ModalVideoCurso = ({ curso = {}, video }) => {
   const [show, setShow] = useState(false);
+  const [showControls, setShowControls] = useState(true);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
 
   console.log(curso.video_grande)
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleShowControls = () => {
+    setShowControls(true);
+  };
+  const handleHideControls = () => {
+    setShowControls(false);
+  };
 
   return (
     <>
@@ -33,13 +40,15 @@ const ModalVideoCurso = ({ curso = {}, video }) => {
               overflow: "hidden",
               margin: "30px 0",
             }}
+            onMouseMove={handleShowControls}
           >
             <ReactPlayer
               url={`${urlBaseApi}/${video}`}
-              controls
+              controls={showControls}
               width="100%"
               height="100%"
               style={{ marginBottom: "-10px" }}
+              onPlay={handleHideControls}
             />
           </div>
           <Button variant="secondary btn-round" onClick={handleClose}>
