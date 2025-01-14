@@ -69,7 +69,7 @@ const FomularioCalificaciones = () => {
               ...c,
               nota: datos.datos?.usuarios[0]?.notas?.find(
                 (item) => item.id_curso_contenido === c.id_contenido
-              )?.puntuacion,
+              )?.puntuacion_fija,
               padre: resto,
             };
           });
@@ -160,7 +160,7 @@ const FomularioCalificaciones = () => {
                   <div className="col d-flex" style={{ paddingLeft: "50px"}}>
                     <GraficCircle
                       value={curso.calificacion_curso}
-                      maxValue={10}
+                      maxValue={5}
                     />
                   </div>
                   <div className="col">
@@ -199,7 +199,7 @@ const FomularioCalificaciones = () => {
                 <div className="col">{actividad.nombre}</div>
                 <div className="col">{actividad.porcentaje_en_total_curso}</div>
                 <div className="col">
-                  <GraficCircle value={actividad.nota} maxValue={10} />
+                  <GraficCircle value={actividad.nota} maxValue={5} />
                 </div>
               </div>
             ))}
