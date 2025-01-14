@@ -4,6 +4,7 @@ import CustomBreandcrumb from "../../components/BreadCrumb/CustomBreandcrumb";
 import { AuthContext } from "../../AuthContext";
 import DashboardFooter from "../../components/DashboardFooter";
 import GraficCircle from "../../components/grafics/GraficCircle";
+// import second from 'first'
 
 const FomularioCalificaciones = () => {
   const { jwt } = useContext(AuthContext);
@@ -101,6 +102,7 @@ const FomularioCalificaciones = () => {
 
   return (
     <div className="dashboard-content-wrap">
+      {/* <audio src={} autoPlay/> */}
       {cursoSeleccionado !== null && (
         <button onClick={volver} className="btn theme-btn btn-round  mb-5">
           <i className="la la-arrow-left icon ml-1"></i> Atrás
@@ -129,37 +131,54 @@ const FomularioCalificaciones = () => {
           <div className="custom-table">
             <div className="thead">
               <div className="row">
-                <div className="col col-6">
-                  <span>Nombre de la asignatura/curso</span>
-                </div>
                 <div className="col">
                   <span>Categoria</span>
                 </div>
                 <div className="col">
+                  <span>Programa</span>
+                </div>
+                <div className="col">
+                  <span>Semestre</span>
+                </div>
+                <div className="col col-3">
+                  <span>Asignatura/curso</span>
+                </div>
+                <div className="col">
                   <span>Calificación</span>
                 </div>
-                <div className="col col-1"></div>
+                <div className="col"></div>
               </div>
             </div>
             <div className="tbody">
               {cursos.map((curso, index) => (
                 <div className="row" key={`c-${index}`}>
-                  <div className="col col-6">{curso.nombre}</div>
+                  <div className="col">Doctorado</div>
+                  <div className="col">Doctorado en derecho</div>
+
                   <div className="col">{curso.categoria_nombre}</div>
-                  <div className="col">
+                  <div className="col col-3">{curso.nombre}</div>
+                  <div className="col d-flex" style={{ paddingLeft: "50px"}}>
                     <GraficCircle
                       value={curso.calificacion_curso}
                       maxValue={10}
                     />
                   </div>
-                  <div className="col col-1">
+                  <div className="col">
+                    <button
+                      onClick={() => verCalificaciones(curso.id)}
+                      className="btn theme-btn btn-round"
+                    >
+                      Ver calificaciones
+                    </button>
+                  </div>
+                  {/* <div className="col col-1">
                     <span
                       className="icon-button"
                       onClick={() => verCalificaciones(curso.id)}
                     >
                       <i className="la la-search" />
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>
