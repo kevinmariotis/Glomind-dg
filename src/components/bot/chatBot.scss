@@ -2,13 +2,14 @@
   position: fixed;
   bottom: 68px;
   right: 20px;
-  z-index: 9999;
+  z-index: 9998;
   width: 350px;
   background: #fff;
   box-sizing: border-box;
   border-radius: 15px;
-  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 15px 20px #0000001a;
   visibility: hidden;
+  transition: 1s initial;
 }
 .chat-screen.show-chat {
   -moz-transition: bottom 0.5s linear;
@@ -283,18 +284,21 @@
   //   #dc22ff
   // );
   background: var(--Lavander);
-  z-index: 9999;
+  z-index: 9998;
   border-radius: 50%;
   box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
   line-height: 50px;
   cursor: pointer;
-  transition: all 0.5s ease;
+  transition: all 0.2s ease-in-out;
   overflow: hidden;
   padding-top: 5px;
   display: flex;
   justify-content: center;
   text-align: center;
+}
+.chat-bot-icon:hover {
+  transform: scale(1.2);
 }
 .chat-bot-icon .img {
   height: 90px;

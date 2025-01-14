@@ -21,8 +21,9 @@ function App() {
         <PersistGate persistor={persistor}>
           <AuthProvider>
             <AnimatedCursor
-              innerSize={25}
-              outerSize={50}
+              zIndex={9999}
+              innerSize={20}
+              outerSize={35}
               innerScale={1}
               outerScale={2}
               outerAlpha={0}
@@ -30,9 +31,11 @@ function App() {
               innerStyle={{
                 backgroundColor: "var(--Lavander)",
                 border: "1px solid white",
+                zIndex: "9999",
               }}
               outerStyle={{
                 border: "2px solid var(--Azul-petroleo)",
+                zIndex: "9999",
               }}
             />
             <Rutas />

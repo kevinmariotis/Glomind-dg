@@ -104,7 +104,7 @@ const Rutas = () => {
         urlSinMenu.every((item) => !location.pathname?.includes(item)) && (
           <DashboardMenu />
         )}
-      {authenticated && <ChatBot />}
+      {authenticated && !showIntro && <ChatBot />}
 
       <Routes>
         {/* <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} />  */}
