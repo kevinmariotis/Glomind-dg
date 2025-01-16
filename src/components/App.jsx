@@ -20,7 +20,7 @@ function App() {
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <AuthProvider>
-            {/* <AnimatedCursor
+            <AnimatedCursor
               zIndex={9999}
               innerSize={20}
               outerSize={35}
@@ -37,7 +37,7 @@ function App() {
                 border: "2px solid var(--Azul-petroleo)",
                 zIndex: "9999",
               }}
-            /> */}
+            />
             <Rutas />
           </AuthProvider>
         </PersistGate>
