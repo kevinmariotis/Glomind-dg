@@ -790,7 +790,7 @@ function FormularioPlay() {
           }}
         />
       )}
-      <section className="course-dashboard">
+      <section className="course-dashboard" style={{marginTop: "80px"}}>
         <div className="course-dashboard-wrap">
           <div className="course-dashboard-container d-flex">
             <div className="course-dashboard-column">

@@ -373,7 +373,15 @@ function FormularioPlayHeader({
         </div>
       </div>
       <section className="header-menu-area">
-        <div className="" style={{backgroundColor: "var(--Azul-petroleo)"}}>
+        <div
+          className=""
+          style={{
+            backgroundColor: "var(--Azul-petroleo)",
+            position: "fixed",
+            top: 0,
+            width: "calc(100% - 100px)",
+          }}
+        >
           <div className="container-fluid">
             <div className="main-menu-content d-flex align-items-center">
               {esMovil ? (
