@@ -1708,7 +1708,7 @@ function FormularioPlay() {
                                 Clave de la asignatura
                               </h3>
                             </div>
-                            <div className="lecture-overview-stats-item">
+                            <div className="lecture-overview-stats-item col">
                               <p>{dataCurso.codigo}</p>
                             </div>
                           </div>
@@ -1724,7 +1724,7 @@ function FormularioPlay() {
                                     Presentación docente
                                   </h3>
                                 </div>
-                                <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
+                                <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
                                   <div className="media media-card align-items-center">
                                     <Link
                                       to={`/usuario/${dataCurso.id_instructor}`}
@@ -1809,7 +1809,7 @@ function FormularioPlay() {
                                 Área de formación de la asignatura
                               </h3>
                             </div>
-                            <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
+                            <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
                               <ul className="generic-list-item overview-list-item">
                                 {Object.keys(queAprenderas).map((key) => (
                                   <li key={`queAprenderas${key}`}>
@@ -1829,7 +1829,7 @@ function FormularioPlay() {
                                 Fines de aprendizaje de la asignatura
                               </h3>
                             </div>
-                            <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
+                            <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
                               <ul className="generic-list-item generic-list-item-bullet fs-15">
                                 {Object.keys(listadoRequerimientos).map(
                                   (key) => (
@@ -1856,7 +1856,7 @@ function FormularioPlay() {
                                 Descripción completa de la asignatura
                               </h3>
                             </div>
-                            <div className="lecture-overview-stats-item lecture-overview-stats-wide-item lecture-description">
+                            <div className="lecture-overview-stats-item lecture-overview-stats-wide-item lecture-description col">
                               {Object.keys(cursoDescripcion)
                                 .slice(0, 1)
                                 .map((key) => (
@@ -1925,7 +1925,7 @@ function FormularioPlay() {
                                 La asignatura en números
                               </h3>
                             </div>
-                            <div className="lecture-overview-stats-item">
+                            <div className="lecture-overview-stats-item col">
                               <ul className="generic-list-item">
                                 <li>
                                   <span>Nivel de habilidad:</span>
@@ -1940,7 +1940,7 @@ function FormularioPlay() {
                                 </li>
                               </ul>
                             </div>
-                            <div className="lecture-overview-stats-item">
+                            <div className="lecture-overview-stats-item col">
                               <ul className="generic-list-item">
                                 <li>
                                   <span>Exámenes:</span>

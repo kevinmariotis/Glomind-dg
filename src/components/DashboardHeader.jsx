@@ -429,10 +429,11 @@ function DashboardHeader({ expandir_ancho = false }) {
                                             <Link
                                               to={`/play/${misCursos[key].url_amigable}`}
                                             >
-                                              {misCursos[key].nombre}
+                                              {misCursos[key].nombre.substring(0, 25)}
+                                              {misCursos[key].nombre.length > 25 && '...'}
                                             </Link>
                                           </h5>
-                                          <div className="skillbar-box pt-3">
+                                          <div className="skillbar-box pt-1">
                                             <div
                                               className="skillbar skillbar-skillbar"
                                               data-percent="36%"
@@ -442,7 +443,13 @@ function DashboardHeader({ expandir_ancho = false }) {
                                                 style={{
                                                   width: `${misCursos[key].porcentaje_progreso}%`,
                                                 }}
-                                              ></div>
+                                              >
+                                               
+                                              </div>
+                                              <span className="margin-top-5" style={{ fontSize: "10px" }}>
+
+{misCursos[key].porcentaje_progreso}%
+</span>
                                             </div>
                                           </div>
                                         </div>
@@ -464,131 +471,8 @@ function DashboardHeader({ expandir_ancho = false }) {
                             </li>
                           </ul>
                         </div>
-                        <div className="shop-cart pr-3 mr-3 border-right border-right-gray">
-                          <ul>
-                            {/*<li>
-                                                        <p className="shop-cart-btn d-flex align-items-center">
-                                                            <i className="la la-shopping-cart fs-22"></i>
-                                                            {Object.keys(contadorCarrito.productos).length>0 &&
-                                                                <span className="dot-status bg-1"></span>
-                                                            }
-                                                        </p>
-                                                        {authenticated && contadorCarrito.contador>0 && <ul className="cart-dropdown-menu after-none">
-                                                            {Object.keys(contadorCarrito.productos).slice(0, 3).map((key) => (
-                                                                <li key={`´productos-carrito-${key}`} className="media media-card">
-                                                                    <Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`} className="media-img" style={{ height: 'auto' }}>
-                                                                        {contadorCarrito.productos[key].imagen_pequena!=null ? <img src={`${urlBaseApi}/${contadorCarrito.productos[key].imagen_pequena}`} alt={contadorCarrito.productos[key].nombre} className="mr-3" /> : <img src="/images/course-no-image.png" alt={contadorCarrito.productos[key].nombre} className="mr-3" /> }
-                                                                    </Link>
-                                                                    <div className="media-body">
-                                                                        <h5><Link to={`/curso/${contadorCarrito.productos[key].url_amigable}`}>{contadorCarrito.productos[key].nombre}</Link></h5>
-                                                                        {contadorCarrito.productos[key].nombres!='' && <span className="d-block lh-18 py-1">{contadorCarrito.productos[key].nombres} {contadorCarrito.productos[key].apellidos}</span>}
-                                                                        <p className="text-black font-weight-semi-bold lh-18">${contadorCarrito.productos[key].total_momento} {contadorCarrito.productos[key].precio_anterior!=0 && <span className="before-price fs-14">${contadorCarrito.productos[key].precio_anterior}</span>}</p>
-                                                                    </div>
-                                                                </li> 
-                                                            ))}  
-                                                            {Object.keys(contadorCarrito.productos).length>3 &&
-                                                                <li className="media media-card">
-                                                                    <div className="media-body fs-16">
-                                                                    <Link to="/carrito"><p className="text-black font-weight-semi-bold lh-18"> + {Object.keys(contadorCarrito.productos).length-3} productos</p></Link>
-                                                                    </div>
-                                                                </li>
-                                                            }                                                           
-                                                            <li>
-                                                            <Link to="/carrito" className="btn theme-btn w-100">Ir al carrito <i className="la la-arrow-right icon ml-1"></i></Link>
-                                                            </li>
-                                                        </ul>}
-                                                    </li> */}
-                          </ul>
-                        </div>
-                        <div className="shop-cart wishlist-cart pr-3 mr-3 border-right border-right-gray">
-                          <ul>
-                            <li>
-                              <p className="shop-cart-btn">
-                                <i className="la la-heart-o"></i>
-                                {Object.keys(favoritos).length > 0 && (
-                                  <span className="dot-status bg-1"></span>
-                                )}
-                              </p>
-                              {authenticated &&
-                                Object.keys(favoritos).length > 0 && (
-                                  <ul className="cart-dropdown-menu after-none">
-                                    {Object.keys(favoritos)
-                                      .slice(0, 3)
-                                      .map((key) => (
-                                        <li key={`´productos-favoritos-${key}`}>
-                                          <div className="media media-card">
-                                            <Link
-                                              to={`/curso/${favoritos[key].url_amigable}`}
-                                              className="media-img"
-                                              style={{ height: "auto" }}
-                                            >
-                                              {favoritos[key].imagen_pequena !=
-                                              null ? (
-                                                <img
-                                                  src={`${urlBaseApi}/${favoritos[key].imagen_pequena}`}
-                                                  alt={favoritos[key].nombre}
-                                                  className="mr-3"
-                                                />
-                                              ) : (
-                                                <img
-                                                  src={`${urlBase}/images/small-img.jpg`}
-                                                  alt={favoritos[key].nombre}
-                                                  className="mr-3"
-                                                />
-                                              )}
-                                            </Link>
-                                            <div className="media-body">
-                                              <h5>
-                                                <Link
-                                                  to={`/curso/${favoritos[key].url_amigable}`}
-                                                >
-                                                  {favoritos[key].nombre}
-                                                </Link>
-                                              </h5>
-                                              {favoritos[key].instructor !=
-                                                "" && (
-                                                <span className="d-block lh-18 py-1">
-                                                  {favoritos[key].instructor}
-                                                </span>
-                                              )}
-                                              <p className="text-black font-weight-semi-bold lh-18">
-                                                ${favoritos[key].precio_actual}{" "}
-                                                {favoritos[key]
-                                                  .precio_anterior != 0 && (
-                                                  <span className="before-price fs-14">
-                                                    $
-                                                    {
-                                                      favoritos[key]
-                                                        .precio_anterior
-                                                    }
-                                                  </span>
-                                                )}
-                                              </p>
-                                            </div>
-                                          </div>
-                                          <Link
-                                            to={`/curso/${favoritos[key].url_amigable}`}
-                                            className="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 w-100 mt-3"
-                                          >
-                                            Agregar al carrito{" "}
-                                            <i className="la la-arrow-right icon ml-1"></i>
-                                          </Link>
-                                        </li>
-                                      ))}
-                                    <li>
-                                      <a
-                                        href="my-courses.html"
-                                        className="btn theme-btn w-100"
-                                      >
-                                        Ver mi lista de deseos{" "}
-                                        <i className="la la-arrow-right icon ml-1"></i>
-                                      </a>
-                                    </li>
-                                  </ul>
-                                )}
-                            </li>
-                          </ul>
-                        </div>
+                     
+                    
                         <div
                           className="shop-cart notification-cart pr-3 mr-3 border-right border-right-gray"
                           style={{ display: "none" }}

@@ -27,7 +27,7 @@ const FomularioCalificaciones = () => {
       //buscamos los datos de los cursos a mostrar
       // setMostrarSpinner(true);
       const response2 = await fetch(
-        `${urlBaseApi}/api/usuario/cursos/0/1/1/nombre-asc`,
+        `${urlBaseApi}/api/usuario/cursos/0/1/1/nombre-desc`,
         opciones
       );
       // setMostrarSpinner(false);
