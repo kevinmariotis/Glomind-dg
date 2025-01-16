@@ -15,6 +15,7 @@ function TarjetaCursoAdmin({
   labelButton = "",
   btnVideo = true,
   curso = {},
+  className = "",
 }) {
   // const { jwt } = useContext(AuthContext);
   const urlBase = import.meta.env.VITE_URL_BASE;
@@ -25,7 +26,7 @@ function TarjetaCursoAdmin({
 
   //console.log("Este es el favorito ", estadoFavorito);
   return (
-    <div className="col">
+    <div className={`col ${className}`}>
       <div className="card card-item card-course">
         <div className="card-image">
           {/* <Link to={`${urlBase}/play/${url_amigable}`} className="d-block"> */}
@@ -108,14 +109,14 @@ function TarjetaCursoAdmin({
           <div>
             <div className="d-flex ">
               <button
-                className="btn theme-btn btn-round w-100 py 3"
+                className="btn theme-btn btn-round w-100 py 3 d-flex align-items-center"
                 onClick={() => navigate(`/play/${url_amigable}`)}
               >
                 {labelButton !== "" ? labelButton : "Ir al curso"}
                 <i className="la la-arrow-right icon ml-1"></i>
               </button>
               {btnVideo && (
-                <div>
+                <div className="">
                   <ModalVideoCurso curso={curso} video={curso.video_grande} />
                 </div>
               )}

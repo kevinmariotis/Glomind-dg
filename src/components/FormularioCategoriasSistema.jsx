@@ -192,9 +192,8 @@ export default function FormularioCategoriasSistema() {
   };
   const handleChangeFields = (event) => {
     let value = event.target.value;
-    console.log(event.target);
     if (event.target.type === "datetime-local") {
-      value = `${event.target.value}:00`;
+      value = `${event.target.value.split("T")[0]} ${event.target.value.split("T")[1]}:00`;
     }
     setFormFields({ ...formFileds, [event.target.name]: value });
   };

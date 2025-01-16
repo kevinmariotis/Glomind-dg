@@ -344,7 +344,7 @@ function DashboardHeader({ expandir_ancho = false }) {
       />
       <header className="header-menu-area">
         <div
-          className={`header-menu-content ${
+          className={`${
             !expandir_ancho && "dashboard-menu-content"
           } pr-30px pl-30px bg-white shadow-sm`}
         >

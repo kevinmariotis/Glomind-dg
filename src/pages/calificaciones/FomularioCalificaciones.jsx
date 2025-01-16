@@ -159,7 +159,7 @@ const FomularioCalificaciones = () => {
                   <div className="col col-3">{curso.nombre}</div>
                   <div className="col d-flex" style={{ paddingLeft: "50px"}}>
                     <GraficCircle
-                      value={curso.calificacion_curso}
+                      value={curso.calificacion_curso ?? "0.00"}
                       maxValue={5}
                     />
                   </div>
@@ -197,9 +197,9 @@ const FomularioCalificaciones = () => {
             {actividades.map((actividad, index) => (
               <div className="row" key={`a-${index}`}>
                 <div className="col">{actividad.nombre}</div>
-                <div className="col">{actividad.porcentaje_en_total_curso}</div>
+                <div className="col">{actividad.porcentaje_en_total_curso}%</div>
                 <div className="col">
-                  <GraficCircle value={actividad.nota} maxValue={5} />
+                  <GraficCircle value={actividad.nota ?? "0.00"} maxValue={5} />
                 </div>
               </div>
             ))}

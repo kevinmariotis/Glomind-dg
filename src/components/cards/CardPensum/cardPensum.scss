@@ -18,20 +18,19 @@
     width: 100%;
     height: 100%;
     display: flex;
+    justify-content: baseline;
+    align-items: end;
     
     div {
-      position: relative;
+      // position: relative;
+      margin-bottom: 40px;
+      width: 100%;
       .title {
-        width: 315px;
+        width: 100%;
         text-align: center;
         color: #fff;
-        padding: 40px;
+        padding: 10px;
         transition: ease-out 200ms;
-        opacity: 1;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
       }
     }
   }
@@ -43,7 +42,7 @@
     height: fill-available;
     height: -moz-available;
     height: -webkit-fill-available;
-    padding: 40px;
+    padding: 20px;
     text-align: center;
     margin-bottom: -5000px;
     transition: ease-out 400ms;

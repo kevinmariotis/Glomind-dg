@@ -37,7 +37,9 @@ const FormularioInicio = () => {
       //buscamos los datos de los cursos a mostrar
       //setMostrarSpinner(true);
       const response = await fetch(
-        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${categoriaSeleccionada}/1/${categoriaSeleccionada === 0 ? 'personalizado_1:tipo_de_programa' : ''}`,
+        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${categoriaSeleccionada}/1/${
+          categoriaSeleccionada === 0 ? "personalizado_1:tipo_de_programa" : ""
+        }`,
         opciones
       );
       //setMostrarSpinner(false);
@@ -67,11 +69,11 @@ const FormularioInicio = () => {
     categorias?.forEach((catx) => {
       // For de padres
       catx?.categorias_hijas?.forEach((catx2) => {
-        // For de hijos 
+        // For de hijos
         if (catx2.id_padre == id_categoria) {
           contador++;
         }
-      })
+      });
     });
 
     /*datosCursosTodos.forEach((curso, index) => {            
@@ -191,13 +193,13 @@ const FormularioInicio = () => {
                     }
                     description={categoria.descripcion}
                     path="https://uvirtualad.mx"
-                    course={categoria.personalizado_1}
-                    state={categoria.personalizado_2}
-                    time={categoria.personalizado_3}
-                    dateFirst={categoria.personalizado_4}
-                    dateLast={categoria.personalizado_5}
-                    value={categoria.personalizado_6 ?? "0,0"}
-                    // footer="Precio Completo"
+                    value={categoria.personalizado_2 ?? "0,0"}
+                    items={[
+                      categoria.personalizado_1,
+                      categoria.personalizado_3,
+                      categoria.personalizado_4?.split(" ")[0] ?? "",
+                      categoria.personalizado_5?.split(" ")[0] ?? "",
+                    ]}
                   />
                 </div>
               ))}
