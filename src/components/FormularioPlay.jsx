@@ -94,7 +94,6 @@ function FormularioPlay() {
   const refHiloComentarios = useRef(null);
 
   function Iframex({ frame }) {
-    console.log(frame);
     return (
       <div
         style={{
@@ -159,12 +158,15 @@ function FormularioPlay() {
   const handleCambiarPestana = (event, numero) => {
     event.preventDefault();
     setPestanaActivada(numero);
-    const myTimeout = setTimeout(function () {
-      window.scrollTo({
-        top: refHiloComentarios.current.offsetTop + 300,
-        behavior: "smooth",
-      });
-    }, 10);
+    setContenidoActivado(-1)
+    setDataContenidoViendo([])
+    // setPestanaActivada(-1)
+    // const myTimeout = setTimeout(function () {
+    //   window.scrollTo({
+    //     top: refHiloComentarios.current.offsetTop + 300,
+    //     behavior: "smooth",
+    //   });
+    // }, 10);
   };
 
   const handleFuncionAceptarPopUp = () => {
