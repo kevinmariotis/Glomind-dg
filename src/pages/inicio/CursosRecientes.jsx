@@ -11,6 +11,7 @@ const CursosRecientes = () => {
   const { jwt } = useContext(AuthContext);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const [cursosRecientes, setCursosRecientes] = useState([]);
+  const [autoPlay, setAutoPlay] = useState(true);
 
   const obtenerDatosCursos = async () => {
     const headers = {
@@ -41,7 +42,11 @@ const CursosRecientes = () => {
   }, []);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div
+      style={{ position: "relative" }}
+      onMouseEnter={() => setAutoPlay(false)}
+      onMouseLeave={() => setAutoPlay(true)}
+    >
       {cursosRecientes?.length > 0 && (
         <>
           <h3
@@ -56,11 +61,14 @@ const CursosRecientes = () => {
 
           <Swiper
             loop={true}
-            autoplay={{
-              delay: 0,
-              pauseOnMouseEnter: true,
-            }}
-            speed={2000}
+            autoplay={
+              autoPlay
+                ? {
+                    delay: 0,
+                  }
+                : false
+            }
+            speed={autoPlay ? 2000 : 500}
             modules={[Navigation, Autoplay]}
             spaceBetween={20}
             slidesPerView={3}

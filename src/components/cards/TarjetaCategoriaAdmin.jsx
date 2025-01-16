@@ -22,10 +22,6 @@ function TarjetaCategoriaAdmin({
     }
   }, []);
 
-  const handleToggleHover = () => {
-    setHover(!hover);
-  };
-
   useEffect(() => {
     if (tipo === "semestre") {
       const style = document.createElement("style");
@@ -47,15 +43,15 @@ function TarjetaCategoriaAdmin({
 
   //console.log("Este es el favorito ", estadoFavorito);
   return (
-    <div className="col-lg-3 col-md-4 col-sm-6 p-3">
+    <div className="col-lg-4 col-md-4 col-sm-6 p-3">
       <div
         className="category-item"
         onClick={() => {
           funcionNavegar(id_categoria);
         }}
         style={{ cursor: "pointer", borderRadius: "var(--CornerLarge)" }}
-        onMouseEnter={handleToggleHover}
-        onMouseLeave={handleToggleHover}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
       >
         <img
           className="cat__img lazy"
