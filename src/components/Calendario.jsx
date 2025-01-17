@@ -202,7 +202,7 @@ function Calendario({ id_curso = -1, funcionCargarContenido = null }) {
             headerToolbar={{
               left: "prev,next", // Los botones de navegación y "Hoy"
               center: "title", // El título del mes y año
-              right: "dayGridMonth,timeGridWeek,today", // Los botones para "Mes" y "Semana"
+              right: "today", // Los botones para "Mes" y "Semana"
             }}
             firstDay={1}
             businessHours={{
