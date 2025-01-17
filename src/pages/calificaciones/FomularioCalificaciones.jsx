@@ -14,8 +14,13 @@ const FomularioCalificaciones = () => {
   const [cursos, setCursos] = useState([]);
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const [actividades, setActividades] = useState([]);
-  const [showDiv, setShowDiv] = useState(false);
+  const [showDiv, setShowDiv] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
+
+  // States de Info
+  const [levelOne, setLevelOne] = useState("");
+  const [levelTwo, setLevelTwo] = useState("");
+  const [levelThree, setLevelThree] = useState("");
 
   const fabStyle = {
     position: "fixed",
@@ -129,139 +134,171 @@ const FomularioCalificaciones = () => {
     }
   }, [cursoSeleccionado]);
 
-  const [dropdowns, setDropdowns] = useState([
+  let [dropdowns, setDropdowns] = useState([
+    // FAKE
     {
       id: 1,
-      name: "nucleo",
+      code: "nucleo",
+      label: "1",
       level: "UNO",
       stylus: {},
-      position: { top: 0 },
       variant: "primary",
+      status: false,
     },
     {
       id: 2,
-      name: "doctorado",
+      code: "doctorado",
+      label: "src/assets/icons/calificaciones/doctorado.svg",
       level: "DOS",
-      stylus: {},
+      stylus: { backgroundColor: "#8547FF" },
       position: { bottom: 20 },
       variant: "secondary",
+      status: false,
     },
     {
       id: 3,
-      name: "licenciatura",
+      code: "licenciatura",
+      label: "src/assets/icons/calificaciones/licenciatura.svg",
       level: "DOS",
-      stylus: {},
-      position: { top: 75 },
+      stylus: { backgroundColor: "#8547FF" },
+      position: { top: 95 },
       variant: "secondary",
+      status: false,
     },
     {
       id: 4,
-      name: "maestria",
+      code: "maestria",
+      label: "src/assets/icons/calificaciones/maestria.svg",
       level: "DOS",
-      stylus: {},
-      position: { left: 75 },
+      stylus: { backgroundColor: "#8547FF" },
+      position: { left: 95 },
       variant: "secondary",
+      status: false,
     },
     {
       id: 5,
-      name: "maestria",
+      code: "doc-derecho",
+      label: "src/assets/icons/calificaciones/doc-derecho.svg",
       level: "TRES",
-      stylus: {},
-      position: { left: -40, bottom: 95 },
+      stylus: { backgroundColor: "#8A7FBA" },
+      position: { left: -50, bottom: 105 },
       variant: "ternary",
+      status: false,
     },
     {
       id: 6,
-      name: "maestria",
+      code: "doc-educa",
+      label: "src/assets/icons/calificaciones/doc-educa.svg",
       level: "TRES",
-      stylus: {},
-      position: { left: 40 , bottom: 95 },
+      stylus: { backgroundColor: "#8A7FBA" },
+      position: { left: 50, bottom: 105 },
       variant: "ternary",
+      status: false,
     },
     {
       id: 7,
-      name: "maestria",
+      code: "mast-educa",
+      label: "src/assets/icons/calificaciones/maestria-educa.svg",
       level: "TRES",
-      stylus: {},
-      position: { left: 145 },
+      stylus: { backgroundColor: "#8A7FBA" },
+      position: { left: 188 },
       variant: "ternary",
+      status: false,
     },
 
     {
       id: 8,
-      name: "licenciatura",
+      code: "lic-desarrollo",
+      label: "src/assets/icons/calificaciones/lic-desarrollo.svg",
       level: "DOS",
-      stylus: {},
-      position: { right: 20,  top: 150 },
+      stylus: { backgroundColor: "#8A7FBA" },
+      position: { right: 20, top: 190 },
       variant: "ternary",
+      status: false,
     },
     {
       id: 9,
-      name: "licenciatura",
+      code: "lic-ciencia",
+      label: "src/assets/icons/calificaciones/lic-ciencia.svg",
       level: "DOS",
-      stylus: {},
-      position: { top: 150 },
+      stylus: { backgroundColor: "#8A7FBA" },
+      position: { top: 190 },
       variant: "ternary",
+      status: false,
     },
     {
       id: 10,
-      name: "licenciatura",
+      code: "lic-pedag",
+      label: "src/assets/icons/calificaciones/lic-pedago.svg",
       level: "DOS",
-      stylus: {},
-      position: { left: 75,  top: 150 },
+      stylus: { backgroundColor: "#8A7FBA" },
+      position: { left: 95, top: 190 },
       variant: "ternary",
+      status: false,
     },
 
-    // Separation Maestria Group 
+    // Separation Maestria Group
     {
-      id: "S1",
-      name: "semester",
+      id: 11,
+      code: "semester",
+      label: "src/assets/icons/calificaciones/semester/sem-1.svg",
       level: "CUATRO",
-      stylus: {},
-      position: { left: 220, top: -40 },
-      variant: "danger",
+      stylus: { backgroundColor: "#8547FF" },
+      position: { left: 270, top: -60 },
+      variant: "ternary",
+      status: false,
     },
     {
-      id: "S2",
-      name: "semester",
+      id: 12,
+      code: "semester",
+      label: "src/assets/icons/calificaciones/semester/sem-2.svg",
       level: "CUATRO",
-      stylus: {},
-      position: { left: 220, top: 40 },
-      variant: "danger",
+      stylus: { backgroundColor: "#8547FF" },
+      position: { left: 270, top: 60 },
+      variant: "ternary",
+      status: false,
     },
     // Separation Licenciaturas Group
     {
-      id: "S1",
-      name: "semester",
+      id: 13,
+      code: "semester",
+      label: "src/assets/icons/calificaciones/semester/sem-1.svg",
       level: "CUATRO",
-      stylus: {},
-      position: { top: 220, left: -40 },
-      variant: "danger",
+      stylus: { backgroundColor: "#8547FF" },
+      position: { top: 270, left: -60 },
+      variant: "ternary",
+      status: false,
     },
     {
-      id: "S2",
-      name: "semester",
+      id: 14,
+      code: "semester",
+      label: "src/assets/icons/calificaciones/semester/sem-2.svg",
       level: "CUATRO",
-      stylus: {},
-      position: { top: 220, left: 40 },
-      variant: "danger",
+      stylus: { backgroundColor: "#8547FF" },
+      position: { top: 270, left: 60 },
+      variant: "ternary",
+      status: false,
     },
     // Separation Doctorado Group
     {
-      id: "S1",
-      name: "semester",
+      id: 15,
+      code: "semester",
+      label: "src/assets/icons/calificaciones/semester/sem-1.svg",
       level: "CUATRO",
-      stylus: {},
-      position: { bottom: 170, left: -40 },
-      variant: "danger",
+      stylus: { backgroundColor: "#8547FF" },
+      position: { bottom: 195, left: -50 },
+      variant: "ternary",
+      status: false,
     },
     {
-      id: "S2",
-      name: "semester",
+      id: 16,
+      code: "semester",
+      label: "src/assets/icons/calificaciones/semester/sem-2.svg",
       level: "CUATRO",
-      stylus: {},
-      position: { bottom: 170, left: 40 },
-      variant: "danger",
+      stylus: { backgroundColor: "#8547FF" },
+      position: { bottom: 195, left: 50 },
+      variant: "ternary",
+      status: false,
     },
   ]);
 
@@ -276,6 +313,62 @@ const FomularioCalificaciones = () => {
     }
   };
 
+  const resetVis = () => {
+    dropdowns.map((dropdown) => {
+      document.getElementById(`drop-${dropdown.id}`).style.visibility =
+        "hidden";
+    });
+    dropdowns.map((dropdown) => {
+      dropdown.status = false;
+      if (
+        dropdown.id === 1 ||
+        dropdown.id === 2 ||
+        dropdown.id === 3 ||
+        dropdown.id === 4
+      ) {
+        document.getElementById(`drop-${dropdown.id}`).style.visibility =
+          "visible";
+      }
+    });
+  };
+
+  const selectOpt = (obj) => {
+    console.log(obj.level);
+    if (obj.level === "DOS") {
+      setLevelOne(obj.code);
+      if (obj.code === "doctorado") {
+        document.getElementById(`drop-2`).style.visibility = "visible";
+        document.getElementById(`drop-3`).style.visibility = "hidden";
+        document.getElementById(`drop-4`).style.visibility = "hidden";
+        // ----------------------------------------------
+        document.getElementById(`drop-5`).style.visibility = "visible";
+        document.getElementById(`drop-6`).style.visibility = "visible";
+      } else if (obj.code === "licenciatura") {
+        document.getElementById(`drop-2`).style.visibility = "hidden";
+        document.getElementById(`drop-3`).style.visibility = "visible";
+        document.getElementById(`drop-4`).style.visibility = "hidden";
+        // ----------------------------------------------
+        document.getElementById(`drop-8`).style.visibility = "visible";
+        document.getElementById(`drop-9`).style.visibility = "visible";
+        document.getElementById(`drop-10`).style.visibility = "visible";
+      } else if (obj.code === "maestria") {
+        document.getElementById(`drop-2`).style.visibility = "hidden";
+        document.getElementById(`drop-3`).style.visibility = "hidden";
+        document.getElementById(`drop-4`).style.visibility = "visible";
+        // ----------------------------------------------
+        document.getElementById(`drop-7`).style.visibility = "visible";
+      }
+    } else if (obj.level === "TRES") {
+      setLevelTwo(obj.code);
+      console.log("no");
+    } else if (obj.level === "CUATRO") {
+      setLevelThree(obj.code);
+      console.log(levelOne, levelTwo, levelThree);
+    }
+    // dropdown.status = !dropdown.status;
+    // document.getElementById(dropdown.id).style.visibility = "hidden";
+  };
+
   return (
     <>
       <div
@@ -286,17 +379,20 @@ const FomularioCalificaciones = () => {
           height: "100vh",
         }}
       >
-        <img src={uwu} width={250} srcset="" />
+        {/* <img src={uwu} width={250} srcset="" onClick={() => resetVis()} /> */}
         {dropdowns.map((dropdown) => (
           <Dropdown>
             {/* FAB Button */}
             <Button
+              id={`drop-${dropdown.id}`}
               variant={dropdown.variant}
               style={{
                 ...dropdown.position,
+                ...dropdown.stylus,
+                overflow: "hidden",
                 position: "absolute",
-                width: "56px",
-                height: "56px",
+                width: "75px",
+                height: "75px",
                 borderRadius: "50%",
                 display: "flex",
                 justifyContent: "center",
@@ -304,12 +400,27 @@ const FomularioCalificaciones = () => {
                 fontSize: "24px",
                 padding: "0",
                 boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                visibility: dropdown.id !== 1 && "hidden",
               }}
               onClick={() => {
-                console.log("wenas CAPA:", dropdown.level);
+                selectOpt(dropdown);
+                // console.log("wenas CAPA:", dropdown.status);
               }}
             >
-              {dropdown.id}
+              {dropdown.id === 1 ? (
+                <div>
+                  <img
+                    src={uwu}
+                    width={150}
+                    srcset=""
+                    onClick={() => resetVis()}
+                  />
+                </div>
+              ) : (
+                <img src={dropdown.label} />
+                // dropdown.label
+              )}
+              {/* {dropdown.label} */}
             </Button>
 
             {/* Dropdown Menu */}
