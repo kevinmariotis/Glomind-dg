@@ -2,14 +2,16 @@ import { useContext, useEffect, useState } from "react";
 import TarjetaCursoAdmin from "../../components/cards/TarjetaCursoAdmin";
 import { AuthContext } from "../../AuthContext";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import "swiper/css/autoplay";
 
 const CursosRecientes = () => {
   const { jwt } = useContext(AuthContext);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const [cursosRecientes, setCursosRecientes] = useState([]);
+  const [autoPlay, setAutoPlay] = useState(true);
 
   const obtenerDatosCursos = async () => {
     const headers = {
@@ -40,7 +42,11 @@ const CursosRecientes = () => {
   }, []);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div
+      style={{ position: "relative" }}
+      onMouseEnter={() => setAutoPlay(false)}
+      onMouseLeave={() => setAutoPlay(true)}
+    >
       {cursosRecientes?.length > 0 && (
         <>
           <h3
@@ -54,7 +60,16 @@ const CursosRecientes = () => {
           </h3>
 
           <Swiper
-            modules={[Navigation]}
+            loop={true}
+            autoplay={
+              autoPlay
+                ? {
+                    delay: 0,
+                  }
+                : false
+            }
+            speed={autoPlay ? 2000 : 500}
+            modules={[Navigation, Autoplay]}
             spaceBetween={20}
             slidesPerView={3}
             breakpoints={{
@@ -93,6 +108,7 @@ const CursosRecientes = () => {
                   labelButton={"Continuar"}
                   btnVideo={false}
                   curso={curso}
+                  loop={true} // Habilita el bucle infinito
                 />
               </SwiperSlide>
             ))}

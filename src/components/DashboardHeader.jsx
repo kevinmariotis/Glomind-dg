@@ -344,9 +344,14 @@ function DashboardHeader({ expandir_ancho = false }) {
       />
       <header className="header-menu-area">
         <div
-          className={`header-menu-content ${
+          className={`${
             !expandir_ancho && "dashboard-menu-content"
           } pr-30px pl-30px bg-white shadow-sm`}
+          style={{
+            position: "fixed",
+            top: 0,
+            right: 0
+          }}
         >
           <div className="container-fluid">
             <div className="main-menu-content">

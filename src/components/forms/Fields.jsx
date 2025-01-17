@@ -6,7 +6,7 @@ import { AuthContext } from "../../AuthContext";
 const Fields = ({ fieldsList, handleChange, values, errors = [] }) => {
   const { temaActual } = useContext(AuthContext);
 
-  const inputs = ["date_time"];
+  const inputs = ["date_time", "float"];
   const selects = ["array_values", "array"];
   console.log(fieldsList);
   return (

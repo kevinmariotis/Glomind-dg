@@ -63,13 +63,14 @@ import PaginaCalificaciones from "./pages/calificaciones/PaginaCalificaciones";
 import IntroScreen from "./components/intro/IntroScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { setShowIntro } from "./redux/slices/AuthSlice";
+import ChatBot from "./components/bot/ChatBot";
 
 //import About from './components/About';
 //import Home from './components/Home';
 
 const Rutas = () => {
   const { authenticated, permissions, esDocente } = useContext(AuthContext); //se obtiene los datos del contexto de la sesion (AuthContext)
-  const { showIntro } = useSelector((state) => state.auth);
+  const { showIntro, showApp } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const location = useLocation();
   const urlSinMenu = [
@@ -100,10 +101,13 @@ const Rutas = () => {
         <IntroScreen logo="/ruta/a/tu/logo.png" onFinish={handleIntroFinish} />
       )}
       {authenticated &&
+        showApp &&
         urlSinMenu.every((item) => !location.pathname?.includes(item)) && (
           <DashboardMenu />
         )}
-      
+      {authenticated && !showIntro && <ChatBot />}
+
+      {(!authenticated || showApp) && (
         <Routes>
           {/* <Route path="/login" element={<ProtectedRoute permiso={!authenticated} ><PaginaIniciarSesion/></ProtectedRoute>} />  */}
           <Route
@@ -490,6 +494,7 @@ const Rutas = () => {
 
           <Route path="*" component={<Pagina404 />} />
         </Routes>
+      )}
     </>
   );
 };

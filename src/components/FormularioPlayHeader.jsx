@@ -38,6 +38,7 @@ function FormularioPlayHeader({
   const [resena, setResena] = useState({ calificacion: -1, mensaje: "" });
 
   useEffect(() => {
+    console.log(Popup)
     window.scrollTo(0, 0);
   }, []);
 
@@ -255,125 +256,20 @@ function FormularioPlayHeader({
         funcionCerrar={handleFuncionCerrarPopUp}
         textoCerrar="Aceptar"
       />
-      <div
-        className={`modal fade modal-container ${
-          mostrarModalRating ? "show" : ""
-        }`}
-        id="ratingModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="ratingModalTitle"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered" role="document">
-          <div className="modal-content">
-            <div className="modal-header border-bottom-gray">
-              <div className="pr-2">
-                <h5
-                  className="modal-title fs-19 font-weight-semi-bold lh-24"
-                  id="ratingModalTitle"
-                >
-                  Cómo calificaría este curso?
-                </h5>
-              </div>
-              <button
-                onClick={() => {
-                  setMostrarModalRating(!mostrarModalRating);
-                }}
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true" className="la la-times"></span>
-              </button>
-            </div>
-            <div className="modal-body text-center py-5">
-              {tiene_review == 0 ? (
-                <>
-                  <div className="leave-rating mt-5">
-                    <input type="radio" name="rate" id="star5" />
-                    <label
-                      htmlFor="star5"
-                      className="fs-45"
-                      data-valor="5"
-                      onClick={handleCalificacionResena}
-                    ></label>
-                    <input type="radio" name="rate" id="star4" />
-                    <label
-                      htmlFor="star4"
-                      className="fs-45"
-                      data-valor="4"
-                      onClick={handleCalificacionResena}
-                    ></label>
-                    <input type="radio" name="rate" id="star3" />
-                    <label
-                      htmlFor="star3"
-                      className="fs-45"
-                      data-valor="3"
-                      onClick={handleCalificacionResena}
-                    ></label>
-                    <input type="radio" name="rate" id="star2" />
-                    <label
-                      htmlFor="star2"
-                      className="fs-45"
-                      data-valor="2"
-                      onClick={handleCalificacionResena}
-                    ></label>
-                    <input type="radio" name="rate" id="star1" />
-                    <label
-                      htmlFor="star1"
-                      className="fs-45"
-                      data-valor="1"
-                      onClick={handleCalificacionResena}
-                    ></label>
-                    <div className="rating-result-text fs-20 pb-4"></div>
-                    <br></br>
-                    <br></br>
-                    {erroresCampos["calificacion"].length > 0 ? (
-                      <SpamError mensaje={erroresCampos["calificacion"]} />
-                    ) : (
-                      "nada"
-                    )}
-                  </div>
-                  <div
-                    className="input-box col-lg-12"
-                    style={{ marginTop: "20px" }}
-                  >
-                    <label className="label-text">Deja tu reseña</label>
-                    <div className="form-group">
-                      <textarea
-                        className="form-control form--control pl-3"
-                        name="message"
-                        onKeyUp={handleMensajeResena}
-                        placeholder="Escribe el mensaje"
-                        maxLength="2048"
-                        rows="5"
-                      ></textarea>
-                      {erroresCampos["comentario"].length > 0 && (
-                        <SpamError mensaje={erroresCampos["comentario"]} />
-                      )}
-                    </div>
-                  </div>
-                  <div className="btn-box col-lg-12">
-                    <button
-                      className="btn theme-btn"
-                      type="submit"
-                      onClick={enviarResenaSevidor}
-                    >
-                      Enviar reseña
-                    </button>
-                  </div>
-                </>
-              ) : (
-                "Ya has emitido una reseña para este curso, gracias."
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* 
+        Antes había un rating de curso
+      */}
       <section className="header-menu-area">
-        <div className="header-menu-content" style={{backgroundColor: "var(--Azul-petroleo)"}}>
+        <div
+          className=""
+          style={{
+            backgroundColor: "var(--Azul-petroleo)",
+            position: "fixed",
+            top: 0,
+            width: "100%",
+            height: 80
+          }}
+        >
           <div className="container-fluid">
             <div className="main-menu-content d-flex align-items-center">
               {esMovil ? (

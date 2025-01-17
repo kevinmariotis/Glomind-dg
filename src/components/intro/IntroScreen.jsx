@@ -5,13 +5,17 @@ import "./IntroScreenStyles.scss";
 import audio from "./glomindAudioIntro.mp3";
 import video from "./animation.mp4";
 import curve from "./curva_concava.svg";
+import { useDispatch } from "react-redux";
+import { setShowApp } from "../../redux/slices/AuthSlice";
 
 const IntroScreen = ({ onFinish }) => {
+  const dispatch = useDispatch();
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimate(true);
+      dispatch(setShowApp(true));
     }, 6000);
     return () => clearTimeout(timer);
   }, [onFinish]);

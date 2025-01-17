@@ -13,6 +13,7 @@ function TarjetaCategoriaAdmin({
 }) {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const [cantidadCursos, setCantidadCursos] = useState(totalCursos);
+  const [hover, setHover] = useState(false);
 
   useEffect(() => {
     if (funcionCantidadCursos != null) {
@@ -42,13 +43,15 @@ function TarjetaCategoriaAdmin({
 
   //console.log("Este es el favorito ", estadoFavorito);
   return (
-    <div className="col-lg-3 responsive-column-half p-3">
+    <div className="col-lg-4 col-md-4 col-sm-6 p-3">
       <div
         className="category-item"
         onClick={() => {
           funcionNavegar(id_categoria);
         }}
         style={{ cursor: "pointer", borderRadius: "var(--CornerLarge)" }}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
       >
         <img
           className="cat__img lazy"
@@ -62,9 +65,10 @@ function TarjetaCategoriaAdmin({
           <div className="category-inner px-3">
             {tipo !== "semestre" && (
               <>
-                <h3 className="cat__title">
-                  <a href="#">{nombre}</a>
-                </h3>
+                <p style={{ fontSize: "18px", color: "white" }} title={nombre}>
+                  {hover ? nombre : nombre.substring(0, 30)}
+                  {!hover && nombre.length > 30 && "..."}
+                </p>
                 <p className="cat__meta">
                   {cantidadCursos}{" "}
                   {cantidadCursos === 1 ? "Resultado" : "Resultados"}

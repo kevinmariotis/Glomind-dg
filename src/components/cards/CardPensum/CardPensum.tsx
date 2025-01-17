@@ -10,14 +10,10 @@ interface CardPensumProps {
   title?: string;
   description?: string;
   path: string;
-  course?: string;
-  state?: string;
-  time?: string;
-  dateFirst?: string;
-  dateLast?: string;
   value?: string;
   footer?: string;
   index?: number;
+  items?: any[];
 }
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -36,15 +32,11 @@ const CardPensum = ({
   title,
   description,
   path,
-  course,
-  state,
-  time,
-  dateFirst,
-  dateLast,
-  value,
   footer,
-  index
-}: CardPensumProps) => {  
+  index,
+  items = [],
+  value,
+}: CardPensumProps) => {
   return (
     <Box className="contentCardPensum">
       {/**********/}
@@ -70,51 +62,26 @@ const CardPensum = ({
         {/* DESCRIPTION */}
         {/***************/}
         <Typography className="description size16">
-          {description} <a href={code === "program" || code === "doctorate" || code === "mastery" || code === "course" ? `${path}?${code}&${index}` : `${path}`} target="_blank">Ver más</a> 
+          {description}{" "}
+          <a
+            href={
+              code === "program" ||
+              code === "doctorate" ||
+              code === "mastery" ||
+              code === "course"
+                ? `${path}?${code}&${index}`
+                : `${path}`
+            }
+            target="_blank"
+          >
+            Ver más
+          </a>
         </Typography>
-
-        {/*****************/}
-        {/* DATOS CARRERA */}
-        {/*****************/}
-        <Stack
-          className="counter stackInfo"
-          direction={{ xs: "column", sm: "row" }}
-          divider={<Divider orientation="vertical" flexItem />}
-          spacing={{ xs: 1, sm: 2 }}
-        >
-          <Item>
-            <Typography className="size16 text-dark">{course}</Typography>
-          </Item>
-          <Item>
-            <Typography className="size16 text-dark">{state}</Typography>
-          </Item>
-          <Item>
-            <Typography className="size16 text-dark" sx={{ textWrap: "nowrap" }}>
-              {time}
-            </Typography>
-          </Item>
-        </Stack>
-
-        {/*****************/}
-        {/* FECHA CARRERA */}
-        {/*****************/}
-        <Stack
-          className="counter stackInfo"
-          direction={{ xs: "column", sm: "row" }}
-          divider={<Divider orientation="vertical" flexItem />}
-          spacing={{ xs: 1, sm: 2 }}
-        >
-          <Item>
-            <Typography className="size16 text-dark" sx={{ textWrap: "nowrap" }}>
-              Inicio: {dateFirst}
-            </Typography>
-          </Item>
-          <Item>
-            <Typography className="size16 text-dark" sx={{ textWrap: "nowrap" }}>
-              Fin: {dateLast}
-            </Typography>
-          </Item>
-        </Stack>
+        <div className="row">
+          {items.map((item) => (
+            <div className="col-6" style={{fontWeight: "normal"}}>{item}</div>
+          ))}
+        </div>
       </Box>
 
       {/*********/}

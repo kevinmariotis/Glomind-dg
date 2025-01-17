@@ -22,6 +22,8 @@
   font-family: "DM Sans";
 }
 
+
+// Estilos Generales
 .btn-round {
   border-radius: var(--CornerMedium) !important;
 }
@@ -105,7 +107,6 @@
   width: 4% !important;
 }
 
-
 .content-card-course {
   display: flex;
   flex-direction: column;
@@ -170,6 +171,7 @@
   background-color: var(--Blanco-fondo);
   width: calc(100% - 250px);
   margin-left: auto;
+  margin-top: 90px;
 }
 
 .dashboard-content-wrap {
