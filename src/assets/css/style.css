@@ -6834,6 +6834,7 @@ div.datedropper .picker .pick-lg-b li {
   justify-content: flex-end;
   padding-top: 20px;
   padding-bottom: 20px;
+  padding-right: 100px;
   position: relative;
 }
 @media (max-width: 1199px) {
