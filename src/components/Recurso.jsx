@@ -80,7 +80,7 @@ function Recurso({id_contenido}){
         position: 'absolute', 
         top: '0', 
         left: '0', 
-        width: '100%'
+        width: '99.3%'
     }
 
     let style_nopdf  = {
