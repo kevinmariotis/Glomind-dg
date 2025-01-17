@@ -6,7 +6,7 @@
   width: 350px;
   background: #fff;
   box-sizing: border-box;
-  border-radius: 15px;
+  border-radius: 20px;
   box-shadow: 0px 15px 20px #0000001a;
   visibility: hidden;
   transition: 1s initial;
@@ -16,7 +16,7 @@
   -webkit-transition: bottom 0.5s linear;
   transition: bottom 0.5s linear;
   visibility: visible;
-  bottom: 92px;
+  bottom: 120px;
 }
 .chat-screen .chat-header {
   background-image: linear-gradient(
@@ -273,8 +273,8 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  height: 60px;
-  width: 60px;
+  height: 80px;
+  width: 80px;
   // background-image: linear-gradient(
   //   to right,
   //   #673ab7,
@@ -308,8 +308,8 @@
   top: -33px;
 }
 .chat-bot-icon img {
-  width: 110px;
-  height: 110px;
+  width: 200px;
+  height: 200px;
 }
 .chat-bot-icon .svg {
   color: #fff;
