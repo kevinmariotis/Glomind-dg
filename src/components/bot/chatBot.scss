@@ -10,6 +10,8 @@
   box-shadow: 0px 15px 20px #0000001a;
   visibility: hidden;
   transition: 1s initial;
+  height: 600px;
+  max-height: 600px;
 }
 .chat-screen.show-chat {
   -moz-transition: bottom 0.5s linear;
@@ -19,14 +21,7 @@
   bottom: 120px;
 }
 .chat-screen .chat-header {
-  background-image: linear-gradient(
-    to right,
-    #673ab7,
-    #813bcb,
-    #9e38de,
-    #bc32ef,
-    #dc22ff
-  );
+  background: var(--Lavander);
   border-radius: 15px 15px 0 0;
   padding: 15px;
   display: block;
@@ -83,14 +78,7 @@
   border-radius: 30px;
 }
 .chat-screen .chat-mail button {
-  background-image: linear-gradient(
-    to right,
-    #673ab7,
-    #813bcb,
-    #9e38de,
-    #bc32ef,
-    #dc22ff
-  );
+  background: var(--Lavander);
   border: none;
   padding: 0.58rem 1.25rem;
   transition: transform 0.5s ease;
@@ -102,7 +90,7 @@
   padding: 25px;
   display: inline-block;
   min-height: 382px;
-  max-height: 382px;
+  max-height: 600px;
   background: #fbfbfb;
   overflow-y: auto;
 }
@@ -130,14 +118,7 @@
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.02);
 }
 .chat-screen .chat-body .chat-bubble.you {
-  background-image: linear-gradient(
-    to right,
-    #673ab7,
-    #813bcb,
-    #9e38de,
-    #bc32ef,
-    #dc22ff
-  );
+  background: var(--Lavander);
   color: #fff;
   border-radius: 0 15px 15px 15px;
   align-self: flex-start;
@@ -331,4 +312,15 @@
 }
 .hide {
   display: none !important;
+}
+
+.chat-btn {
+  width: 100%;
+  border-radius: 20px;
+  background: var(--Lavander) !important;
+  color: white;
+}
+
+.chat-btn:hover {
+  background: var(--Azul-petroleo) !important;
 }

@@ -103,7 +103,7 @@ function FooterArea() {
             funcionCerrar={handleFuncionCerrarPopUp}
             textoCerrar="Cerrar"
         />
-        <section className="footer-area pt-100px bg-gray">
+        <section className="footer-area pt-50px bg-gray">
                         
             <div className="copyright-content py-4">
                 <div className="container">

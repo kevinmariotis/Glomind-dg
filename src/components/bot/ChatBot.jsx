@@ -2,6 +2,7 @@ import "./chatBot.scss";
 import { useContext, useState } from "react";
 import Gloria1 from "./images/Gloria1.svg";
 import Gloria2 from "./images/Gloria2.svg";
+import GloriaParticles from "./images/Gloria-particles.svg";
 import { AuthContext } from "../../AuthContext";
 
 const ChatBot = () => {
@@ -111,7 +112,7 @@ const ChatBot = () => {
             <div className="row">
               <div className="col-md-12 text-center">
                 <img
-                  src={Gloria2}
+                  src={GloriaParticles}
                   alt=""
                   style={{ width: "200px", marginBottom: "20px" }}
                 />
@@ -128,22 +129,34 @@ const ChatBot = () => {
             </div>
             <div className="row">
               <div className="col-md-12 text-center mb-2">
-                <button style={{ borderRadius: "15px", color: "white", background: "var(--Lavander)", width: "100%" }}>Continuar</button>
+                <button className="chat-btn" onClick={() => setView(2)}>
+                  Continuar
+                </button>
               </div>
             </div>
           </div>
         )}
         {view === 2 && (
           <div className="chat-body">
-            <div className="chat-start">Monday, 1:27 PM</div>
+            <div className="chat-start">Hoy</div>
             <div className="chat-bubble you">
-              Welcome to our site, if you need help simply reply to this
-              message, we are online and ready to help.
+              <p>
+                ¡Hola! Soy Gloria, tu asistente virtual. Te ayudaré en lo que
+                necesites. Por favor, selecciona una opción para continuar:
+              </p>
             </div>
-            <div className="chat-bubble me">Hi, I am back</div>
-            <div className="chat-bubble me">I just want my Report Status.</div>
+            <div className="chat-bubble you">
+              <ol style={{ marginLeft: "10px", marginBottom: "0" }}>
+                <li>Proveer mis datos personales.</li>
+                <li>Resolver dudas o inquietudes.</li>
+                <li>Consultar información de la plataforma.</li>
+              </ol>
+              <p>¡Estoy aquí para ayudarte!</p>
+            </div>
             <div className="chat-bubble me">
-              As i am not getting any weekly reports nowadays.
+              <ol style={{ marginLeft: "10px", marginBottom: "0" }}>
+                <li>Proveer mis datos personales.</li>
+              </ol>
             </div>
             <div className="chat-bubble you">
               <svg

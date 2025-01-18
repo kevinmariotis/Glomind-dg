@@ -4,7 +4,7 @@ function CompaniasAliadas() {
     const urlBase = import.meta.env.VITE_URL_BASE;  
 
     return (
-        <section className="cta-area py-5 position-relative overflow-hidden bg-gray">
+        <section className="cta-area pt-5 position-relative overflow-hidden bg-gray">
             <span className="stroke-shape stroke-shape-1"></span>
             <span className="stroke-shape stroke-shape-2"></span>
             <span className="stroke-shape stroke-shape-3"></span>
