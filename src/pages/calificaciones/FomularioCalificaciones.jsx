@@ -14,7 +14,7 @@ const FomularioCalificaciones = () => {
   const [cursos, setCursos] = useState([]);
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const [actividades, setActividades] = useState([]);
-  const [showDiv, setShowDiv] = useState(true);
+  const [showDiv, setShowDiv] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
   // States de Info
@@ -61,7 +61,7 @@ const FomularioCalificaciones = () => {
       //buscamos los datos de los cursos a mostrar
       // setMostrarSpinner(true);
       const response2 = await fetch(
-        `${urlBaseApi}/api/usuario/cursos/0/1/1/nombre-desc`,
+        `${urlBaseApi}/api/usuario/cursos/0/1/1/id-desc/10/54`,
         opciones
       );
       // setMostrarSpinner(false);
@@ -210,7 +210,7 @@ const FomularioCalificaciones = () => {
       id: 8,
       code: "lic-desarrollo",
       label: "src/assets/icons/calificaciones/lic-desarrollo.svg",
-      level: "DOS",
+      level: "TRES",
       stylus: { backgroundColor: "#8A7FBA" },
       position: { right: 20, top: 190 },
       variant: "ternary",
@@ -220,7 +220,7 @@ const FomularioCalificaciones = () => {
       id: 9,
       code: "lic-ciencia",
       label: "src/assets/icons/calificaciones/lic-ciencia.svg",
-      level: "DOS",
+      level: "TRES",
       stylus: { backgroundColor: "#8A7FBA" },
       position: { top: 190 },
       variant: "ternary",
@@ -230,7 +230,7 @@ const FomularioCalificaciones = () => {
       id: 10,
       code: "lic-pedag",
       label: "src/assets/icons/calificaciones/lic-pedago.svg",
-      level: "DOS",
+      level: "TRES",
       stylus: { backgroundColor: "#8A7FBA" },
       position: { left: 95, top: 190 },
       variant: "ternary",
@@ -359,11 +359,23 @@ const FomularioCalificaciones = () => {
         document.getElementById(`drop-7`).style.visibility = "visible";
       }
     } else if (obj.level === "TRES") {
+      console.log(obj.code);
       setLevelTwo(obj.code);
+      if (obj.code === "mast-educa") {
+        document.getElementById(`drop-11`).style.visibility = "visible";
+        document.getElementById(`drop-12`).style.visibility = "visible";
+      } else if (obj.code === "lic-desarrollo") {
+        document.getElementById(`drop-13`).style.visibility = "visible";
+        document.getElementById(`drop-14`).style.visibility = "visible";
+      } else if (obj.code === "doc-derecho") {
+        document.getElementById(`drop-15`).style.visibility = "visible";
+        document.getElementById(`drop-16`).style.visibility = "visible";
+      }
       console.log("no");
     } else if (obj.level === "CUATRO") {
       setLevelThree(obj.code);
       console.log(levelOne, levelTwo, levelThree);
+      setShowDiv(true);
     }
     // dropdown.status = !dropdown.status;
     // document.getElementById(dropdown.id).style.visibility = "hidden";
@@ -371,69 +383,70 @@ const FomularioCalificaciones = () => {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        {/* <img src={uwu} width={250} srcset="" onClick={() => resetVis()} /> */}
-        {dropdowns.map((dropdown) => (
-          <Dropdown>
-            {/* FAB Button */}
-            <Button
-              id={`drop-${dropdown.id}`}
-              variant={dropdown.variant}
-              style={{
-                ...dropdown.position,
-                ...dropdown.stylus,
-                overflow: "hidden",
-                position: "absolute",
-                width: "75px",
-                height: "75px",
-                borderRadius: "50%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "24px",
-                padding: "0",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                visibility: dropdown.id !== 1 && "hidden",
-              }}
-              onClick={() => {
-                selectOpt(dropdown);
-                // console.log("wenas CAPA:", dropdown.status);
-              }}
-            >
-              {dropdown.id === 1 ? (
-                <div>
-                  <img
-                    src={uwu}
-                    width={150}
-                    srcset=""
-                    onClick={() => resetVis()}
-                  />
-                </div>
-              ) : (
-                <img src={dropdown.label} />
-                // dropdown.label
-              )}
-              {/* {dropdown.label} */}
-            </Button>
+      {!showDiv && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          {/* <img src={uwu} width={250} srcset="" onClick={() => resetVis()} /> */}
+          {dropdowns.map((dropdown) => (
+            <Dropdown>
+              {/* FAB Button */}
+              <Button
+                id={`drop-${dropdown.id}`}
+                variant={dropdown.variant}
+                style={{
+                  ...dropdown.position,
+                  ...dropdown.stylus,
+                  overflow: "hidden",
+                  position: "absolute",
+                  width: "75px",
+                  height: "75px",
+                  borderRadius: "50%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: "24px",
+                  padding: "0",
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                  visibility: dropdown.id !== 1 && "hidden",
+                }}
+                onClick={() => {
+                  selectOpt(dropdown);
+                  // console.log("wenas CAPA:", dropdown.status);
+                }}
+              >
+                {dropdown.id === 1 ? (
+                  <div>
+                    <img
+                      src={uwu}
+                      width={150}
+                      srcset=""
+                      onClick={() => resetVis()}
+                    />
+                  </div>
+                ) : (
+                  <img src={dropdown.label} />
+                  // dropdown.label
+                )}
+                {/* {dropdown.label} */}
+              </Button>
 
-            {/* Dropdown Menu */}
-            <Dropdown.Menu
-              style={{
-                position: "absolute",
-                top: "65px", // Ajusta según la posición del FAB
-                left: "50%",
-                transform: "translateX(-50%)",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-              }}
-            >
-              {/* <Dropdown.Toggle
+              {/* Dropdown Menu */}
+              <Dropdown.Menu
+                style={{
+                  position: "absolute",
+                  top: "65px", // Ajusta según la posición del FAB
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                }}
+              >
+                {/* <Dropdown.Toggle
               variant="secondary"
               style={{
                 width: "56px",
@@ -448,13 +461,14 @@ const FomularioCalificaciones = () => {
               }}
             ></Dropdown.Toggle> */}
 
-              {/* <Dropdown.Item href="#/action-1">Item 1</Dropdown.Item>
+                {/* <Dropdown.Item href="#/action-1">Item 1</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Item 2</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Item 3</Dropdown.Item> */}
-            </Dropdown.Menu>
-          </Dropdown>
-        ))}
-      </div>
+              </Dropdown.Menu>
+            </Dropdown>
+          ))}
+        </div>
+      )}
 
       {showDiv && (
         <div className="dashboard-content-wrap">
@@ -479,9 +493,9 @@ const FomularioCalificaciones = () => {
           {cursoSeleccionado === null ? (
             <>
               <div className="d-flex mt-5">
-                <button className="btn theme-btn-white btn-round py 3 mr-3">
+                <button className="btn theme-btn-white btn-round py 3 mr-3" onClick={() => setShowDiv(false)}>
                   <i className="la la-filter icon mr-1"></i>
-                  Categoria
+                  Reset
                 </button>
               </div>
               <div className="custom-table">
@@ -508,8 +522,8 @@ const FomularioCalificaciones = () => {
                 <div className="tbody">
                   {cursos.map((curso, index) => (
                     <div className="row" key={`c-${index}`}>
-                      <div className="col">Doctorado</div>
-                      <div className="col">Doctorado en derecho</div>
+                      <div className="col">Maestria</div>
+                      <div className="col">Maestria en educación</div>
 
                       <div className="col">{curso.categoria_nombre}</div>
                       <div className="col col-3">{curso.nombre}</div>
