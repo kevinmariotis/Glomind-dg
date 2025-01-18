@@ -22,6 +22,9 @@ const FomularioCalificaciones = () => {
   const [levelTwo, setLevelTwo] = useState("");
   const [levelThree, setLevelThree] = useState("");
 
+  // State navbar
+  const [showNav, setShowNav] = useState(false);
+
   const fabStyle = {
     position: "fixed",
     bottom: "16px",
@@ -103,7 +106,7 @@ const FomularioCalificaciones = () => {
               ...c,
               nota: datos.datos?.usuarios[0]?.notas?.find(
                 (item) => item.id_curso_contenido === c.id_contenido
-              )?.puntuacion,
+              )?.puntuacion_fija,
               padre: resto,
             };
           });
@@ -240,7 +243,7 @@ const FomularioCalificaciones = () => {
     // Separation Maestria Group
     {
       id: 11,
-      code: "semester",
+      code: "Primer Semestre",
       label: "src/assets/icons/calificaciones/semester/sem-1.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#8547FF" },
@@ -250,7 +253,7 @@ const FomularioCalificaciones = () => {
     },
     {
       id: 12,
-      code: "semester",
+      code: "Segundo Semestre",
       label: "src/assets/icons/calificaciones/semester/sem-2.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#8547FF" },
@@ -314,6 +317,10 @@ const FomularioCalificaciones = () => {
   };
 
   const resetVis = () => {
+    setShowNav(true);
+    setLevelOne("");
+    setLevelTwo("");
+    setLevelThree("");
     dropdowns.map((dropdown) => {
       document.getElementById(`drop-${dropdown.id}`).style.visibility =
         "hidden";
@@ -336,6 +343,7 @@ const FomularioCalificaciones = () => {
     console.log(obj.level);
     if (obj.level === "DOS") {
       setLevelOne(obj.code);
+      console.log(levelOne);
       if (obj.code === "doctorado") {
         document.getElementById(`drop-2`).style.visibility = "visible";
         document.getElementById(`drop-3`).style.visibility = "hidden";
@@ -384,69 +392,143 @@ const FomularioCalificaciones = () => {
   return (
     <>
       {!showDiv && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-          }}
-        >
-          {/* <img src={uwu} width={250} srcset="" onClick={() => resetVis()} /> */}
-          {dropdowns.map((dropdown) => (
-            <Dropdown>
-              {/* FAB Button */}
-              <Button
-                id={`drop-${dropdown.id}`}
-                variant={dropdown.variant}
+        <>
+          {showNav && (
+            <div className="pt-3 pl-4">
+              <button
+                className="btn theme-btn btn-round"
                 style={{
-                  ...dropdown.position,
-                  ...dropdown.stylus,
-                  overflow: "hidden",
-                  position: "absolute",
-                  width: "75px",
-                  height: "75px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: "24px",
-                  padding: "0",
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                  visibility: dropdown.id !== 1 && "hidden",
-                }}
-                onClick={() => {
-                  selectOpt(dropdown);
-                  // console.log("wenas CAPA:", dropdown.status);
+                  padding: "5px 20px",
+                  display:
+                    levelOne === "doctorado" || levelOne === "" ? "" : "none",
                 }}
               >
-                {dropdown.id === 1 ? (
-                  <div>
-                    <img
-                      src={uwu}
-                      width={150}
-                      srcset=""
-                      onClick={() => resetVis()}
-                    />
-                  </div>
-                ) : (
-                  <img src={dropdown.label} />
-                  // dropdown.label
-                )}
-                {/* {dropdown.label} */}
-              </Button>
+                Doctorado
+              </button>
+              <button
+                className="btn theme-btn btn-round ml-2"
+                style={{
+                  padding: "5px 20px",
+                  display:
+                    levelOne === "maestria" || levelOne === "" ? "" : "none",
+                }}
+              >
+                Maestria
+              </button>
+              <button
+                className="btn theme-btn btn-round ml-2"
+                style={{
+                  padding: "5px 20px",
+                  display:
+                    levelOne === "licenciatura" || levelOne === ""
+                      ? ""
+                      : "none",
+                }}
+              >
+                Licenciatura
+              </button>
 
-              {/* Dropdown Menu */}
-              <Dropdown.Menu
+              <button
+                className="btn btn-round ml-2"
                 style={{
-                  position: "absolute",
-                  top: "65px", // Ajusta según la posición del FAB
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                  padding: "5px 20px",
+                  backgroundColor: "#8A7FBA",
+                  color: "white",
+                  display:
+                    levelOne === "maestria" &&
+                    (levelTwo === "mast-educa" || levelTwo === "")
+                      ? ""
+                      : "none",
                 }}
               >
-                {/* <Dropdown.Toggle
+                Educación
+              </button>
+              {/* <button className="btn btn-round ml-2" style={{ padding: "5px 20px", backgroundColor: "#8A7FBA", color: "white" }}>
+              Maestria
+            </button>
+            <button className="btn btn-round ml-2" style={{ padding: "5px 20px", backgroundColor: "#8A7FBA", color: "white" }}>
+              Licenciatura
+            </button> */}
+              <button
+                className="btn btn-round ml-2"
+                style={{
+                  padding: "5px 20px",
+                  backgroundColor: "#431E8F",
+                  color: "white",
+                  display:
+                    levelTwo !== "" &&
+                    (levelThree === "semester" || levelThree === "")
+                      ? ""
+                      : "none",
+                }}
+              >
+                Semestres
+              </button>
+            </div>
+          )}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            {/* <img src={uwu} width={250} srcset="" onClick={() => resetVis()} /> */}
+            {dropdowns.map((dropdown) => (
+              <Dropdown>
+                {/* FAB Button */}
+                <Button
+                  id={`drop-${dropdown.id}`}
+                  variant={dropdown.variant}
+                  style={{
+                    ...dropdown.position,
+                    ...dropdown.stylus,
+                    overflow: "hidden",
+                    position: "absolute",
+                    width: "75px",
+                    height: "75px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontSize: "24px",
+                    padding: "0",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                    visibility: dropdown.id !== 1 && "hidden",
+                  }}
+                  onClick={() => {
+                    selectOpt(dropdown);
+                    // console.log("wenas CAPA:", dropdown.status);
+                  }}
+                >
+                  {dropdown.id === 1 ? (
+                    <div>
+                      <img
+                        src={uwu}
+                        width={150}
+                        srcset=""
+                        onClick={() => resetVis()}
+                      />
+                    </div>
+                  ) : (
+                    <img src={dropdown.label} />
+                    // dropdown.label
+                  )}
+                  {/* {dropdown.label} */}
+                </Button>
+
+                {/* Dropdown Menu */}
+                <Dropdown.Menu
+                  style={{
+                    position: "absolute",
+                    top: "65px", // Ajusta según la posición del FAB
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                >
+                  {/* <Dropdown.Toggle
               variant="secondary"
               style={{
                 width: "56px",
@@ -461,13 +543,14 @@ const FomularioCalificaciones = () => {
               }}
             ></Dropdown.Toggle> */}
 
-                {/* <Dropdown.Item href="#/action-1">Item 1</Dropdown.Item>
+                  {/* <Dropdown.Item href="#/action-1">Item 1</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Item 2</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Item 3</Dropdown.Item> */}
-              </Dropdown.Menu>
-            </Dropdown>
-          ))}
-        </div>
+                </Dropdown.Menu>
+              </Dropdown>
+            ))}
+          </div>
+        </>
       )}
 
       {showDiv && (
@@ -493,7 +576,16 @@ const FomularioCalificaciones = () => {
           {cursoSeleccionado === null ? (
             <>
               <div className="d-flex mt-5">
-                <button className="btn theme-btn-white btn-round py 3 mr-3" onClick={() => setShowDiv(false)}>
+                <button
+                  className="btn theme-btn-white btn-round py 3 mr-3"
+                  onClick={() => {
+                    setShowDiv(false),
+                      setLevelOne(""),
+                      setLevelTwo(""),
+                      setLevelThree("");
+                    setShowNav(false);
+                  }}
+                >
                   <i className="la la-filter icon mr-1"></i>
                   Reset
                 </button>
@@ -521,30 +613,32 @@ const FomularioCalificaciones = () => {
                 </div>
                 <div className="tbody">
                   {cursos.map((curso, index) => (
-                    <div className="row" key={`c-${index}`}>
-                      <div className="col">Maestria</div>
-                      <div className="col">Maestria en educación</div>
+                    <>
+                      {levelThree === curso.categoria_nombre && (
+                        <div className="row" key={`c-${index}`}>
+                          <div className="col">Maestria</div>
+                          <div className="col">Maestria en educación</div>
 
-                      <div className="col">{curso.categoria_nombre}</div>
-                      <div className="col col-3">{curso.nombre}</div>
-                      <div
-                        className="col d-flex"
-                        style={{ paddingLeft: "50px" }}
-                      >
-                        <GraficCircle
-                          value={curso.calificacion_curso}
-                          maxValue={10}
-                        />
-                      </div>
-                      <div className="col">
-                        <button
-                          onClick={() => verCalificaciones(curso.id)}
-                          className="btn theme-btn btn-round"
-                        >
-                          Ver calificaciones
-                        </button>
-                      </div>
-                      {/* <div className="col col-1">
+                          <div className="col">{curso.categoria_nombre}</div>
+                          <div className="col col-3">{curso.nombre}</div>
+                          <div
+                            className="col d-flex"
+                            style={{ paddingLeft: "50px" }}
+                          >
+                            <GraficCircle
+                              value={curso.calificacion_curso ?? "0.00"}
+                              maxValue={5}
+                            />
+                          </div>
+                          <div className="col">
+                            <button
+                              onClick={() => verCalificaciones(curso.id)}
+                              className="btn theme-btn btn-round"
+                            >
+                              Ver calificaciones
+                            </button>
+                          </div>
+                          {/* <div className="col col-1">
                     <span
                       className="icon-button"
                       onClick={() => verCalificaciones(curso.id)}
@@ -552,7 +646,9 @@ const FomularioCalificaciones = () => {
                       <i className="la la-search" />
                     </span>
                   </div> */}
-                    </div>
+                        </div>
+                      )}
+                    </>
                   ))}
                 </div>
               </div>
@@ -574,7 +670,7 @@ const FomularioCalificaciones = () => {
                       {actividad.porcentaje_en_total_curso}
                     </div>
                     <div className="col">
-                      <GraficCircle value={actividad.nota} maxValue={10} />
+                      <GraficCircle value={actividad.nota ?? "0.00"} maxValue={5} />
                     </div>
                   </div>
                 ))}
