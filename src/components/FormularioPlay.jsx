@@ -166,8 +166,8 @@ function FormularioPlay() {
   const handleCambiarPestana = (event, numero) => {
     event.preventDefault();
     setPestanaActivada(numero);
-    setContenidoActivado(-1)
-    setDataContenidoViendo([])
+    setContenidoActivado(-1);
+    setDataContenidoViendo([]);
     // setPestanaActivada(-1)
     // const myTimeout = setTimeout(function () {
     //   window.scrollTo({
@@ -792,185 +792,10 @@ function FormularioPlay() {
           }}
         />
       )}
-      <section className="course-dashboard" style={{marginTop: "80px"}}>
+      <section className="course-dashboard" style={{ marginTop: "80px" }}>
         <div className="course-dashboard-wrap">
           <div className="course-dashboard-container d-flex">
             <div className="course-dashboard-column">
-              <div className="lecture-viewer-container">
-                <div
-                  className="lecture-video-item"
-                  style={{
-                    position: "relative",
-                    paddingTop:
-                      dataContenidoViendo.tipo_contenido == 1 ||
-                      dataContenidoViendo.tipo_contenido == 4 ||
-                      (dataContenidoViendo.tipo_contenido == 3 &&
-                        dataContenidoViendo.ruta_archivo
-                          .split(".")
-                          .pop()
-                          .split("?")[0]
-                          .split("#")[0] == "pdf")
-                        ? "56.25%"
-                        : "0%",
-                  }}
-                >
-                  {" "}
-                  {/* (9 / 16) * 100 = 56.25 */}
-                  {dataContenidoViendo.tipo_contenido == 1 ? (
-                    <VideoPlayerPrisma
-                      url_video={`${urlBaseApi}/${
-                        esMovil
-                          ? dataContenidoViendo.video_pequeno != null
-                            ? dataContenidoViendo.video_pequeno
-                            : dataContenidoViendo.video_grande
-                          : dataContenidoViendo.video_grande
-                      }`}
-                      url_imagen_preview={`${urlBaseApi}/${dataContenidoViendo.imagen_preview_grande}`}
-                      posision_actual={parseInt(
-                        dataContenidoViendo.consumo_puntuacion
-                      )}
-                      estado_consumo={dataContenidoViendo.consumo_estado}
-                      funcion_reportar_posicion_actual={
-                        handleActualizaPosicionActualVideo
-                      }
-                      funcion_reportar_visto_completo={
-                        handleActualizaEstadoConsumo
-                      }
-                    />
-                  ) : dataContenidoViendo.tipo_contenido == 3 ? (
-                    <Recurso id_contenido={contenidoActivado} />
-                  ) : dataContenidoViendo.tipo_contenido == 4 ? (
-                    <Iframex frame={dataContenidoViendo} />
-                  ) : dataContenidoViendo.tipo_contenido == 6 ? (
-                    <>
-                      <div className="pt-60px pb-60px">
-                        <div className="container">
-                          <div className="breadcrumb-content pt-40px ">
-                            <div className="section-heading">
-                              <h2 className="section__title fs-30 pb-2">
-                                <i className="la la-comments mr-2"></i>
-                                {dataContenidoViendo.nombre}
-                              </h2>
-                              {dataContenidoViendo.descripcion == "" ? (
-                                <>
-                                  <Skeleton width={"60%"} height={20} />
-                                  <Skeleton width={"55%"} height={20} />
-                                  <Skeleton width={"45%"} height={20} />
-                                </>
-                              ) : (
-                                <p className="section__desc">
-                                  {dataContenidoViendo.descripcion
-                                    .split("<br />")
-                                    .map((line, index) => (
-                                      <span
-                                        key={`desc-general-larga-top-${index}`}
-                                      >
-                                        {line}
-                                        <br />
-                                      </span>
-                                    ))}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          <HiloComentarios
-                            id_hilo={dataContenidoViendo.id_comentario_hilo}
-                            id_objeto_enlace={dataContenidoViendo.id}
-                            tipo_objeto_enlace={
-                              dataContenidoViendo.tipo_contenido
-                            }
-                            id_curso={dataCurso.id}
-                            es_docente={dataCurso.es_docente}
-                            funcionRecargarContenidosCurso={() => {
-                              obtenerContenidos({
-                                activar_actividad_actual: true,
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </div>
-                <div className="lecture-viewer-text-wrap">
-                  <div className="lecture-viewer-text-content custom-scrollbar-styled">
-                    <div className="lecture-viewer-text-body">
-                      <h2 className="fs-24 font-weight-semi-bold pb-4">
-                        Download your Footage for your Quick Start
-                      </h2>
-                      <div className="lecture-viewer-content-detail">
-                        <ul className="generic-list-item pb-4">
-                          <li>Hi</li>
-                          <li>Welcome to Motion Graphics in After Effects. </li>
-                          <li>
-                            In the next lectures you will start creating your
-                            first animation and animate imported footage.
-                          </li>
-                          <li>
-                            But I must explain to you how all this mistaken idea
-                            of denouncing pleasure and praising pain was born
-                            and I will give you a complete account of the
-                            system, and expound the actual teachings of the
-                            great explorer of the truth, the master-builder of
-                            human happiness. No one rejects, dislikes,
-                          </li>
-                          <li>
-                            At vero eos et accusamus et iusto odio dignissimos
-                            ducimus qui blanditiis praesentium voluptatum
-                            deleniti atque corrupti quos dolores et quas
-                            molestias excepturi sint occaecati cupiditate non
-                            provident, similique sunt in culpa qui officia
-                            deserunt mollitia animi, id est laborum et dolorum
-                            fuga.{" "}
-                          </li>
-                          <li>
-                            Occaecati cupiditate non provident, similique sunt
-                            in culpa qui officia deserunt mollitia animi, id est
-                            laborum et dolorum fuga.{" "}
-                          </li>
-                          <li>
-                            Et harum quidem rerum facilis est et expedita
-                            distinctio. Nam libero tempore, cum soluta nobis est
-                            eligendi optio cumque nihil impedit quo minus id
-                            quod maxime placeat facere possimus,
-                          </li>
-                          <li>
-                            On the other hand, we denounce with righteous
-                            indignation and dislike men who are so beguiled and
-                            demoralized by the charms of pleasure of the moment,
-                            so blinded by desire, that they cannot foresee the
-                            pain and trouble that are bound to ensue; and equal
-                            blame belongs to those who fail in their duty
-                            through weakness of will, which is the same as
-                            saying through shrinking from toil and pain. These
-                            cases are perfectly simple and easy to distinguish.{" "}
-                          </li>
-                          <li>
-                            <strong className="font-weight-semi-bold">
-                              Download your footage Now, Click on the Link
-                              Below.
-                            </strong>
-                          </li>
-                        </ul>
-                        <div className="btn-box">
-                          <h3 className="fs-18 font-weight-semi-bold pb-3">
-                            Resources for this lecture
-                          </h3>
-                          <a
-                            href="#"
-                            className="btn theme-btn theme-btn-transparent"
-                          >
-                            <i className="la la-file-zip-o mr-1"></i>
-                            Quick-start.zip
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
               <div className="lecture-video-detail">
                 <div className="lecture-tab-body bg-gray p-4">
                   <ul
@@ -1172,6 +997,183 @@ function FormularioPlay() {
                     </li>
                   </ul>
                 </div>
+              </div>
+              <div className="lecture-viewer-container">
+                <div
+                  className="lecture-video-item"
+                  style={{
+                    position: "relative",
+                    paddingTop:
+                      dataContenidoViendo.tipo_contenido == 1 ||
+                      dataContenidoViendo.tipo_contenido == 4 ||
+                      (dataContenidoViendo.tipo_contenido == 3 &&
+                        dataContenidoViendo.ruta_archivo
+                          .split(".")
+                          .pop()
+                          .split("?")[0]
+                          .split("#")[0] == "pdf")
+                        ? "56.25%"
+                        : "0%",
+                  }}
+                >
+                  {" "}
+                  {/* (9 / 16) * 100 = 56.25 */}
+                  {dataContenidoViendo.tipo_contenido == 1 ? (
+                    <VideoPlayerPrisma
+                      url_video={`${urlBaseApi}/${
+                        esMovil
+                          ? dataContenidoViendo.video_pequeno != null
+                            ? dataContenidoViendo.video_pequeno
+                            : dataContenidoViendo.video_grande
+                          : dataContenidoViendo.video_grande
+                      }`}
+                      url_imagen_preview={`${urlBaseApi}/${dataContenidoViendo.imagen_preview_grande}`}
+                      posision_actual={parseInt(
+                        dataContenidoViendo.consumo_puntuacion
+                      )}
+                      estado_consumo={dataContenidoViendo.consumo_estado}
+                      funcion_reportar_posicion_actual={
+                        handleActualizaPosicionActualVideo
+                      }
+                      funcion_reportar_visto_completo={
+                        handleActualizaEstadoConsumo
+                      }
+                    />
+                  ) : dataContenidoViendo.tipo_contenido == 3 ? (
+                    <Recurso id_contenido={contenidoActivado} />
+                  ) : dataContenidoViendo.tipo_contenido == 4 ? (
+                    <Iframex frame={dataContenidoViendo} />
+                  ) : dataContenidoViendo.tipo_contenido == 6 ? (
+                    <>
+                      <div className="pt-60px pb-60px">
+                        <div className="container">
+                          <div className="breadcrumb-content pt-40px ">
+                            <div className="section-heading">
+                              <h2 className="section__title fs-30 pb-2">
+                                <i className="la la-comments mr-2"></i>
+                                {dataContenidoViendo.nombre}
+                              </h2>
+                              {dataContenidoViendo.descripcion == "" ? (
+                                <>
+                                  <Skeleton width={"60%"} height={20} />
+                                  <Skeleton width={"55%"} height={20} />
+                                  <Skeleton width={"45%"} height={20} />
+                                </>
+                              ) : (
+                                <p className="section__desc">
+                                  {dataContenidoViendo.descripcion
+                                    .split("<br />")
+                                    .map((line, index) => (
+                                      <span
+                                        key={`desc-general-larga-top-${index}`}
+                                      >
+                                        {line}
+                                        <br />
+                                      </span>
+                                    ))}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <HiloComentarios
+                            id_hilo={dataContenidoViendo.id_comentario_hilo}
+                            id_objeto_enlace={dataContenidoViendo.id}
+                            tipo_objeto_enlace={
+                              dataContenidoViendo.tipo_contenido
+                            }
+                            id_curso={dataCurso.id}
+                            es_docente={dataCurso.es_docente}
+                            funcionRecargarContenidosCurso={() => {
+                              obtenerContenidos({
+                                activar_actividad_actual: true,
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="lecture-viewer-text-wrap">
+                  <div className="lecture-viewer-text-content custom-scrollbar-styled">
+                    <div className="lecture-viewer-text-body">
+                      <h2 className="fs-24 font-weight-semi-bold pb-4">
+                        Download your Footage for your Quick Start
+                      </h2>
+                      <div className="lecture-viewer-content-detail">
+                        <ul className="generic-list-item pb-4">
+                          <li>Hi</li>
+                          <li>Welcome to Motion Graphics in After Effects. </li>
+                          <li>
+                            In the next lectures you will start creating your
+                            first animation and animate imported footage.
+                          </li>
+                          <li>
+                            But I must explain to you how all this mistaken idea
+                            of denouncing pleasure and praising pain was born
+                            and I will give you a complete account of the
+                            system, and expound the actual teachings of the
+                            great explorer of the truth, the master-builder of
+                            human happiness. No one rejects, dislikes,
+                          </li>
+                          <li>
+                            At vero eos et accusamus et iusto odio dignissimos
+                            ducimus qui blanditiis praesentium voluptatum
+                            deleniti atque corrupti quos dolores et quas
+                            molestias excepturi sint occaecati cupiditate non
+                            provident, similique sunt in culpa qui officia
+                            deserunt mollitia animi, id est laborum et dolorum
+                            fuga.{" "}
+                          </li>
+                          <li>
+                            Occaecati cupiditate non provident, similique sunt
+                            in culpa qui officia deserunt mollitia animi, id est
+                            laborum et dolorum fuga.{" "}
+                          </li>
+                          <li>
+                            Et harum quidem rerum facilis est et expedita
+                            distinctio. Nam libero tempore, cum soluta nobis est
+                            eligendi optio cumque nihil impedit quo minus id
+                            quod maxime placeat facere possimus,
+                          </li>
+                          <li>
+                            On the other hand, we denounce with righteous
+                            indignation and dislike men who are so beguiled and
+                            demoralized by the charms of pleasure of the moment,
+                            so blinded by desire, that they cannot foresee the
+                            pain and trouble that are bound to ensue; and equal
+                            blame belongs to those who fail in their duty
+                            through weakness of will, which is the same as
+                            saying through shrinking from toil and pain. These
+                            cases are perfectly simple and easy to distinguish.{" "}
+                          </li>
+                          <li>
+                            <strong className="font-weight-semi-bold">
+                              Download your footage Now, Click on the Link
+                              Below.
+                            </strong>
+                          </li>
+                        </ul>
+                        <div className="btn-box">
+                          <h3 className="fs-18 font-weight-semi-bold pb-3">
+                            Resources for this lecture
+                          </h3>
+                          <a
+                            href="#"
+                            className="btn theme-btn theme-btn-transparent"
+                          >
+                            <i className="la la-file-zip-o mr-1"></i>
+                            Quick-start.zip
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="lecture-video-detail">
                 {/* Vista para actividades de tipo tarea */}
                 {dataContenidoViendo.tipo_contenido == 5 && (
                   <Tarea

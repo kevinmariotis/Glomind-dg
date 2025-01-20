@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react";
 import CustomBreandcrumb from "../../components/BreadCrumb/CustomBreandcrumb";
@@ -306,15 +308,15 @@ const FomularioCalificaciones = () => {
   ]);
 
   // Maneja la creación de nuevos Dropdowns
-  const handleAddDropdown = (id) => {
-    const baseDropdown = dropdowns.find((d) => d.id === id);
-    if (baseDropdown) {
-      const newDropdown = {
-        id: dropdowns.length + 1,
-      };
-      setDropdowns([...dropdowns, newDropdown]);
-    }
-  };
+  // const handleAddDropdown = (id) => {
+  //   const baseDropdown = dropdowns.find((d) => d.id === id);
+  //   if (baseDropdown) {
+  //     const newDropdown = {
+  //       id: dropdowns.length + 1,
+  //     };
+  //     setDropdowns([...dropdowns, newDropdown]);
+  //   }
+  // };
 
   const resetVis = () => {
     setShowNav(true);
@@ -475,8 +477,8 @@ const FomularioCalificaciones = () => {
             }}
           >
             {/* <img src={uwu} width={250} srcset="" onClick={() => resetVis()} /> */}
-            {dropdowns.map((dropdown) => (
-              <Dropdown>
+            {dropdowns.map((dropdown, index) => (
+              <Dropdown key={index}>
                 {/* FAB Button */}
                 <Button
                   id={`drop-${dropdown.id}`}
@@ -507,7 +509,6 @@ const FomularioCalificaciones = () => {
                       <img
                         src={uwu}
                         width={150}
-                        srcset=""
                         onClick={() => resetVis()}
                       />
                     </div>
