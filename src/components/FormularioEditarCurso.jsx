@@ -338,9 +338,9 @@ function FormularioEditarCurso() {
         }
 
         let area_de_formacionx =
-          datos.curso.desc_que_aprenderas.split("<separador>");
+          datos.curso.area_de_formacion.split("<separador>");
         area_de_formacionx.forEach(function (element) {
-          setQueAprenderas((estadoActual) => {
+          setArea_de_formacion((estadoActual) => {
             if (!estadoActual.includes(element)) {
               const nuevoEstado = new Set([...estadoActual, element]);
               return Array.from(nuevoEstado);
@@ -349,9 +349,9 @@ function FormularioEditarCurso() {
           });
         });
         let fines_de_aprendizajex =
-          datos.curso.desc_que_aprenderas.split("<separador>");
+          datos.curso.fines_de_aprendizaje.split("<separador>");
         fines_de_aprendizajex.forEach(function (element) {
-          setQueAprenderas((estadoActual) => {
+          setFines_de_aprendizaje((estadoActual) => {
             if (!estadoActual.includes(element)) {
               const nuevoEstado = new Set([...estadoActual, element]);
               return Array.from(nuevoEstado);
@@ -361,9 +361,9 @@ function FormularioEditarCurso() {
         });
 
         let proposito_del_cursox =
-          datos.curso.desc_que_aprenderas.split("<separador>");
+          datos.curso.proposito_del_curso.split("<separador>");
         proposito_del_cursox.forEach(function (element) {
-          setQueAprenderas((estadoActual) => {
+          setProposito_del_curso((estadoActual) => {
             if (!estadoActual.includes(element)) {
               const nuevoEstado = new Set([...estadoActual, element]);
               return Array.from(nuevoEstado);

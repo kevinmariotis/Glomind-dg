@@ -243,21 +243,12 @@ function FormularioPlay() {
           datos?.curso?.area_de_formacion?.split("<separador>")
         );
         setFines_de_aprendizaje(
-          datos?.curso?.fines_de_aprendizaje?.split("<separador>")
+          datos?.curso?.fines_de_aprendizaje?.split("<br />")
         );
         setProposito_del_curso(
           datos?.curso?.proposito_del_curso?.split("<separador>")
         );
         setListadoRequerimientos(
-          datos?.curso?.desc_requerimientos?.split("<separador>")
-        );
-        console.log(
-          datos?.curso?.desc_general?.split("<br />"),
-          datos?.curso?.docente_descripcion?.split("<separador>"),
-          datos?.curso?.desc_que_aprenderas?.split("<separador>"),
-          datos?.curso?.area_de_formacion?.split("<separador>"),
-          datos?.curso?.fines_de_aprendizaje?.split("<separador>"),
-          datos?.curso?.proposito_del_curso?.split("<separador>"),
           datos?.curso?.desc_requerimientos?.split("<separador>")
         );
 
@@ -2508,7 +2499,65 @@ function FormularioPlay() {
                           <h3 className="fs-24 font-weight-semi-bold pb-2">
                             Presentación
                           </h3>
-                          <p>{dataCurso.desc_general ?? ""}</p>
+                          <div className="lecture-overview-stats-item lecture-overview-stats-wide-item lecture-description">
+                            {Object.keys(cursoDescripcion)
+                              .slice(0, 1)
+                              .map((key) => (
+                                <p key={`desc_curso_${key}`} className="pb-3">
+                                  {cursoDescripcion[key]}
+                                </p>
+                              ))}
+                            {Object.keys(cursoDescripcion).length > 1 && (
+                              <div
+                                className={
+                                  mostrarMasCursoDescripcion == 0
+                                    ? "collapse"
+                                    : ""
+                                }
+                                id="collapseMoreTwo"
+                              >
+                                {Object.keys(cursoDescripcion)
+                                  .slice(1, cursoDescripcion.length)
+                                  .map((key) => (
+                                    <p
+                                      key={`desc_curso_${key}`}
+                                      className="pb-3"
+                                    >
+                                      {cursoDescripcion[key]}
+                                    </p>
+                                  ))}
+                              </div>
+                            )}
+                            {Object.keys(cursoDescripcion).length > 1 && (
+                              <a
+                                className="collapse-btn collapse--btn fs-15"
+                                data-toggle="collapse"
+                                href="#collapseMoreTwo"
+                                role="button"
+                                aria-expanded={
+                                  mostrarMasCursoDescripcion == 0
+                                    ? "false"
+                                    : "true"
+                                }
+                                aria-controls="collapseMoreTwo"
+                              >
+                                <span
+                                  className="collapse-btn-hide"
+                                  onClick={handleMostrarMasDescripcionCurso}
+                                >
+                                  Mostrar más
+                                  <i className="la la-angle-down ml-1 fs-14"></i>
+                                </span>
+                                <span
+                                  className="collapse-btn-show"
+                                  onClick={handleMostrarMasDescripcionCurso}
+                                >
+                                  Mostrar menos
+                                  <i className="la la-angle-up ml-1 fs-14"></i>
+                                </span>
+                              </a>
+                            )}
+                          </div>
                         </div>
                         <div className="section-block"></div>
                         <div className="lecture-overview-item">
