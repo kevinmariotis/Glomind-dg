@@ -3,11 +3,15 @@ import { createSlice } from "@reduxjs/toolkit";
 export const configSlice = createSlice({
   name: "config",
   initialState: {
-    camposPersonalizables: {},
+    camposPersonalizablesCategorias: {},
+    camposPersonalizablesCursos: {},
   },
   reducers: {
     setConfig: (state, action) => {
-      state.camposPersonalizables = action.payload;
+      state.camposPersonalizablesCategorias =
+        action.payload.camposPersonalizablesCategorias;
+      state.camposPersonalizablesCursos =
+        action.payload.camposPersonalizablesCursos;
     },
   },
 });

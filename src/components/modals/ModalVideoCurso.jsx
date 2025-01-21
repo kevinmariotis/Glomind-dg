@@ -8,7 +8,7 @@ const ModalVideoCurso = ({ curso = {}, video }) => {
   const [showControls, setShowControls] = useState(true);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
 
-  console.log(curso.video_grande)
+  console.log(curso.video_grande);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -49,6 +49,14 @@ const ModalVideoCurso = ({ curso = {}, video }) => {
               height="100%"
               style={{ marginBottom: "-10px" }}
               onPlay={handleHideControls}
+              config={{
+                file: {
+                  attributes: {
+                    onContextMenu: (e) => e.preventDefault(),
+                    controlsList: "nodownload",
+                  },
+                },
+              }}
             />
           </div>
           <Button variant="secondary btn-round" onClick={handleClose}>

@@ -117,12 +117,22 @@ export const AuthProvider = ({ children }) => {
                   Authorization: `Bearer ${jwt}`,
                 },
               };
-              const response = await fetch(
+              const response1 = await fetch(
                 `${urlBaseApi}/api/categoriasistema/getCamposPersonalizables/1`,
                 opciones
               );
-              const dataConfig = await response.json();
-              dispatch(setConfig(dataConfig));
+              const response2 = await fetch(
+                `${urlBaseApi}/api/curso/getCamposPersonalizables/1`,
+                opciones
+              );
+              const dataConfig = await response1.json();
+              const dataConfig2 = await response2.json();
+              dispatch(
+                setConfig({
+                  camposPersonalizablesCategorias: dataConfig,
+                  camposPersonalizablesCursos: { tipos_curso: dataConfig2 },
+                })
+              );
             } else {
               Cookies.remove("jwt");
               console.log("El token no es valido");

@@ -28,7 +28,9 @@ import Fields from "./forms/Fields";
 export default function FormularioCategoriasSistema() {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const { jwt, permissions, esMovil, temaActual } = useContext(AuthContext);
-  const { camposPersonalizables } = useSelector((state) => state.config);
+  const { camposPersonalizablesCategorias } = useSelector(
+    (state) => state.config
+  );
   const [popUp, setPopup] = useState({
     mostrar: false,
     tipo: 2,
@@ -193,7 +195,9 @@ export default function FormularioCategoriasSistema() {
   const handleChangeFields = (event) => {
     let value = event.target.value;
     if (event.target.type === "datetime-local") {
-      value = `${event.target.value.split("T")[0]} ${event.target.value.split("T")[1]}:00`;
+      value = `${event.target.value.split("T")[0]} ${
+        event.target.value.split("T")[1]
+      }:00`;
     }
     setFormFields({ ...formFileds, [event.target.name]: value });
   };
@@ -1380,7 +1384,7 @@ export default function FormularioCategoriasSistema() {
                 )}
               </div>
               <Fields
-                fieldsList={camposPersonalizables}
+                fieldsList={camposPersonalizablesCategorias}
                 handleChange={handleChangeFields}
                 values={formFileds}
                 errors={erroresCampos ?? []}
@@ -1487,7 +1491,7 @@ export default function FormularioCategoriasSistema() {
                 )}
               </div>
               <Fields
-                fieldsList={camposPersonalizables}
+                fieldsList={camposPersonalizablesCategorias}
                 handleChange={handleChangeFields}
                 values={formFileds}
                 errors={erroresCampos ?? []}
@@ -1898,7 +1902,7 @@ export default function FormularioCategoriasSistema() {
                 >
                   <option value=""> -- Seleccione --</option>
                   {Object.keys(tagsAgrupaciones).map((key) => (
-                    <option value={tagsAgrupaciones[key].id}>
+                    <option value={tagsAgrupaciones[key].id} key={key}>
                       {tagsAgrupaciones[key].nombre}
                     </option>
                   ))}
@@ -1985,7 +1989,7 @@ export default function FormularioCategoriasSistema() {
                 >
                   <option value=""> -- Seleccione --</option>
                   {Object.keys(tagsAgrupaciones).map((key) => (
-                    <option value={tagsAgrupaciones[key].id}>
+                    <option value={tagsAgrupaciones[key].id} key={key}>
                       {tagsAgrupaciones[key].nombre}
                     </option>
                   ))}

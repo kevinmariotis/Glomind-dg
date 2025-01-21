@@ -434,6 +434,7 @@ function FormularioDashboardEnroledCourses() {
                         reviews_puntuacion={curso.reviews_puntuacion}
                         porcentaje_progreso={curso.porcentaje_progreso}
                         curso={curso}
+                        className="col-lg-4 py-2"
                       />
                     );
                   }
@@ -488,6 +489,7 @@ function FormularioDashboardEnroledCourses() {
                         descripcion_instructor={curso.docente_descripcion}
                         reviews_puntuacion={curso.reviews_puntuacion}
                         porcentaje_progreso={curso.porcentaje_progreso}
+                        className="col-lg-4 py-2"
                       />
                     );
                   }
@@ -540,6 +542,7 @@ function FormularioDashboardEnroledCourses() {
                         descripcion_instructor={curso.docente_descripcion}
                         reviews_puntuacion={curso.reviews_puntuacion}
                         porcentaje_progreso={curso.porcentaje_progreso}
+                        className="col-lg-4 py-2"
                       />
                     );
                   }

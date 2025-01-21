@@ -61,9 +61,14 @@ function FormularioPlay() {
     instructor: "",
     instructor_imagen_pequena: "",
     docente_descripcion: "",
+    personalizado_tipo_curso_data: {},
+    personalizado_tipo_curso: null,
   }); //se accede por ejmplo: dataCurso.favorito
   const [cursoDescripcion, setCursoDescripcion] = useState([]);
   const [docenteDescripcion, setDocenteDescripcion] = useState([]);
+  const [area_de_formacion, setArea_de_formacion] = useState([]);
+  const [fines_de_aprendizaje, setFines_de_aprendizaje] = useState([]);
+  const [proposito_del_curso, setProposito_del_curso] = useState([]);
   const [queAprenderas, setQueAprenderas] = useState([]);
   const [listadoRequerimientos, setListadoRequerimientos] = useState([]);
   const [participantes, setParticipantes] = useState([]);
@@ -227,14 +232,35 @@ function FormularioPlay() {
       const datos = await response.json();
       if (response.ok) {
         setDataCurso(datos.curso);
-        setCursoDescripcion(datos.curso.desc_general.split("<br />"));
+        setCursoDescripcion(datos?.curso?.desc_general?.split("<br />"));
         setDocenteDescripcion(
-          datos.curso.docente_descripcion.split("<separador>")
+          datos?.curso?.docente_descripcion?.split("<separador>")
         );
-        setQueAprenderas(datos.curso.desc_que_aprenderas.split("<separador>"));
+        setQueAprenderas(
+          datos?.curso?.desc_que_aprenderas?.split("<separador>")
+        );
+        setArea_de_formacion(
+          datos?.curso?.area_de_formacion?.split("<separador>")
+        );
+        setFines_de_aprendizaje(
+          datos?.curso?.fines_de_aprendizaje?.split("<separador>")
+        );
+        setProposito_del_curso(
+          datos?.curso?.proposito_del_curso?.split("<separador>")
+        );
         setListadoRequerimientos(
-          datos.curso.desc_requerimientos.split("<separador>")
+          datos?.curso?.desc_requerimientos?.split("<separador>")
         );
+        console.log(
+          datos?.curso?.desc_general?.split("<br />"),
+          datos?.curso?.docente_descripcion?.split("<separador>"),
+          datos?.curso?.desc_que_aprenderas?.split("<separador>"),
+          datos?.curso?.area_de_formacion?.split("<separador>"),
+          datos?.curso?.fines_de_aprendizaje?.split("<separador>"),
+          datos?.curso?.proposito_del_curso?.split("<separador>"),
+          datos?.curso?.desc_requerimientos?.split("<separador>")
+        );
+
         if (datos.curso.matriculado == 0) {
           setMostrarSpinner(false);
           navigate("/");
@@ -1345,8 +1371,11 @@ function FormularioPlay() {
                                   ></i>
                                   <span className="fs-15">
                                     {" "}
-                                    Unidad {parseInt(index) + 1}:{" "}
-                                    {categoria.nombre}{" "}
+                                    {dataCurso.personalizado_tipo_curso ===
+                                    "diplomado"
+                                      ? "Modulo"
+                                      : "Unidad"}{" "}
+                                    {parseInt(index) + 1}: {categoria.nombre}{" "}
                                   </span>
                                   <span className="course-duration">
                                     <span>
@@ -1806,46 +1835,123 @@ function FormularioPlay() {
                           ""
                         )}
 
-                        <div className="lecture-overview-item">
-                          <div className="lecture-overview-stats-wrap d-flex">
-                            <div className="lecture-overview-stats-item">
-                              <h3 className="fs-16 font-weight-semi-bold pb-2">
-                                Área de formación de la asignatura
-                              </h3>
-                            </div>
-                            <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
-                              <ul className="generic-list-item overview-list-item">
-                                {Object.keys(queAprenderas).map((key) => (
-                                  <li key={`queAprenderas${key}`}>
-                                    <i className="la la-check mr-1 text-black"></i>
-                                    {queAprenderas[key]}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="lecture-overview-item">
-                          <div className="lecture-overview-stats-wrap d-flex">
-                            <div className="lecture-overview-stats-item">
-                              <h3 className="fs-16 font-weight-semi-bold pb-2">
-                                Fines de aprendizaje de la asignatura
-                              </h3>
-                            </div>
-                            <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
-                              <ul className="generic-list-item generic-list-item-bullet fs-15">
-                                {Object.keys(listadoRequerimientos).map(
-                                  (key) => (
-                                    <li key={`requerimiento${key}`}>
-                                      {listadoRequerimientos[key]}
+                        {(dataCurso?.personalizado_tipo_curso_data?.text_areas_mostrados?.includes(
+                          "area_de_formacion"
+                        ) ||
+                          dataCurso.personalizado_tipo_curso === null) && (
+                          <div className="lecture-overview-item">
+                            <div className="lecture-overview-stats-wrap d-flex">
+                              <div className="lecture-overview-stats-item">
+                                <h3 className="fs-16 font-weight-semi-bold pb-2">
+                                  Área de formación
+                                </h3>
+                              </div>
+                              <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
+                                <ul className="generic-list-item generic-list-item-bullet fs-15">
+                                  {area_de_formacion?.map((key) => (
+                                    <li key={`area_de_formacion${key}`}>
+                                      {key}
                                     </li>
-                                  )
-                                )}
-                              </ul>
+                                  ))}
+                                </ul>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        )}
+                        {(dataCurso.personalizado_tipo_curso_data?.text_areas_mostrados?.includes(
+                          "fines_de_aprendizaje"
+                        ) ||
+                          dataCurso.personalizado_tipo_curso === null) && (
+                          <div className="lecture-overview-item">
+                            <div className="lecture-overview-stats-wrap d-flex">
+                              <div className="lecture-overview-stats-item">
+                                <h3 className="fs-16 font-weight-semi-bold pb-2">
+                                  Fines de aprendizaje
+                                </h3>
+                              </div>
+                              <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
+                                <ul className="generic-list-item generic-list-item-bullet fs-15">
+                                  {fines_de_aprendizaje?.map((key) => (
+                                    <li key={`fines_de_aprendizaje${key}`}>
+                                      {key}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {(dataCurso.personalizado_tipo_curso_data?.text_areas_mostrados?.includes(
+                          "proposito_del_curso"
+                        ) ||
+                          dataCurso.personalizado_tipo_curso === null) && (
+                          <div className="lecture-overview-item">
+                            <div className="lecture-overview-stats-wrap d-flex">
+                              <div className="lecture-overview-stats-item">
+                                <h3 className="fs-16 font-weight-semi-bold pb-2">
+                                  Propósito del curso
+                                </h3>
+                              </div>
+                              <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
+                                <ul className="generic-list-item generic-list-item-bullet fs-15">
+                                  {proposito_del_curso?.map((key) => (
+                                    <li key={`proposito_del_curso${key}`}>
+                                      {key}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {(dataCurso.personalizado_tipo_curso_data?.text_areas_mostrados?.includes(
+                          "queAprenderas"
+                        ) ||
+                          dataCurso.personalizado_tipo_curso === null) && (
+                          <div className="lecture-overview-item">
+                            <div className="lecture-overview-stats-wrap d-flex">
+                              <div className="lecture-overview-stats-item">
+                                <h3 className="fs-16 font-weight-semi-bold pb-2">
+                                  Que aprenderás?
+                                </h3>
+                              </div>
+                              <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
+                                <ul className="generic-list-item overview-list-item">
+                                  {queAprenderas?.map((key) => (
+                                    <li key={`queAprenderas${key}`}>
+                                      <i className="la la-check mr-1 text-black"></i>
+                                      {key}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {(dataCurso.personalizado_tipo_curso_data?.text_areas_mostrados?.includes(
+                          "requerimientos"
+                        ) ||
+                          dataCurso.personalizado_tipo_curso === null) && (
+                          <div className="lecture-overview-item">
+                            <div className="lecture-overview-stats-wrap d-flex">
+                              <div className="lecture-overview-stats-item">
+                                <h3 className="fs-16 font-weight-semi-bold pb-2">
+                                  Requerimientos
+                                </h3>
+                              </div>
+                              <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
+                                <ul className="generic-list-item generic-list-item-bullet fs-15">
+                                  {listadoRequerimientos?.map((key) => (
+                                    <li key={`requerimientos${key}`}>{key}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
                         <div className="section-block"></div>
                         <div
@@ -1853,74 +1959,82 @@ function FormularioPlay() {
                           ref={refBloqueDescripcion}
                           id="bloqueDescripcion"
                         ></div>
-                        <div className="lecture-overview-item">
-                          <div className="lecture-overview-stats-wrap d-flex">
-                            <div className="lecture-overview-stats-item">
-                              <h3 className="fs-16 font-weight-semi-bold pb-2">
-                                Descripción completa de la asignatura
-                              </h3>
-                            </div>
-                            <div className="lecture-overview-stats-item lecture-overview-stats-wide-item lecture-description col">
-                              {Object.keys(cursoDescripcion)
-                                .slice(0, 1)
-                                .map((key) => (
-                                  <p key={`desc_curso_${key}`} className="pb-3">
-                                    {cursoDescripcion[key]}
-                                  </p>
-                                ))}
-                              {Object.keys(cursoDescripcion).length > 1 && (
-                                <div
-                                  className={
-                                    mostrarMasCursoDescripcion == 0
-                                      ? "collapse"
-                                      : ""
-                                  }
-                                  id="collapseMoreTwo"
-                                >
-                                  {Object.keys(cursoDescripcion)
-                                    .slice(1, cursoDescripcion.length)
-                                    .map((key) => (
-                                      <p
-                                        key={`desc_curso_${key}`}
-                                        className="pb-3"
-                                      >
-                                        {cursoDescripcion[key]}
-                                      </p>
-                                    ))}
-                                </div>
-                              )}
-                              {Object.keys(cursoDescripcion).length > 1 && (
-                                <a
-                                  className="collapse-btn collapse--btn fs-15"
-                                  data-toggle="collapse"
-                                  href="#collapseMoreTwo"
-                                  role="button"
-                                  aria-expanded={
-                                    mostrarMasCursoDescripcion == 0
-                                      ? "false"
-                                      : "true"
-                                  }
-                                  aria-controls="collapseMoreTwo"
-                                >
-                                  <span
-                                    className="collapse-btn-hide"
-                                    onClick={handleMostrarMasDescripcionCurso}
+                        {(dataCurso.personalizado_tipo_curso_data?.text_areas_mostrados?.includes(
+                          "desc_general"
+                        ) ||
+                          dataCurso.personalizado_tipo_curso === null) && (
+                          <div className="lecture-overview-item">
+                            <div className="lecture-overview-stats-wrap d-flex">
+                              <div className="lecture-overview-stats-item">
+                                <h3 className="fs-16 font-weight-semi-bold pb-2">
+                                  Descripción
+                                </h3>
+                              </div>
+                              <div className="lecture-overview-stats-item lecture-overview-stats-wide-item lecture-description col">
+                                {Object.keys(cursoDescripcion)
+                                  .slice(0, 1)
+                                  .map((key) => (
+                                    <p
+                                      key={`desc_curso_${key}`}
+                                      className="pb-3"
+                                    >
+                                      {cursoDescripcion[key]}
+                                    </p>
+                                  ))}
+                                {Object.keys(cursoDescripcion).length > 1 && (
+                                  <div
+                                    className={
+                                      mostrarMasCursoDescripcion == 0
+                                        ? "collapse"
+                                        : ""
+                                    }
+                                    id="collapseMoreTwo"
                                   >
-                                    Mostrar más
-                                    <i className="la la-angle-down ml-1 fs-14"></i>
-                                  </span>
-                                  <span
-                                    className="collapse-btn-show"
-                                    onClick={handleMostrarMasDescripcionCurso}
+                                    {Object.keys(cursoDescripcion)
+                                      .slice(1, cursoDescripcion.length)
+                                      .map((key) => (
+                                        <p
+                                          key={`desc_curso_${key}`}
+                                          className="pb-3"
+                                        >
+                                          {cursoDescripcion[key]}
+                                        </p>
+                                      ))}
+                                  </div>
+                                )}
+                                {Object.keys(cursoDescripcion).length > 1 && (
+                                  <a
+                                    className="collapse-btn collapse--btn fs-15"
+                                    data-toggle="collapse"
+                                    href="#collapseMoreTwo"
+                                    role="button"
+                                    aria-expanded={
+                                      mostrarMasCursoDescripcion == 0
+                                        ? "false"
+                                        : "true"
+                                    }
+                                    aria-controls="collapseMoreTwo"
                                   >
-                                    Mostrar menos
-                                    <i className="la la-angle-up ml-1 fs-14"></i>
-                                  </span>
-                                </a>
-                              )}
+                                    <span
+                                      className="collapse-btn-hide"
+                                      onClick={handleMostrarMasDescripcionCurso}
+                                    >
+                                      Mostrar más
+                                      <i className="la la-angle-down ml-1 fs-14"></i>
+                                    </span>
+                                    <span
+                                      className="collapse-btn-show"
+                                      onClick={handleMostrarMasDescripcionCurso}
+                                    >
+                                      Mostrar menos
+                                      <i className="la la-angle-up ml-1 fs-14"></i>
+                                    </span>
+                                  </a>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        )}
 
                         <div className="lecture-overview-item">
                           <div className="lecture-overview-stats-wrap d-flex">
@@ -2408,6 +2522,14 @@ function FormularioPlay() {
                               width={"100%"}
                               height={"auto"}
                               onPlay={handleHideControls}
+                              config={{
+                                file: {
+                                  attributes: {
+                                    onContextMenu: (e) => e.preventDefault(),
+                                    controlsList: "nodownload",
+                                  },
+                                },
+                              }}
                             />{" "}
                           </div>
                         </div>
@@ -2493,7 +2615,8 @@ function FormularioPlay() {
 
                 <div className="course-dashboard-side-heading d-flex align-items-center justify-content-between">
                   <h3 className="fs-18 font-weight-semi-bold">
-                    Contenido del curso
+                    Contenido del{" "}
+                    {dataCurso.personalizado_tipo_curso ?? "curso"}
                   </h3>
                   <button className="sidebar-close" type="button">
                     <i className="la la-times"></i>
@@ -2527,7 +2650,11 @@ function FormularioPlay() {
                             <i className="la la-angle-down"></i>
                             <i className="la la-angle-up"></i>
                             <span className="fs-15">
-                              Unidad {parseInt(index) + 1}: {categoria.nombre}{" "}
+                              {dataCurso.personalizado_tipo_curso ===
+                              "diplomado"
+                                ? "Modulo"
+                                : "Unidad"}{" "}
+                              {parseInt(index) + 1}: {categoria.nombre}{" "}
                             </span>
                             <span className="course-duration">
                               <span>
