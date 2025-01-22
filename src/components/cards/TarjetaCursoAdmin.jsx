@@ -16,6 +16,7 @@ function TarjetaCursoAdmin({
   btnVideo = true,
   curso = {},
   className = "",
+  state = null,
 }) {
   // const { jwt } = useContext(AuthContext);
   const urlBase = import.meta.env.VITE_URL_BASE;
@@ -110,7 +111,9 @@ function TarjetaCursoAdmin({
             <div className="d-flex ">
               <button
                 className="btn theme-btn btn-round w-100 py 3 d-flex align-items-center"
-                onClick={() => navigate(`/play/${url_amigable}`)}
+                onClick={() =>
+                  navigate(`/play/${url_amigable}`, { state: state })
+                }
               >
                 {labelButton !== "" ? labelButton : "Ir al curso"}
                 <i className="la la-arrow-right icon ml-1"></i>

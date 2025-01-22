@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useContext, useRef } from "react";
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useNavigate, Link, useParams, useLocation } from "react-router-dom";
 
 import FormularioPlayHeader from "./FormularioPlayHeader";
 import VideoPlayerPrisma from "./VideoPlayerPrisma";
@@ -28,6 +28,7 @@ function FormularioPlay() {
   const urlBase = import.meta.env.VITE_URL_BASE;
   const { url_amigable } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { jwt, esMovil, setCargarMisCursos } = useContext(AuthContext);
   const [popUp, setPopup] = useState({
     mostrar: false,
@@ -769,6 +770,7 @@ function FormularioPlay() {
       obtenerCalificaciones();
     }
   }, [pestanaActivada]);
+  console.log(location.state);
 
   return (
     <>
@@ -820,6 +822,22 @@ function FormularioPlay() {
                     id="myTab"
                     role="tablist"
                   >
+                    <li className="nav-item">
+                      <button
+                        onClick={() =>
+                          navigate(location.state?.pathname ?? -1, {
+                            state: location.state,
+                          })
+                        }
+                        className="btn theme-btn btn-round"
+                      >
+                        <i className="la la-arrow-left icon ml-1"></i> Atrás
+                      </button>{" "}
+                      <h3
+                        className="fs-22 font-weight-semi-bold"
+                        style={{ marginLeft: "120px" }}
+                      ></h3>
+                    </li>
                     <li className="nav-item" style={{ display: "none" }}>
                       <a
                         className="nav-link"
@@ -2680,12 +2698,21 @@ function FormularioPlay() {
                       <div
                         key={`seccion-contenidos-desktop-${index}`}
                         className="card"
-                      >
+                        style={{
+                          borderRadius: "20px",
+                          margin: "10px 10px 0 10px",
+                          overflow: "hidden",
+                        }}
+                        >
                         <div
                           className="card-header"
                           id={`heading${parseInt(index) + 1}`}
-                          style={{ backgroundColor: "var(--Azul-petroleo)" }}
-                        >
+                          style={{
+                            backgroundColor: "var(--Lavander)",
+                            borderRadius: "20px",
+                            overflow: "hidden",
+                          }}
+                          >
                           <button
                             aria-expanded={activeTab.includes(index)}
                             onClick={() => toggleTab(index)}

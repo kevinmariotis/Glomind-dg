@@ -11,11 +11,14 @@ import Popup from "./Popup";
 import TarjetaCategoriaAdmin from "./cards/TarjetaCategoriaAdmin";
 import DashboardFooter from "./DashboardFooter";
 import CustomBreandcrumb from "./BreadCrumb/CustomBreandcrumb";
+import { useLocation } from "react-router-dom";
+import { patch } from "@mui/material";
 
 function FormularioDashboardEnroledCourses() {
   // const urlBase = import.meta.env.VITE_URL_BASE;
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const { jwt } = useContext(AuthContext);
+  const location = useLocation();
   const [popUp, setPopup] = useState({
     mostrar: false,
     titulo: "",
@@ -30,7 +33,7 @@ function FormularioDashboardEnroledCourses() {
   const [totalCursos, setTotalCursos] = useState(0);
 
   const [categorias, setCategorias] = useState({});
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(0);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const [categoriasMatriculadas, setCategoriasMatriculadas] = useState([]);
   const [listaCategoriaNavegacion, setListaCategoriaNavegacion] = useState([]);
 
@@ -41,34 +44,6 @@ function FormularioDashboardEnroledCourses() {
       nombre: "Mis cursos",
     },
   ]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    obtenerDatosDelServidor();
-  }, []);
-
-  useEffect(() => {
-    //obtenerDatosCursos();
-    obtenerIdsCategoriasMatriculadas();
-  }, [pestanaActivada]);
-
-  useEffect(() => {
-    if (categoriaSeleccionada != 0) {
-      obtenerDatosCursos();
-    } else {
-      setDatosCursosTodos([]);
-      setDatosCursosProceso([]);
-      setDatosCursosCompletados([]);
-      setTotalCursos(0);
-    }
-  }, [paginaNavegacion]);
-
-  useEffect(() => {
-    obtenerCategorias(categoriaSeleccionada);
-    if (categoriaSeleccionada != 0) {
-      obtenerDatosCursos();
-    }
-  }, [categoriaSeleccionada]);
 
   const handleFuncionAceptarPopUp = () => {
     setPopup({ ...popUp, mostrar: false });
@@ -239,7 +214,9 @@ function FormularioDashboardEnroledCourses() {
       //setMostrarSpinner(true);
       const response2 = await fetch(
         // `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${id_padre}/1`,
-        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${id_padre}/1/${id_padre === 0 ? 'filtro_inicial:categorias_pantalla_inicio' : ''}`,
+        `${urlBaseApi}/api/categoriasistema/getCategoriasPorPadre/${id_padre}/1/${
+          id_padre === 0 ? "filtro_inicial:categorias_pantalla_inicio" : ""
+        }`,
         opciones
       );
       //setMostrarSpinner(false);
@@ -275,7 +252,8 @@ function FormularioDashboardEnroledCourses() {
       ...categoriasNiveles,
       {
         id_categoria_destino,
-        nombre: categorias.find((item) => item.id === id_categoria_destino).nombre,
+        nombre: categorias.find((item) => item.id === id_categoria_destino)
+          .nombre,
       },
     ]);
   };
@@ -289,6 +267,49 @@ function FormularioDashboardEnroledCourses() {
     copialistaNiveles.pop();
     setCategoriasNiveles(copialistaNiveles);
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    obtenerDatosDelServidor();
+  }, []);
+
+  useEffect(() => {
+    //obtenerDatosCursos();
+    obtenerIdsCategoriasMatriculadas();
+  }, [pestanaActivada]);
+
+  useEffect(() => {
+    if (categoriaSeleccionada !== null && categoriaSeleccionada != 0) {
+      obtenerDatosCursos();
+    } else {
+      setDatosCursosTodos([]);
+      setDatosCursosProceso([]);
+      setDatosCursosCompletados([]);
+      setTotalCursos(0);
+    }
+  }, [paginaNavegacion]);
+
+  useEffect(() => {
+    if (categoriaSeleccionada !== null) {
+      obtenerCategorias(categoriaSeleccionada);
+      if (categoriaSeleccionada != 0) {
+        obtenerDatosCursos();
+      }
+    }
+  }, [categoriaSeleccionada]);
+
+  useEffect(() => {
+    setCategoriaSeleccionada(location.state?.categoriaSeleccionada ?? 0);
+    setCategoriasNiveles(
+      location.state?.categoriasNiveles ?? [
+        {
+          idCategoria: 0,
+          nombre: "Mis cursos",
+        },
+      ]
+    );
+    setListaCategoriaNavegacion(location.state?.listaCategoriaNavegacion ?? []);
+  }, [location]);
 
   return (
     <>
@@ -435,6 +456,12 @@ function FormularioDashboardEnroledCourses() {
                         porcentaje_progreso={curso.porcentaje_progreso}
                         curso={curso}
                         className="col-lg-4 py-2"
+                        state={{
+                          categoriaSeleccionada,
+                          categoriasNiveles,
+                          listaCategoriaNavegacion,
+                          pathname: location.pathname,
+                        }}
                       />
                     );
                   }
@@ -490,6 +517,12 @@ function FormularioDashboardEnroledCourses() {
                         reviews_puntuacion={curso.reviews_puntuacion}
                         porcentaje_progreso={curso.porcentaje_progreso}
                         className="col-lg-4 py-2"
+                        state={{
+                          categoriaSeleccionada,
+                          categoriasNiveles,
+                          listaCategoriaNavegacion,
+                          pathname: location.pathname,
+                        }}
                       />
                     );
                   }
@@ -543,6 +576,12 @@ function FormularioDashboardEnroledCourses() {
                         reviews_puntuacion={curso.reviews_puntuacion}
                         porcentaje_progreso={curso.porcentaje_progreso}
                         className="col-lg-4 py-2"
+                        state={{
+                          categoriaSeleccionada,
+                          categoriasNiveles,
+                          listaCategoriaNavegacion,
+                          pathname: location.pathname,
+                        }}
                       />
                     );
                   }
