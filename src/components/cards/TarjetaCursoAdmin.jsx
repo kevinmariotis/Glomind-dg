@@ -70,42 +70,44 @@ function TarjetaCursoAdmin({
           {/* </Link> */}
         </div>
         <div className="card-body content-card-course">
-          <h5 className="card-title">
-            <Link to={`${urlBase}/play/${url_amigable}`}>{nombre}</Link>
-          </h5>
-          {instructor != "" && (
-            <p className="card-text lh-22 pt-2">
-              <Link
-                to={`${urlBase}/usuario/${id_instructor}`}
-                style={{ color: "var(--Azul-petroleo) !important" }}
+          <div style={{ height: "220px", overflow: "auto" }}>
+            <h5 className="card-title">
+              <Link to={`${urlBase}/play/${url_amigable}`}>{nombre}</Link>
+            </h5>
+            {instructor != "" && (
+              <p className="card-text lh-22 pt-2">
+                <Link
+                  to={`${urlBase}/usuario/${id_instructor}`}
+                  style={{ color: "var(--Azul-petroleo) !important" }}
+                >
+                  {instructor}
+                </Link>
+                <span>
+                  {descripcion_instructor != "" ? ". " : ""}{" "}
+                  {descripcion_instructor}
+                </span>
+              </p>
+            )}
+            <div className="my-3">
+              <p
+                className="card-text lh-22 pt-"
+                style={{ color: "var(--Gris-oscuro)" }}
               >
-                {instructor}
-              </Link>
-              <span>
-                {descripcion_instructor != "" ? ". " : ""}{" "}
-                {descripcion_instructor}
-              </span>
-            </p>
-          )}
-          <div className="my-3">
-            <p
-              className="card-text lh-22 pt-"
-              style={{ color: "var(--Gris-oscuro)" }}
-            >
-              Codigo: {curso.codigo}
-            </p>
-            <p
-              className="card-text lh-22 pt-"
-              style={{ color: "var(--Gris-oscuro)" }}
-            >
-              Fecha de inicio: {curso.fecha_matriculacion?.split(" ")[0]}
-            </p>
-            <p
-              className="card-text lh-22 pt-"
-              style={{ color: "var(--Gris-oscuro)" }}
-            >
-              Fecha final: {curso.fecha_vencimiento?.split(" ")[0]}
-            </p>
+                Codigo: {curso.codigo}
+              </p>
+              <p
+                className="card-text lh-22 pt-"
+                style={{ color: "var(--Gris-oscuro)" }}
+              >
+                Fecha de inicio: {curso.fecha_matriculacion?.split(" ")[0]}
+              </p>
+              <p
+                className="card-text lh-22 pt-"
+                style={{ color: "var(--Gris-oscuro)" }}
+              >
+                Fecha final: {curso.fecha_vencimiento?.split(" ")[0]}
+              </p>
+            </div>
           </div>
           <div>
             <div className="d-flex ">
