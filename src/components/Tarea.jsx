@@ -9,6 +9,7 @@ import SpamError from "./SpamError";
 import Popup from "./Popup";
 import Paginador from "./Paginador";
 import Skeleton from "react-loading-skeleton";
+import TarjetaMensaje from "./cards/TarjetaMensaje";
 
 export default function Tarea({ id_contenido, id_curso, es_docente }) {
   const urlBase = import.meta.env.VITE_URL_BASE;
@@ -324,6 +325,7 @@ export default function Tarea({ id_contenido, id_curso, es_docente }) {
               fecha_hora_fin_esp: datos.fecha_hora_fin_esp,
               reenviar_post_calificacion: datos.reenviar_post_calificacion,
               permitir_enviar: datos.permitir_enviar,
+              descargables: datos.descargables,
             });
             handleObjeto.getEnvios(datos.id);
             setIdTarea(datos.id);
@@ -485,11 +487,13 @@ export default function Tarea({ id_contenido, id_curso, es_docente }) {
                         ))}
                     </p>
                   )}
+                  {popUpObjeto?.descargables?.length > 0 && (
+                    <TarjetaMensaje version={2} />
+                  )}
                 </div>
               </div>
             </div>
           </div>
-
           {/* Informacion de la tarea */}
           {idEntregaViendo == -1 ? (
             <>
@@ -749,7 +753,7 @@ export default function Tarea({ id_contenido, id_curso, es_docente }) {
                                 className="form-control user-text-editor"
                                 style={{
                                   padding: "5px",
-                                  height: "100%"
+                                  height: "100%",
                                 }}
                               ></input>
                               {erroresCampos["archivo"].length > 0 && (

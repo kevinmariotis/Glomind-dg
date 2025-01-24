@@ -22,6 +22,7 @@ import { sideBarAbrirCerrar } from "./comun";
 import { Skeleton } from "@mui/material";
 import ReactPlayer from "react-player";
 import GraficCircle from "./grafics/GraficCircle";
+import TarjetaMensaje from "./cards/TarjetaMensaje";
 
 function FormularioPlay() {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
@@ -770,7 +771,6 @@ function FormularioPlay() {
       obtenerCalificaciones();
     }
   }, [pestanaActivada]);
-  console.log(location.state);
 
   return (
     <>
@@ -814,6 +814,7 @@ function FormularioPlay() {
       <section className="course-dashboard" style={{ marginTop: "80px" }}>
         <div className="course-dashboard-wrap">
           <div className="course-dashboard-container d-flex">
+            {/* Sub Header */}
             <div className="course-dashboard-column">
               <div className="lecture-video-detail">
                 <div className="lecture-tab-body bg-gray p-4">
@@ -1110,6 +1111,8 @@ function FormularioPlay() {
                               )}
                             </div>
                           </div>
+                          {/* Mensaje */}
+                          {dataContenidoViendo?.descargables?.length > 0 && <TarjetaMensaje />}
                           <HiloComentarios
                             id_hilo={dataContenidoViendo.id_comentario_hilo}
                             id_objeto_enlace={dataContenidoViendo.id}
@@ -2148,7 +2151,6 @@ function FormularioPlay() {
                           ) : (
                             ""
                           )}
-
                           {dataContenidoViendo.tipo_contenido == 7 ? (
                             <div className="col-lg-7 mx-auto">
                               <div className="error-content text-center">
@@ -2680,6 +2682,7 @@ function FormularioPlay() {
                   ""
                 )}
 
+                {/* Sidebar de contenido del curso */}
                 <div className="course-dashboard-side-heading d-flex align-items-center justify-content-between">
                   <h3 className="fs-18 font-weight-semi-bold">
                     Contenido del{" "}
@@ -2703,7 +2706,7 @@ function FormularioPlay() {
                           margin: "10px 10px 0 10px",
                           overflow: "hidden",
                         }}
-                        >
+                      >
                         <div
                           className="card-header"
                           id={`heading${parseInt(index) + 1}`}
@@ -2712,7 +2715,7 @@ function FormularioPlay() {
                             borderRadius: "20px",
                             overflow: "hidden",
                           }}
-                          >
+                        >
                           <button
                             aria-expanded={activeTab.includes(index)}
                             onClick={() => toggleTab(index)}
@@ -2761,6 +2764,7 @@ function FormularioPlay() {
                                         ? "active"
                                         : ""
                                     }`}
+                                    style={{ borderRadius: "20px" }}
                                   >
                                     <div className="course-item-content-wrap">
                                       <div className="custom-control custom-checkbox">
