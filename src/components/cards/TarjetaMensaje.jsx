@@ -10,7 +10,7 @@ const TarjetaMensaje = ({
     <div
       className={`${
         version === 1 ? "card-message" : "card-message-white"
-      } animate__animated animate__pulse animate__infinite`}
+      }`}
     >
       <span>{mensaje}</span>
     </div>
