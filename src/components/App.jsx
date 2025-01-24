@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import store from "../redux/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
-import AnimatedCursor from "react-animated-cursor";
+// import AnimatedCursor from "react-animated-cursor";
 
 function App() {
   useEffect(() => {
@@ -20,7 +20,7 @@ function App() {
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <AuthProvider>
-            <AnimatedCursor
+            {/* <AnimatedCursor
               zIndex={9999}
               innerSize={20}
               outerSize={35}
@@ -37,7 +37,7 @@ function App() {
                 border: "2px solid var(--Azul-petroleo)",
                 zIndex: "9999",
               }}
-            />
+            /> */}
             <Rutas />
           </AuthProvider>
         </PersistGate>
