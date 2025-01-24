@@ -30,6 +30,7 @@ function VideoPlayerPrisma({
     useState(false);
   const [volume, setVolume] = useState(1);
   const [soloVolumen, setSoloVolumen] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
 
   useEffect(() => {
     setPlayedMaximo(0);
@@ -182,6 +183,11 @@ function VideoPlayerPrisma({
     setVolume(parseFloat(e.target.value));
   };
 
+  const handleProgressChange = (e) => {
+    setPlayed(e.target.value);
+    playerRef.current.seekTo(e.target.value);
+  };
+
   return (
     <>
       <ReactPlayer
@@ -210,6 +216,8 @@ function VideoPlayerPrisma({
           setShowPlayButton(true);
           setIsPlaying(false);
         }}
+        onBuffer={() => setIsBuffering(true)} // Detecta cuando está cargando
+        onBufferEnd={() => setIsBuffering(false)} // Detecta cuando termina de cargar
         config={{
           file: {
             attributes: {
@@ -223,7 +231,8 @@ function VideoPlayerPrisma({
         <>
           <div
             className="area-button play-pause-area"
-            onClick={handlePlayPause}
+            onClick={() => (!isBuffering ? handlePlayPause() : null)}
+            style={{ background: showPlayButton ? "rgba(0, 0, 0, 0.4)" : "" }}
           >
             <div
               className="transparent-button"
@@ -231,21 +240,29 @@ function VideoPlayerPrisma({
                 display: `${showPlayButton && !soloVolumen ? "" : "none"}`,
               }}
             >
-              <i className={`${isPlaying ? "la la-pause" : "la la-play"}`}></i>
+              {isBuffering ? (
+                <i className="la la-spinner spin" style={{ color: "white" }}></i>
+              ) : (
+                <i
+                  className={`${isPlaying ? "la la-pause" : "la la-play"}`}
+                  style={{ color: "white" }}
+                ></i>
+              )}
             </div>
           </div>
           <div
             className="area-button seek-backward-area"
-            onDoubleClick={handleSeekBackward}
+            onDoubleClick={() => (!isBuffering ? handleSeekBackward() : null)}
+            style={{ background: showPlayButton ? "rgba(0, 0, 0, 0.4)" : "" }}
           >
             <div
               className="transparent-button"
               style={{
                 display: `${showPlayButton && !soloVolumen ? "" : "none"}`,
               }}
-              onClick={handleSeekBackward}
+              onClick={() => (!isBuffering ? handleSeekBackward() : null)}
             >
-              <i className="la la-backward"></i>
+              <i className="la la-backward" style={{ color: "white" }}></i>
             </div>
             {showAnimationAtrasar && (
               <div className="animation-overlay" style={{ marginTop: "-60px" }}>
@@ -255,16 +272,17 @@ function VideoPlayerPrisma({
           </div>
           <div
             className="area-button seek-forward-area"
-            onDoubleClick={handleSeekForward}
+            onDoubleClick={() => (!isBuffering ? handleSeekForward() : null)}
+            style={{ background: showPlayButton ? "rgba(0, 0, 0, 0.4)" : "" }}
           >
             <div
               className="transparent-button"
               style={{
                 display: `${showPlayButton && !soloVolumen ? "" : "none"}`,
               }}
-              onClick={handleSeekForward}
+              onClick={() => (!isBuffering ? handleSeekForward() : null)}
             >
-              <i className="la la-forward"></i>
+              <i className="la la-forward" style={{ color: "white" }}></i>
             </div>
             {showAnimationAdelantar && (
               <div className="animation-overlay" style={{ marginTop: "-60px" }}>
@@ -287,35 +305,57 @@ function VideoPlayerPrisma({
             </div>
           </div>
           <div className="video-info">
-            <i
-              style={{
-                fontSize: "24px",
-                display: `${showPlayButton ? "" : "none"}`,
-              }}
-              className="la la-volume-up"
-            ></i>
-            <input
-              type="range"
-              min={0}
-              max={1}
-              step={0.01}
-              value={volume}
-              className="volume-slider transparent-button"
-              onChange={handleVolumeChange}
-              style={{ display: `${showPlayButton ? "" : "none"}` }}
-            />
-            &nbsp;&nbsp;
-            <span
-              style={{
-                display: `${showPlayButton && !soloVolumen ? "" : "none"}`,
-              }}
-            >{`${convertirSegundosAHorasMinutosSegundos(
-              Math.floor(played * duration),
-              true
-            )} / ${convertirSegundosAHorasMinutosSegundos(
-              Math.floor(duration),
-              true
-            )}`}</span>
+            <div
+              style={{ display: "flex", alignItems: "center", width: "50px" }}
+            >
+              <i
+                style={{
+                  fontSize: "24px",
+                  display: `${showPlayButton ? "" : "none"}`,
+                }}
+                className="la la-volume-up"
+              ></i>
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={volume}
+                className="volume-slider transparent-button"
+                onChange={handleVolumeChange}
+                style={{ display: `${showPlayButton ? "" : "none"}` }}
+              />
+            </div>
+            <div
+              style={{ display: "flex", alignItems: "center", width: "100%" }}
+            >
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={played}
+                // className="volume-slider transparent-button"
+                onChange={handleProgressChange}
+                style={{
+                  display: `${showPlayButton ? "" : "none"}`,
+                  width: "calc(100% - 100px)",
+                  cursor: "pointer"
+                }}
+              />
+              &nbsp;&nbsp;
+              <span
+                style={{
+                  display: `${showPlayButton && !soloVolumen ? "" : "none"}`,
+                }}
+              >{`${convertirSegundosAHorasMinutosSegundos(
+                Math.floor(played * duration),
+                true
+              )} / ${convertirSegundosAHorasMinutosSegundos(
+                Math.floor(duration),
+                true
+              )}`}</span>
+            </div>
           </div>
         </>
       )}

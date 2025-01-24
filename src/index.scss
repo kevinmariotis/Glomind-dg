@@ -22,7 +22,6 @@
   font-family: "DM Sans";
 }
 
-
 // Estilos Generales
 .btn-round {
   border-radius: var(--CornerMedium) !important;
@@ -64,6 +63,43 @@
   box-shadow: 0px 0px 3.13px 0px var(--Gris-sombra) !important;
   height: 100%;
 }
+
+.card-message {
+  background-color: var(--Lavander);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+  animation: customPulse 6s infinite;
+}
+
+.card-message-white {
+  background-color: white;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+  animation: customPulse 6s infinite;
+}
+
+// @keyframes customPulse {
+//   0% {
+//     transform: scale(1); /* Estado inicial */
+//   }
+//   10% {
+//     transform: scale(1.02); /* Escala máxima */
+//   }
+//   20% {
+//     transform: scale(1); /* Regresa al estado inicial */
+//   }
+//   100% {
+//     transform: scale(1); /* Regresa al estado inicial */
+//   }
+// }
 
 .card-round {
   border-radius: var(--CornerExtra-large) !important;
@@ -255,6 +291,20 @@
         }
       }
     }
+  }
+}
+
+.spin {
+  display: inline-block;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
