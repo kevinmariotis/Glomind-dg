@@ -19,7 +19,7 @@ import Calendario from "./Calendario";
 import CountdownTimer from "./CoundDownTimer";
 import CrearEditarVideollamada from "./CrearEditarVideollamada";
 import { sideBarAbrirCerrar } from "./comun";
-import { Skeleton } from "@mui/material";
+import { Divider, Skeleton } from "@mui/material";
 import ReactPlayer from "react-player";
 import GraficCircle from "./grafics/GraficCircle";
 import TarjetaMensaje from "./cards/TarjetaMensaje";
@@ -1112,7 +1112,9 @@ function FormularioPlay() {
                             </div>
                           </div>
                           {/* Mensaje */}
-                          {dataContenidoViendo?.descargables?.length > 0 && <TarjetaMensaje />}
+                          {dataContenidoViendo?.descargables?.length > 0 && (
+                            <TarjetaMensaje />
+                          )}
                           <HiloComentarios
                             id_hilo={dataContenidoViendo.id_comentario_hilo}
                             id_objeto_enlace={dataContenidoViendo.id}
@@ -2048,43 +2050,124 @@ function FormularioPlay() {
                           </div>
                         )}
 
-                        <div className="lecture-overview-item">
-                          <div className="lecture-overview-stats-wrap d-flex">
-                            <div className="lecture-overview-stats-item">
-                              <h3 className="fs-16 font-weight-semi-bold pb-2">
-                                La asignatura en números
-                              </h3>
-                            </div>
-                            <div className="lecture-overview-stats-item col">
-                              <ul className="generic-list-item">
-                                <li>
-                                  <span>Nivel de habilidad:</span>
-                                  {nivelHabilidad[dataCurso.nivel]}
-                                </li>
-                                <li>
-                                  <span>Estudiantes:</span>
-                                  {dataCurso.estudiantes_cantidad}
-                                </li>
-                                <li>
-                                  <span>Idiomas:</span>Español
-                                </li>
-                              </ul>
-                            </div>
-                            <div className="lecture-overview-stats-item col">
-                              <ul className="generic-list-item">
-                                <li>
-                                  <span>Exámenes:</span>
-                                  {dataCurso.cantidad_examenes}
-                                </li>
-                                <li>
-                                  <span>Horas de video producidas:</span>
-                                  {dataCurso.cantidad_horas_de_video}
-                                </li>
-                                {/*<li><span>Certificado:</span>{dataCurso.expedir_certificado==1 ? 'Si' : 'No'}</li>*/}
-                              </ul>
+                        {dataCurso.personalizado_tipo_curso !== "diplomado" && (
+                          <div className="lecture-overview-item">
+                            <div className="lecture-overview-stats-wrap d-flex">
+                              <div className="lecture-overview-stats-item">
+                                <h3 className="fs-16 font-weight-semi-bold pb-2">
+                                  La asignatura en números
+                                </h3>
+                              </div>
+                              <div className="lecture-overview-stats-item col">
+                                <ul className="generic-list-item">
+                                  <li>
+                                    <span>Nivel de habilidad:</span>
+                                    {nivelHabilidad[dataCurso.nivel]}
+                                  </li>
+                                  <li>
+                                    <span>Estudiantes:</span>
+                                    {dataCurso.estudiantes_cantidad}
+                                  </li>
+                                  <li>
+                                    <span>Idiomas:</span>Español
+                                  </li>
+                                </ul>
+                              </div>
+                              <div className="lecture-overview-stats-item col">
+                                <ul className="generic-list-item">
+                                  <li>
+                                    <span>Exámenes:</span>
+                                    {dataCurso.cantidad_examenes}
+                                  </li>
+                                  <li>
+                                    <span>Horas de video producidas:</span>
+                                    {dataCurso.cantidad_horas_de_video}
+                                  </li>
+                                  {/*<li><span>Certificado:</span>{dataCurso.expedir_certificado==1 ? 'Si' : 'No'}</li>*/}
+                                </ul>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        )}
+
+                        {dataCurso.personalizado_tipo_curso === "diplomado" && (
+                          <div className="lecture-overview-item">
+                            <div className="lecture-overview-stats-wrap d-flex">
+                              <div className="lecture-overview-stats-item">
+                                <h3 className="fs-16 font-weight-semi-bold pb-2">
+                                  Tiempo de dedicación certificable
+                                </h3>
+                              </div>
+                              <div className="lecture-overview-stats-item col">
+                                <ul className="generic-list-item">
+                                  <li>
+                                    <span>Tiempo certificado:</span>
+                                    {dataCurso.desc_tiempo_certificado}
+                                  </li>
+                                  <table className="text-center">
+                                    <thead>
+                                      <tr>
+                                        <td style={{ width: "100px" }}>
+                                          Distribución de Horas
+                                        </td>
+                                        <td style={{ width: "100px" }}>% (horas)</td>
+                                        <td style={{ width: "150px" }}>Horas de dedicación</td>
+                                        <td>Descripción</td>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr
+                                        style={{
+                                          paddingBottom: "30px !important",
+                                        }}
+                                      >
+                                        <td>
+                                          Horas Asincrónicas (Independiente)
+                                        </td>
+                                        <td>
+                                          {
+                                            dataCurso.desc_asinc_horas_dedicacion
+                                          }
+                                        </td>
+                                        <td>
+                                          {
+                                            dataCurso.desc_asinc_horas_porcentaje
+                                          }%
+                                        </td>
+                                        <td className="text-left" style={{paddingBottom: "40px"}}>
+                                          {dataCurso.desc_asinc_descripcion
+                                            ?.split("<br />")
+                                            ?.map((key) => (
+                                              <p key={key}>{key}</p>
+                                            ))}
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          Horas Sincrónicas (Acompañamiento con
+                                          docente)
+                                        </td>
+                                        <td>
+                                          {dataCurso.desc_sinc_horas_dedicacion}
+                                        </td>
+                                        <td>
+                                          {dataCurso.desc_sinc_horas_porcentaje}%
+                                        </td>
+                                        <td className="text-left">
+                                          {dataCurso.desc_sinc_descripcion
+                                            ?.split("<br />")
+                                            ?.map((key) => (
+                                              <p key={key}>{key}</p>
+                                            ))}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
                         {dataCurso.expedir_certificado == 1 &&
                         ((dataCurso.certificado_solo_pago == 1 &&

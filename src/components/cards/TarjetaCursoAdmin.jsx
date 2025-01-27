@@ -71,11 +71,11 @@ function TarjetaCursoAdmin({
         </div>
         <div className="card-body content-card-course">
           <div style={{ height: "220px", overflow: "auto" }}>
-            <h5 className="card-title">
+            <h5 className="card-title text-center">
               <Link to={`${urlBase}/play/${url_amigable}`}>{nombre}</Link>
             </h5>
             {instructor != "" && (
-              <p className="card-text lh-22 pt-2">
+              <p className="card-text lh-22 pt-2 text-center">
                 <Link
                   to={`${urlBase}/usuario/${id_instructor}`}
                   style={{ color: "var(--Azul-petroleo) !important" }}

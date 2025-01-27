@@ -69,6 +69,7 @@ function FormularioEditarCurso() {
   const [proposito_del_curso, setProposito_del_curso] = useState([]);
   const [queAprenderas, setQueAprenderas] = useState([]);
   const [requierimientos, setRequerimientos] = useState([]);
+  const [otherFields, setOtherFields] = useState({});
 
   const [mostrarSpinner, setMostrarSpinner] = useState(false);
 
@@ -138,6 +139,12 @@ function FormularioEditarCurso() {
   const handleDescripcionChange = (event) => {
     setDescripcion(event.target.value);
   };
+  const handleOtherFields = (event) => {
+    setOtherFields({
+      ...otherFields,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   //Estados de los errores de campos
   const camposErrores = {
@@ -165,6 +172,13 @@ function FormularioEditarCurso() {
     area_de_formacion: [],
     fines_de_aprendizaje: [],
     proposito_del_curso: [],
+    desc_tiempo_certificado: [],
+    desc_asinc_horas_dedicacion: [],
+    desc_asinc_horas_porcentaje: [],
+    desc_asinc_descripcion: [],
+    desc_sinc_horas_dedicacion: [],
+    desc_sinc_horas_porcentaje: [],
+    desc_sinc_descripcion: [],
   };
   const [erroresCampos, setErrorCampo] = useState(camposErrores);
   const setErrorCampoGlobal = (index, newValue) => {
@@ -280,6 +294,7 @@ function FormularioEditarCurso() {
     setCategoriaSeleccionada({ id: 0, nombre: "Ninguna" });
     obtenerCategorias(0);
   };
+  console.log(otherFields);
 
   const obtenerDatosServidor = async () => {
     const headers = {
@@ -314,6 +329,16 @@ function FormularioEditarCurso() {
           datos.curso.precio_adicional_certificado.replace(/\D/g, "")
         );
         setDescripcion(datos.curso.desc_general);
+        console.log("....", datos);
+        setOtherFields({
+          desc_tiempo_certificado: datos.curso?.desc_tiempo_certificado,
+          desc_asinc_horas_dedicacion: datos.curso?.desc_asinc_horas_dedicacion,
+          desc_asinc_horas_porcentaje: datos.curso?.desc_asinc_horas_porcentaje,
+          desc_asinc_descripcion: datos.curso?.desc_asinc_descripcion,
+          desc_sinc_horas_dedicacion: datos.curso?.desc_sinc_horas_dedicacion,
+          desc_sinc_horas_porcentaje: datos.curso?.desc_sinc_horas_porcentaje,
+          desc_sinc_descripcion: datos.curso?.desc_sinc_descripcion,
+        });
         setImagenActual(datos.curso.imagen_pequena);
         if (datos.curso.id_instructor != 0) {
           setInstructorSeleccionado({
@@ -618,6 +643,13 @@ function FormularioEditarCurso() {
       area_de_formacion: area_de_formacionx,
       fines_de_aprendizaje: fines_de_aprendizajex,
       proposito_del_curso: proposito_del_cursox,
+      desc_tiempo_certificado: otherFields.desc_tiempo_certificado,
+      desc_asinc_horas_dedicacion: otherFields.desc_asinc_horas_dedicacion,
+      desc_asinc_horas_porcentaje: otherFields.desc_asinc_horas_porcentaje,
+      desc_asinc_descripcion: otherFields.desc_asinc_descripcion,
+      desc_sinc_horas_dedicacion: otherFields.desc_sinc_horas_dedicacion,
+      desc_sinc_horas_porcentaje: otherFields.desc_sinc_horas_porcentaje,
+      desc_sinc_descripcion: otherFields.desc_sinc_descripcion,
     };
 
     const opciones = {
@@ -1378,7 +1410,7 @@ function FormularioEditarCurso() {
             <div className="card card-item">
               <div className="card-body">
                 <h3 className="fs-22 font-weight-semi-bold pb-2">
-                  Que aprenderás?
+                  Con este curso serás capaz de:
                 </h3>
                 <div className="divider">
                   <span></span>
@@ -1411,7 +1443,7 @@ function FormularioEditarCurso() {
             <div className="card card-item">
               <div className="card-body">
                 <h3 className="fs-22 font-weight-semi-bold pb-2">
-                  Requerimientos
+                  Dirigido a:
                 </h3>
                 <div className="divider">
                   <span></span>
@@ -1441,6 +1473,253 @@ function FormularioEditarCurso() {
                 </button>
               </div>
             </div>
+
+            {/* Distribucion de tiempos */}
+            {camposPersonalizablesCursos?.tipos_curso[
+              tipoCurso
+            ]?.text_areas_mostrados?.includes("desc_tiempo_certificado") && (
+              <div className="card card-item">
+                <div className="card-body">
+                  <h3 className="fs-22 font-weight-semi-bold pb-2">
+                    Tiempo de dedicación certificable
+                  </h3>
+                  <div className="divider">
+                    <span></span>
+                  </div>
+                  <div className="row">
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_tiempo_certificado"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">
+                            Tiempo certificado:
+                          </label>
+                          <input
+                            value={otherFields["desc_tiempo_certificado"]}
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_tiempo_certificado"
+                            maxLength="8"
+                            placeholder="Horas"
+                          />
+                          {erroresCampos["desc_tiempo_certificado"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={erroresCampos["desc_tiempo_certificado"]}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {camposPersonalizablesCursos?.tipos_curso[
+                    tipoCurso
+                  ]?.text_areas_mostrados?.includes(
+                    "desc_asinc_horas_dedicacion"
+                  ) && (
+                    <>
+                      <h3 className="fs-22 font-weight-semi-bold pb-2">
+                        Distribución de Horas
+                      </h3>
+                      <div className="divider">
+                        <span></span>
+                      </div>
+                    </>
+                  )}
+                  {camposPersonalizablesCursos?.tipos_curso[
+                    tipoCurso
+                  ]?.text_areas_mostrados?.includes(
+                    "desc_asinc_horas_dedicacion"
+                  ) && (
+                    <h3 className="fs-18 font-weight-semi-bold pb-2">
+                      Horas Asincrónicas (Independiente)
+                    </h3>
+                  )}
+                  <div className="row">
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_asinc_horas_dedicacion"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">
+                            Horas de dedicación
+                          </label>
+                          <input
+                            value={otherFields["desc_asinc_horas_dedicacion"]}
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_asinc_horas_dedicacion"
+                            maxLength="8"
+                            placeholder="Horas"
+                          />
+                          {erroresCampos["desc_asinc_horas_dedicacion"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={
+                                erroresCampos["desc_asinc_horas_dedicacion"]
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_asinc_horas_porcentaje"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">% (horas)</label>
+                          <input
+                            value={otherFields["desc_asinc_horas_porcentaje"]}
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_asinc_horas_porcentaje"
+                            maxLength="3"
+                            placeholder="Porcentaje"
+                          />
+                          {erroresCampos["desc_asinc_horas_porcentaje"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={
+                                erroresCampos["desc_asinc_horas_porcentaje"]
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_asinc_descripcion"
+                    ) && (
+                      <div className="col-lg-12">
+                        <div className="form-group">
+                          <label className="label-text">Descripción</label>
+                          <textarea
+                            value={otherFields["desc_asinc_descripcion"]}
+                            onChange={handleOtherFields}
+                            className="form-control form--control user-text-editor pl-3"
+                            name="desc_asinc_descripcion"
+                            rows={5}
+                          ></textarea>
+                          {erroresCampos["desc_asinc_descripcion"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={erroresCampos["desc_asinc_descripcion"]}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {camposPersonalizablesCursos?.tipos_curso[
+                    tipoCurso
+                  ]?.text_areas_mostrados?.includes(
+                    "desc_sinc_horas_dedicacion"
+                  ) && (
+                    <h3 className="fs-18 font-weight-semi-bold pb-2">
+                      Horas Sincrónicas (Acompañamiento con docente)
+                    </h3>
+                  )}
+                  <div className="row">
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_sinc_horas_dedicacion"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">
+                            Horas de dedicación
+                          </label>
+                          <input
+                            value={otherFields["desc_sinc_horas_dedicacion"]}
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_sinc_horas_dedicacion"
+                            maxLength="8"
+                            placeholder="Horas"
+                          />
+                          {erroresCampos["desc_sinc_horas_dedicacion"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={
+                                erroresCampos["desc_sinc_horas_dedicacion"]
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_sinc_horas_porcentaje"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">% (horas)</label>
+                          <input
+                            value={otherFields["desc_sinc_horas_porcentaje"]}
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_sinc_horas_porcentaje"
+                            maxLength="3"
+                            placeholder="Porcentaje"
+                          />
+                          {erroresCampos["desc_sinc_horas_porcentaje"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={
+                                erroresCampos["desc_sinc_horas_porcentaje"]
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_sinc_descripcion"
+                    ) && (
+                      <div className="col-lg-12">
+                        <div className="form-group">
+                          <label className="label-text">Descripción</label>
+                          <textarea
+                            value={otherFields["desc_sinc_descripcion"]}
+                            onChange={handleOtherFields}
+                            className="form-control form--control user-text-editor pl-3"
+                            name="desc_sinc_descripcion"
+                            rows={5}
+                          ></textarea>
+                          {erroresCampos["desc_sinc_descripcion"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={erroresCampos["desc_sinc_descripcion"]}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {permissions[66] ? (
               <div className="card card-item">
                 <div className="card-body">

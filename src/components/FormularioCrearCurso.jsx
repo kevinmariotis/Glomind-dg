@@ -61,6 +61,7 @@ function FormularioCrearCurso() {
   );
   const [descripcion, setDescripcion] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [otherFields, setOtherFields] = useState({});
 
   const [area_de_formacion, setArea_de_formacion] = useState([]);
   const [fines_de_aprendizaje, setFines_de_aprendizaje] = useState([]);
@@ -132,6 +133,12 @@ function FormularioCrearCurso() {
   const handleDescripcionChange = (event) => {
     setDescripcion(event.target.value);
   };
+  const handleOtherFields = (event) => {
+    setOtherFields({
+      ...otherFields,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   //Estados de los errores de campos
   const camposErrores = {
@@ -159,6 +166,13 @@ function FormularioCrearCurso() {
     area_de_formacion: [],
     fines_de_aprendizaje: [],
     proposito_del_curso: [],
+    desc_tiempo_certificado: [],
+    desc_asinc_horas_dedicacion: [],
+    desc_asinc_horas_porcentaje: [],
+    desc_asinc_descripcion: [],
+    desc_sinc_horas_dedicacion: [],
+    desc_sinc_horas_porcentaje: [],
+    desc_sinc_descripcion: [],
   };
   const [erroresCampos, setErrorCampo] = useState(camposErrores);
   const setErrorCampoGlobal = (index, newValue) => {
@@ -475,6 +489,10 @@ function FormularioCrearCurso() {
       }
     });
     formData.append("desc_requerimientos", requerimientosx);
+
+    Object.keys(otherFields)?.forEach((key) => {
+      formData.append(key, otherFields[key]);
+    });
 
     const opciones = {
       method: "POST",
@@ -1070,179 +1088,441 @@ function FormularioCrearCurso() {
               </div>
             </div>
             <div className="card card-item">
-              <div className="card-body">
-                <h3 className="fs-22 font-weight-semi-bold pb-2">
-                  Área de formación
-                </h3>
-                <div className="divider">
-                  <span></span>
-                </div>
-                {erroresCampos["area_de_formacion"].length > 0 && (
-                  <SpamError mensaje={erroresCampos["area_de_formacion"]} />
-                )}
-                <div className="row">
-                  {area_de_formacion.map((value, index) => (
-                    <div className="col-lg-12" key={index}>
-                      <div className="form-group">
-                        <textarea
-                          key={index}
-                          value={value}
-                          onChange={(event) =>
-                            handleArea_de_formacionChange(event, index)
-                          }
-                          className="form-control form--control user-text-editor pl-3"
-                          name="area_de_formacion[]"
-                        />
+              {camposPersonalizablesCursos?.tipos_curso[
+                tipoCurso
+              ]?.text_areas_mostrados?.includes("area_de_formacion") && (
+                <div className="card-body">
+                  <h3 className="fs-22 font-weight-semi-bold pb-2">
+                    Área de formación
+                  </h3>
+                  <div className="divider">
+                    <span></span>
+                  </div>
+                  {erroresCampos["area_de_formacion"].length > 0 && (
+                    <SpamError mensaje={erroresCampos["area_de_formacion"]} />
+                  )}
+                  <div className="row">
+                    {area_de_formacion.map((value, index) => (
+                      <div className="col-lg-12" key={index}>
+                        <div className="form-group">
+                          <textarea
+                            key={index}
+                            value={value}
+                            onChange={(event) =>
+                              handleArea_de_formacionChange(event, index)
+                            }
+                            className="form-control form--control user-text-editor pl-3"
+                            name="area_de_formacion[]"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <button
+                    className="btn theme-btn"
+                    onClick={addArea_de_formacion}
+                  >
+                    <i className="la la-plus mr-2"></i> Agregar otra
+                  </button>
                 </div>
-                <button
-                  className="btn theme-btn"
-                  onClick={addArea_de_formacion}
-                >
-                  <i className="la la-plus mr-2"></i> Agregar otra
-                </button>
-              </div>
+              )}
             </div>
-            <div className="card card-item">
-              <div className="card-body">
-                <h3 className="fs-22 font-weight-semi-bold pb-2">
-                  Fines de aprendizaje
-                </h3>
-                <div className="divider">
-                  <span></span>
-                </div>
-                {erroresCampos["fines_de_aprendizaje"].length > 0 && (
-                  <SpamError mensaje={erroresCampos["fines_de_aprendizaje"]} />
-                )}
-                <div className="row">
-                  {fines_de_aprendizaje.map((value, index) => (
-                    <div className="col-lg-12" key={index}>
-                      <div className="form-group">
-                        <textarea
-                          key={index}
-                          value={value}
-                          onChange={(event) =>
-                            handleFines_de_aprendizajeChange(event, index)
-                          }
-                          className="form-control form--control user-text-editor pl-3"
-                          name="fines_de_aprendizaje[]"
-                        />
+            {camposPersonalizablesCursos?.tipos_curso[
+              tipoCurso
+            ]?.text_areas_mostrados?.includes("fines_de_aprendizaje") && (
+              <div className="card card-item">
+                <div className="card-body">
+                  <h3 className="fs-22 font-weight-semi-bold pb-2">
+                    Fines de aprendizaje
+                  </h3>
+                  <div className="divider">
+                    <span></span>
+                  </div>
+                  {erroresCampos["fines_de_aprendizaje"].length > 0 && (
+                    <SpamError
+                      mensaje={erroresCampos["fines_de_aprendizaje"]}
+                    />
+                  )}
+                  <div className="row">
+                    {fines_de_aprendizaje.map((value, index) => (
+                      <div className="col-lg-12" key={index}>
+                        <div className="form-group">
+                          <textarea
+                            key={index}
+                            value={value}
+                            onChange={(event) =>
+                              handleFines_de_aprendizajeChange(event, index)
+                            }
+                            className="form-control form--control user-text-editor pl-3"
+                            name="fines_de_aprendizaje[]"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <button
+                    className="btn theme-btn"
+                    onClick={addFines_de_aprendizaje}
+                  >
+                    <i className="la la-plus mr-2"></i> Agregar otra
+                  </button>
                 </div>
-                <button
-                  className="btn theme-btn"
-                  onClick={addFines_de_aprendizaje}
-                >
-                  <i className="la la-plus mr-2"></i> Agregar otra
-                </button>
               </div>
-            </div>
-            <div className="card card-item">
-              <div className="card-body">
-                <h3 className="fs-22 font-weight-semi-bold pb-2">
-                  Proposito del curso
-                </h3>
-                <div className="divider">
-                  <span></span>
-                </div>
-                {erroresCampos["proposito_del_curso"].length > 0 && (
-                  <SpamError mensaje={erroresCampos["proposito_del_curso"]} />
-                )}
-                <div className="row">
-                  {proposito_del_curso.map((value, index) => (
-                    <div className="col-lg-12" key={index}>
-                      <div className="form-group">
-                        <textarea
-                          key={index}
-                          value={value}
-                          onChange={(event) =>
-                            handleProposito_del_cursoChange(event, index)
-                          }
-                          className="form-control form--control user-text-editor pl-3"
-                          name="proposito_del_curso[]"
-                        />
+            )}
+            {camposPersonalizablesCursos?.tipos_curso[
+              tipoCurso
+            ]?.text_areas_mostrados?.includes("proposito_del_curso") && (
+              <div className="card card-item">
+                <div className="card-body">
+                  <h3 className="fs-22 font-weight-semi-bold pb-2">
+                    Proposito del curso
+                  </h3>
+                  <div className="divider">
+                    <span></span>
+                  </div>
+                  {erroresCampos["proposito_del_curso"].length > 0 && (
+                    <SpamError mensaje={erroresCampos["proposito_del_curso"]} />
+                  )}
+                  <div className="row">
+                    {proposito_del_curso.map((value, index) => (
+                      <div className="col-lg-12" key={index}>
+                        <div className="form-group">
+                          <textarea
+                            key={index}
+                            value={value}
+                            onChange={(event) =>
+                              handleProposito_del_cursoChange(event, index)
+                            }
+                            className="form-control form--control user-text-editor pl-3"
+                            name="proposito_del_curso[]"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <button
+                    className="btn theme-btn"
+                    onClick={addProposito_del_curso}
+                  >
+                    <i className="la la-plus mr-2"></i> Agregar otra
+                  </button>
                 </div>
-                <button
-                  className="btn theme-btn"
-                  onClick={addProposito_del_curso}
-                >
-                  <i className="la la-plus mr-2"></i> Agregar otra
-                </button>
               </div>
-            </div>
-            <div className="card card-item">
-              <div className="card-body">
-                <h3 className="fs-22 font-weight-semi-bold pb-2">
-                  Que Aprenderás?
-                </h3>
-                <div className="divider">
-                  <span></span>
-                </div>
-                {erroresCampos["desc_que_aprenderas"].length > 0 && (
-                  <SpamError mensaje={erroresCampos["desc_que_aprenderas"]} />
-                )}
-                <div className="row">
-                  {queAprenderas.map((value, index) => (
-                    <div className="col-lg-12" key={index}>
-                      <div className="form-group">
-                        <textarea
-                          key={index}
-                          value={value}
-                          onChange={(event) =>
-                            handleQueAprenderasChange(event, index)
-                          }
-                          className="form-control form--control user-text-editor pl-3"
-                          name="desc_que_aprenderas[]"
-                        />
+            )}
+            {camposPersonalizablesCursos?.tipos_curso[
+              tipoCurso
+            ]?.text_areas_mostrados?.includes("desc_que_aprenderas") && (
+              <div className="card card-item">
+                <div className="card-body">
+                  <h3 className="fs-22 font-weight-semi-bold pb-2">
+                    Con este curso serás capaz de:
+                  </h3>
+                  <div className="divider">
+                    <span></span>
+                  </div>
+                  {erroresCampos["desc_que_aprenderas"].length > 0 && (
+                    <SpamError mensaje={erroresCampos["desc_que_aprenderas"]} />
+                  )}
+                  <div className="row">
+                    {queAprenderas.map((value, index) => (
+                      <div className="col-lg-12" key={index}>
+                        <div className="form-group">
+                          <textarea
+                            key={index}
+                            value={value}
+                            onChange={(event) =>
+                              handleQueAprenderasChange(event, index)
+                            }
+                            className="form-control form--control user-text-editor pl-3"
+                            name="desc_que_aprenderas[]"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <button className="btn theme-btn" onClick={addQueAprenderas}>
+                    <i className="la la-plus mr-2"></i> Agregar otra
+                  </button>
                 </div>
-                <button className="btn theme-btn" onClick={addQueAprenderas}>
-                  <i className="la la-plus mr-2"></i> Agregar otra
-                </button>
               </div>
-            </div>
-            <div className="card card-item">
-              <div className="card-body">
-                <h3 className="fs-22 font-weight-semi-bold pb-2">
-                  Requerimientos
-                </h3>
-                <div className="divider">
-                  <span></span>
-                </div>
-                {erroresCampos["desc_requerimientos"].length > 0 && (
-                  <SpamError mensaje={erroresCampos["desc_requerimientos"]} />
-                )}
-                <div className="row">
-                  {requierimientos.map((value, index) => (
-                    <div className="col-lg-12" key={index}>
-                      <div className="form-group">
-                        <textarea
-                          key={index}
-                          value={value}
-                          onChange={(event) =>
-                            handleRequerimientoChange(event, index)
-                          }
-                          className="form-control form--control user-text-editor pl-3"
-                          name="desc_requerimientos[]"
-                        />
+            )}
+            {camposPersonalizablesCursos?.tipos_curso[
+              tipoCurso
+            ]?.text_areas_mostrados?.includes("desc_requerimientos") && (
+              <div className="card card-item">
+                <div className="card-body">
+                  <h3 className="fs-22 font-weight-semi-bold pb-2">
+                    Dirigido a:
+                  </h3>
+                  <div className="divider">
+                    <span></span>
+                  </div>
+                  {erroresCampos["desc_requerimientos"].length > 0 && (
+                    <SpamError mensaje={erroresCampos["desc_requerimientos"]} />
+                  )}
+                  <div className="row">
+                    {requierimientos.map((value, index) => (
+                      <div className="col-lg-12" key={index}>
+                        <div className="form-group">
+                          <textarea
+                            key={index}
+                            value={value}
+                            onChange={(event) =>
+                              handleRequerimientoChange(event, index)
+                            }
+                            className="form-control form--control user-text-editor pl-3"
+                            name="desc_requerimientos[]"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <button className="btn theme-btn" onClick={addRequerimiento}>
+                    <i className="la la-plus mr-2"></i> Agregar otro
+                  </button>
                 </div>
-                <button className="btn theme-btn" onClick={addRequerimiento}>
-                  <i className="la la-plus mr-2"></i> Agregar otro
-                </button>
               </div>
-            </div>
+            )}
+
+            {/* Distribucion de tiempos */}
+            {camposPersonalizablesCursos?.tipos_curso[
+              tipoCurso
+            ]?.text_areas_mostrados?.includes("desc_tiempo_certificado") && (
+              <div className="card card-item">
+                <div className="card-body">
+                  <h3 className="fs-22 font-weight-semi-bold pb-2">
+                    Tiempo de dedicación certificable
+                  </h3>
+                  <div className="divider">
+                    <span></span>
+                  </div>
+                  <div className="row">
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_tiempo_certificado"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">
+                            Tiempo certificado:
+                          </label>
+                          <input
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_tiempo_certificado"
+                            maxLength="8"
+                            placeholder="Horas"
+                          />
+                          {erroresCampos["desc_tiempo_certificado"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={erroresCampos["desc_tiempo_certificado"]}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {camposPersonalizablesCursos?.tipos_curso[
+                    tipoCurso
+                  ]?.text_areas_mostrados?.includes(
+                    "desc_asinc_horas_dedicacion"
+                  ) && (
+                    <>
+                      <h3 className="fs-22 font-weight-semi-bold pb-2">
+                        Distribución de Horas
+                      </h3>
+                      <div className="divider">
+                        <span></span>
+                      </div>
+                    </>
+                  )}
+                  {camposPersonalizablesCursos?.tipos_curso[
+                    tipoCurso
+                  ]?.text_areas_mostrados?.includes(
+                    "desc_asinc_horas_dedicacion"
+                  ) && (
+                    <h3 className="fs-18 font-weight-semi-bold pb-2">
+                      Horas Asincrónicas (Independiente)
+                    </h3>
+                  )}
+                  <div className="row">
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_asinc_horas_dedicacion"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">
+                            Horas de dedicación
+                          </label>
+                          <input
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_asinc_horas_dedicacion"
+                            maxLength="8"
+                            placeholder="Horas"
+                          />
+                          {erroresCampos["desc_asinc_horas_dedicacion"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={
+                                erroresCampos["desc_asinc_horas_dedicacion"]
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_asinc_horas_porcentaje"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">% (horas)</label>
+                          <input
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_asinc_horas_porcentaje"
+                            maxLength="3"
+                            placeholder="Porcentaje"
+                          />
+                          {erroresCampos["desc_asinc_horas_porcentaje"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={
+                                erroresCampos["desc_asinc_horas_porcentaje"]
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_asinc_descripcion"
+                    ) && (
+                      <div className="col-lg-12">
+                        <div className="form-group">
+                          <label className="label-text">Descripción</label>
+                          <textarea
+                            onChange={handleOtherFields}
+                            className="form-control form--control user-text-editor pl-3"
+                            name="desc_asinc_descripcion"
+                            rows={5}
+                          ></textarea>
+                          {erroresCampos["desc_asinc_descripcion"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={erroresCampos["desc_asinc_descripcion"]}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {camposPersonalizablesCursos?.tipos_curso[
+                    tipoCurso
+                  ]?.text_areas_mostrados?.includes(
+                    "desc_sinc_horas_dedicacion"
+                  ) && (
+                    <h3 className="fs-18 font-weight-semi-bold pb-2">
+                      Horas Sincrónicas (Acompañamiento con docente)
+                    </h3>
+                  )}
+                  <div className="row">
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_sinc_horas_dedicacion"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">
+                            Horas de dedicación
+                          </label>
+                          <input
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_sinc_horas_dedicacion"
+                            maxLength="8"
+                            placeholder="Horas"
+                          />
+                          {erroresCampos["desc_sinc_horas_dedicacion"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={
+                                erroresCampos["desc_sinc_horas_dedicacion"]
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_sinc_horas_porcentaje"
+                    ) && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label className="label-text">% (horas)</label>
+                          <input
+                            onChange={handleOtherFields}
+                            className="form-control form--control tags-input"
+                            type="text"
+                            name="desc_sinc_horas_porcentaje"
+                            maxLength="3"
+                            placeholder="Porcentaje"
+                          />
+                          {erroresCampos["desc_sinc_horas_porcentaje"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={
+                                erroresCampos["desc_sinc_horas_porcentaje"]
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {camposPersonalizablesCursos?.tipos_curso[
+                      tipoCurso
+                    ]?.text_areas_mostrados?.includes(
+                      "desc_sinc_descripcion"
+                    ) && (
+                      <div className="col-lg-12">
+                        <div className="form-group">
+                          <label className="label-text">Descripción</label>
+                          <textarea
+                            onChange={handleOtherFields}
+                            className="form-control form--control user-text-editor pl-3"
+                            name="desc_sinc_descripcion"
+                            rows={5}
+                          ></textarea>
+                          {erroresCampos["desc_sinc_descripcion"].length >
+                            0 && (
+                            <SpamError
+                              mensaje={erroresCampos["desc_sinc_descripcion"]}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {permissions[66] ? (
               <div className="card card-item">
                 <div className="card-body">
