@@ -9,6 +9,8 @@ import GraficCircle from "../../components/grafics/GraficCircle";
 import Dropdown from "react-bootstrap/Dropdown";
 import Button from "react-bootstrap/Button";
 import uwu from "../../assets/icons/Gif_glomind.gif";
+import audio from "./AudioRecortedCalificaciones.mp3";
+import { colors } from "@mui/material";
 
 const FomularioCalificaciones = () => {
   const { jwt } = useContext(AuthContext);
@@ -23,6 +25,7 @@ const FomularioCalificaciones = () => {
   const [levelOne, setLevelOne] = useState("");
   const [levelTwo, setLevelTwo] = useState("");
   const [levelThree, setLevelThree] = useState("");
+  const [muted, setMuted] = useState(false);
 
   // State navbar
   const [showNav, setShowNav] = useState(false);
@@ -395,79 +398,91 @@ const FomularioCalificaciones = () => {
     <>
       {!showDiv && (
         <>
-          {showNav && (
-            <div className="pt-3 pl-4">
-              <button
-                className="btn theme-btn btn-round"
-                style={{
-                  padding: "5px 20px",
-                  display:
-                    levelOne === "doctorado" || levelOne === "" ? "" : "none",
-                }}
-              >
-                Doctorado
-              </button>
-              <button
-                className="btn theme-btn btn-round ml-2"
-                style={{
-                  padding: "5px 20px",
-                  display:
-                    levelOne === "maestria" || levelOne === "" ? "" : "none",
-                }}
-              >
-                Maestria
-              </button>
-              <button
-                className="btn theme-btn btn-round ml-2"
-                style={{
-                  padding: "5px 20px",
-                  display:
-                    levelOne === "licenciatura" || levelOne === ""
-                      ? ""
-                      : "none",
-                }}
-              >
-                Licenciatura
-              </button>
+          <div className="pt-3 pl-4 d-flex">
+            <button
+              className="icon-button mr-3"
+              onClick={() => setMuted(!muted)}
+              style={{ width: "50px", height: "50px" }}
+            >
+              <i
+                className={`${muted ? "la la-volume-mute" : "la la-volume-up"}`}
+                style={{ color: "var(--Lavander)", fontSize: "50px" }}
+              />
+            </button>
+            {showNav && (
+              <>
+                <button
+                  className="btn theme-btn btn-round"
+                  style={{
+                    padding: "5px 20px",
+                    display:
+                      levelOne === "doctorado" || levelOne === "" ? "" : "none",
+                  }}
+                >
+                  Doctorado
+                </button>
+                <button
+                  className="btn theme-btn btn-round ml-2"
+                  style={{
+                    padding: "5px 20px",
+                    display:
+                      levelOne === "maestria" || levelOne === "" ? "" : "none",
+                  }}
+                >
+                  Maestria
+                </button>
+                <button
+                  className="btn theme-btn btn-round ml-2"
+                  style={{
+                    padding: "5px 20px",
+                    display:
+                      levelOne === "licenciatura" || levelOne === ""
+                        ? ""
+                        : "none",
+                  }}
+                >
+                  Licenciatura
+                </button>
 
-              <button
-                className="btn btn-round ml-2"
-                style={{
-                  padding: "5px 20px",
-                  backgroundColor: "#8A7FBA",
-                  color: "white",
-                  display:
-                    levelOne === "maestria" &&
-                    (levelTwo === "mast-educa" || levelTwo === "")
-                      ? ""
-                      : "none",
-                }}
-              >
-                Educación
-              </button>
-              {/* <button className="btn btn-round ml-2" style={{ padding: "5px 20px", backgroundColor: "#8A7FBA", color: "white" }}>
+                <button
+                  className="btn btn-round ml-2"
+                  style={{
+                    padding: "5px 20px",
+                    backgroundColor: "#8A7FBA",
+                    color: "white",
+                    display:
+                      levelOne === "maestria" &&
+                      (levelTwo === "mast-educa" || levelTwo === "")
+                        ? ""
+                        : "none",
+                  }}
+                >
+                  Educación
+                </button>
+                {/* <button className="btn btn-round ml-2" style={{ padding: "5px 20px", backgroundColor: "#8A7FBA", color: "white" }}>
               Maestria
             </button>
             <button className="btn btn-round ml-2" style={{ padding: "5px 20px", backgroundColor: "#8A7FBA", color: "white" }}>
               Licenciatura
             </button> */}
-              <button
-                className="btn btn-round ml-2"
-                style={{
-                  padding: "5px 20px",
-                  backgroundColor: "#431E8F",
-                  color: "white",
-                  display:
-                    levelTwo !== "" &&
-                    (levelThree === "semester" || levelThree === "")
-                      ? ""
-                      : "none",
-                }}
-              >
-                Semestres
-              </button>
-            </div>
-          )}
+                <button
+                  className="btn btn-round ml-2"
+                  style={{
+                    padding: "5px 20px",
+                    backgroundColor: "#431E8F",
+                    color: "white",
+                    display:
+                      levelTwo !== "" &&
+                      (levelThree === "semester" || levelThree === "")
+                        ? ""
+                        : "none",
+                  }}
+                >
+                  Semestres
+                </button>
+              </>
+            )}
+          </div>
           <div
             style={{
               display: "flex",
@@ -506,11 +521,7 @@ const FomularioCalificaciones = () => {
                 >
                   {dropdown.id === 1 ? (
                     <div>
-                      <img
-                        src={uwu}
-                        width={150}
-                        onClick={() => resetVis()}
-                      />
+                      <img src={uwu} width={150} onClick={() => resetVis()} />
                     </div>
                   ) : (
                     <img src={dropdown.label} />
@@ -562,6 +573,7 @@ const FomularioCalificaciones = () => {
               <i className="la la-arrow-left icon ml-1"></i> Atrás
             </button>
           )}
+
           <CustomBreandcrumb
             titles={[
               cursoSeleccionado === null
@@ -578,17 +590,29 @@ const FomularioCalificaciones = () => {
             <>
               <div className="d-flex mt-5">
                 <button
-                  className="btn theme-btn-white btn-round py 3 mr-3"
+                  className="icon-button"
+                  onClick={() => setMuted(!muted)}
+                  style={{ width: "50px", height: "50px" }}
+                >
+                  <i
+                    className={`${
+                      muted ? "la la-volume-mute" : "la la-volume-up"
+                    }`}
+                    style={{ color: "var(--Lavander)", fontSize: "50px" }}
+                  />
+                </button>
+                <button
+                  className="btn theme-btn btn-round py 3 mx-3"
                   onClick={() => {
-                    setShowDiv(false),
-                      setLevelOne(""),
-                      setLevelTwo(""),
-                      setLevelThree("");
+                    setShowDiv(false);
+                    setLevelOne("");
+                    setLevelTwo("");
+                    setLevelThree("");
                     setShowNav(false);
                   }}
                 >
-                  <i className="la la-filter icon mr-1"></i>
-                  Reset
+                  <i className="la la-arrow-left icon mr-1"></i>
+                  Volver
                 </button>
               </div>
               <div className="custom-table">
@@ -671,7 +695,10 @@ const FomularioCalificaciones = () => {
                       {actividad.porcentaje_en_total_curso}
                     </div>
                     <div className="col">
-                      <GraficCircle value={actividad.nota ?? "0.00"} maxValue={5} />
+                      <GraficCircle
+                        value={actividad.nota ?? "0.00"}
+                        maxValue={5}
+                      />
                     </div>
                   </div>
                 ))}
@@ -683,6 +710,7 @@ const FomularioCalificaciones = () => {
           </div>
         </div>
       )}
+      <audio src={audio} autoPlay muted={muted} loop />
     </>
   );
 };

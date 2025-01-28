@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 
 // IMPORTADOS
-import CardLogin from "../../components/cardLogin/CardLogin";
+import CardLogin from "../cardLogin/CardLogin";
 import IconEyeOpen from "../../assets/icons/IconEyeOpen";
 import IconEyeClose from "../../assets/icons/IconEyeClose";
 
