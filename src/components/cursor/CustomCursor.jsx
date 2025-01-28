@@ -6,11 +6,12 @@ import { useLocation } from "react-router-dom";
 function CustomCursor() {
   const { isImage, urlImage } = useSelector((state) => state.cursor);
   const location = useLocation();
-  const locationsNo90 = ["/signup", "/login", "/recover"];
+  const locationsNo90 = ["/", "/signup", "/login", "/recover"];
   const [cursorX, setCursorX] = useState(0);
   const [cursorY, setCursorY] = useState(0);
   const [deviceType, setDeviceType] = useState("");
   const [buttonHovered, setButtonHovered] = useState(false);
+  const [isMenos90, setIsMenos90] = useState(false);
 
   // Check if it is a touch device
   const isTouchDevice = () => {
@@ -27,11 +28,9 @@ function CustomCursor() {
   const move = (e) => {
     const touchEvent = e.touches ? e.touches[0] : null;
     const x = !isTouchDevice() ? e.pageX : touchEvent?.pageX || 0;
-    let y = 0;
-    if (locationsNo90.includes(location.pathname)) {
-      y = !isTouchDevice() ? e.pageY : touchEvent?.pageY || 0;
-    } else {
-      y = !isTouchDevice() ? e.pageY - 90 : touchEvent?.pageY || 0;
+    let y = !isTouchDevice() ? e.pageY - 90 : touchEvent?.pageY || 0;
+    if (!isMenos90) {
+      y = y + 90;
     }
     // const y = !isTouchDevice() ? e.pageY + window.scrollY : touchEvent?.pageY + window.scrollY || 0;
 
@@ -70,7 +69,11 @@ function CustomCursor() {
       document.addEventListener("mouseover", handleMouseOver);
       document.addEventListener("mouseout", handleMouseOut);
     };
-  }, []);
+  }, [isMenos90]);
+
+  useEffect(() => {
+    setIsMenos90(!locationsNo90.includes(location.pathname));
+  }, [location]);
 
   return (
     <div>

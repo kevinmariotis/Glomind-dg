@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -468,10 +468,16 @@ const Rutas = () => {
                   <PaginaIniciarSesion />
                 </ProtectedRoute>
               ) : (
-                <ProtectedRoute permiso={authenticated}>
-                  <PaginaInicio />
-                </ProtectedRoute>
+                <Navigate to={"/inicio"} />
               )
+            }
+          />
+          <Route
+            path="/inicio"
+            element={
+              <ProtectedRoute permiso={authenticated}>
+                <PaginaInicio />
+              </ProtectedRoute>
             }
           />
           <Route
