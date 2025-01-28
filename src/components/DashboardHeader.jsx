@@ -350,7 +350,8 @@ function DashboardHeader({ expandir_ancho = false }) {
           style={{
             position: "fixed",
             top: 0,
-            right: 0
+            right: 0,
+            zIndex: "10000"
           }}
         >
           <div className="container-fluid">

@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 import store from "../redux/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+import CustomCursor from "./cursor/CustomCursor";
+import AnimatedCursor from "react-animated-cursor";
 // import AnimatedCursor from "react-animated-cursor";
 
 function App() {
@@ -20,6 +22,7 @@ function App() {
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <AuthProvider>
+            <CustomCursor />
             {/* <AnimatedCursor
               zIndex={9999}
               innerSize={20}
