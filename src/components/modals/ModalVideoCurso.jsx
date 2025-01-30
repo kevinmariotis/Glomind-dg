@@ -22,11 +22,11 @@ const ModalVideoCurso = ({ curso = {}, video }) => {
   return (
     <>
       <button
-        className="btn theme-btn btn-round py 3"
-        style={{ width: "70px !important", marginLeft: "10px" }}
+        className="btn theme-btn btn-round d-flex align-items-center w-100"
         onClick={handleShow}
       >
-        <i className="la la-play icon"></i>
+        <i className="la la-play icon mr-2"></i>
+        Ver video
       </button>
 
       <Modal className="custom-modal" show={show} onHide={handleClose} centered>

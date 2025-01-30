@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import "./Grafics.scss";
 
-const GraficCircle = ({ value = "0.00", maxValue = 100 }) => {
+const GraficCircle = ({
+  value = "0.00",
+  maxValue = 100,
+  isPercentaje = false,
+}) => {
   const [percentaje, setPercentaje] = useState("0");
 
   useEffect(() => {
@@ -23,7 +27,10 @@ const GraficCircle = ({ value = "0.00", maxValue = 100 }) => {
       >
         <div className="external-section">
           <div className="internal-section">
-            <div className="text">{value}</div>
+            <div className="text">
+              {value}
+              {isPercentaje ? "%" : ""}
+            </div>
           </div>
         </div>
       </div>

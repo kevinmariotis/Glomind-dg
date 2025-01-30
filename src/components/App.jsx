@@ -7,15 +7,14 @@ import store from "../redux/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import CustomCursor from "./cursor/CustomCursor";
-import AnimatedCursor from "react-animated-cursor";
 // import AnimatedCursor from "react-animated-cursor";
 
 function App() {
+  const persistor = persistStore(store);
+  
   useEffect(() => {
     fijarHeader();
   }, []);
-
-  const persistor = persistStore(store);
 
   return (
     <React.StrictMode>

@@ -58,13 +58,15 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
     }
   };
   const handleMouseEnter = (urlImage, id) => {
-    dispatch(
-      setImage({
-        isImage: true,
-        urlImage,
-      })
-    );
-    setIdHovered(id);
+    if (!isOpen.includes(id)) {
+      dispatch(
+        setImage({
+          isImage: true,
+          urlImage,
+        })
+      );
+      setIdHovered(id);
+    }
   };
 
   const handleMouseLeave = () => {
@@ -117,40 +119,91 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
   return (
     <>
       {show ? (
-        <section className="course-dashboard" style={{ marginTop: "80px" }}>
+        <section className="course-dashboard" style={{ marginTop: "90px" }}>
           <div
             className="course-dashboard-wrap"
             style={{ paddingBottom: "100px" }}
           >
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <button className="btn-arrow left" onClick={() => navigate(-1)}>
-                <i className="la la-arrow-left"></i>
-              </button>
+            <div style={{ padding: "30px 50px" }}>
               <button
-                className="btn-arrow"
-                onClick={() => setVerBienvenida(false)}
+                className="btn theme-btn btn-round mb-4"
+                onClick={() => navigate(-1)}
               >
-                <i className="la la-arrow-right"></i>
+                <i className="la la-arrow-left mr-2"></i>
+                Atras
               </button>
-            </div>
-            <div style={{ padding: "50px" }}>
               <div className="row">
                 <div className="card-user col-lg-6">
                   <p className="text">{datosCurso.nombre}</p>
-                  <p className="legend">
+                  <p className="legend mt-3">
                     A través de cinco módulos cuidadosamente estructurados, los
                     participantes explorarán desde los fundamentos de la IA
                     hasta su aplicación práctica en el aula,fomentando la
-                    innovación educativa y el aprendizaje significativo. El
-                    curso se compone de esta manera:
+                    innovación educativa y el aprendizaje significativo.
                   </p>
                 </div>
+              </div>
+            </div>
+            <div style={{ padding: "10px 50px 50px 50px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                  background: "var(--Lavander-100)",
+                  borderRadius: "10px",
+                  padding: "5px 0",
+                }}
+              >
+                <div>Tiempo certificado:</div>
+                <div>{datosCurso.desc_tiempo_certificado} Horas</div>
+              </div>
+              <div className="lecture-overview-item">
+                <div className="lecture-overview-stats-wrap d-flex">
+                  <div className="lecture-overview-stats-item">
+                    <h3 className="fs-16 font-weight-semi-bold pb-2">
+                      Con este curso serás capaz de:
+                    </h3>
+                  </div>
+                  <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
+                    <ul className="generic-list-item overview-list-item">
+                      {datosCurso?.desc_que_aprenderas
+                        ?.split("<separador>")
+                        ?.map((key) => (
+                          <li key={`queAprenderas${key}`}>{key}</li>
+                        ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="section-block"></div>
+              <div className="lecture-overview-item">
+                <div className="lecture-overview-stats-wrap d-flex">
+                  <div className="lecture-overview-stats-item">
+                    <h3 className="fs-16 font-weight-semi-bold pb-2">
+                      Dirigido a:
+                    </h3>
+                  </div>
+                  <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
+                    <ul className="generic-list-item overview-list-item fs-15">
+                      {datosCurso?.desc_requerimientos
+                        ?.split("<separador>")
+                        ?.map((key) => (
+                          <li key={`requerimientos${key}`}>{key}</li>
+                        ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div style={{ width: "100%", textAlign: "right" }}>
+                <button
+                  className="btn theme-btn btn-round"
+                  onClick={() => setVerBienvenida(false)}
+                  style={{ marginLeft: "auto" }}
+                >
+                  Ir al Diplomado
+                  <i className="la la-arrow-right ml-2"></i>
+                </button>
               </div>
             </div>
             <div>
@@ -162,17 +215,27 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                       padding: "30px 50px",
                       justifyContent: "space-between",
                     }}
-                    onMouseEnter={() =>
-                      handleMouseEnter(modulo.imagenes[0], modulo.id)
-                    }
-                    onMouseLeave={handleMouseLeave}
                   >
                     <div
                       className="text-left"
                       style={{
-                        maxWidth: "1000px",
+                        maxWidth: "1300px",
                       }}
+                      onMouseEnter={() =>
+                        handleMouseEnter(modulo.imagenes[0], modulo.id)
+                      }
+                      onMouseLeave={handleMouseLeave}
                     >
+                      <h2
+                        className="mb-1"
+                        style={{
+                          fontSize: "40px",
+                          fontWeight: "bold",
+                          color: "var(--Lavander)",
+                        }}
+                      >
+                        Módulo #{index + 1}
+                      </h2>
                       <h2 className="mb-3">{modulo.title}</h2>
                       <p className="text-muted">{modulo.description}</p>
                     </div>
@@ -180,8 +243,8 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                       <div className="text-center">
                         <button
                           className="btn theme-btn rounded-circle"
-                          onClick={() => toggleAccordion(index)}
-                          aria-expanded={isOpen.includes(index)}
+                          onClick={() => toggleAccordion(modulo.id)}
+                          aria-expanded={isOpen.includes(modulo.id)}
                           style={{
                             width: "70px",
                             height: "70px",
@@ -196,7 +259,9 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                         >
                           <i
                             className={`la ${
-                              isOpen.includes(index) ? "la-minus" : "la-plus"
+                              isOpen.includes(modulo.id)
+                                ? "la-minus"
+                                : "la-plus"
                             }`}
                             style={{ fontSize: "40px" }}
                           ></i>
@@ -206,7 +271,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                   </div>
                   <div
                     className={`my-4 collapse ${
-                      isOpen.includes(index) ? "show" : ""
+                      isOpen.includes(modulo.id) ? "show" : ""
                     }`}
                     style={{ padding: "0 40px" }}
                   >

@@ -1531,8 +1531,8 @@ body {
 
 /*======== section-block =========*/
 .section-block {
-  height: 1px;
-  background-color: rgba(127, 136, 151, 0.1);
+  height: 2px;
+  background-color: rgba(127, 136, 151, 0.2);
 }
 
 .hover-underline:hover {
