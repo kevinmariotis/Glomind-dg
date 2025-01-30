@@ -8,10 +8,11 @@ import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
 const CursosRecientes = () => {
-  const { jwt } = useContext(AuthContext);
+  const { jwt, esMovil } = useContext(AuthContext);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const [cursosRecientes, setCursosRecientes] = useState([]);
   const [autoPlay, setAutoPlay] = useState(true);
+  const [showContorls, setShowControls] = useState(false);
 
   const obtenerDatosCursos = async () => {
     const headers = {
@@ -115,40 +116,45 @@ const CursosRecientes = () => {
           </Swiper>
 
           {/* Botones de navegación personalizados */}
-          <button
-            id="prevBtn"
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "10px",
-              zIndex: 10,
-              backgroundColor: "var(--Lavander)",
-              border: "none",
-              fontSize: "30px",
-              color: "white",
-              padding: "10px",
-              borderRadius: "50%",
-            }}
-          >
-            <i className="la la-arrow-left"></i>
-          </button>
-          <button
-            id="nextBtn"
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: "10px",
-              zIndex: 10,
-              backgroundColor: "var(--Lavander)",
-              border: "none",
-              fontSize: "30px",
-              color: "white",
-              padding: "10px",
-              borderRadius: "50%",
-            }}
-          >
-            <i className="la la-arrow-right"></i>
-          </button>
+          {!esMovil && showContorls && (
+            <>
+              {" "}
+              <button
+                id="prevBtn"
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "10px",
+                  zIndex: 10,
+                  backgroundColor: "var(--Lavander)",
+                  border: "none",
+                  fontSize: "30px",
+                  color: "white",
+                  padding: "10px",
+                  borderRadius: "50%",
+                }}
+              >
+                <i className="la la-arrow-left"></i>
+              </button>
+              <button
+                id="nextBtn"
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  right: "10px",
+                  zIndex: 10,
+                  backgroundColor: "var(--Lavander)",
+                  border: "none",
+                  fontSize: "30px",
+                  color: "white",
+                  padding: "10px",
+                  borderRadius: "50%",
+                }}
+              >
+                <i className="la la-arrow-right"></i>
+              </button>
+            </>
+          )}
         </>
       )}
     </div>
