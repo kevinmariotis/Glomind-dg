@@ -1,11 +1,15 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useContext, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
+import { setImage } from "../../redux/slices/CursorSlice";
 
 function CustomCursor() {
+  const { esMovil } = useContext(AuthContext);
   const { isImage, urlImage } = useSelector((state) => state.cursor);
   const location = useLocation();
+  const dispatch = useDispatch();
   const locationsNo90 = ["/", "/signup", "/login", "/recover"];
   const [cursorX, setCursorX] = useState(0);
   const [cursorY, setCursorY] = useState(0);
@@ -75,10 +79,23 @@ function CustomCursor() {
     setIsMenos90(!locationsNo90.includes(location.pathname));
   }, [location]);
 
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      dispatch(
+        setImage({
+          isImage: false,
+          urlImage: "",
+        })
+      );
+    });
+  }, []);
+
   return (
-    <div>
-      <style>
-        {`
+    <>
+      {!esMovil ? (
+        <div>
+          <style>
+            {`
         * {
             margin: 0;
             cursor: none !important;
@@ -120,25 +137,27 @@ function CustomCursor() {
             transition: all 0.2s ease-out;
         }
       `}
-      </style>
-      {isImage ? (
-        <>
-          <img
-            id="cursor-image"
-            style={{ left: `${cursorX}px`, top: `${cursorY}px` }}
-            src={urlImage}
-          ></img>
-        </>
-      ) : (
-        <>
-          <div
-            id="cursor"
-            style={{ left: `${cursorX}px`, top: `${cursorY}px` }}
-          ></div>
-          <div id="cursor-border"></div>
-        </>
-      )}
-    </div>
+          </style>
+          {isImage ? (
+            <>
+              <img
+                id="cursor-image"
+                style={{ left: `${cursorX}px`, top: `${cursorY}px` }}
+                src={urlImage}
+              ></img>
+            </>
+          ) : (
+            <>
+              <div
+                id="cursor"
+                style={{ left: `${cursorX}px`, top: `${cursorY}px` }}
+              ></div>
+              <div id="cursor-border"></div>
+            </>
+          )}
+        </div>
+      ) : null}
+    </>
   );
 }
 
