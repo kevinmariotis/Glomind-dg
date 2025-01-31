@@ -22,7 +22,7 @@ function App() {
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <AuthProvider>
-            {/* <CustomCursor /> */}
+            <CustomCursor />
             {/* <AnimatedCursor
               zIndex={9999}
               innerSize={20}

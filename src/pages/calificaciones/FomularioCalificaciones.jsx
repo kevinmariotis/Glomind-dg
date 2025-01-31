@@ -158,7 +158,7 @@ const FomularioCalificaciones = () => {
     {
       id: 2,
       code: "doctorado",
-      label: "src/assets/icons/calificaciones/doctorado.svg",
+      label: "images/calificaciones/doctorado.svg",
       level: "DOS",
       stylus: { backgroundColor: "#8547FF" },
       position: { bottom: 20 },
@@ -168,7 +168,7 @@ const FomularioCalificaciones = () => {
     {
       id: 3,
       code: "licenciatura",
-      label: "src/assets/icons/calificaciones/licenciatura.svg",
+      label: "images/calificaciones/licenciatura.svg",
       level: "DOS",
       stylus: { backgroundColor: "#8547FF" },
       position: { top: 95 },
@@ -178,7 +178,7 @@ const FomularioCalificaciones = () => {
     {
       id: 4,
       code: "maestria",
-      label: "src/assets/icons/calificaciones/maestria.svg",
+      label: "images/calificaciones/maestria.svg",
       level: "DOS",
       stylus: { backgroundColor: "#8547FF" },
       position: { left: 95 },
@@ -188,7 +188,7 @@ const FomularioCalificaciones = () => {
     {
       id: 5,
       code: "diplomado",
-      label: "src/assets/icons/calificaciones/diplomado.svg",
+      label: "images/calificaciones/diplomado.svg",
       level: "DOS",
       stylus: { backgroundColor: "#8547FF" },
       position: { left: -95 },
@@ -199,7 +199,7 @@ const FomularioCalificaciones = () => {
     {
       id: 6,
       code: "doc-derecho",
-      label: "src/assets/icons/calificaciones/doc-derecho.svg",
+      label: "images/calificaciones/doc-derecho.svg",
       level: "TRES",
       cursoId: 57,
       stylus: { backgroundColor: "#8A7FBA" },
@@ -210,7 +210,7 @@ const FomularioCalificaciones = () => {
     {
       id: 7,
       code: "doc-educa",
-      label: "src/assets/icons/calificaciones/doc-educa.svg",
+      label: "images/calificaciones/doc-educa.svg",
       level: "TRES",
       cursoId: 55,
       stylus: { backgroundColor: "#8A7FBA" },
@@ -221,7 +221,7 @@ const FomularioCalificaciones = () => {
     {
       id: 8,
       code: "mast-educa",
-      label: "src/assets/icons/calificaciones/maestria-educa.svg",
+      label: "images/calificaciones/maestria-educa.svg",
       level: "TRES",
       cursoId: 54,
       stylus: { backgroundColor: "#8A7FBA" },
@@ -233,7 +233,7 @@ const FomularioCalificaciones = () => {
     {
       id: 9,
       code: "lic-desarrollo",
-      label: "src/assets/icons/calificaciones/lic-desarrollo.svg",
+      label: "images/calificaciones/lic-desarrollo.svg",
       level: "TRES",
       cursoId: 56,
       stylus: { backgroundColor: "#8A7FBA" },
@@ -244,7 +244,7 @@ const FomularioCalificaciones = () => {
     {
       id: 10,
       code: "lic-ciencia",
-      label: "src/assets/icons/calificaciones/lic-ciencia.svg",
+      label: "images/calificaciones/lic-ciencia.svg",
       level: "TRES",
       cursoId: 52,
       stylus: { backgroundColor: "#8A7FBA" },
@@ -255,7 +255,7 @@ const FomularioCalificaciones = () => {
     {
       id: 11,
       code: "lic-pedago",
-      label: "src/assets/icons/calificaciones/lic-pedago.svg",
+      label: "images/calificaciones/lic-pedago.svg",
       level: "TRES",
       cursoId: 93,
       stylus: { backgroundColor: "#8A7FBA" },
@@ -266,7 +266,7 @@ const FomularioCalificaciones = () => {
     {
       id: 12,
       code: "diplo-ia",
-      label: "src/assets/icons/calificaciones/diplo-ia.svg",
+      label: "images/calificaciones/diplo-ia.svg",
       level: "TRES",
       cursoId: 170,
       stylus: { backgroundColor: "#8A7FBA" },
@@ -279,7 +279,7 @@ const FomularioCalificaciones = () => {
     {
       id: 13,
       code: "Primer Semestre",
-      label: "src/assets/icons/calificaciones/semester/sem-1.svg",
+      label: "images/calificaciones/semester/sem-1.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#431E8F" },
       position: { left: 270, top: -60 },
@@ -289,7 +289,7 @@ const FomularioCalificaciones = () => {
     {
       id: 14,
       code: "Segundo Semestre",
-      label: "src/assets/icons/calificaciones/semester/sem-2.svg",
+      label: "images/calificaciones/semester/sem-2.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#431E8F" },
       position: { left: 270, top: 60 },
@@ -300,7 +300,7 @@ const FomularioCalificaciones = () => {
     {
       id: 15,
       code: "Primer Semestre",
-      label: "src/assets/icons/calificaciones/semester/sem-1.svg",
+      label: "images/calificaciones/semester/sem-1.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#431E8F" },
       position: { top: 270, left: -60 },
@@ -310,7 +310,7 @@ const FomularioCalificaciones = () => {
     {
       id: 16,
       code: "Segundo Semestre",
-      label: "src/assets/icons/calificaciones/semester/sem-2.svg",
+      label: "images/calificaciones/semester/sem-2.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#431E8F" },
       position: { top: 270, left: 60 },
@@ -321,7 +321,7 @@ const FomularioCalificaciones = () => {
     {
       id: 17,
       code: "Primer Semestre",
-      label: "src/assets/icons/calificaciones/semester/sem-1.svg",
+      label: "images/calificaciones/semester/sem-1.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#431E8F" },
       position: { bottom: 205, left: -50 },
@@ -331,7 +331,7 @@ const FomularioCalificaciones = () => {
     {
       id: 18,
       code: "Segundo Semestre",
-      label: "src/assets/icons/calificaciones/semester/sem-2.svg",
+      label: "images/calificaciones/semester/sem-2.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#431E8F" },
       position: { bottom: 205, left: 50 },
@@ -342,7 +342,7 @@ const FomularioCalificaciones = () => {
     {
       id: 19,
       code: "Primer Semestre",
-      label: "src/assets/icons/calificaciones/semester/sem-1.svg",
+      label: "images/calificaciones/semester/sem-1.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#431E8F" },
       position: { left: -270, top: -60 },
@@ -352,7 +352,7 @@ const FomularioCalificaciones = () => {
     {
       id: 20,
       code: "Segundo Semestre",
-      label: "src/assets/icons/calificaciones/semester/sem-2.svg",
+      label: "images/calificaciones/semester/sem-2.svg",
       level: "CUATRO",
       stylus: { backgroundColor: "#431E8F" },
       position: { left: -270, top: 60 },
@@ -514,7 +514,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/doctorado.svg"
+                    src="images/calificaciones/doctorado.svg"
                     width={30}
                     style={{ marginRight: "10px" }}
                   />
@@ -529,7 +529,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/maestria.svg"
+                    src="images/calificaciones/maestria.svg"
                     width={25}
                     style={{ marginRight: "10px" }}
                   />
@@ -546,7 +546,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/licenciatura.svg"
+                    src="images/calificaciones/licenciatura.svg"
                     width={22}
                     style={{ marginRight: "10px" }}
                   />
@@ -561,7 +561,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/diplomado.svg"
+                    src="images/calificaciones/diplomado.svg"
                     width={30}
                     style={{ marginRight: "10px" }}
                   />
@@ -584,7 +584,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/doc-derecho.svg"
+                    src="images/calificaciones/doc-derecho.svg"
                     width={35}
                     style={{ marginRight: "10px" }}
                   />
@@ -605,7 +605,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/doc-educa.svg"
+                    src="images/calificaciones/doc-educa.svg"
                     width={20}
                     style={{ marginRight: "10px" }}
                   />
@@ -627,7 +627,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/maestria-educa.svg"
+                    src="images/calificaciones/maestria-educa.svg"
                     width={35}
                     style={{ marginRight: "5px" }}
                   />
@@ -649,7 +649,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/lic-ciencia.svg"
+                    src="images/calificaciones/lic-ciencia.svg"
                     width={35}
                     style={{ marginRight: "5px" }}
                   />
@@ -670,7 +670,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/lic-desarrollo.svg"
+                    src="images/calificaciones/lic-desarrollo.svg"
                     width={35}
                     style={{ marginRight: "5px" }}
                   />
@@ -691,7 +691,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/lic-pedago.svg"
+                    src="images/calificaciones/lic-pedago.svg"
                     width={35}
                     style={{ marginRight: "5px" }}
                   />
@@ -711,7 +711,7 @@ const FomularioCalificaciones = () => {
                   }}
                 >
                   <img
-                    src="src/assets/icons/calificaciones/diplo-ia.svg"
+                    src="images/calificaciones/diplo-ia.svg"
                     width={30}
                     style={{ marginRight: "5px" }}
                   />
