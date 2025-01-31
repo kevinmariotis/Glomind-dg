@@ -1,4 +1,4 @@
-import{ useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import { AuthContext } from "../AuthContext";
@@ -255,6 +255,12 @@ function FormularioRegistrarse() {
               <div className="col-lg-7 mx-auto">
                 <div className="card card-item card-round">
                   <div className="card-body p-0">
+                    <h3
+                      className="card-title text-center fs-40 lh-35 pb-2 mb-4"
+                      style={{ color: "var(--Lavander)" }}
+                    >
+                      ¡Bienvenido a Glomind!
+                    </h3>
                     <h3 className="card-title text-start fs-24 lh-35 pb-4">
                       Crea una cuenta
                     </h3>
