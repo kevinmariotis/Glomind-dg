@@ -70,7 +70,9 @@ function TarjetaCursoAdmin({
           {/* </Link> */}
         </div>
         <div className="card-body content-card-course">
-          <div style={{ height: "220px", overflow: "auto", marginBottom: "10px" }}>
+          <div
+            style={{ height: "220px", overflow: "auto", marginBottom: "10px" }}
+          >
             <h5 className="card-title text-center">
               <Link to={`${urlBase}/play/${url_amigable}`}>{nombre}</Link>
             </h5>
@@ -114,32 +116,50 @@ function TarjetaCursoAdmin({
           </div>
           <div>
             <div className="row">
-              <button
-                className="col-12 btn theme-btn btn-round w-100 d-flex align-items-center"
-                onClick={() =>
-                  navigate(`/play/${url_amigable}`, { state: state })
-                }
+              <div
+                className={`${
+                  curso.personalizado_tipo_curso === "diplomado"
+                    ? "col-12"
+                    : "col-8"
+                } p-0 pr-1 mt-2`}
               >
-                {labelButton !== "" ? labelButton : "Ir al curso"}
-                <i className="la la-arrow-right icon ml-1"></i>
-              </button>
+                <button
+                  className={` btn theme-btn btn-round d-flex align-items-center`}
+                  onClick={() =>
+                    navigate(`/play/${url_amigable}`, { state: state })
+                  }
+                  style={{ width: "100%" }}
+                >
+                  {labelButton !== "" ? labelButton : "Ir al curso"}
+                  <i className="la la-arrow-right icon ml-1"></i>
+                </button>
+              </div>
+
               {btnVideo && (
                 <>
-                  <div className="col-6 p-0 pr-1 mt-2">
+                  <div
+                    className={`${
+                      curso.personalizado_tipo_curso === "diplomado"
+                        ? "col-6"
+                        : "col-4"
+                    } p-0 pr-1 mt-2`}
+                  >
                     <ModalVideoCurso curso={curso} video={curso.video_grande} />
                   </div>
-                  <div className="col-6 p-0 pl-1 mt-2">
-                    <button
-                      className="btn theme-btn btn-round d-flex align-items-center"
-                      onClick={() =>
-                        navigate(`/play/${url_amigable}`, { state: state })
-                      }
-                      style={{ width: "100%" }}
-                    >
-                      <i className="la la-download icon mr-2"></i>
-                      Fecha tecnica
-                    </button>
-                  </div>
+                  {curso.personalizado_tipo_curso === "diplomado" && (
+                    <div className="col-6 p-0 pl-1 mt-2">
+                      <button
+                        className="btn theme-btn btn-round d-flex align-items-center"
+                        onClick={() =>
+                          navigate(`/play/${url_amigable}`, { state: state })
+                        }
+                        style={{ width: "100%" }}
+                      >
+                        <i className="la la-download icon mr-2"></i>
+                        Fecha tecnica
+                      </button>
+                    </div>
+                  )}
                 </>
               )}
             </div>

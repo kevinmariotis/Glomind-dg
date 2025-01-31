@@ -135,7 +135,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
               <div className="row">
                 <div className="card-user col-lg-6">
                   <p className="text">{datosCurso.nombre}</p>
-                  <p className="legend mt-3">
+                  <p className="legend mt-3 text-justify">
                     A través de cinco módulos cuidadosamente estructurados, los
                     participantes explorarán desde los fundamentos de la IA
                     hasta su aplicación práctica en el aula,fomentando la

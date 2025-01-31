@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CustomBreandcrumb from "../../components/BreadCrumb/CustomBreandcrumb";
 import { AuthContext } from "../../AuthContext";
 import DashboardFooter from "../../components/DashboardFooter";
@@ -488,6 +488,11 @@ const FomularioCalificaciones = () => {
     // document.getElementById(dropdown.id).style.visibility = "hidden";
   };
 
+  useEffect(() => {
+    const audio = document.getElementById("miAudio");
+    audio.volume = 0.5;
+  }, []);
+
   return (
     <>
       {!showDiv && (
@@ -830,7 +835,8 @@ const FomularioCalificaciones = () => {
             titles={[
               cursoSeleccionado === null
                 ? "Mis calificaciones"
-                : cursos.find((curso) => curso?.id === cursoSeleccionado)?.nombre,
+                : cursos.find((curso) => curso?.id === cursoSeleccionado)
+                    ?.nombre,
             ]}
           />
           {cursoSeleccionado !== null && (
@@ -986,7 +992,9 @@ const FomularioCalificaciones = () => {
           </div>
         </div>
       )}
-      <audio src={audio} autoPlay muted={muted} loop />
+      <audio id="miAudio" autoPlay muted={muted} loop>
+        <source src={audio} type="audio/mp3" />
+      </audio>
     </>
   );
 };
