@@ -478,12 +478,10 @@ const FomularioCalificaciones = () => {
         document.getElementById(`drop-7`).style.visibility = "hidden";
         document.getElementById(`drop-6`).style.left = null;
       } else if (obj.code === "diplo-ia") {
-        console.log(levelOne, levelTwo, levelThree);
         setShowDiv(true);
       }
     } else if (obj.level === "CUATRO") {
       setLevelThree(obj.code);
-      console.log(levelOne, levelTwo, levelThree);
       setShowDiv(true);
     }
     // dropdown.status = !dropdown.status;
@@ -771,7 +769,6 @@ const FomularioCalificaciones = () => {
                   }}
                   onClick={() => {
                     selectOpt(dropdown);
-                    // console.log("wenas CAPA:", dropdown.status);
                   }}
                 >
                   {dropdown.id === 1 ? (
@@ -833,7 +830,7 @@ const FomularioCalificaciones = () => {
             titles={[
               cursoSeleccionado === null
                 ? "Mis calificaciones"
-                : cursos.find((curso) => curso.id === cursoSeleccionado).nombre,
+                : cursos.find((curso) => curso?.id === cursoSeleccionado)?.nombre,
             ]}
           />
           {cursoSeleccionado !== null && (
@@ -894,7 +891,8 @@ const FomularioCalificaciones = () => {
                 <div className="tbody">
                   {cursos.map((curso, index) => (
                     <>
-                      {curso.categoria_nombre === levelThree && (
+                      {curso.categoria_nombre.substring(0).toLowerCase() ===
+                      levelThree.substring(0).toLowerCase() ? (
                         <div className="row" key={`c-${index}`}>
                           <div className="col">
                             {levelOne[0].toUpperCase() + levelOne.substring(1)}
@@ -920,15 +918,36 @@ const FomularioCalificaciones = () => {
                               Ver calificaciones
                             </button>
                           </div>
-                          {/* <div className="col col-1">
-                    <span
-                      className="icon-button"
-                      onClick={() => verCalificaciones(curso.id)}
-                    >
-                      <i className="la la-search" />
-                    </span>
-                  </div> */}
                         </div>
+                      ) : curso.categoria_nombre === "Diplomados" ? (
+                        <div className="row" key={`c-${index}`}>
+                          <div className="col">
+                            {levelOne[0].toUpperCase() + levelOne.substring(1)}
+                          </div>
+                          <div className="col">{curso.codigo}</div>
+
+                          <div className="col">{curso.categoria_nombre}</div>
+                          <div className="col col-3">{curso.nombre}</div>
+                          <div
+                            className="col d-flex"
+                            style={{ paddingLeft: "50px" }}
+                          >
+                            <GraficCircle
+                              value={curso.calificacion_curso ?? "0.00"}
+                              maxValue={5}
+                            />
+                          </div>
+                          <div className="col">
+                            <button
+                              onClick={() => verCalificaciones(curso.id)}
+                              className="btn theme-btn btn-round"
+                            >
+                              Ver calificaciones
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <></>
                       )}
                     </>
                   ))}
@@ -948,8 +967,8 @@ const FomularioCalificaciones = () => {
                 {actividades.map((actividad, index) => (
                   <div className="row" key={`a-${index}`}>
                     <div className="col">{actividad.nombre}</div>
-                    <div className="col">
-                      {actividad.porcentaje_en_total_curso}
+                    <div className="col ml-5">
+                      {actividad.porcentaje_en_total_curso} %
                     </div>
                     <div className="col">
                       <GraficCircle
