@@ -259,7 +259,7 @@ function FormularioRegistrarse() {
                       className="card-title text-center fs-40 lh-35 pb-2 mb-4"
                       style={{ color: "var(--Lavander)" }}
                     >
-                      ¡Bienvenido a Glomind!
+                      ¡Bienvenid@ a Glomind!
                     </h3>
                     <h3 className="card-title text-start fs-24 lh-35 pb-4">
                       Crea una cuenta

@@ -120,7 +120,7 @@ const FormularioInicio = () => {
         <div className="card-user col-lg-6">
           <p className="legend">EL APRENDIZAJE IMPULSA TU CRECIMIENTO</p>
           <p className="text">{nombres}</p>
-          <p className="text">Bienvenido(a) a Glomind!</p>
+          <p className="text">Bienvenid@ a Glomind!</p>
         </div>
       )}
       {/* Boton atras */}
