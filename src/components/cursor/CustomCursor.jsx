@@ -104,8 +104,8 @@ function CustomCursor() {
         #cursor {
             position: absolute;
             background-color: var(--Lavander);
-            height: 20px;
-            width: 20px;
+            height: 12px;
+            width: 12px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
@@ -126,8 +126,8 @@ function CustomCursor() {
 
         #cursor-border {
             position: absolute;
-            width: ${buttonHovered ? "80px" : "50px"};
-            height: ${buttonHovered ? "80px" : "50px"};
+            width: ${buttonHovered ? "70px" : "40px"};
+            height: ${buttonHovered ? "70px" : "40px"};
             background-color: transparent;
             border: 3px solid var(--Azul-petroleo);
             border-radius: 50%;
