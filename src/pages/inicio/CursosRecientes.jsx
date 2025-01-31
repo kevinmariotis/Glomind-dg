@@ -42,11 +42,20 @@ const CursosRecientes = () => {
     obtenerDatosCursos();
   }, []);
 
+  const handleMouseEnter = () => {
+    setAutoPlay(false);
+    setShowControls(true);
+  };
+  const handleMouseLeave = () => {
+    setAutoPlay(true);
+    setShowControls(false);
+  };
+
   return (
     <div
       style={{ position: "relative" }}
-      onMouseEnter={() => setAutoPlay(false)}
-      onMouseLeave={() => setAutoPlay(true)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {cursosRecientes?.length > 0 && (
         <>
@@ -57,7 +66,7 @@ const CursosRecientes = () => {
               color: "var(--Azul-petroleo)",
             }}
           >
-            Cursos vistos recientemente
+            Cursos recientes
           </h3>
 
           <Swiper

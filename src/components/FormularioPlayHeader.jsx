@@ -365,7 +365,7 @@ function FormularioPlayHeader({
                     <span className="mx-2 " style={{ fontSize: "25px" }}>
                       {">"}
                     </span>
-                    <span style={{ fontSize: "16px" }}>{nombre_curso}</span>
+                    <span style={{ fontSize: "16px", color: "var(--Gris-oscuro)" }}>{nombre_curso}</span>
                   </p>
                 </div>
               </div>

@@ -462,6 +462,11 @@ function FormularioDashboardEnroledCourses() {
                           listaCategoriaNavegacion,
                           pathname: location.pathname,
                         }}
+                        labelButton={
+                          curso.personalizado_tipo_curso === "diplomado"
+                            ? "Continuar"
+                            : "Ir al curso"
+                        }
                       />
                     );
                   }
@@ -523,6 +528,11 @@ function FormularioDashboardEnroledCourses() {
                           listaCategoriaNavegacion,
                           pathname: location.pathname,
                         }}
+                        labelButton={
+                          curso.personalizado_tipo_curso === "diplomado"
+                            ? "Continuar"
+                            : "Ir al curso"
+                        }
                       />
                     );
                   }
@@ -582,6 +592,11 @@ function FormularioDashboardEnroledCourses() {
                           listaCategoriaNavegacion,
                           pathname: location.pathname,
                         }}
+                        labelButton={
+                          curso.personalizado_tipo_curso === "diplomado"
+                            ? "Continuar"
+                            : "Ir al curso"
+                        }
                       />
                     );
                   }

@@ -216,7 +216,7 @@ const FormularioInicio = () => {
           <p>Lo sentimos, no se encontraron resultados</p>
         )}
         {/* Cursos recientes */}
-        {categoriasNiveles.length === 1 && !esDocente && <CursosRecientes />}
+        <CursosRecientes />
       </div>
       <DashboardFooter />
     </div>
