@@ -9,7 +9,6 @@ import Spinner from "./Spinner";
 import SpamError from "./SpamError";
 import Popup from "./Popup";
 import { useSelector } from "react-redux";
-import TextEditor from "./textEditor/TextEditor";
 
 function FormularioCrearCurso() {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
@@ -1414,13 +1413,12 @@ function FormularioCrearCurso() {
                       <div className="col-lg-12">
                         <div className="form-group">
                           <label className="label-text">Descripción</label>
-                          <TextEditor onChange={handleOtherFields} />
-                          {/* <textarea
+                          <textarea
                             onChange={handleOtherFields}
                             className="form-control form--control user-text-editor pl-3"
                             name="desc_asinc_descripcion"
                             rows={5}
-                          ></textarea> */}
+                          ></textarea>
                           {erroresCampos["desc_asinc_descripcion"].length >
                             0 && (
                             <SpamError
@@ -1505,14 +1503,12 @@ function FormularioCrearCurso() {
                       <div className="col-lg-12">
                         <div className="form-group">
                           <label className="label-text">Descripción</label>
-                          <TextEditor onChange={handleOtherFields} defaultValue={"11"} />
-
-                          {/* <textarea
+                          <textarea
                             onChange={handleOtherFields}
                             className="form-control form--control user-text-editor pl-3"
                             name="desc_sinc_descripcion"
                             rows={5}
-                          ></textarea> */}
+                          ></textarea>
                           {erroresCampos["desc_sinc_descripcion"].length >
                             0 && (
                             <SpamError
