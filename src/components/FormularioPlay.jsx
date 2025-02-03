@@ -2131,10 +2131,12 @@ function FormularioPlay() {
                                   display: "flex",
                                   alignItems: "center",
                                   justifyContent: "space-around",
-                                  background: "var(--Lavander-100)",
+                                  background: "var(--Lavander-500)",
                                   borderRadius: "10px",
                                   padding: "5px 0",
-                                  marginBottom: "30px",
+                                  marginBottom: "10px",
+                                  color: "white",
+                                  height: "100%",
                                 }}
                               >
                                 <div>Tiempo certificado:</div>
@@ -2148,6 +2150,11 @@ function FormularioPlay() {
                                   style={{
                                     display: "flex",
                                     alignItems: "center",
+                                    background: "var(--Lavander-100)",
+                                    borderRadius: "10px",
+                                    padding: "5px 0",
+                                    color: "white",
+                                    textAlign: "center",
                                   }}
                                 >
                                   <h3
@@ -2162,12 +2169,24 @@ function FormularioPlay() {
                                 </div>
                                 <div className="lecture-overview-stats-item col">
                                   <ul className="generic-list-item">
-                                    <table className="text-center">
+                                    <table
+                                      className="text-center"
+                                      style={{
+                                        borderspacing: "10px 0",
+                                      }}
+                                    >
                                       <thead>
-                                        <tr>
+                                        <tr
+                                          style={{
+                                            background: "var(--Lavander-100)",
+                                            borderRadius: "10px",
+                                            padding: "5px 0",
+                                          }}
+                                        >
                                           <td
                                             style={{
                                               width: "120px",
+                                              borderRadius: "10px 0 0 10px",
                                             }}
                                           >
                                             Distribución de Horas
@@ -2186,32 +2205,38 @@ function FormularioPlay() {
                                           >
                                             Horas de dedicación
                                           </td>
-                                          <td>Descripción</td>
+                                          <td
+                                            style={{
+                                              borderRadius: "0 10px 10px 0",
+                                            }}
+                                          >
+                                            Descripción
+                                          </td>
                                         </tr>
                                       </thead>
                                       <tbody>
                                         <tr
                                           style={{
                                             paddingBottom: "30px !important",
+                                            background: "var(--Lavander-100)",
+                                            borderRadius: "10px",
+                                            padding: "5px 0",
                                           }}
                                         >
-                                          <td>
+                                          <td
+                                            style={{
+                                              borderRadius: "10px 0 0 10px",
+                                            }}
+                                          >
                                             Horas Asincrónicas (Independiente)
                                           </td>
                                           <td>
-                                            <td
-                                              style={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                              }}
-                                            >
-                                              <GraficCircle
-                                                value={
-                                                  dataCurso.desc_asinc_horas_porcentaje
-                                                }
-                                                isPercentaje
-                                              />
-                                            </td>
+                                            <GraficCircle
+                                              value={
+                                                dataCurso.desc_asinc_horas_porcentaje
+                                              }
+                                              isPercentaje
+                                            />
                                           </td>
                                           <td>
                                             {
@@ -2220,7 +2245,10 @@ function FormularioPlay() {
                                           </td>
                                           <td
                                             className="text-left"
-                                            style={{ paddingBottom: "40px" }}
+                                            style={{
+                                              paddingBottom: "40px",
+                                              borderRadius: "0 10px 10px 0",
+                                            }}
                                           >
                                             {dataCurso.desc_asinc_descripcion
                                               ?.split("<br />")
@@ -2229,16 +2257,28 @@ function FormularioPlay() {
                                               ))}
                                           </td>
                                         </tr>
-                                        <tr>
-                                          <td>
+                                        <tr
+                                          style={{
+                                            paddingBottom: "30px !important",
+                                            background: "var(--Lavander-100)",
+                                            borderRadius: "10px",
+                                            padding: "5px 0",
+                                          }}
+                                        >
+                                          <td
+                                            style={{
+                                              borderRadius: "10px 0 0 10px",
+                                            }}
+                                          >
                                             Horas Sincrónicas (Acompañamiento
                                             con docente)
                                           </td>
                                           <td
-                                            style={{
-                                              display: "flex",
-                                              justifyContent: "center",
-                                            }}
+                                          // style={{
+                                          //   display: "flex",
+                                          //   justifyContent: "center",
+                                          //   alignItems: "center"
+                                          // }}
                                           >
                                             <GraficCircle
                                               value={
@@ -2252,7 +2292,12 @@ function FormularioPlay() {
                                               dataCurso.desc_sinc_horas_dedicacion
                                             }
                                           </td>
-                                          <td className="text-left">
+                                          <td
+                                            className="text-left"
+                                            style={{
+                                              borderRadius: "0 10px 10px 0",
+                                            }}
+                                          >
                                             {dataCurso.desc_sinc_descripcion
                                               ?.split("<br />")
                                               ?.map((key) => (
@@ -2429,9 +2474,22 @@ function FormularioPlay() {
                             </p>
                           </div>
                           <div className="section-block"></div>
-                          <div className="custom-table centered">
+                          <div style={{
+                            // minWidth: "800px",
+                            // overflow: "auto"
+                          }}>
+                          <div
+                            className="custom-table"
+                            style={{ marginTop: "50px" }}
+                          >
                             <div className="thead">
                               <div className="row">
+                                <div className="col">
+                                  {dataCurso.personalizado_tipo_curso ===
+                                  "diplomado"
+                                    ? "Módulo"
+                                    : "Unidad"}
+                                </div>
                                 <div className="col">
                                   Nombre de la actividad
                                 </div>
@@ -2448,10 +2506,11 @@ function FormularioPlay() {
                                         Calificación del curso
                                       </div>
                                       <div className="col"></div>
+                                      <div className="col"></div>
                                       <div className="col">
                                         <GraficCircle
                                           value={usuario.calificacion_curso}
-                                          maxValue={10}
+                                          maxValue={5}
                                         />
                                       </div>
                                     </div>
@@ -2461,17 +2520,29 @@ function FormularioPlay() {
 
                               {notas.categorias && (
                                 <>
-                                  {notas.categorias.map((categoria) =>
+                                  {notas.categorias.map((categoria, indexCat) =>
                                     categoria.curso_contenido.map(
                                       (curso_contenido, index) => (
                                         <div className="row" key={`a-${index}`}>
                                           <div className="col">
+                                            <span>
+                                              <span style={{fontWeight: "500"}}>
+                                                #{parseInt(indexCat) + 1}
+                                              </span>
+                                              {" "}
+                                              <span>{categoria.nombre}</span>
+                                            </span>
+                                          </div>
+                                          <div className="col">
                                             {curso_contenido.nombre}
                                           </div>
                                           <div className="col">
-                                            {
-                                              curso_contenido.porcentaje_en_total_curso
-                                            }
+                                            <GraficCircle
+                                              value={
+                                                curso_contenido.porcentaje_en_total_curso
+                                              }
+                                              isPercentaje
+                                            />
                                           </div>
                                           <div className="col">
                                             <GraficCircle
@@ -2485,21 +2556,15 @@ function FormularioPlay() {
                                                         nota.id_tipo_contenido ===
                                                           curso_contenido.id_tipo_contenido
                                                     );
-                                                  return (
-                                                    <span
-                                                      key={`usuario_nota_${usuario.id_usuario}_${curso_contenido.tipo_contenido}_${curso_contenido.id_tipo_contenido}`}
-                                                    >
-                                                      {notaUsuario
-                                                        ? notaUsuario.puntuacion_fija !=
-                                                          null
-                                                          ? notaUsuario.puntuacion_fija
-                                                          : notaUsuario.puntuacion
-                                                        : "0.00"}
-                                                    </span>
-                                                  );
+                                                  return notaUsuario
+                                                    ? notaUsuario.puntuacion_fija !=
+                                                      null
+                                                      ? notaUsuario.puntuacion_fija
+                                                      : notaUsuario.puntuacion
+                                                    : "0.00";
                                                 }
                                               )}
-                                              maxValue={10}
+                                              maxValue={5}
                                             />
                                           </div>
                                         </div>
@@ -2509,6 +2574,7 @@ function FormularioPlay() {
                                 </>
                               )}
                             </div>
+                          </div>
                           </div>
                         </div>
                       </div>

@@ -71,6 +71,7 @@ function TarjetaCursoAdmin({
         </div>
         <div className="card-body content-card-course">
           <div
+            className="custom-scroll"
             style={{ height: "220px", overflow: "auto", marginBottom: "10px" }}
           >
             <h5 className="card-title text-center">
@@ -118,7 +119,7 @@ function TarjetaCursoAdmin({
             <div className="row">
               <div
                 className={`${
-                  curso.personalizado_tipo_curso === "diplomado"
+                  curso.personalizado_tipo_curso === "diplomado" || !btnVideo
                     ? "col-12"
                     : "col-8"
                 } p-0 pr-1 mt-2`}
@@ -150,13 +151,16 @@ function TarjetaCursoAdmin({
                     <div className="col-6 p-0 pl-1 mt-2">
                       <button
                         className="btn theme-btn btn-round d-flex align-items-center"
-                        onClick={() =>
-                          navigate(`/play/${url_amigable}`, { state: state })
-                        }
                         style={{ width: "100%" }}
+                        onClick={() =>
+                          window.open(
+                            "https://drive.google.com/file/d/1V8Ju_wPZy4AcxF_SE1XuokBQ2pErQIhB/view?usp=sharing",
+                            "_blank"
+                          )
+                        }
                       >
                         <i className="la la-download icon mr-2"></i>
-                        Fecha tecnica
+                        Ficha tecnica
                       </button>
                     </div>
                   )}

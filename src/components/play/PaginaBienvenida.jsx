@@ -132,7 +132,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                 <i className="la la-arrow-left mr-2"></i>
                 Atras
               </button>
-              <div className="row">
+              <div>
                 <div className="card-user col-lg-6">
                   <p className="text">{datosCurso.nombre}</p>
                   <p className="legend mt-3 text-justify">
@@ -146,56 +146,77 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
             </div>
             <div style={{ padding: "10px 50px 50px 50px" }}>
               <div
+                className="col-lg-6"
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-around",
                   background: "var(--Lavander-100)",
                   borderRadius: "10px",
-                  padding: "5px 0",
+                  padding: "5px 20px",
+                  maxWidth: "800px",
                 }}
               >
-                <div>Tiempo certificado:</div>
+                <div style={{ marginRight: "10%" }}>Tiempo certificado:</div>
                 <div>{datosCurso.desc_tiempo_certificado} Horas</div>
               </div>
-              <div className="lecture-overview-item">
-                <div className="lecture-overview-stats-wrap d-flex">
-                  <div className="lecture-overview-stats-item">
-                    <h3 className="fs-16 font-weight-semi-bold pb-2">
-                      Con este curso serás capaz de:
-                    </h3>
+              <div
+                className="custom-card"
+                style={{
+                  margin: "50px 0",
+                  // border: "1px solid var(--Azul-petroleo) !important",
+                }}
+              >
+                <div className="lecture-overview-item">
+                  <div className="lecture-overview-stats-wrap d-flex">
+                    <div
+                      className="lecture-overview-stats-item"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <h3 className="fs-16 font-weight-semi-bold">
+                        Dirigido a:
+                      </h3>
+                    </div>
+                    <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col" >
+                      <ul className="generic-list-item overview-list-item fs-15">
+                        {datosCurso?.desc_requerimientos
+                          ?.split("<separador>")
+                          ?.map((key) => (
+                            <li key={`requerimientos${key}`}>{key}</li>
+                          ))}
+                      </ul>
+                    </div>
                   </div>
-                  <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
-                    <ul className="generic-list-item overview-list-item">
-                      {datosCurso?.desc_que_aprenderas
-                        ?.split("<separador>")
-                        ?.map((key) => (
-                          <li key={`queAprenderas${key}`}>{key}</li>
-                        ))}
-                    </ul>
+                </div>
+                <div className="section-block"></div>
+                <div className="lecture-overview-item">
+                  <div className="lecture-overview-stats-wrap d-flex">
+                    <div
+                      className="lecture-overview-stats-item"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <h3 className="fs-16 font-weight-semi-bold">
+                        Con este curso serás capaz de:
+                      </h3>
+                    </div>
+                    <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
+                      <ul className="generic-list-item overview-list-item">
+                        {datosCurso?.desc_que_aprenderas
+                          ?.split("<separador>")
+                          ?.map((key) => (
+                            <li key={`queAprenderas${key}`}>{key}</li>
+                          ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="section-block"></div>
-              <div className="lecture-overview-item">
-                <div className="lecture-overview-stats-wrap d-flex">
-                  <div className="lecture-overview-stats-item">
-                    <h3 className="fs-16 font-weight-semi-bold pb-2">
-                      Dirigido a:
-                    </h3>
-                  </div>
-                  <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
-                    <ul className="generic-list-item overview-list-item fs-15">
-                      {datosCurso?.desc_requerimientos
-                        ?.split("<separador>")
-                        ?.map((key) => (
-                          <li key={`requerimientos${key}`}>{key}</li>
-                        ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div style={{ width: "100%", textAlign: "right" }}>
+              <div style={{ width: "100%", textAlign: "left" }}>
                 <button
                   className="btn theme-btn btn-round"
                   onClick={() => setVerBienvenida(false)}
@@ -217,7 +238,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                     }}
                   >
                     <div
-                      className="text-left"
+                      className="text-left hover-50"
                       style={{
                         maxWidth: "1300px",
                       }}
@@ -253,9 +274,6 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                             alignItems: "center",
                           }}
                           onMouseEnter={handleMouseLeave}
-                          onMouseLeave={() =>
-                            handleMouseEnter(modulo.imagenes[0], modulo.id)
-                          }
                         >
                           <i
                             className={`la ${

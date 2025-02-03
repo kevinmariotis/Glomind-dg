@@ -7,6 +7,7 @@ const GraficCircle = ({
   value = "0.00",
   maxValue = 100,
   isPercentaje = false,
+  styles = {},
 }) => {
   const [percentaje, setPercentaje] = useState("0");
 
@@ -18,7 +19,7 @@ const GraficCircle = ({
   }, [value]);
 
   return (
-    <div className="circleGrafic">
+    <div className="circleGrafic" style={styles}>
       <div
         className="line"
         style={{

@@ -894,7 +894,7 @@ const FomularioCalificaciones = () => {
                     <div className="col"></div>
                   </div>
                 </div>
-                <div className="tbody">
+                <div className="tbody ">
                   {cursos.map((curso, index) => (
                     <>
                       {curso.categoria_nombre.substring(0).toLowerCase() ===
@@ -907,10 +907,7 @@ const FomularioCalificaciones = () => {
 
                           <div className="col">{curso.categoria_nombre}</div>
                           <div className="col col-3">{curso.nombre}</div>
-                          <div
-                            className="col d-flex"
-                            style={{ paddingLeft: "50px" }}
-                          >
+                          <div className="col">
                             <GraficCircle
                               value={curso.calificacion_curso ?? "0.00"}
                               maxValue={5}
@@ -964,7 +961,7 @@ const FomularioCalificaciones = () => {
             <div className="custom-table">
               <div className="thead">
                 <div className="row">
-                  <div className="col">Nombre de la actividad</div>
+                  <div className="col col-6">Nombre de la actividad</div>
                   <div className="col">Porcentaje del curso</div>
                   <div className="col">Calificación</div>
                 </div>
@@ -972,8 +969,8 @@ const FomularioCalificaciones = () => {
               <div className="tbody">
                 {actividades.map((actividad, index) => (
                   <div className="row" key={`a-${index}`}>
-                    <div className="col">{actividad.nombre}</div>
-                    <div className="col ml-5">
+                    <div className="col col-6">{actividad.nombre}</div>
+                    <div className="col">
                       {actividad.porcentaje_en_total_curso} %
                     </div>
                     <div className="col">

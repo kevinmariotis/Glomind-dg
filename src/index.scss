@@ -184,6 +184,21 @@
   }
 }
 
+.custom-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: var(--Lavander);
+  border-radius: 10px;
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--Azul-petroleo);
+}
+
 .custom-table {
   color: var(--Azul-petroleo) !important;
   margin-bottom: 0;
@@ -191,10 +206,14 @@
   .thead {
     margin-bottom: 20px;
     .row {
+      min-width: 800px;
       font-size: 18px;
       border: none;
       font-weight: 700;
       // text-align: center;
+      .col {
+        // padding: 0px;
+      }
       span {
         width: fit-content;
         // background-color: var(--Lavander);
@@ -264,6 +283,21 @@
       border-radius: 20px !important;
     }
   }
+}
+
+.hover-50 {
+  position: relative;
+  pointer-events: none;
+}
+
+.hover-50::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 70%;
+  height: 100%;
+  pointer-events: all;
 }
 
 .icon-button {

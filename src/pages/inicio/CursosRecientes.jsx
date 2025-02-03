@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import TarjetaCursoAdmin from "../../components/cards/TarjetaCursoAdmin";
 import { AuthContext } from "../../AuthContext";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,8 +11,8 @@ const CursosRecientes = () => {
   const { jwt, esMovil } = useContext(AuthContext);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const [cursosRecientes, setCursosRecientes] = useState([]);
-  const [autoPlay, setAutoPlay] = useState(true);
   const [showContorls, setShowControls] = useState(false);
+  const swiperRef = useRef(null);
 
   const obtenerDatosCursos = async () => {
     const headers = {
@@ -43,12 +43,17 @@ const CursosRecientes = () => {
   }, []);
 
   const handleMouseEnter = () => {
-    setAutoPlay(false);
     setShowControls(true);
+    if (swiperRef.current) {
+      swiperRef.current.swiper.autoplay.stop(); // Detener autoplay
+    }
   };
+
   const handleMouseLeave = () => {
-    setAutoPlay(true);
     setShowControls(false);
+    if (swiperRef.current) {
+      swiperRef.current.swiper.autoplay.start(); // Reiniciar autoplay
+    }
   };
 
   return (
@@ -71,14 +76,10 @@ const CursosRecientes = () => {
 
           <Swiper
             loop={true}
-            autoplay={
-              autoPlay
-                ? {
-                    delay: 0,
-                  }
-                : false
-            }
-            speed={autoPlay ? 2000 : 500}
+            autoplay={{
+              delay: 0,
+            }}
+            speed={2000}
             modules={[Navigation, Autoplay]}
             spaceBetween={20}
             slidesPerView={3}
@@ -103,6 +104,7 @@ const CursosRecientes = () => {
               nextEl: "#nextBtn",
               prevEl: "#prevBtn",
             }}
+            ref={swiperRef}
           >
             {cursosRecientes.map((curso) => (
               <SwiperSlide key={curso.id}>
@@ -118,52 +120,50 @@ const CursosRecientes = () => {
                   labelButton={"Continuar"}
                   btnVideo={false}
                   curso={curso}
-                  loop={true} // Habilita el bucle infinito
                 />
               </SwiperSlide>
             ))}
           </Swiper>
 
           {/* Botones de navegación personalizados */}
-          {!esMovil && showContorls && (
-            <>
-              {" "}
-              <button
-                id="prevBtn"
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "10px",
-                  zIndex: 10,
-                  backgroundColor: "var(--Lavander)",
-                  border: "none",
-                  fontSize: "30px",
-                  color: "white",
-                  padding: "10px",
-                  borderRadius: "50%",
-                }}
-              >
-                <i className="la la-arrow-left"></i>
-              </button>
-              <button
-                id="nextBtn"
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "10px",
-                  zIndex: 10,
-                  backgroundColor: "var(--Lavander)",
-                  border: "none",
-                  fontSize: "30px",
-                  color: "white",
-                  padding: "10px",
-                  borderRadius: "50%",
-                }}
-              >
-                <i className="la la-arrow-right"></i>
-              </button>
-            </>
-          )}
+          <>
+            <button
+              id="prevBtn"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "10px",
+                zIndex: 10,
+                backgroundColor: "var(--Lavander)",
+                border: "none",
+                fontSize: "30px",
+                color: "white",
+                padding: "10px",
+                borderRadius: "50%",
+                display: !esMovil && showContorls ? "block" : "none",
+              }}
+            >
+              <i className="la la-arrow-left"></i>
+            </button>
+            <button
+              id="nextBtn"
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "10px",
+                zIndex: 10,
+                backgroundColor: "var(--Lavander)",
+                border: "none",
+                fontSize: "30px",
+                color: "white",
+                padding: "10px",
+                borderRadius: "50%",
+                visibility: !esMovil && showContorls ? "visible" : "hidden",
+              }}
+            >
+              <i className="la la-arrow-right"></i>
+            </button>
+          </>
         </>
       )}
     </div>

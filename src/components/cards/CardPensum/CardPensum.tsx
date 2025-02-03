@@ -43,9 +43,9 @@ const CardPensum = ({
       {/* IMAGEN */}
       {/**********/}
       <Box className="img" sx={{ background: `url(${img})` }}>
-        <Box>
+        {/* <Box>
           <Typography className="title size25">{title}</Typography>
-        </Box>
+        </Box> */}
       </Box>
       {/* <Box className="img" sx={{ background: `url(${img})` }} /> */}
 
@@ -79,7 +79,9 @@ const CardPensum = ({
         </Typography>
         <div className="row">
           {items.map((item) => (
-            <div className="col-6" style={{fontWeight: "normal"}}>{item}</div>
+            <div className="col-6" style={{ fontWeight: "normal" }}>
+              {item}
+            </div>
           ))}
         </div>
       </Box>
@@ -88,6 +90,7 @@ const CardPensum = ({
       {/* VALOR */}
       {/*********/}
       <Box className="value">
+        <Typography className="size25">{title}</Typography>
         <Typography className="size25">MX$ {value}</Typography>
         <Typography className="size16">{footer}</Typography>
       </Box>
