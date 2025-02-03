@@ -2947,7 +2947,7 @@ function FormularioPlay() {
                       <i className="la la-times"></i>
                     </button>
                   </div>
-                  <div className="course-dashboard-side-content">
+                  <div className="course-dashboard-side-content" style={{marginBottom: "120px"}}>
                     <div
                       className="accordion generic-accordion generic--accordion"
                       id="accordionCourseExample"

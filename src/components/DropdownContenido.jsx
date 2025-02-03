@@ -119,11 +119,16 @@ function DropdownContenido({
             event.stopPropagation();
             handleToggle();
           }}
-          className="btn theme-btn btn-round theme-btn-sm mt-1 fs-14 font-weight-medium"
+          className="btn theme-btn btn-round theme-btn-sm mt-1 font-weight-medium"
           href="#"
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded={isOpen ? "true" : "false"}
+          style={{
+            height: "60px",
+            width: "80px",
+            fontSize: "10px",
+          }}
         >
           <i className="la la-folder-open mr-1"></i> Recursos
           <i className="la la-angle-down ml-1"></i>
