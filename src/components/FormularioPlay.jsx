@@ -110,15 +110,16 @@ function FormularioPlay() {
     setShowControls(false);
   };
 
-  function Iframex({ frame }) {
+  function 
+  Iframex({ frame }) {
     return (
       <div
         style={{
-          height: "100%",
+          height: "98%",
           position: "absolute",
           top: "0",
           left: "0",
-          width: "100%",
+          width: "98.5%",
         }}
         dangerouslySetInnerHTML={{ __html: frame.html }}
       ></div>
@@ -2379,7 +2380,21 @@ function FormularioPlay() {
                       >
                         <div className="lecture-overview-wrap lecture-quest-wrap">
                           <div className="lecture-overview-item">
-                            <h3 className="fs-24 font-weight-semi-bold pb-2">
+                            <h3
+                              className="fs-24 font-weight-semi-bold pb-2"
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                background: "var(--Lavander)",
+                                color: "white",
+                                borderRadius: "10px",
+                                padding: "5px 20px",
+                                marginBottom: "50px"
+                              }}
+                            >
+                              Recurso externo
+                            </h3>
+                            <h3 className="fs-24 font-weight-semi-bold pb-4">
                               {dataContenidoViendo.nombre
                                 ? dataContenidoViendo.nombre
                                 : ""}
@@ -2399,8 +2414,8 @@ function FormularioPlay() {
                               ""
                             )}
                             {dataContenidoViendo.tipo_contenido == 7 ? (
-                              <div className="col-lg-7 mx-auto">
-                                <div className="error-content text-center">
+                              <div>
+                                <div className="error-content text-left">
                                   <div
                                     className="section-heading"
                                     style={{
@@ -2417,7 +2432,7 @@ function FormularioPlay() {
                                           )
                                         }
                                         href="#"
-                                        className="btn theme-btn"
+                                        className="btn theme-btn btn-round"
                                       >
                                         Ir al sitio externo
                                       </button>
@@ -2498,7 +2513,7 @@ function FormularioPlay() {
                             style={{
                               overflow: "auto",
                             }}
-                            >
+                          >
                             <table
                               className="custom-table"
                               style={{
@@ -2514,12 +2529,8 @@ function FormularioPlay() {
                                       ? "Módulo"
                                       : "Unidad"}
                                   </th>
-                                  <th>
-                                    Nombre de la actividad
-                                  </th>
-                                  <th>
-                                    Porcentaje del curso
-                                  </th>
+                                  <th>Nombre de la actividad</th>
+                                  <th>Porcentaje del curso</th>
                                   <th>Calificación</th>
                                 </tr>
                               </thead>
@@ -2528,9 +2539,7 @@ function FormularioPlay() {
                                   <>
                                     {notas.usuarios.map((usuario, index) => (
                                       <tr key={`u-${index}`}>
-                                        <td>
-                                          Calificación del curso
-                                        </td>
+                                        <td>Calificación del curso</td>
                                         <td></td>
                                         <td></td>
                                         <td>
@@ -2550,9 +2559,7 @@ function FormularioPlay() {
                                       (categoria, indexCat) =>
                                         categoria.curso_contenido.map(
                                           (curso_contenido, index) => (
-                                            <tr
-                                              key={`a-${index}`}
-                                            >
+                                            <tr key={`a-${index}`}>
                                               <td>
                                                 <span>
                                                   <span
@@ -2567,9 +2574,7 @@ function FormularioPlay() {
                                                   </span>
                                                 </span>
                                               </td>
-                                              <td>
-                                                {curso_contenido.nombre}
-                                              </td>
+                                              <td>{curso_contenido.nombre}</td>
                                               <td>
                                                 <GraficCircle
                                                   value={
@@ -2902,7 +2907,7 @@ function FormularioPlay() {
                   <i className="la la-angle-left"></i>{" "}
                   Contenido&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </button>
-                <div className="course-dashboard-sidebar-wrap custom-scrollbar-styled">
+                <div className="course-dashboard-sidebar-wrap custom-scroll mx-2">
                   {dataCurso?.videollamadas?.length > 0 ? (
                     <div
                       className="course-dashboard-side-heading"
