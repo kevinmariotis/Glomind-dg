@@ -203,16 +203,17 @@
   color: var(--Azul-petroleo) !important;
   margin-bottom: 0;
   margin-top: 20px;
-  .thead {
+  padding: 0 10px;
+  border-collapse: separate;
+  border-spacing: 20px !important;
+  thead {
     margin-bottom: 20px;
-    .row {
-      min-width: 800px;
-      font-size: 18px;
+    tr {
       border: none;
+      font-size: 18px;
       font-weight: 700;
-      // text-align: center;
-      .col {
-        // padding: 0px;
+      th {
+        padding: 0 20px;
       }
       span {
         width: fit-content;
@@ -223,21 +224,19 @@
       }
     }
   }
-  .tbody {
+  tbody {
     // border-top: none !important;
-    .row {
-      border-radius: 20px;
-      background-color: white;
+    tr {
+      border-radius: 30px !important;
+      // background-color: white !important;
       margin-bottom: 20px;
       box-shadow: 0px 0px 10px 0px rgba(149, 139, 182, 0.25);
-      .col {
+      td {
+        // border-radius: 50px !important;
         font-weight: 400;
-        padding-top: 20px;
-        padding-bottom: 20px;
+        padding: 20px;
         border-top: none;
         vertical-align: middle;
-        display: flex;
-        align-items: center;
       }
     }
   }

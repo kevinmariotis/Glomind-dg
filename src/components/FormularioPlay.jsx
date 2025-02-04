@@ -2125,36 +2125,52 @@ function FormularioPlay() {
 
                           {dataCurso.personalizado_tipo_curso ===
                             "diplomado" && (
-                            <div className="lecture-overview-item">
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-around",
+                                background: "var(--Lavander-500)",
+                                borderRadius: "10px",
+                                padding: "5px 0",
+                                color: "white",
+                                height: "100%",
+                              }}
+                            >
+                              <div>Tiempo certificado:</div>
+                              <div>
+                                {dataCurso.desc_tiempo_certificado} Horas
+                              </div>
+                            </div>
+                          )}
+
+                          {dataCurso.personalizado_tipo_curso ===
+                            "diplomado" && (
+                            <div
+                              className="lecture-overview-item"
+                              style={{
+                                overflow: "auto",
+                              }}
+                            >
                               <div
+                                className="d-flex"
                                 style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-around",
-                                  background: "var(--Lavander-500)",
-                                  borderRadius: "10px",
-                                  padding: "5px 0",
-                                  marginBottom: "10px",
-                                  color: "white",
-                                  height: "100%",
+                                  minWidth: "1000px",
                                 }}
                               >
-                                <div>Tiempo certificado:</div>
-                                <div>
-                                  {dataCurso.desc_tiempo_certificado} Horas
-                                </div>
-                              </div>
-                              <div className="lecture-overview-stats-wrap d-flex">
                                 <div
                                   className="lecture-overview-stats-item"
                                   style={{
                                     display: "flex",
+                                    justifyContent: "center",
                                     alignItems: "center",
                                     background: "var(--Lavander-100)",
                                     borderRadius: "10px",
-                                    padding: "5px 0",
+                                    padding: "5px 0px",
                                     color: "white",
                                     textAlign: "center",
+                                    marginRight: "15px",
+                                    width: "200px",
                                   }}
                                 >
                                   <h3
@@ -2167,147 +2183,151 @@ function FormularioPlay() {
                                     Tiempo de dedicación certificable
                                   </h3>
                                 </div>
-                                <div className="lecture-overview-stats-item col">
-                                  <ul className="generic-list-item">
-                                    <table
-                                      className="text-center"
+                                <div className="lecture-overview-stats-item col p-0">
+                                  <div className="text-center">
+                                    <div
                                       style={{
-                                        borderspacing: "10px 0",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        background: "var(--Lavander-100)",
+                                        borderRadius: "10px",
+                                        padding: "5px 10px",
                                       }}
                                     >
-                                      <thead>
-                                        <tr
-                                          style={{
-                                            background: "var(--Lavander-100)",
-                                            borderRadius: "10px",
-                                            padding: "5px 0",
-                                          }}
-                                        >
-                                          <td
-                                            style={{
-                                              width: "120px",
-                                              borderRadius: "10px 0 0 10px",
-                                            }}
-                                          >
-                                            Distribución de Horas
-                                          </td>
-                                          <td
-                                            style={{
-                                              width: "120px",
-                                            }}
-                                          >
-                                            % (horas)
-                                          </td>
-                                          <td
-                                            style={{
-                                              width: "200px",
-                                            }}
-                                          >
-                                            Horas de dedicación
-                                          </td>
-                                          <td
-                                            style={{
-                                              borderRadius: "0 10px 10px 0",
-                                            }}
-                                          >
-                                            Descripción
-                                          </td>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr
-                                          style={{
-                                            paddingBottom: "30px !important",
-                                            background: "var(--Lavander-100)",
-                                            borderRadius: "10px",
-                                            padding: "5px 0",
-                                          }}
-                                        >
-                                          <td
-                                            style={{
-                                              borderRadius: "10px 0 0 10px",
-                                            }}
-                                          >
-                                            Horas Asincrónicas (Independiente)
-                                          </td>
-                                          <td>
-                                            <GraficCircle
-                                              value={
-                                                dataCurso.desc_asinc_horas_porcentaje
-                                              }
-                                              isPercentaje
-                                            />
-                                          </td>
-                                          <td>
-                                            {
-                                              dataCurso.desc_asinc_horas_dedicacion
-                                            }
-                                          </td>
-                                          <td
-                                            className="text-left"
-                                            style={{
-                                              paddingBottom: "40px",
-                                              borderRadius: "0 10px 10px 0",
-                                            }}
-                                          >
-                                            {dataCurso.desc_asinc_descripcion
-                                              ?.split("<br />")
-                                              ?.map((key) => (
-                                                <p key={key}>{key}</p>
-                                              ))}
-                                          </td>
-                                        </tr>
-                                        <tr
-                                          style={{
-                                            paddingBottom: "30px !important",
-                                            background: "var(--Lavander-100)",
-                                            borderRadius: "10px",
-                                            padding: "5px 0",
-                                          }}
-                                        >
-                                          <td
-                                            style={{
-                                              borderRadius: "10px 0 0 10px",
-                                            }}
-                                          >
-                                            Horas Sincrónicas (Acompañamiento
-                                            con docente)
-                                          </td>
-                                          <td
-                                          // style={{
-                                          //   display: "flex",
-                                          //   justifyContent: "center",
-                                          //   alignItems: "center"
-                                          // }}
-                                          >
-                                            <GraficCircle
-                                              value={
-                                                dataCurso.desc_sinc_horas_porcentaje
-                                              }
-                                              isPercentaje
-                                            />
-                                          </td>
-                                          <td>
-                                            {
-                                              dataCurso.desc_sinc_horas_dedicacion
-                                            }
-                                          </td>
-                                          <td
-                                            className="text-left"
-                                            style={{
-                                              borderRadius: "0 10px 10px 0",
-                                            }}
-                                          >
-                                            {dataCurso.desc_sinc_descripcion
-                                              ?.split("<br />")
-                                              ?.map((key) => (
-                                                <p key={key}>{key}</p>
-                                              ))}
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </ul>
+                                      <div
+                                        style={{
+                                          width: "200px",
+                                          borderRadius: "10px 0 0 10px",
+                                        }}
+                                      >
+                                        Distribución de Horas
+                                      </div>
+                                      <div
+                                        style={{
+                                          width: "150px",
+                                        }}
+                                      >
+                                        % (horas)
+                                      </div>
+                                      <div
+                                        style={{
+                                          width: "150px",
+                                        }}
+                                      >
+                                        Horas de dedicación
+                                      </div>
+                                      <div
+                                        style={{
+                                          width: "300px",
+                                          borderRadius: "0 10px 10px 0",
+                                        }}
+                                      >
+                                        Descripción
+                                      </div>
+                                    </div>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        background: "var(--Lavander-100)",
+                                        borderRadius: "10px",
+                                        padding: "10px",
+                                        margin: "15px 0",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          width: "200px",
+                                          borderRadius: "10px 0 0 10px",
+                                        }}
+                                      >
+                                        Horas Asincrónicas (Independiente)
+                                      </div>
+                                      <div
+                                        style={{
+                                          width: "150px",
+                                        }}
+                                      >
+                                        <GraficCircle
+                                          value={
+                                            dataCurso.desc_asinc_horas_porcentaje
+                                          }
+                                          isPercentaje
+                                        />
+                                      </div>
+                                      <div
+                                        style={{
+                                          width: "150px",
+                                        }}
+                                      >
+                                        {dataCurso.desc_asinc_horas_dedicacion}
+                                      </div>
+                                      <div
+                                        className="text-left"
+                                        style={{
+                                          width: "300px",
+                                          borderRadius: "0 10px 10px 0",
+                                        }}
+                                      >
+                                        {dataCurso.desc_asinc_descripcion
+                                          ?.split("<br />")
+                                          ?.map((key) => (
+                                            <p key={key}>{key}</p>
+                                          ))}
+                                      </div>
+                                    </div>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        background: "var(--Lavander-100)",
+                                        borderRadius: "10px",
+                                        padding: "10px",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          width: "200px ",
+                                          borderRadius: "10px 0 0 10px",
+                                        }}
+                                      >
+                                        Horas Sincrónicas (Acompañamiento con
+                                        docente)
+                                      </div>
+                                      <div
+                                        style={{
+                                          width: "150px",
+                                        }}
+                                      >
+                                        <GraficCircle
+                                          value={
+                                            dataCurso.desc_sinc_horas_porcentaje
+                                          }
+                                          isPercentaje
+                                        />
+                                      </div>
+                                      <div
+                                        style={{
+                                          width: "150px",
+                                        }}
+                                      >
+                                        {dataCurso.desc_sinc_horas_dedicacion}
+                                      </div>
+                                      <div
+                                        className="text-left"
+                                        style={{
+                                          width: "300px",
+                                          borderRadius: "0 10px 10px 0",
+                                        }}
+                                      >
+                                        {dataCurso.desc_sinc_descripcion
+                                          ?.split("<br />")
+                                          ?.map((key) => (
+                                            <p key={key}>{key}</p>
+                                          ))}
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -2462,7 +2482,7 @@ function FormularioPlay() {
                         role="tabpanel"
                         aria-labelledby="grades"
                       >
-                        <div className="lecture-overview-wrap">
+                        <div className="">
                           <div className="lecture-overview-item">
                             <h3 className="fs-24 font-weight-semi-bold pb-2">
                               Mis calificaciones
@@ -2474,107 +2494,121 @@ function FormularioPlay() {
                             </p>
                           </div>
                           <div className="section-block"></div>
-                          <div style={{
-                            // minWidth: "800px",
-                            // overflow: "auto"
-                          }}>
                           <div
-                            className="custom-table"
-                            style={{ marginTop: "50px" }}
-                          >
-                            <div className="thead">
-                              <div className="row">
-                                <div className="col">
-                                  {dataCurso.personalizado_tipo_curso ===
-                                  "diplomado"
-                                    ? "Módulo"
-                                    : "Unidad"}
-                                </div>
-                                <div className="col">
-                                  Nombre de la actividad
-                                </div>
-                                <div className="col">Porcentaje del curso</div>
-                                <div className="col">Calificación</div>
-                              </div>
-                            </div>
-                            <div className="tbody">
-                              {notas.usuarios && (
-                                <>
-                                  {notas.usuarios.map((usuario, index) => (
-                                    <div className="row" key={`u-${index}`}>
-                                      <div className="col">
-                                        Calificación del curso
-                                      </div>
-                                      <div className="col"></div>
-                                      <div className="col"></div>
-                                      <div className="col">
-                                        <GraficCircle
-                                          value={usuario.calificacion_curso}
-                                          maxValue={5}
-                                        />
-                                      </div>
-                                    </div>
-                                  ))}
-                                </>
-                              )}
+                            style={{
+                              overflow: "auto",
+                            }}
+                            >
+                            <table
+                              className="custom-table"
+                              style={{
+                                marginTop: "50px",
+                                minWidth: "800px",
+                              }}
+                            >
+                              <thead>
+                                <tr>
+                                  <th>
+                                    {dataCurso.personalizado_tipo_curso ===
+                                    "diplomado"
+                                      ? "Módulo"
+                                      : "Unidad"}
+                                  </th>
+                                  <th>
+                                    Nombre de la actividad
+                                  </th>
+                                  <th>
+                                    Porcentaje del curso
+                                  </th>
+                                  <th>Calificación</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {notas.usuarios && (
+                                  <>
+                                    {notas.usuarios.map((usuario, index) => (
+                                      <tr key={`u-${index}`}>
+                                        <td>
+                                          Calificación del curso
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                          <GraficCircle
+                                            value={usuario.calificacion_curso}
+                                            maxValue={5}
+                                          />
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </>
+                                )}
 
-                              {notas.categorias && (
-                                <>
-                                  {notas.categorias.map((categoria, indexCat) =>
-                                    categoria.curso_contenido.map(
-                                      (curso_contenido, index) => (
-                                        <div className="row" key={`a-${index}`}>
-                                          <div className="col">
-                                            <span>
-                                              <span style={{fontWeight: "500"}}>
-                                                #{parseInt(indexCat) + 1}
-                                              </span>
-                                              {" "}
-                                              <span>{categoria.nombre}</span>
-                                            </span>
-                                          </div>
-                                          <div className="col">
-                                            {curso_contenido.nombre}
-                                          </div>
-                                          <div className="col">
-                                            <GraficCircle
-                                              value={
-                                                curso_contenido.porcentaje_en_total_curso
-                                              }
-                                              isPercentaje
-                                            />
-                                          </div>
-                                          <div className="col">
-                                            <GraficCircle
-                                              value={notas.usuarios.map(
-                                                (usuario) => {
-                                                  const notaUsuario =
-                                                    usuario.notas.find(
-                                                      (nota) =>
-                                                        nota.tipo_contenido ===
-                                                          curso_contenido.tipo_contenido &&
-                                                        nota.id_tipo_contenido ===
-                                                          curso_contenido.id_tipo_contenido
-                                                    );
-                                                  return notaUsuario
-                                                    ? notaUsuario.puntuacion_fija !=
-                                                      null
-                                                      ? notaUsuario.puntuacion_fija
-                                                      : notaUsuario.puntuacion
-                                                    : "0.00";
-                                                }
-                                              )}
-                                              maxValue={5}
-                                            />
-                                          </div>
-                                        </div>
-                                      )
-                                    )
-                                  )}
-                                </>
-                              )}
-                            </div>
-                          </div>
+                                {notas.categorias && (
+                                  <>
+                                    {notas.categorias.map(
+                                      (categoria, indexCat) =>
+                                        categoria.curso_contenido.map(
+                                          (curso_contenido, index) => (
+                                            <tr
+                                              key={`a-${index}`}
+                                            >
+                                              <td>
+                                                <span>
+                                                  <span
+                                                    style={{
+                                                      fontWeight: "500",
+                                                    }}
+                                                  >
+                                                    #{parseInt(indexCat) + 1}
+                                                  </span>{" "}
+                                                  <span>
+                                                    {categoria.nombre}
+                                                  </span>
+                                                </span>
+                                              </td>
+                                              <td>
+                                                {curso_contenido.nombre}
+                                              </td>
+                                              <td>
+                                                <GraficCircle
+                                                  value={
+                                                    curso_contenido.porcentaje_en_total_curso
+                                                  }
+                                                  isPercentaje
+                                                />
+                                              </td>
+                                              <td>
+                                                <GraficCircle
+                                                  value={notas.usuarios.map(
+                                                    (usuario) => {
+                                                      const notaUsuario =
+                                                        usuario.notas.find(
+                                                          (nota) =>
+                                                            nota.tipo_contenido ===
+                                                              curso_contenido.tipo_contenido &&
+                                                            nota.id_tipo_contenido ===
+                                                              curso_contenido.id_tipo_contenido
+                                                        );
+                                                      return notaUsuario
+                                                        ? notaUsuario.puntuacion_fija !=
+                                                          null
+                                                          ? notaUsuario.puntuacion_fija
+                                                          : notaUsuario.puntuacion
+                                                        : "0.00";
+                                                    }
+                                                  )}
+                                                  maxValue={5}
+                                                />
+                                              </td>
+                                            </tr>
+                                          )
+                                        )
+                                    )}
+                                  </>
+                                )}
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                       </div>
@@ -2947,7 +2981,10 @@ function FormularioPlay() {
                       <i className="la la-times"></i>
                     </button>
                   </div>
-                  <div className="course-dashboard-side-content" style={{marginBottom: "120px"}}>
+                  <div
+                    className="course-dashboard-side-content"
+                    style={{ marginBottom: "120px" }}
+                  >
                     <div
                       className="accordion generic-accordion generic--accordion"
                       id="accordionCourseExample"

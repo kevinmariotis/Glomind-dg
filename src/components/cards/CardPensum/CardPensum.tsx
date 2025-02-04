@@ -10,10 +10,14 @@ interface CardPensumProps {
   title?: string;
   description?: string;
   path: string;
+  course?: string;
+  state?: string;
+  time?: string;
+  dateFirst?: string;
+  dateLast?: string;
   value?: string;
-  footer?: string;
   index?: number;
-  items?: any[];
+  items: any[];
 }
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -32,67 +36,103 @@ const CardPensum = ({
   title,
   description,
   path,
-  footer,
   index,
   items = [],
   value,
 }: CardPensumProps) => {
+  console.log(items);
   return (
     <Box className="contentCardPensum">
       {/**********/}
       {/* IMAGEN */}
       {/**********/}
-      <Box className="img" sx={{ background: `url(${img})` }}>
-        {/* <Box>
-          <Typography className="title size25">{title}</Typography>
-        </Box> */}
-      </Box>
+      <Box className="img" sx={{ background: `url(${img})` }}></Box>
       {/* <Box className="img" sx={{ background: `url(${img})` }} /> */}
 
       {/***************/}
       {/* INFORMACION */}
       {/***************/}
       <Box className="info">
-        {/**********/}
-        {/* TITULO */}
-        {/**********/}
-        <Typography className="title size20">{title}</Typography>
-
+        <Typography
+          className="title size20"
+          style={{
+            color: "var(--Lavander)",
+          }}
+        >
+          {title}
+        </Typography>
         {/***************/}
         {/* DESCRIPTION */}
         {/***************/}
         <Typography className="description size16">
-          {description}{" "}
-          <a
-            href={
-              code === "program" ||
-              code === "doctorate" ||
-              code === "mastery" ||
-              code === "course"
-                ? `${path}?${code}&${index}`
-                : `${path}`
-            }
-            target="_blank"
-          >
-            Ver más
-          </a>
+          {description?.split("<separador>")[0]}{" "}
+          <a href={description?.split("<separador>")[1]} target="_blank">Ver más</a>
         </Typography>
-        <div className="row">
-          {items.map((item) => (
-            <div className="col-6" style={{ fontWeight: "normal" }}>
-              {item}
-            </div>
-          ))}
-        </div>
+        <div className="section-block my-2"></div>
+        {/*****************/}
+        {/* DATOS CARRERA */}
+        {/*****************/}
+        <Stack
+          className="counter stackInfo"
+          direction={{ xs: "column", sm: "row" }}
+          divider={<Divider orientation="vertical" flexItem />}
+          spacing={{ xs: 1, sm: 2 }}
+        >
+          <Item>
+            <Typography className="size16" style={{ color: "black" }}>
+              {items[0]}
+            </Typography>
+          </Item>
+          <Item>
+            <Typography className="size16" style={{ color: "black" }}>
+              Online
+            </Typography>
+          </Item>
+          <Item>
+            <Typography
+              className="size16"
+              sx={{ textWrap: "nowrap", color: "black" }}
+            >
+              {items[1]} {items[4]}
+              {items[4] == 1 ? "" : "s"}
+            </Typography>
+          </Item>
+        </Stack>
+        <div className="section-block my-2"></div>
+        {/*****************/}
+        {/* FECHA CARRERA */}
+        {/*****************/}
+        <Stack
+          className="counter stackInfo"
+          direction={{ xs: "column", sm: "row" }}
+          divider={<Divider orientation="vertical" flexItem />}
+          spacing={{ xs: 1, sm: 2 }}
+        >
+          <Item>
+            <Typography
+              className="size16"
+              sx={{ textWrap: "nowrap", color: "black" }}
+            >
+              Inicio: {items[2]}
+            </Typography>
+          </Item>
+          <Item>
+            <Typography
+              className="size16"
+              sx={{ textWrap: "nowrap", color: "black" }}
+            >
+              Fin: {items[3]}
+            </Typography>
+          </Item>
+        </Stack>
       </Box>
 
       {/*********/}
       {/* VALOR */}
       {/*********/}
       <Box className="value">
-        <Typography className="size25">{title}</Typography>
+        <Typography className="title size20">{title}</Typography>
         <Typography className="size25">MX$ {value}</Typography>
-        <Typography className="size16">{footer}</Typography>
       </Box>
     </Box>
   );

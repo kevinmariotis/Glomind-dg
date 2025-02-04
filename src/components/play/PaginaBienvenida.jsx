@@ -135,14 +135,29 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
               <div>
                 <div className="card-user col-lg-6">
                   <p className="text">{datosCurso.nombre}</p>
-                  <p className="legend mt-3 text-justify">
+                  <p
+                    className="mt-3 text-justify"
+                    style={{
+                      fontSize: "20px",
+                    }}
+                  >
                     A través de cinco módulos cuidadosamente estructurados, los
                     participantes explorarán desde los fundamentos de la IA
-                    hasta su aplicación práctica en el aula,fomentando la
+                    hasta su aplicación práctica en el aula, fomentando la
                     innovación educativa y el aprendizaje significativo.
                   </p>
                 </div>
               </div>
+            <div style={{ width: "100%", textAlign: "left", marginTop: "20px" }}>
+              <button
+                className="btn theme-btn btn-round"
+                onClick={() => setVerBienvenida(false)}
+                style={{ marginLeft: "auto" }}
+              >
+                Ir al Diplomado
+                <i className="la la-arrow-right ml-2"></i>
+              </button>
+            </div>
             </div>
             <div style={{ padding: "10px 50px 50px 50px" }}>
               <div
@@ -162,11 +177,12 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
               <div
                 className="custom-card"
                 style={{
-                  margin: "50px 0",
+                  margin: "20px 0",
                   // border: "1px solid var(--Azul-petroleo) !important",
+                  padding: "10px 30px"
                 }}
               >
-                <div className="lecture-overview-item">
+                <div className="lecture-overview-item m-0">
                   <div className="lecture-overview-stats-wrap d-flex">
                     <div
                       className="lecture-overview-stats-item"
@@ -179,7 +195,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                         Dirigido a:
                       </h3>
                     </div>
-                    <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col" >
+                    <div className="lecture-overview-stats-item lecture-overview-stats-wide-item col">
                       <ul className="generic-list-item overview-list-item fs-15">
                         {datosCurso?.desc_requerimientos
                           ?.split("<separador>")
@@ -190,8 +206,8 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                     </div>
                   </div>
                 </div>
-                <div className="section-block"></div>
-                <div className="lecture-overview-item">
+                <div className="section-block my-3"></div>
+                <div className="lecture-overview-item m-0">
                   <div className="lecture-overview-stats-wrap d-flex">
                     <div
                       className="lecture-overview-stats-item"
@@ -216,17 +232,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                   </div>
                 </div>
               </div>
-              <div style={{ width: "100%", textAlign: "left" }}>
-                <button
-                  className="btn theme-btn btn-round"
-                  onClick={() => setVerBienvenida(false)}
-                  style={{ marginLeft: "auto" }}
-                >
-                  Ir al Diplomado
-                  <i className="la la-arrow-right ml-2"></i>
-                </button>
-              </div>
-            </div>
+            </div> 
             <div>
               {modulos.map((modulo, index) => (
                 <div key={index} style={{ marginBottom: "70px" }}>

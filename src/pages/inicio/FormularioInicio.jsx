@@ -193,9 +193,9 @@ const FormularioInicio = () => {
                     }
                     description={categoria.descripcion}
                     path="https://uvirtualad.mx"
-                    value={categoria.personalizado_2 ?? "0,0"}
+                    value={categoria.personalizado_2 ?? "0.0"}
                     items={[
-                      categoria.personalizado_1,
+                      categoriasNiveles[1]?.nombre,
                       categoria.personalizado_3,
                       categoria.personalizado_4?.split(" ")[0] ?? "",
                       categoria.personalizado_5?.split(" ")[0] ?? "",

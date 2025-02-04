@@ -24,6 +24,9 @@ const ModalVideoCurso = ({ curso = {}, video }) => {
       <button
         className="btn theme-btn btn-round d-flex align-items-center w-100"
         onClick={handleShow}
+        style={{
+          fontSize: "12px"
+        }}
       >
         <i className="la la-play icon mr-2"></i>
         Ver video

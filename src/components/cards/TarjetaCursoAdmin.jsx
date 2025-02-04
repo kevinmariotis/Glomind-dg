@@ -129,7 +129,7 @@ function TarjetaCursoAdmin({
                   onClick={() =>
                     navigate(`/play/${url_amigable}`, { state: state })
                   }
-                  style={{ width: "100%" }}
+                  style={{ width: "100%", fontSize: "12px" }}
                 >
                   {labelButton !== "" ? labelButton : "Ir al curso"}
                   <i className="la la-arrow-right icon ml-1"></i>
@@ -151,7 +151,7 @@ function TarjetaCursoAdmin({
                     <div className="col-6 p-0 pl-1 mt-2">
                       <button
                         className="btn theme-btn btn-round d-flex align-items-center"
-                        style={{ width: "100%" }}
+                        style={{ width: "100%", fontSize: "12px" }}
                         onClick={() =>
                           window.open(
                             "https://drive.google.com/file/d/1V8Ju_wPZy4AcxF_SE1XuokBQ2pErQIhB/view?usp=sharing",

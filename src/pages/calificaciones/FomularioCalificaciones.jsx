@@ -874,114 +874,113 @@ const FomularioCalificaciones = () => {
                 </button>
               </div>
               <div className="custom-table">
-                <div className="thead">
-                  <div className="row">
-                    <div className="col">
+                <thead>
+                  <tr>
+                    <th>
                       <span>Categoria</span>
-                    </div>
-                    <div className="col">
+                    </th>
+                    <th>
                       <span>Programa</span>
-                    </div>
-                    <div className="col">
+                    </th>
+                    <th>
                       <span>Semestre</span>
-                    </div>
-                    <div className="col col-3">
+                    </th>
+                    <th>
                       <span>Asignatura/curso</span>
-                    </div>
-                    <div className="col">
+                    </th>
+                    <th>
                       <span>Calificación</span>
-                    </div>
-                    <div className="col"></div>
-                  </div>
-                </div>
-                <div className="tbody ">
+                    </th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
                   {cursos.map((curso, index) => (
                     <>
                       {curso.categoria_nombre.substring(0).toLowerCase() ===
                       levelThree.substring(0).toLowerCase() ? (
-                        <div className="row" key={`c-${index}`}>
-                          <div className="col">
+                        <tr key={`c-${index}`}>
+                          <td>
                             {levelOne[0].toUpperCase() + levelOne.substring(1)}
-                          </div>
-                          <div className="col">{curso.codigo}</div>
+                          </td>
+                          <td>{curso.codigo}</td>
 
-                          <div className="col">{curso.categoria_nombre}</div>
-                          <div className="col col-3">{curso.nombre}</div>
-                          <div className="col">
+                          <td>{curso.categoria_nombre}</td>
+                          <td>{curso.nombre}</td>
+                          <td>
                             <GraficCircle
                               value={curso.calificacion_curso ?? "0.00"}
                               maxValue={5}
                             />
-                          </div>
-                          <div className="col">
+                          </td>
+                          <td>
                             <button
                               onClick={() => verCalificaciones(curso.id)}
                               className="btn theme-btn btn-round"
                             >
                               Ver calificaciones
                             </button>
-                          </div>
-                        </div>
+                          </td>
+                        </tr>
                       ) : curso.categoria_nombre === "Diplomados" ? (
-                        <div className="row" key={`c-${index}`}>
-                          <div className="col">
+                        <tr key={`c-${index}`}>
+                          <td>
                             {levelOne[0].toUpperCase() + levelOne.substring(1)}
-                          </div>
-                          <div className="col">{curso.codigo}</div>
+                          </td>
+                          <td>{curso.codigo}</td>
 
-                          <div className="col">{curso.categoria_nombre}</div>
-                          <div className="col col-3">{curso.nombre}</div>
-                          <div
-                            className="col d-flex"
+                          <td>{curso.categoria_nombre}</td>
+                          <td>{curso.nombre}</td>
+                          <td
                             style={{ paddingLeft: "50px" }}
                           >
                             <GraficCircle
                               value={curso.calificacion_curso ?? "0.00"}
                               maxValue={5}
                             />
-                          </div>
-                          <div className="col">
+                          </td>
+                          <td>
                             <button
                               onClick={() => verCalificaciones(curso.id)}
                               className="btn theme-btn btn-round"
                             >
                               Ver calificaciones
                             </button>
-                          </div>
-                        </div>
+                          </td>
+                        </tr>
                       ) : (
                         <></>
                       )}
                     </>
                   ))}
-                </div>
+                </tbody>
               </div>
             </>
           ) : (
             <div className="custom-table">
-              <div className="thead">
-                <div className="row">
-                  <div className="col col-6">Nombre de la actividad</div>
-                  <div className="col">Porcentaje del curso</div>
-                  <div className="col">Calificación</div>
-                </div>
-              </div>
-              <div className="tbody">
+              <thead>
+                <tr>
+                  <th>Nombre de la actividad</th>
+                  <th>Porcentaje del curso</th>
+                  <th>Calificación</th>
+                </tr>
+              </thead>
+              <tbody>
                 {actividades.map((actividad, index) => (
-                  <div className="row" key={`a-${index}`}>
-                    <div className="col col-6">{actividad.nombre}</div>
-                    <div className="col">
+                  <tr key={`a-${index}`}>
+                    <td>{actividad.nombre}</td>
+                    <td>
                       {actividad.porcentaje_en_total_curso} %
-                    </div>
-                    <div className="col">
+                    </td>
+                    <td>
                       <GraficCircle
                         value={actividad.nota ?? "0.00"}
                         maxValue={5}
                       />
-                    </div>
-                  </div>
+                    </td>
+                  </tr>
                 ))}
-              </div>
+              </tbody>
             </div>
           )}
           <div className="mt-5">
