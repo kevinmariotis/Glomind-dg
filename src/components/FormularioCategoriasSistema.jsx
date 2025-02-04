@@ -1481,7 +1481,6 @@ export default function FormularioCategoriasSistema() {
                   className="form-control form--control pl-3"
                   type="text"
                   name="descripcion"
-                  maxLength="64"
                   placeholder=""
                   rows={5}
                   style={{ resize: "none" }}
