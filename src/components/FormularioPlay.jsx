@@ -2341,25 +2341,26 @@ function FormularioPlay() {
                             <>
                               <div className="section-block"></div>
                               <div className="lecture-overview-item">
-                                <div className="lecture-overview-stats-wrap d-flex">
+                                <div className="lecture-overview-stats-wrap d-flex" style={{
+                                  justifyContent: "space-between",
+                                  alignItems: "center"
+                                }}>
                                   <div className="lecture-overview-stats-item">
                                     <h3 className="fs-16 font-weight-semi-bold pb-2">
                                       Certificado
                                     </h3>
                                   </div>
-                                  <div className="lecture-overview-stats-item lecture-overview-stats-wide-item">
-                                    <p className="pb-3">
-                                      Obtén el certificado de Glomind
-                                      completando el curso
-                                    </p>
-                                    <button
-                                      type="button"
-                                      onClick={handleGenerarCertificado}
-                                      className="btn theme-btn theme-btn-transparent"
-                                    >
-                                      Descargar certificado
-                                    </button>
-                                  </div>
+                                  <p>
+                                    Obtén el certificado de Glomind completando el curso
+                                  </p>
+                                  <button
+                                    type="button"
+                                    onClick={handleGenerarCertificado}
+                                    className="btn theme-btn btn-round"
+                                  >
+                                    Descargar certificado
+                                    <i className="la la-download ml-2"></i>
+                                  </button>
                                 </div>
                               </div>
                             </>
@@ -2520,15 +2521,30 @@ function FormularioPlay() {
                               style={{
                                 marginTop: "50px",
                                 minWidth: "800px",
+                                display: "block",
                               }}
                             >
+                              <div className="info">
+                                <p>Nota total</p>
+                                <div>
+                                  <GraficCircle
+                                    value={
+                                      (notas?.usuarios &&
+                                        notas?.usuarios[0]
+                                          ?.calificacion_curso) ??
+                                      "0.00"
+                                    }
+                                    maxValue={5}
+                                  />
+                                </div>
+                              </div>
                               <thead>
                                 <tr>
                                   <th>
                                     {dataCurso.personalizado_tipo_curso ===
                                     "diplomado"
-                                      ? "Módulo"
-                                      : "Unidad"}
+                                      ? "Nombre del módulo"
+                                      : "Nombre de la unidad"}
                                   </th>
                                   <th>Nombre de la actividad</th>
                                   <th>Porcentaje del curso</th>
@@ -2536,24 +2552,6 @@ function FormularioPlay() {
                                 </tr>
                               </thead>
                               <tbody>
-                                {notas.usuarios && (
-                                  <>
-                                    {notas.usuarios.map((usuario, index) => (
-                                      <tr key={`u-${index}`}>
-                                        <td>Calificación del curso</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                          <GraficCircle
-                                            value={usuario.calificacion_curso}
-                                            maxValue={5}
-                                          />
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </>
-                                )}
-
                                 {notas.categorias && (
                                   <>
                                     {notas.categorias.map(

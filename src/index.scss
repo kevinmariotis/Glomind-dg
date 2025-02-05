@@ -202,10 +202,34 @@
 .custom-table {
   color: var(--Azul-petroleo) !important;
   margin-bottom: 0;
-  margin-top: 20px;
-  padding: 0 10px;
+  margin-top: 30px;
+  // padding: 0 10px;
   border-collapse: separate;
   border-spacing: 20px !important;
+  width: fit-content;
+  .info {
+    background-color: var(--Lavander);
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 20px;
+    margin: 0 20px 20px 20px;
+    p {
+      font-size: 30px;
+      margin-right: 30px;
+    }
+    .circleGrafic {
+      .line {
+        width: 60px;
+        .internal-section {
+          background-color: var(--Azul-petroleo);
+          width: 40px;
+          height: 40px;
+        }
+      }
+    }
+  }
   thead {
     margin-bottom: 20px;
     tr {
@@ -228,11 +252,10 @@
     // border-top: none !important;
     tr {
       border-radius: 30px !important;
-      // background-color: white !important;
+      // background: white !important;
       margin-bottom: 20px;
       box-shadow: 0px 0px 10px 0px rgba(149, 139, 182, 0.25);
       td {
-        // border-radius: 50px !important;
         font-weight: 400;
         padding: 20px;
         border-top: none;

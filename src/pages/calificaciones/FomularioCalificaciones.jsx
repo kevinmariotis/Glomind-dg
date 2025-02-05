@@ -106,18 +106,23 @@ const FomularioCalificaciones = () => {
       if (response2.ok) {
         const datos = await response2.json();
         // Reestructar los datos para una mejor lectura de la tabla
-        const result = datos.datos?.categorias.flatMap((cat) => {
-          const { curso_contenido, resto } = cat;
+        const result = datos.datos?.categorias.flatMap((cat, indexCat) => {
+          const { curso_contenido, ...resto } = cat;
           return curso_contenido.map((c) => {
             return {
               ...c,
               nota: datos.datos?.usuarios[0]?.notas?.find(
                 (item) => item.id_curso_contenido === c.id_contenido
               )?.puntuacion_fija,
-              padre: resto,
+              padre: {
+                ...resto,
+                number: indexCat + 1,
+              },
+              calificacion_curso: datos.datos?.usuarios?.calificacion_curso,
             };
           });
         });
+        console.log(result);
         setActividades(result);
       }
     } catch (error) {
@@ -830,7 +835,35 @@ const FomularioCalificaciones = () => {
               <i className="la la-arrow-left icon ml-1"></i> Atrás
             </button>
           )}
-
+          {cursoSeleccionado === null && (
+            <div className="d-flex mb-5">
+              <button
+                className="icon-button"
+                onClick={() => setMuted(!muted)}
+                style={{ width: "50px", height: "50px" }}
+              >
+                <i
+                  className={`${
+                    muted ? "la la-volume-mute" : "la la-volume-up"
+                  }`}
+                  style={{ color: "var(--Lavander)", fontSize: "50px" }}
+                />
+              </button>
+              <button
+                className="btn theme-btn btn-round py 3 mx-3"
+                onClick={() => {
+                  setShowDiv(false);
+                  setLevelOne("");
+                  setLevelTwo("");
+                  setLevelThree("");
+                  setShowNav(false);
+                }}
+              >
+                <i className="la la-arrow-left icon mr-1"></i>
+                Atras
+              </button>
+            </div>
+          )}
           <CustomBreandcrumb
             titles={[
               cursoSeleccionado === null
@@ -846,34 +879,16 @@ const FomularioCalificaciones = () => {
           )}
           {cursoSeleccionado === null ? (
             <>
-              <div className="d-flex mt-5">
-                <button
-                  className="icon-button"
-                  onClick={() => setMuted(!muted)}
-                  style={{ width: "50px", height: "50px" }}
-                >
-                  <i
-                    className={`${
-                      muted ? "la la-volume-mute" : "la la-volume-up"
-                    }`}
-                    style={{ color: "var(--Lavander)", fontSize: "50px" }}
-                  />
-                </button>
-                <button
-                  className="btn theme-btn btn-round py 3 mx-3"
-                  onClick={() => {
-                    setShowDiv(false);
-                    setLevelOne("");
-                    setLevelTwo("");
-                    setLevelThree("");
-                    setShowNav(false);
-                  }}
-                >
-                  <i className="la la-arrow-left icon mr-1"></i>
-                  Volver
-                </button>
-              </div>
               <div className="custom-table">
+                <div className="info">
+                  <p>
+                    Promedio del{" "}
+                    {levelOne === "diplomado" ? "diplomado" : "periodo"}
+                  </p>
+                  <div>
+                    <GraficCircle value={"0.00"} maxValue={5} />
+                  </div>
+                </div>
                 <thead>
                   <tr>
                     <th>
@@ -883,7 +898,7 @@ const FomularioCalificaciones = () => {
                       <span>Programa</span>
                     </th>
                     <th>
-                      <span>Semestre</span>
+                      <span>Periodo</span>
                     </th>
                     <th>
                       <span>Asignatura/curso</span>
@@ -931,9 +946,7 @@ const FomularioCalificaciones = () => {
 
                           <td>{curso.categoria_nombre}</td>
                           <td>{curso.nombre}</td>
-                          <td
-                            style={{ paddingLeft: "50px" }}
-                          >
+                          <td style={{ paddingLeft: "50px" }}>
                             <GraficCircle
                               value={curso.calificacion_curso ?? "0.00"}
                               maxValue={5}
@@ -958,8 +971,22 @@ const FomularioCalificaciones = () => {
             </>
           ) : (
             <div className="custom-table">
+              <div className="info">
+                <p>Nota total</p>
+                <div>
+                  <GraficCircle
+                    value={actividades[0]?.calificacion_curso ?? "0.00"}
+                    maxValue={5}
+                  />
+                </div>
+              </div>
               <thead>
                 <tr>
+                  <th>
+                    {levelOne === "diplomado"
+                      ? "Nombre del Módulo"
+                      : "Nombre de la Unidad"}
+                  </th>
                   <th>Nombre de la actividad</th>
                   <th>Porcentaje del curso</th>
                   <th>Calificación</th>
@@ -968,8 +995,11 @@ const FomularioCalificaciones = () => {
               <tbody>
                 {actividades.map((actividad, index) => (
                   <tr key={`a-${index}`}>
-                    <td>{actividad.nombre}</td>
                     <td>
+                      #{actividad.padre?.number} {actividad.padre?.nombre}
+                    </td>
+                    <td>{actividad.nombre}</td>
+                    <td className="text-center">
                       {actividad.porcentaje_en_total_curso} %
                     </td>
                     <td>

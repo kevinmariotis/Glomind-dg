@@ -81,7 +81,7 @@ function TarjetaCategoriaAdmin({
               }}
               className="btn theme-btn theme-btn-sm theme-btn-white"
               // style={`${tipo === 'semestre' ? 'marginTop: $50px' : ''}`}
-              style={{ marginTop: tipo === "semestre" ? "70px" : "" }}
+              style={{ marginTop: tipo === "semestre" ? "170px" : "" }}
             >
               Ver<i className="la la-arrow-right icon ml-1"></i>
             </button>
