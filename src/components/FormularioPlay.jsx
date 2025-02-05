@@ -110,8 +110,7 @@ function FormularioPlay() {
     setShowControls(false);
   };
 
-  function 
-  Iframex({ frame }) {
+  function Iframex({ frame }) {
     return (
       <div
         style={{
@@ -2380,20 +2379,22 @@ function FormularioPlay() {
                       >
                         <div className="lecture-overview-wrap lecture-quest-wrap">
                           <div className="lecture-overview-item">
-                            <h3
-                              className="fs-24 font-weight-semi-bold pb-2"
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                background: "var(--Lavander)",
-                                color: "white",
-                                borderRadius: "10px",
-                                padding: "5px 20px",
-                                marginBottom: "50px"
-                              }}
-                            >
-                              Recurso externo
-                            </h3>
+                            {dataContenidoViendo.tipo_contenido == 7 && (
+                              <h3
+                                className="fs-24 font-weight-semi-bold pb-2"
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  background: "var(--Lavander)",
+                                  color: "white",
+                                  borderRadius: "10px",
+                                  padding: "5px 20px",
+                                  marginBottom: "50px",
+                                }}
+                              >
+                                Recurso externo
+                              </h3>
+                            )}
                             <h3 className="fs-24 font-weight-semi-bold pb-4">
                               {dataContenidoViendo.nombre
                                 ? dataContenidoViendo.nombre
