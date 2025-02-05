@@ -199,6 +199,7 @@ const FormularioInicio = () => {
                       categoria.personalizado_3,
                       categoria.personalizado_4?.split(" ")[0] ?? "",
                       categoria.personalizado_5?.split(" ")[0] ?? "",
+                      categoria.personalizado_6,
                     ]}
                   />
                 </div>

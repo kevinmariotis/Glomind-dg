@@ -94,7 +94,6 @@ const CardPensum = ({
               sx={{ textWrap: "nowrap", color: "black" }}
             >
               {items[1]} {items[4]}
-              {items[4] == 1 ? "" : "s"}
             </Typography>
           </Item>
         </Stack>
