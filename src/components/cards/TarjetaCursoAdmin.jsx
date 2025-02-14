@@ -2,6 +2,8 @@
 // import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ModalVideoCurso from "../modals/ModalVideoCurso";
+import { useContext } from "react";
+import { AuthContext } from "../../AuthContext";
 // import { AuthContext } from "../../AuthContext";
 
 function TarjetaCursoAdmin({
@@ -22,6 +24,7 @@ function TarjetaCursoAdmin({
   const urlBase = import.meta.env.VITE_URL_BASE;
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const navigate = useNavigate();
+  const { esDocente } = useContext(AuthContext);
 
   // const estrellas = [1, 2, 3, 4, 5];
 
@@ -147,8 +150,9 @@ function TarjetaCursoAdmin({
                   >
                     <ModalVideoCurso curso={curso} video={curso.video_grande} />
                   </div>
+
                   {curso.personalizado_tipo_curso === "diplomado" && (
-                    <div className="col-6 p-0 pl-1 mt-2">
+                    <div className="col-6 p-0 px-1 mt-2">
                       <button
                         className="btn theme-btn btn-round d-flex align-items-center"
                         style={{ width: "100%", fontSize: "12px" }}
@@ -161,6 +165,21 @@ function TarjetaCursoAdmin({
                       >
                         <i className="la la-download icon mr-2"></i>
                         Ficha tecnica
+                      </button>
+                    </div>
+                  )}
+                  {esDocente && (
+                    <div className="col-12 p-0 pr-1 mt-2">
+                      <button
+                        className={` btn theme-btn btn-round d-flex align-items-center`}
+                        onClick={() => navigate(`/curso/contenido/${curso.id}`)}
+                        style={{ width: "100%", fontSize: "12px" }}
+                      >
+                        <i className="la la-cog mr-1"></i>
+                        Administrar{" "}
+                        {curso.personalizado_tipo_curso === "diplomado"
+                          ? "Diplomado"
+                          : "Curso"}
                       </button>
                     </div>
                   )}
