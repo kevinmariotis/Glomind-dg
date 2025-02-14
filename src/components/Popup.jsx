@@ -11,7 +11,7 @@ function Popup({mostrarPopup=false, tamano="lg", tipo=2, titulo="", mensaje="", 
     const handleFuncionAceptar = () => funcionAceptar();
     const handleFuncionTercerBoton = () => funcionTercerBoton();
     
-    return (<Modal show={mostrarPopup} size={tamano} onHide={handleFuncionCerrar} backdrop="static" keyboard={false} animation={false} centered>
+    return (<Modal className='modal-theme' show={mostrarPopup} size={tamano} onHide={handleFuncionCerrar} backdrop="static" keyboard={false} animation={false} centered>
                 {(titulo!='') && <Modal.Header>
                     <Modal.Title>{titulo}</Modal.Title>                   
                 </Modal.Header>}

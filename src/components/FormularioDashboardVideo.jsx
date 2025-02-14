@@ -207,6 +207,7 @@ function FormularioDashboardVideo() {
                 key={`tarjeta${videos[key].id}`}
                 idvideo={videos[key].id}
                 nombre={videos[key].nombre}
+                tipo={videos[key].id_video_tipo}
                 imagen_grande={videos[key].imagen_preview_grande}
                 imagen_pequena={videos[key].imagen_preview_pequena}
                 duracion={videos[key].duracion_hms}

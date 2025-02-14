@@ -1,7 +1,7 @@
 :root {
   // Estilos
   --CornerMedium: 12px;
-  --CornerLarge: 18px;
+  --CornerLarge: 20px;
   --CornerExtra-large: 28px;
   --CornerExtra-large: 28px;
   // Colores
@@ -16,6 +16,8 @@
   --Gris-oscuro: #958bb6;
   --Gris-sombra: #958bb680;
   --Blanco-fondo: #f6f5fa;
+  --success: #34C759;
+  --warning: #FFCC00;
 }
 
 * {
@@ -83,6 +85,13 @@
   border-radius: var(--CornerLarge) !important;
   box-shadow: 0px 0px 3.13px 0px var(--Gris-sombra) !important;
   height: 100%;
+}
+
+.card-video {
+  // min-height: 500px;
+  border-radius: var(--CornerLarge) !important;
+  box-shadow: 0px 0px 3.13px 0px var(--Gris-sombra) !important;
+  // height: 100%;
 }
 
 .card-message {
@@ -337,6 +346,115 @@
   background-color: var(--Lavander-100);
 }
 
+.modal-theme {
+  max-height: 100%;
+  overflow: auto !important;
+  .modal-content {
+    background-color: var(--Blanco-fondo);
+    border-radius: 20px !important;
+    padding: 15px;
+    .modal-header {
+      background-color: var(--Lavander-100);
+      border-bottom: none;
+      border-radius: 15px;
+      padding: 8px 20px;
+      h5 {
+        font-weight: bold !important;
+      }
+    }
+    .modal-body {
+      padding: 20px 0;
+      label {
+        color: var(--Azul-petroleo);
+        width: 100%;
+        position: relative;
+      }
+      label::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        border-bottom: 1px solid var(--Lavander);
+        border-width: 2px;
+        width: 5%;
+      }
+      input {
+        border: 1px solid var(--Lavander);
+        border-radius: 10px;
+        padding: 0 10px !important;
+        height: 40px;
+      }
+      textarea {
+        border: 1px solid var(--Lavander);
+        border-radius: 10px;
+        // padding: 0 10px !important;
+        // height: 40px;
+      }
+      input[type="file"] {
+        border: 1px solid var(--Lavander);
+        border-radius: 10px;
+        padding: 5px !important;
+        height: 37px;
+      }
+      input[type="file"]::file-selector-button {
+        background-color: var(--Gris-sombra);
+        border-radius: 5px;
+        // color: white;
+        border: 1px solid var(--Gris-oscuro);
+      }
+      input[data-type="date"] {
+        border-radius: 10px;
+        background-color: var(--Gris-sombra);
+        border: 1px solid var(--Gris-sombra) !important;
+      }
+      select {
+        border-radius: 10px;
+        height: 40px !important;
+        border: 1px solid var(--Gris-sombra);
+      }
+      table {
+        background-color: white !important;
+        border-radius: 20px;
+        thead {
+          border-radius: 20px;
+          tr {
+            border-radius: 20px;
+            th:first-child {
+              border-radius: 20px 0 0 20px;
+            }
+            th:last-child {
+              border-radius: 0 20px 20px 0;
+            }
+          }
+        }
+        tbody {
+          tr:last-child {
+            th {
+              border-bottom: none !important;
+            }
+          }
+        }
+      }
+      .card2 {
+        background-color: white;
+        padding: 15px;
+        border-radius: 20px;
+        box-shadow: 0px 0px 3.13px 0px var(--Gris-sombra);
+      }
+    }
+    .modal-footer {
+      border: none;
+      padding: 0;
+      button {
+        margin: 0 !important;
+        border-radius: 10px;
+        padding: 5px 15px;
+        margin: 0 5px !important;
+      }
+    }
+  }
+}
+
 .nav-link.active {
   background-color: var(--Lavander) !important;
   color: white !important;
@@ -376,6 +494,29 @@
 .spin {
   display: inline-block;
   animation: spin 2s linear infinite;
+}
+
+.theme-btn-dark {
+  background-color: var(--Azul-petroleo) !important;
+  color: white !important;
+}
+
+.theme-btn-dark:hover {
+  background-color: var(--Gris-oscuro) !important;
+  color: white !important;
+}
+
+.theme-btn-icon {
+  background-color: var(--Lavander) !important;
+  color: white !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  font-size: 25px !important;
+  padding: 5px 8px !important;
+}
+
+.theme-btn-icon:hover {
+  background-color: var(--Azul-petroleo) !important;
 }
 
 @keyframes spin {

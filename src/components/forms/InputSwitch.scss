@@ -1,0 +1,50 @@
+/* Estilo general del switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+/* Ocultar el checkbox original */
+.switch input {
+  visibility: none;
+  width: 0;
+  height: 0;
+}
+
+/* Estilo del slider (el interruptor) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+/* Estilo de la "bola" del interruptor */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+}
+
+/* Cuando el checkbox está activado (checked) */
+.slider-active {
+  background-color: var(--Lavander);
+}
+
+/* Cuando el checkbox está activado, mover la bola */
+.slider-active:before {
+  transform: translateX(20px);
+}
