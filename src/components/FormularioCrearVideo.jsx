@@ -206,7 +206,7 @@ function FormularioCrearVideo() {
     };
     try {
       const opciones = {
-        method: "DELETE",
+        method: "GET",
         headers: headers,
       };
       const response = await fetch(`${urlBaseApi}/api/video/form`, opciones);

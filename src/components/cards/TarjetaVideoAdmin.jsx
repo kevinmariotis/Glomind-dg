@@ -1,15 +1,14 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { mensajesDeError } from "../utils";
-import { AuthContext } from "../../AuthContext";
 
 function TarjetaVideoAdmin({
   idvideo = 0,
   nombre = "Nombre video",
   tipo = 1,
+  tiposVideo = [],
   imagen_grande = "/images/img8.jpg",
   imagen_pequena = "/images/img8.jpg",
   duracion = "00:00:00",
@@ -26,49 +25,17 @@ function TarjetaVideoAdmin({
 }) {
   const urlBase = import.meta.env.VITE_URL_BASE;
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-  const { jwt } = useContext(AuthContext);
   const [popUp, setPopup] = useState({
     mostrar: false,
     titulo: "",
     contenido: "",
   });
   const [posterVistaPrevia, setPosterVistaPrevia] = useState("");
-  const [tiposVideo, setTiposVideos] = useState([]);
 
   const handleFuncionCerrarPopUp = () => {
     setPopup({ ...popUp, mostrar: false });
   };
-
-  const obtenerTiposDeVideos = async () => {
-    const headers = {
-      Authorization: `Bearer ${jwt}`,
-    };
-    try {
-      const opciones = {
-        method: "DELETE",
-        headers: headers,
-      };
-      const response = await fetch(`${urlBaseApi}/api/video/form`, opciones);
-      const datos = await response.json();
-      if (response.ok) {
-        setTiposVideos(datos.tipos_de_video);
-      } else {
-        mensajesDeError(
-          setPopup,
-          response.status,
-          typeof datos.datos !== "undefined" ? datos.datos : {}
-        );
-      }
-    } catch (error) {
-      // Manejar el caso de error en la solicitud
-      console.error("Error en la solicitud al servidor", error);
-    }
-  };
-
-  useEffect(() => {
-    obtenerTiposDeVideos();
-  }, []);
-
+  
   //console.log("Este es el favorito ", estadoFavorito);
   return (
     <>

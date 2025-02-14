@@ -2084,7 +2084,7 @@ function FormularioEditarContenidoCurso() {
                                           }
                                           title="Subir"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >
@@ -2109,7 +2109,7 @@ function FormularioEditarContenidoCurso() {
                                           }
                                           title="Bajar"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >
@@ -2136,7 +2136,7 @@ function FormularioEditarContenidoCurso() {
                                           data-placement="top"
                                           title="Editar Etiqueta"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >
@@ -2168,7 +2168,7 @@ function FormularioEditarContenidoCurso() {
                                           data-placement="top"
                                           title="Editar Recurso"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >
@@ -2199,7 +2199,7 @@ function FormularioEditarContenidoCurso() {
                                           data-placement="top"
                                           title="Editar Tarea"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >
@@ -2230,7 +2230,7 @@ function FormularioEditarContenidoCurso() {
                                           data-placement="top"
                                           title="Editar Foro"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >
@@ -2261,7 +2261,7 @@ function FormularioEditarContenidoCurso() {
                                           data-placement="top"
                                           title="Editar Foro"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >
@@ -2290,7 +2290,7 @@ function FormularioEditarContenidoCurso() {
                                             data-title="Editar configuración"
                                             title="Editar configuración"
                                             style={{
-                                              fontSize: "40px",
+                                              fontSize: "30px",
                                               color: "var(--Lavander)",
                                             }}
                                           >
@@ -2312,7 +2312,7 @@ function FormularioEditarContenidoCurso() {
                                             data-title="Editar configuración"
                                             title="Editar configuración"
                                             style={{
-                                              fontSize: "40px",
+                                              fontSize: "30px",
                                               color: "var(--Lavander)",
                                             }}
                                           >
@@ -2335,7 +2335,7 @@ function FormularioEditarContenidoCurso() {
                                           data-placement="top"
                                           data-title="Editar preguntas"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >
@@ -2366,7 +2366,7 @@ function FormularioEditarContenidoCurso() {
                                           data-title="Editar descargable"
                                           title="Editar descargable"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >
@@ -2388,7 +2388,7 @@ function FormularioEditarContenidoCurso() {
                                           data-placement="top"
                                           title="Borrar"
                                           style={{
-                                            fontSize: "40px",
+                                            fontSize: "30px",
                                             color: "var(--Lavander)",
                                           }}
                                         >

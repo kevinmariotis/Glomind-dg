@@ -16,8 +16,8 @@
   --Gris-oscuro: #958bb6;
   --Gris-sombra: #958bb680;
   --Blanco-fondo: #f6f5fa;
-  --success: #34C759;
-  --warning: #FFCC00;
+  --success: #34c759;
+  --warning: #ffcc00;
 }
 
 * {
@@ -177,6 +177,94 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.card-theme {
+  .card-header {
+    background-color: var(--Lavander-100);
+    border-bottom: none;
+    border-radius: 15px;
+    padding: 8px 20px;
+    h5 {
+      font-weight: bold !important;
+    }
+  }
+  background-color: white;
+  padding: 10px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 3.13px 0px var(--Gris-sombra);
+  label {
+    color: var(--Azul-petroleo);
+    width: 100%;
+    position: relative;
+  }
+  label::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-bottom: 1px solid var(--Lavander);
+    border-width: 2px;
+    width: 5%;
+  }
+  input {
+    border: 1px solid var(--Lavander);
+    border-radius: 10px;
+    padding: 0 10px !important;
+    height: 40px;
+  }
+  textarea {
+    border: 1px solid var(--Lavander);
+    border-radius: 10px;
+    // padding: 0 10px !important;
+    // height: 40px;
+  }
+  input[type="file"] {
+    border: 1px solid var(--Lavander);
+    border-radius: 10px;
+    padding: 5px !important;
+    height: 37px;
+  }
+  input[type="file"]::file-selector-button {
+    background-color: var(--Gris-sombra);
+    border-radius: 5px;
+    // color: white;
+    border: 1px solid var(--Gris-oscuro);
+  }
+  input[data-type="date"] {
+    border-radius: 10px;
+    background-color: var(--Gris-sombra);
+    border: 1px solid var(--Gris-sombra) !important;
+  }
+  select {
+    border-radius: 10px;
+    height: 40px !important;
+    border: 1px solid var(--Gris-sombra);
+  }
+  table {
+    background-color: white !important;
+    border-radius: 20px;
+    thead {
+      border-radius: 20px;
+      tr {
+        border-radius: 20px;
+        th:first-child {
+          border-radius: 20px 0 0 20px;
+        }
+        th:last-child {
+          border-radius: 0 20px 20px 0;
+        }
+      }
+    }
+    tbody {
+      tr:last-child {
+        th,
+        td {
+          border-bottom: none !important;
+        }
+      }
+    }
+  }
 }
 
 .custom-card {
@@ -517,6 +605,17 @@
 
 .theme-btn-icon:hover {
   background-color: var(--Azul-petroleo) !important;
+}
+
+.theme-title {
+  width: 100%;
+  background-color: var(--Lavander-100);
+  border-bottom: none;
+  border-radius: 15px;
+  padding: 8px 20px;
+  h5 {
+    font-weight: bold !important;
+  }
 }
 
 @keyframes spin {

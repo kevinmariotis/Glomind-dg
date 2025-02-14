@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import { mensajesDeError } from "./utils";
@@ -10,9 +10,8 @@ import BotonDashboardNavegacionMovil from "./BotonDashboardNavegacionMovil";
 import DashboardFooter from "./DashboardFooter";
 
 function FormularioDashboardVideo() {
-  const urlBase = import.meta.env.VITE_URL_BASE;
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-  const { jwt, esMovil, nombres, permissions } = useContext(AuthContext);
+  const { jwt, esMovil, permissions } = useContext(AuthContext);
   const [popUp, setPopup] = useState({
     mostrar: false,
     tipo: 2,
@@ -22,11 +21,11 @@ function FormularioDashboardVideo() {
     data_id: -1,
     data_id_2: -1,
   });
-  const [datosUsuario, setDatosUsuario] = useState({ docente_rating: 99.9 });
   const [videos, setVideos] = useState([]);
   const [paginaNavegacion, setPaginaNavegacion] = useState(1);
   const [totalVideos, setTotalVideos] = useState(1);
   const [palabraBuscar, setPalabraBuscar] = useState("");
+  const [tiposVideos, setTiposVideos] = useState([]);
 
   const [mostrarSpinner, setMostrarSpinner] = useState(false);
 
@@ -155,6 +154,39 @@ function FormularioDashboardVideo() {
   const permisoEditar =
     permissions[28] || permissions[71] || permissions[72] ? 1 : 0;
 
+  const obtenerTiposDeVideos = async () => {
+    const headers = {
+      Authorization: `Bearer ${jwt}`,
+    };
+    try {
+      const opciones = {
+        method: "GET",
+        headers: headers,
+      };
+      const response = await fetch(`${urlBaseApi}/api/video/form`, opciones);
+      const datos = await response.json();
+      if (response.ok) {
+        setTiposVideos(datos.tipos_de_video);
+      } else {
+        mensajesDeError(
+          setPopup,
+          response.status,
+          typeof datos.datos !== "undefined" ? datos.datos : {}
+        );
+      }
+    } catch (error) {
+      // Manejar el caso de error en la solicitud
+      console.error("Error en la solicitud al servidor", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log(1)
+    obtenerTiposDeVideos();
+  }, []);
+
+  console.log(tiposVideos)
+
   return (
     <>
       {mostrarSpinner && <Spinner />}
@@ -206,6 +238,7 @@ function FormularioDashboardVideo() {
               <TarjetaVideoAdmin
                 key={`tarjeta${videos[key].id}`}
                 idvideo={videos[key].id}
+                tiposVideo={tiposVideos}
                 nombre={videos[key].nombre}
                 tipo={videos[key].id_video_tipo}
                 imagen_grande={videos[key].imagen_preview_grande}

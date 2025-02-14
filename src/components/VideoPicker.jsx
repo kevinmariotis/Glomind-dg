@@ -4,6 +4,7 @@ import { AuthContext } from "../AuthContext";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import TarjetaVideoAdmin from "./cards/TarjetaVideoAdmin";
+import { mensajesDeError } from "./utils";
 
 function VideoPicker({ funcionMostrarPopUp, funcionSetVideoSeleccionado }) {
   const { jwt } = useContext(AuthContext);
@@ -13,6 +14,7 @@ function VideoPicker({ funcionMostrarPopUp, funcionSetVideoSeleccionado }) {
   const [videoSeleccionado, setVideoSeleccionado] = useState(null);
   const [palabraBuscar, setPalabraBuscar] = useState("");
   const [filters, setFilters] = useState({ "asignado-0": true });
+  const [tiposVideo, setTiposVideos] = useState([]);
 
   const [popUp, setPopup] = useState({
     mostrar: false,
@@ -97,6 +99,36 @@ function VideoPicker({ funcionMostrarPopUp, funcionSetVideoSeleccionado }) {
       [name]: !filters[name],
     });
   };
+
+  const obtenerTiposDeVideos = async () => {
+    const headers = {
+      Authorization: `Bearer ${jwt}`,
+    };
+    try {
+      const opciones = {
+        method: "GET",
+        headers: headers,
+      };
+      const response = await fetch(`${urlBaseApi}/api/video/form`, opciones);
+      const datos = await response.json();
+      if (response.ok) {
+        setTiposVideos(datos.tipos_de_video);
+      } else {
+        mensajesDeError(
+          setPopup,
+          response.status,
+          typeof datos.datos !== "undefined" ? datos.datos : {}
+        );
+      }
+    } catch (error) {
+      // Manejar el caso de error en la solicitud
+      console.error("Error en la solicitud al servidor", error);
+    }
+  };
+
+  useEffect(() => {
+    obtenerTiposDeVideos();
+  }, []);
 
   return (
     <>
@@ -251,6 +283,7 @@ function VideoPicker({ funcionMostrarPopUp, funcionSetVideoSeleccionado }) {
                       key={`tarjeta${optionsVideo[key].id}`}
                       idvideo={optionsVideo[key].id}
                       tipo={optionsVideo[key].id_video_tipo}
+                      tiposVideo={tiposVideo}
                       nombre={optionsVideo[key].nombre}
                       imagen_grande={optionsVideo[key].imagen_preview_grande}
                       imagen_pequena={optionsVideo[key].imagen_preview_pequena}
