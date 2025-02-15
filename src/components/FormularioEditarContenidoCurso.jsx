@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useContext, useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation} from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { AuthContext } from "../AuthContext";
 import { mensajesDeError, cortarCadenaPorCaracter } from "./utils";
@@ -26,6 +26,7 @@ function FormularioEditarContenidoCurso() {
   const urlBase = import.meta.env.VITE_URL_BASE;
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const navigate = useNavigate();
+  const location = useLocation();
   const { id, url_amigable_volver } = useParams();
   const { jwt, permissions, urlAmigableVolver, setUrlAmigableVolver } =
     useContext(AuthContext);
@@ -1739,7 +1740,7 @@ function FormularioEditarContenidoCurso() {
                 `${
                   urlAmigableVolver != ""
                     ? "/play/" + urlAmigableVolver
-                    : "/cursos"
+                    : location?.state?.urlFrom ?? "/cursos"
                 }`
               )
             }
@@ -2029,14 +2030,18 @@ function FormularioEditarContenidoCurso() {
                                     ""
                                   )}
                                   <td className="text-center">
-                                    <GraficCircle
-                                      value={
-                                        tema.porcentaje_en_total_curso != 0
-                                          ? `${tema.porcentaje_en_total_curso}`
-                                          : "0.00"
-                                      }
-                                      isPercentaje
-                                    />
+                                    {tema.porcentaje_en_total_curso &&
+                                    tema.porcentaje_en_total_curso != 0 ? (
+                                      <GraficCircle
+                                        value={
+                                          tema.porcentaje_en_total_curso ??
+                                          "0.00"
+                                        }
+                                        isPercentaje
+                                      />
+                                    ) : (
+                                      ""
+                                    )}
                                   </td>
                                   <td>
                                     <div className="courser-item-meta-wrap">
@@ -2259,7 +2264,7 @@ function FormularioEditarContenidoCurso() {
                                           // className="icon-element icon-element-sm shadow-sm cursor-pointer m-1 text-secondary"
                                           data-toggle="tooltip"
                                           data-placement="top"
-                                          title="Editar Foro"
+                                          title="Editar url"
                                           style={{
                                             fontSize: "30px",
                                             color: "var(--Lavander)",
@@ -2277,7 +2282,7 @@ function FormularioEditarContenidoCurso() {
                                         ""
                                       )}
 
-                                      {tema.tipo_contenido == 1 &&
+                                      {/* {tema.tipo_contenido == 1 &&
                                       esDocente == 1 &&
                                       instructorEditaContenido == 1 ? (
                                         <Link
@@ -2299,7 +2304,7 @@ function FormularioEditarContenidoCurso() {
                                         </Link>
                                       ) : (
                                         ""
-                                      )}
+                                      )} */}
                                       {tema.tipo_contenido == 2 &&
                                       (permissions[47] || esDocente == 1) ? (
                                         <Link

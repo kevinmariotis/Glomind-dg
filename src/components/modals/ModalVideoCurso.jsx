@@ -29,7 +29,7 @@ const ModalVideoCurso = ({ curso = {}, video }) => {
         }}
       >
         <i className="la la-play icon mr-2"></i>
-        Ver video
+        Video
       </button>
 
       <Modal className="custom-modal" show={show} onHide={handleClose} centered>

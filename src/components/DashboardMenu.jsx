@@ -57,7 +57,7 @@ function DashboardMenu() {
         </Link>
       </div>
       <ul className="generic-list-item off-canvas-menu-list off--canvas-menu-list pt-35px list-sm">
-        <li className={currentMenu === "/" ? "page-active" : ""}>
+        <li className={currentMenu === "/" || currentMenu === "/inicio" ? "page-active" : ""}>
           <Link to="/">
             <i className="la la-home mr-2"></i> <span>Inicio</span>
           </Link>

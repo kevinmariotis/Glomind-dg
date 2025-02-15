@@ -172,7 +172,11 @@ function TarjetaCursoAdmin({
                     <div className="col-12 p-0 pr-1 mt-2">
                       <button
                         className={` btn theme-btn btn-round d-flex align-items-center`}
-                        onClick={() => navigate(`/curso/contenido/${curso.id}`)}
+                        onClick={() =>
+                          navigate(`/curso/contenido/${curso.id}`, {
+                            state: { urlFrom: location.pathname },
+                          })
+                        }
                         style={{ width: "100%", fontSize: "12px" }}
                       >
                         <i className="la la-cog mr-1"></i>
