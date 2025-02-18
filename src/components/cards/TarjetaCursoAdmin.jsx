@@ -30,7 +30,7 @@ function TarjetaCursoAdmin({
 
   //console.log("Este es el favorito ", estadoFavorito);
   return (
-    <div className={`col ${className}`}>
+    <div className={`${className}`}>
       <div className="card card-item card-course">
         <div className="card-image">
           {/* <Link to={`${urlBase}/play/${url_amigable}`} className="d-block"> */}
@@ -78,7 +78,7 @@ function TarjetaCursoAdmin({
             style={{ height: "220px", overflow: "auto", marginBottom: "10px" }}
           >
             <h5 className="card-title text-center">
-              <Link to={`${urlBase}/play/${url_amigable}`}>{nombre}</Link>
+              {nombre}
             </h5>
             {instructor != "" && (
               <p className="card-text lh-22 pt-2 text-center">

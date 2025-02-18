@@ -17,7 +17,7 @@ import { patch } from "@mui/material";
 function FormularioDashboardEnroledCourses() {
   // const urlBase = import.meta.env.VITE_URL_BASE;
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
-  const { jwt } = useContext(AuthContext);
+  const { jwt, esDocente } = useContext(AuthContext);
   const location = useLocation();
   const [popUp, setPopup] = useState({
     mostrar: false,
@@ -44,6 +44,15 @@ function FormularioDashboardEnroledCourses() {
       nombre: "Mis cursos",
     },
   ]);
+
+  useEffect(() => {
+    if (esDocente) {
+      setCategoriasNiveles({
+        idCategoria: 0,
+        nombre: "Cursos asignados",
+      });
+    }
+  }, [esDocente]);
 
   const handleFuncionAceptarPopUp = () => {
     setPopup({ ...popUp, mostrar: false });
@@ -455,7 +464,7 @@ function FormularioDashboardEnroledCourses() {
                         reviews_puntuacion={curso.reviews_puntuacion}
                         porcentaje_progreso={curso.porcentaje_progreso}
                         curso={curso}
-                        className="col-lg-4 py-2"
+                        className="col-lg-4 col-md-6 col-sm-12 py-2"
                         state={{
                           categoriaSeleccionada,
                           categoriasNiveles,
@@ -521,7 +530,7 @@ function FormularioDashboardEnroledCourses() {
                         descripcion_instructor={curso.docente_descripcion}
                         reviews_puntuacion={curso.reviews_puntuacion}
                         porcentaje_progreso={curso.porcentaje_progreso}
-                        className="col-lg-4 py-2"
+                        className="col-lg-4 col-md-6 col-sm-12 py-2"
                         state={{
                           categoriaSeleccionada,
                           categoriasNiveles,
@@ -585,7 +594,7 @@ function FormularioDashboardEnroledCourses() {
                         descripcion_instructor={curso.docente_descripcion}
                         reviews_puntuacion={curso.reviews_puntuacion}
                         porcentaje_progreso={curso.porcentaje_progreso}
-                        className="col-lg-4 py-2"
+                        className="col-lg-4 col-md-6 col-sm-12 py-2"
                         state={{
                           categoriaSeleccionada,
                           categoriasNiveles,

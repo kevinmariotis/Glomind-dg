@@ -1,29 +1,30 @@
 /* eslint-disable react/prop-types */
 const CustomBreandcrumb = ({ titles = [] }) => {
   return (
-    <div className="dashboard-heading mb-2 d-flex aling-items-center">
-      {titles.map((item, index) => (
-        <>
-          {index > 0 && (
-            <h3 className="fw-bold" style={{ alignContent: "center" }}>
-              {">"}
-            </h3>
-          )}
-          <h3
-            className="fs-2 font-weight-semi-bold mx-2"
-            style={{
-              alignContent: "center",
-              color:
-                index === titles.length - 1
-                  ? "var(--Azul-petroleo)"
-                  : "var(--Gris-oscuro)",
-            }}
-          >
-            {item}
-          </h3>
-        </>
-      ))}
-    </div>
+    <nav style={{ alignItems: "center" }} aria-label="breadcrumb">
+      <ol
+        className="breadcrumb m-0 p-0"
+        style={{ backgroundColor: "transparent" }}
+      >
+        {titles.map((item, index) => (
+          <li className="breadcrumb-item" key={index}>
+            <span
+              className="font-weight-semi-bold"
+              style={{
+                fontSize: "25px",
+                alignContent: "center",
+                color:
+                  index === titles.length - 1
+                    ? "var(--Azul-petroleo)"
+                    : "var(--Gris-oscuro)",
+              }}
+            >
+              {item}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </nav>
   );
 };
 

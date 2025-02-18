@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 const TarjetaMensaje = ({
-  mensaje = `Para desarrollar este compromisos académico debes descargar el recurso
+  mensaje = `Para desarrollar este compromiso académico debes descargar el recurso
         (Documento o guía ) que aparece en la sección del contenido
         correspondiente.`,
   version = 1,

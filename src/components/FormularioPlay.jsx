@@ -31,7 +31,8 @@ function FormularioPlay() {
   const { url_amigable } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { jwt, esMovil, setCargarMisCursos } = useContext(AuthContext);
+  const { jwt, esMovil, setCargarMisCursos, esDocente } =
+    useContext(AuthContext);
   const [popUp, setPopup] = useState({
     mostrar: false,
     tipo: 2,
@@ -114,11 +115,11 @@ function FormularioPlay() {
     return (
       <div
         style={{
-          height: "98%",
+          height: "100%",
           position: "absolute",
           top: "0",
           left: "0",
-          width: "98.5%",
+          width: "100%",
         }}
         dangerouslySetInnerHTML={{ __html: frame.html }}
       ></div>
@@ -562,16 +563,12 @@ function FormularioPlay() {
     };
     try {
       const response = await fetch(
-        `${urlBaseApi}/api/curso/getMatriculadosLista/${
-          dataCurso.id
-        }/1/usuario.nombres-asc${
-          buscarParticipante !== "" ? `/${buscarParticipante}` : "/"
-        }`,
+        `${urlBaseApi}/api/curso/getMatriculados/${dataCurso.id}/1`,
         opciones
       );
       const datos = await response.json();
       if (response.ok) {
-        setParticipantes(datos.matriculados);
+        setParticipantes(datos);
         return;
       } else {
         mensajesDeError(
@@ -2341,17 +2338,21 @@ function FormularioPlay() {
                             <>
                               <div className="section-block"></div>
                               <div className="lecture-overview-item">
-                                <div className="lecture-overview-stats-wrap d-flex" style={{
-                                  justifyContent: "space-between",
-                                  alignItems: "center"
-                                }}>
+                                <div
+                                  className="lecture-overview-stats-wrap d-flex"
+                                  style={{
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                  }}
+                                >
                                   <div className="lecture-overview-stats-item">
                                     <h3 className="fs-16 font-weight-semi-bold pb-2">
                                       Certificado
                                     </h3>
                                   </div>
                                   <p>
-                                    Obtén el certificado de Glomind completando el curso
+                                    Obtén el certificado de Glomind completando
+                                    el curso
                                   </p>
                                   <button
                                     type="button"
@@ -2652,32 +2653,26 @@ function FormularioPlay() {
                               </div>
                             </div>
                             <div className="custom-table">
-                              <div className="thead">
-                                <div className="row">
-                                  <div className="col">
-                                    Nombre / Apellido(s){" "}
-                                  </div>
-                                  <div className="col">Numero ID</div>
-                                  <div className="col">Correo electronico</div>
-                                  <div className="col">Ultimo acceso</div>
-                                  <div className="col">Estatus</div>
-                                </div>
-                              </div>
-                              <div className="tbody">
+                              <thead>
+                                <tr>
+                                  <th>Nombre / Apellido(s) </th>
+                                  <th>Numero ID</th>
+                                  <th>Correo electronico</th>
+                                  <th>Ultimo acceso</th>
+                                  <th>Estatus</th>
+                                </tr>
+                              </thead>
+                              <tbody>
                                 {participantes.map((item, index) => (
-                                  <div className="row" key={`c-${index}`}>
-                                    <div className="col">{item.nombres}</div>
-                                    <div className="col">
-                                      {item.identificacion}
-                                    </div>
-                                    <div className="col">{item.email}</div>
-                                    <div className="col">
-                                      {item.ultima_visita}
-                                    </div>
-                                    <div className="col">{item.estado}</div>
-                                  </div>
+                                  <tr key={`c-${index}`}>
+                                    <td>{item.nombres}</td>
+                                    <td>{item.identificacion}</td>
+                                    <td>{item.email}</td>
+                                    <td>{item.ultima_visita}</td>
+                                    <td>{item.estado}</td>
+                                  </tr>
                                 ))}
-                              </div>
+                              </tbody>
                             </div>
                           </div>
                         </div>
@@ -2717,16 +2712,14 @@ function FormularioPlay() {
                               </div>
                             </div>
                             <div className="custom-table">
-                              <div className="thead">
-                                <div className="row">
-                                  <div className="col">
-                                    Nombre / Apellido(s)
-                                  </div>
-                                  <div className="col">Correo electronico</div>
-                                  <div className="col">Nota final </div>
-                                </div>
-                              </div>
-                              <div className="tbody">
+                              <thead>
+                                <tr>
+                                  <td>Nombre / Apellido(s)</td>
+                                  <td>Correo electronico</td>
+                                  <td>Nota final </td>
+                                </tr>
+                              </thead>
+                              <tbody>
                                 {calificaciones
                                   .filter((item) =>
                                     item.nombres
@@ -2734,18 +2727,18 @@ function FormularioPlay() {
                                       ?.includes(buscarCalificacion)
                                   )
                                   .map((item, index) => (
-                                    <div className="row" key={`a-${index}`}>
-                                      <div className="col">{item.nombres}</div>
-                                      <div className="col">{item.email}</div>
-                                      <div className="col">
+                                    <tr key={`a-${index}`}>
+                                      <td>{item.nombres}</td>
+                                      <td>{item.email}</td>
+                                      <td>
                                         <GraficCircle
                                           value={item.calificacion_curso}
                                           maxValue={10}
                                         />
-                                      </div>
-                                    </div>
+                                      </td>
+                                    </tr>
                                   ))}
-                              </div>
+                              </tbody>
                             </div>
                           </div>
                         </div>
@@ -3063,48 +3056,51 @@ function FormularioPlay() {
                                       style={{ borderRadius: "20px" }}
                                     >
                                       <div className="course-item-content-wrap">
-                                        <div className="custom-control custom-checkbox">
-                                          {categoria.curso_contenido[key]
-                                            .cantidad_notificaciones > 0 ? (
-                                            <span
-                                              className="product-count"
-                                              style={{
-                                                position: "relative",
-                                                marginLeft: "-1.5rem",
-                                                verticalAlign: "top",
-                                              }}
-                                            >
-                                              {
-                                                categoria.curso_contenido[key]
-                                                  .cantidad_notificaciones
-                                              }
-                                            </span>
-                                          ) : (
-                                            <>
-                                              <input
-                                                onChange={() => {}}
-                                                type="checkbox"
-                                                className="custom-control-input"
-                                                id={`courseCheckbox${
-                                                  parseInt(key) + 1
-                                                }`}
-                                                checked={`${
+                                        {!esDocente && (
+                                          <div className="custom-control custom-checkbox">
+                                            {categoria.curso_contenido[key]
+                                              .cantidad_notificaciones > 0 ? (
+                                              <span
+                                                className="product-count"
+                                                style={{
+                                                  position: "relative",
+                                                  marginLeft: "-1.5rem",
+                                                  verticalAlign: "top",
+                                                }}
+                                              >
+                                                {
                                                   categoria.curso_contenido[key]
-                                                    .estado_consumo == 1
-                                                    ? "checked"
-                                                    : ""
-                                                }`}
-                                                required
-                                              />
-                                              <label
-                                                className="custom-control-label custom--control-label"
-                                                htmlFor={`courseCheckbox${
-                                                  parseInt(key) + 1
-                                                }`}
-                                              ></label>
-                                            </>
-                                          )}
-                                        </div>
+                                                    .cantidad_notificaciones
+                                                }
+                                              </span>
+                                            ) : (
+                                              <>
+                                                <input
+                                                  onChange={() => {}}
+                                                  type="checkbox"
+                                                  className="custom-control-input"
+                                                  id={`courseCheckbox${
+                                                    parseInt(key) + 1
+                                                  }`}
+                                                  checked={`${
+                                                    categoria.curso_contenido[
+                                                      key
+                                                    ].estado_consumo == 1
+                                                      ? "checked"
+                                                      : ""
+                                                  }`}
+                                                  required
+                                                />
+                                                <label
+                                                  className="custom-control-label custom--control-label"
+                                                  htmlFor={`courseCheckbox${
+                                                    parseInt(key) + 1
+                                                  }`}
+                                                ></label>
+                                              </>
+                                            )}
+                                          </div>
+                                        )}
                                         <div
                                           className="course-item-content"
                                           onClick={() => {

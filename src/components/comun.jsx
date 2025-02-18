@@ -3,20 +3,20 @@
   /*ok*/
   export const fijarHeader = () =>  {
                 
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        // window.addEventListener('scroll', function() {
+        //     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
           
-            // header fixed animation and control
-            let headerMenuContent = document.querySelector('.header-menu-content');
-            let body = document.body;
-            if (scrollTop > 200) {
-              headerMenuContent.classList.add('fixed-top');
-              body.style.marginTop = headerMenuContent.offsetHeight + 'px';
-            } else {
-              headerMenuContent.classList.remove('fixed-top');
-              body.style.marginTop = '0';
-            }
-        });
+        //     // header fixed animation and control
+        //     let headerMenuContent = document.querySelector('.header-menu-content');
+        //     let body = document.body;
+        //     if (scrollTop > 200) {
+        //       headerMenuContent.classList.add('fixed-top');
+        //       body.style.marginTop = headerMenuContent.offsetHeight + 'px';
+        //     } else {
+        //       headerMenuContent.classList.remove('fixed-top');
+        //       body.style.marginTop = '0';
+        //     }
+        // });
   }
   
   /*

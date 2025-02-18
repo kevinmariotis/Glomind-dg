@@ -6,6 +6,7 @@ import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
+import { useLocation } from "react-router-dom";
 
 const CursosRecientes = () => {
   const { jwt, esMovil } = useContext(AuthContext);
@@ -13,6 +14,7 @@ const CursosRecientes = () => {
   const [cursosRecientes, setCursosRecientes] = useState([]);
   const [showContorls, setShowControls] = useState(false);
   const swiperRef = useRef(null);
+  const location = useLocation();
 
   const obtenerDatosCursos = async () => {
     const headers = {
@@ -120,6 +122,9 @@ const CursosRecientes = () => {
                   labelButton={"Continuar"}
                   btnVideo={false}
                   curso={curso}
+                  state={{
+                    pathname: location.pathname,
+                  }}
                 />
               </SwiperSlide>
             ))}

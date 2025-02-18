@@ -24,6 +24,11 @@
   font-family: "DM Sans";
 }
 
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">" !important;
+  font-size: 25px;
+}
+
 // Estilos Generales
 .btn-arrow {
   background-color: var(--Lavander);

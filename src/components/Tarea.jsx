@@ -505,7 +505,7 @@ export default function Tarea({ id_contenido, id_curso, es_docente }) {
                         <p className="section__desc text-muted pb-2">
                           Entregas
                         </p>
-                        <h2 className="section__title">{totalEntregas}</h2>
+                        <h2 className="section__title"  style={{fontSize: "25px"}}>{totalEntregas}</h2>
                       </div>
                     </div>
                     <div className="col-lg-4 responsive-column-half">
@@ -513,7 +513,7 @@ export default function Tarea({ id_contenido, id_curso, es_docente }) {
                         <p className="section__desc text-muted pb-2">
                           Fecha hora inicio
                         </p>
-                        <h2 className="section__title">
+                        <h2 className="section__title" style={{fontSize: "25px"}}>
                           {popUpObjeto.fecha_hora_inicio_esp}
                         </h2>
                       </div>
@@ -523,7 +523,7 @@ export default function Tarea({ id_contenido, id_curso, es_docente }) {
                         <p className="section__desc text-muted pb-2">
                           Fecha hora finalización
                         </p>
-                        <h2 className="section__title">
+                        <h2 className="section__title"  style={{fontSize: "25px"}}>
                           {popUpObjeto.fecha_hora_fin_esp}
                         </h2>
                       </div>
