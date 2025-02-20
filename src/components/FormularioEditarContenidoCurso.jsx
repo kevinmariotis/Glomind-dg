@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useContext, useState, useEffect } from "react";
-import { Link, useParams, useNavigate, useLocation} from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { AuthContext } from "../AuthContext";
 import { mensajesDeError, cortarCadenaPorCaracter } from "./utils";
@@ -668,7 +668,7 @@ function FormularioEditarContenidoCurso() {
   const handleSubirDescargable = async (event) => {
     event.preventDefault();
     reiniciarErrorCampoGlobal();
-
+    
     if (popUpDescargable.archivo_seleccionado != null) {
       setMostrarSpinner(true);
       const formData = new FormData();
@@ -677,9 +677,9 @@ function FormularioEditarContenidoCurso() {
       formData.append("nombre", popUpDescargable.nombre);
       formData.append("descripcion", popUpDescargable.descripcion);
       formData.append("archivo", popUpDescargable.archivo_seleccionado);
-
+      
       const xhr = new XMLHttpRequest();
-
+      
       // Escuchamos el evento de progreso para actualizar el estado del progreso.
       xhr.upload.addEventListener("progress", (event) => {
         if (event.lengthComputable) {
@@ -687,7 +687,7 @@ function FormularioEditarContenidoCurso() {
           //setProgress(percentage.toFixed(0));
         }
       });
-
+      
       // Evento de finalización de la carga.
       xhr.onload = () => {
         setMostrarSpinner(false);
@@ -706,6 +706,7 @@ function FormularioEditarContenidoCurso() {
             descripcion: "",
             archivo_seleccionado: "",
           });
+          handleCerrarListaDescargable();
           obtenerDatosServidor();
         } else {
           mensajesDeError(
@@ -777,6 +778,8 @@ function FormularioEditarContenidoCurso() {
           } else {
             handleFinalizarEdicionDescargable();
           }
+          handleCerrarListaDescargable();
+          obtenerDatosServidor();
           return;
         } else {
           mensajesDeError(
@@ -875,6 +878,7 @@ function FormularioEditarContenidoCurso() {
       if (response.ok) {
         //setPopupListaDescargable({...popUpListaDescargable, id_tipo_contenido:-1});
         obtenerDatosListaDescargables();
+        obtenerDatosServidor();
         return;
       } else {
         mensajesDeError(
@@ -1358,7 +1362,7 @@ function FormularioEditarContenidoCurso() {
                         className="multi file-upload-input"
                       />
                       <span className="file-upload-text">
-                        <i className="la la-cloud-upload mr-2 fs-18"></i>
+                        <i className="la la-cloud-upload mr-2"></i>
                         Selecciona o arrastra el nuevo video que reemplaza a
                         este aquí (opcional).
                       </span>
@@ -1816,7 +1820,14 @@ function FormularioEditarContenidoCurso() {
                 style={{ borderRadius: "20px" }}
               >
                 <div className="card-body">
-                  <h3 className="fs-22 font-weight-semi-bold pb-2">
+                  <h3
+                    className="fs-22 font-weight-semi-bold pb-2"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
                     {contenido[key].nombre}{" "}
                     {permissions[25] || esDocente ? (
                       <i
@@ -1845,10 +1856,11 @@ function FormularioEditarContenidoCurso() {
                             contenido[key].id_categoria
                           );
                         }}
-                        className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger"
+                        // className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger"
                         data-toggle="tooltip"
                         data-placement="top"
                         title="Borrar"
+                        style={{ color: "var(--Lavander)", fontSize: "25px" }}
                       >
                         <span
                           data-toggle="modal"

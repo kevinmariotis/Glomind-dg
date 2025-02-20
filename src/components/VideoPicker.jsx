@@ -5,9 +5,10 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import TarjetaVideoAdmin from "./cards/TarjetaVideoAdmin";
 import { mensajesDeError } from "./utils";
+import { useParams } from "react-router-dom";
 
 function VideoPicker({ funcionMostrarPopUp, funcionSetVideoSeleccionado }) {
-  const { jwt } = useContext(AuthContext);
+  const { jwt, esDocente } = useContext(AuthContext);
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const urlBase = import.meta.env.VITE_URL_BASE;
   const [optionsVideo, setOptionsVideo] = useState({});
@@ -15,6 +16,7 @@ function VideoPicker({ funcionMostrarPopUp, funcionSetVideoSeleccionado }) {
   const [palabraBuscar, setPalabraBuscar] = useState("");
   const [filters, setFilters] = useState({ "asignado-0": true });
   const [tiposVideo, setTiposVideos] = useState([]);
+  const params = useParams();
 
   const [popUp, setPopup] = useState({
     mostrar: false,
@@ -71,7 +73,7 @@ function VideoPicker({ funcionMostrarPopUp, funcionSetVideoSeleccionado }) {
       };
       let buscartext = palabraBuscar != "" ? palabraBuscar : "ultimos";
       const response = await fetch(
-        `${urlBaseApi}/api/cursocontenido/buscarvideo/${buscartext}/1${
+        `${urlBaseApi}/api/cursocontenido/buscarvideo/${params.id}/${buscartext}/1${
           filtersString === "" ? "" : `/${filtersString}`
         }`,
         opciones
@@ -99,6 +101,7 @@ function VideoPicker({ funcionMostrarPopUp, funcionSetVideoSeleccionado }) {
       [name]: !filters[name],
     });
   };
+  console.log(params)
 
   const obtenerTiposDeVideos = async () => {
     const headers = {
@@ -109,7 +112,10 @@ function VideoPicker({ funcionMostrarPopUp, funcionSetVideoSeleccionado }) {
         method: "GET",
         headers: headers,
       };
-      const response = await fetch(`${urlBaseApi}/api/video/form`, opciones);
+      const response = await fetch(
+        `${urlBaseApi}/api/video/form${esDocente ? `/${params.id}` : ""}`,
+        opciones
+      );
       const datos = await response.json();
       if (response.ok) {
         setTiposVideos(datos.tipos_de_video);

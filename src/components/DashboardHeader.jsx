@@ -34,6 +34,7 @@ function DashboardHeader({ expandir_ancho = false }) {
     imagen_pequena,
     temaActual,
     setTemaActual,
+    esDocente
   } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -351,7 +352,7 @@ function DashboardHeader({ expandir_ancho = false }) {
             position: "fixed",
             top: 0,
             right: 0,
-            zIndex: "10000"
+            zIndex: "10000",
           }}
         >
           <div className="container-fluid">
@@ -396,89 +397,97 @@ function DashboardHeader({ expandir_ancho = false }) {
                     <Buscador class_name={`mr-auto ml-0`} />
                     <div className="nav-right-button d-flex align-items-center">
                       <div className="user-action-wrap d-flex align-items-center">
-                        <div className="shop-cart course-cart pr-3 mr-3 border-right border-right-gray">
-                          <ul>
-                            <li>
-                              <p className="shop-cart-btn d-flex align-items-center fs-16">
-                                Mis cursos
-                                <span className="la la-angle-down fs-13 ml-1"></span>
-                              </p>
-                              {Object.keys(misCursos).length > 0 && (
-                                <ul className="cart-dropdown-menu after-none">
-                                  {Object.keys(misCursos)
-                                    .slice(0, 3)
-                                    .map((key) => (
-                                      <li
-                                        key={misCursos[key].id + "mis-cursos"}
-                                        className="media media-card"
-                                      >
-                                        <Link
-                                          to={`/play/${misCursos[key].url_amigable}`}
-                                          className="media-img"
-                                          style={{ height: "auto" }}
+                        {!esDocente && (
+                          <div className="shop-cart course-cart pr-3 mr-3 border-right border-right-gray">
+                            <ul>
+                              <li>
+                                <p className="shop-cart-btn d-flex align-items-center fs-16">
+                                  Mis cursos
+                                  <span className="la la-angle-down fs-13 ml-1"></span>
+                                </p>
+                                {Object.keys(misCursos).length > 0 && (
+                                  <ul className="cart-dropdown-menu after-none">
+                                    {Object.keys(misCursos)
+                                      .slice(0, 3)
+                                      .map((key) => (
+                                        <li
+                                          key={misCursos[key].id + "mis-cursos"}
+                                          className="media media-card"
                                         >
-                                          {misCursos[key].imagen_pequena !=
-                                          null ? (
-                                            <img
-                                              src={`${urlBaseApi}/${misCursos[key].imagen_pequena}`}
-                                              alt={misCursos[key].nombre}
-                                            />
-                                          ) : (
-                                            <img
-                                              src="/images/course-no-image.png"
-                                              alt={misCursos[key].nombre}
-                                            />
-                                          )}
-                                        </Link>
-                                        <div className="media-body">
-                                          <h5>
-                                            <Link
-                                              to={`/play/${misCursos[key].url_amigable}`}
-                                            >
-                                              {misCursos[key].nombre.substring(0, 25)}
-                                              {misCursos[key].nombre.length > 25 && '...'}
-                                            </Link>
-                                          </h5>
-                                          <div className="skillbar-box pt-1">
-                                            <div
-                                              className="skillbar skillbar-skillbar"
-                                              data-percent="36%"
-                                            >
-                                              <div
-                                                className="skillbar-bar skillbar--bar bg-1"
-                                                style={{
-                                                  width: `${misCursos[key].porcentaje_progreso}%`,
-                                                }}
+                                          <Link
+                                            to={`/play/${misCursos[key].url_amigable}`}
+                                            className="media-img"
+                                            style={{ height: "auto" }}
+                                          >
+                                            {misCursos[key].imagen_pequena !=
+                                            null ? (
+                                              <img
+                                                src={`${urlBaseApi}/${misCursos[key].imagen_pequena}`}
+                                                alt={misCursos[key].nombre}
+                                              />
+                                            ) : (
+                                              <img
+                                                src="/images/course-no-image.png"
+                                                alt={misCursos[key].nombre}
+                                              />
+                                            )}
+                                          </Link>
+                                          <div className="media-body">
+                                            <h5>
+                                              <Link
+                                                to={`/play/${misCursos[key].url_amigable}`}
                                               >
-                                               
+                                                {misCursos[
+                                                  key
+                                                ].nombre.substring(0, 25)}
+                                                {misCursos[key].nombre.length >
+                                                  25 && "..."}
+                                              </Link>
+                                            </h5>
+                                            <div className="skillbar-box pt-1">
+                                              <div
+                                                className="skillbar skillbar-skillbar"
+                                                data-percent="36%"
+                                              >
+                                                <div
+                                                  className="skillbar-bar skillbar--bar bg-1"
+                                                  style={{
+                                                    width: `${misCursos[key].porcentaje_progreso}%`,
+                                                  }}
+                                                ></div>
+                                                <span
+                                                  className="margin-top-5"
+                                                  style={{ fontSize: "10px" }}
+                                                >
+                                                  {
+                                                    misCursos[key]
+                                                      .porcentaje_progreso
+                                                  }
+                                                  %
+                                                </span>
                                               </div>
-                                              <span className="margin-top-5" style={{ fontSize: "10px" }}>
-
-{misCursos[key].porcentaje_progreso}%
-</span>
                                             </div>
                                           </div>
-                                        </div>
+                                        </li>
+                                      ))}
+                                    {Object.keys(misCursos).length > 3 && (
+                                      <li key="vertodoscursos">
+                                        <Link
+                                          to="/cursos/matriculados"
+                                          className="btn theme-btn w-100"
+                                        >
+                                          Ver todos mis cursos{" "}
+                                          <i className="la la-arrow-right icon ml-1"></i>
+                                        </Link>
                                       </li>
-                                    ))}
-                                  {Object.keys(misCursos).length > 3 && (
-                                    <li key="vertodoscursos">
-                                      <Link
-                                        to="/cursos/matriculados"
-                                        className="btn theme-btn w-100"
-                                      >
-                                        Ver todos mis cursos{" "}
-                                        <i className="la la-arrow-right icon ml-1"></i>
-                                      </Link>
-                                    </li>
-                                  )}
-                                </ul>
-                              )}
-                            </li>
-                          </ul>
-                        </div>
-                     
-                    
+                                    )}
+                                  </ul>
+                                )}
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+
                         <div
                           className="shop-cart notification-cart pr-3 mr-3 border-right border-right-gray"
                           style={{ display: "none" }}

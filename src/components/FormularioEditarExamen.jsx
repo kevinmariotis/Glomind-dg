@@ -366,7 +366,7 @@ function FormularioEditarExamen() {
     },
   };
 
-  const horas = Array.from({ length: 4 }, (_, index) => index);
+  const horas = Array.from({ length: 6 }, (_, index) => index);
   const minutos = Array.from({ length: 60 }, (_, index) => index);
   const porcentaje_en_total_curso = Array.from(
     { length: 100 },
