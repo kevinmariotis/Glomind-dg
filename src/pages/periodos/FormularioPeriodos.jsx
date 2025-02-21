@@ -27,6 +27,16 @@ const FormularioPeriodos = () => {
     nombre: [],
   });
 
+  const setErrorCampoGlobal = (index, newValue) => {
+    console.log(index, newValue);
+    if (index in erroresCampos) {
+      setErroresCampos((prevState) => ({
+        ...prevState,
+        [index]: [...(prevState[index] || []), newValue],
+      }));
+    }
+  };
+
   const obtenerValorInput = (e) => {
     setCamposPeriodos({
       ...camposPeriodo,
@@ -115,6 +125,7 @@ const FormularioPeriodos = () => {
           setPopup,
           response.status,
           typeof datos.datos !== "undefined" ? datos.datos : {},
+          setErrorCampoGlobal,
           false,
           { titulo: "", contenido: "" }
         );
@@ -217,121 +228,127 @@ const FormularioPeriodos = () => {
       {/* Fomulario de periodos */}
       <div className="row mt-5">
         <div className="col-lg-4">
-          <div className="card-theme py-4">
-            <form onSubmit={guardarPeriodos}>
-              <div className="col mb-3">
-                <h4>
-                  {camposPeriodo.edit ? "Editar" : "Crear"} periodo académico
-                </h4>
+          <div className="card-theme">
+            <div className="card-body">
+              <h5>
+                {camposPeriodo.edit ? "Editar" : "Crear"} periodo académico
+              </h5>
+              <div className="divider">
+                <span></span>
               </div>
-              <div className="col-lg-12">
-                <div className="form-group">
-                  <label className="label-text">Nombre</label>
-                  <input
-                    value={camposPeriodo.nombre ?? ""}
-                    onChange={obtenerValorInput}
-                    className="form-control form--control pl-3"
-                    type="text"
-                    name="nombre"
-                    maxLength="8"
-                    placeholder={`Ej: ${new Date().getFullYear()}-1`}
-                  />
-                  {erroresCampos["nombre"].length > 0 && (
-                    <SpamError mensaje={erroresCampos["nombre"]} />
+              <form onSubmit={guardarPeriodos}>
+                <div className="col-lg-12">
+                  <div className="form-group">
+                    <label className="label-text">Nombre</label>
+                    <input
+                      value={camposPeriodo.nombre ?? ""}
+                      onChange={obtenerValorInput}
+                      className="form-control form--control pl-3"
+                      type="text"
+                      name="nombre"
+                      maxLength="8"
+                      placeholder={`Ej: ${new Date().getFullYear()}-1`}
+                    />
+                    {erroresCampos["nombre"].length > 0 && (
+                      <SpamError mensaje={erroresCampos["nombre"]} />
+                    )}
+                  </div>
+                </div>
+                <div className="col-lg-12 text-right">
+                  <button
+                    className="btn theme-btn theme-btn-sm btn-round mr-2"
+                    type="submit"
+                  >
+                    Guardar
+                  </button>
+                  {camposPeriodo.edit && (
+                    <button
+                      className="btn theme-btn-dark theme-btn-sm btn-round"
+                      onClick={() => setCamposPeriodos({ edit: false })}
+                    >
+                      Cancelar
+                    </button>
                   )}
                 </div>
-              </div>
-              <div className="col-lg-12 text-right">
-                <button
-                  className="btn theme-btn theme-btn-sm btn-round mr-2"
-                  type="submit"
-                >
-                  Guardar
-                </button>
-                {camposPeriodo.edit && (
-                  <button
-                    className="btn theme-btn-dark theme-btn-sm btn-round"
-                    onClick={() => setCamposPeriodos({ edit: false })}
-                  >
-                    Cancelar
-                  </button>
-                )}
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
         {/* Lista de periodos */}
         <div className="col-lg-8">
-          <div className="card-theme p-4">
-            <div className="mb-3">
-              <h4>Lista de periodos académicos</h4>
-            </div>
-            <div className="table-responsive">
-              <table className="table generic-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {listaPeriodos.length > 0 ? (
-                    listaPeriodos.map((item, index) => (
-                      <tr key={`descargable-x-${index}`}>
-                        <td scope="row">{item.nombre}</td>
-                        <td scope="row">
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <div
-                              onClick={() => editarPeriodo(item.id)}
-                              // className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary"
-                              data-toggle="tooltip"
-                              data-placement="top"
-                              data-title="Editar configuración"
-                              title="Editar configuración"
-                              style={{
-                                color: "var(--Lavander)",
-                                fontSize: "30px",
-                              }}
-                            >
-                              <i className="la la-pen"></i>
-                            </div>
-                            <div
-                              onClick={() => {
-                                handleEliminarPeriodo(item.id);
-                              }}
-                              // className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger"
-                              data-toggle="tooltip"
-                              data-placement="top"
-                              title="Borrar"
-                              style={{
-                                color: "var(--Lavander)",
-                                fontSize: "30px",
-                              }}
-                            >
-                              <span
-                                data-toggle="modal"
-                                data-target="#itemDeleteModal"
-                                className="w-100 h-100 d-inline-block"
-                              >
-                                <i className="la la-trash"></i>
-                              </span>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
+          <div className="card-theme">
+            <div className="card-body">
+              <h5>Lista de periodos académicos</h5>
+              <div className="divider">
+                <span></span>
+              </div>
+              <div className="table-responsive">
+                <table className="table generic-table">
+                  <thead>
                     <tr>
-                      <td>No se encontraron registros</td>
+                      <th scope="col">Nombre</th>
+                      <th scope="col"></th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {listaPeriodos.length > 0 ? (
+                      listaPeriodos.map((item, index) => (
+                        <tr key={`descargable-x-${index}`}>
+                          <td scope="row">{item.nombre}</td>
+                          <td scope="row">
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <div
+                                onClick={() => editarPeriodo(item.id)}
+                                // className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-secondary"
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                data-title="Editar configuración"
+                                title="Editar configuración"
+                                style={{
+                                  color: "var(--Lavander)",
+                                  fontSize: "30px",
+                                }}
+                              >
+                                <i className="la la-pen"></i>
+                              </div>
+                              <div
+                                onClick={() => {
+                                  handleEliminarPeriodo(item.id);
+                                }}
+                                // className="icon-element icon-element-sm shadow-sm cursor-pointer ml-1 text-danger"
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                title="Borrar"
+                                style={{
+                                  color: "var(--Lavander)",
+                                  fontSize: "30px",
+                                }}
+                              >
+                                <span
+                                  data-toggle="modal"
+                                  data-target="#itemDeleteModal"
+                                  className="w-100 h-100 d-inline-block"
+                                >
+                                  <i className="la la-trash"></i>
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td>No se encontraron registros</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

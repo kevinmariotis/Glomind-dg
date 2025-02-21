@@ -527,11 +527,9 @@ function FormularioDashboardHuecoPreguntas() {
     switch (popUpConfirmar.tipo) {
       case "pregunta":
         handleBorrarPregunta();
-        return;
         break;
       case "hueco":
         handleBorrarHuecoPregunta();
-        return;
         break;
     }
   };
@@ -1163,7 +1161,7 @@ function FormularioDashboardHuecoPreguntas() {
                               <td>
                                 <div style={{ display: "flex" }}>
                                   <div
-                                    onClick={(event) => {
+                                    onClick={() => {
                                       handleClickEditarAgrupacion({
                                         id_agrupacion: tema.id,
                                         nombre_actual: tema.nombre,
