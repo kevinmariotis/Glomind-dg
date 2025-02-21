@@ -31,6 +31,7 @@ function FormularioCrearCurso() {
 
   const [nombre, setNombre] = useState("");
   const [codigo, setCodigo] = useState("");
+  const [periodo, setPeriodo] = useState("");
   const [nivel, setNivel] = useState("");
   const [tipoCurso, setTipoCurso] = useState("");
   const [promocionado, setPromocionado] = useState("");
@@ -68,6 +69,7 @@ function FormularioCrearCurso() {
   const [proposito_del_curso, setProposito_del_curso] = useState([]);
   const [queAprenderas, setQueAprenderas] = useState([]);
   const [requierimientos, setRequerimientos] = useState([]);
+  const [periodos, setPeriodos] = useState([]);
 
   const [mostrarSpinner, setMostrarSpinner] = useState(false);
 
@@ -93,6 +95,9 @@ function FormularioCrearCurso() {
   };
   const handleCodigoChange = (event) => {
     setCodigo(event.target.value);
+  };
+  const handlePeridoChange = (event) => {
+    setPeriodo(event.target.value);
   };
   const handleNivelChange = (event) => {
     setNivel(event.target.value);
@@ -144,6 +149,7 @@ function FormularioCrearCurso() {
   const camposErrores = {
     nombre: [],
     codigo: [],
+    id_periodo: [],
     nivel: [],
     promocionado: [],
     id_categoria: [],
@@ -321,6 +327,36 @@ function FormularioCrearCurso() {
     }
   };
 
+  const obtenerPeriodos = async () => {
+    const headers = {
+      Authorization: `Bearer ${jwt}`,
+    };
+    try {
+      const opciones = {
+        method: "GET",
+        headers: headers,
+      };
+      setMostrarSpinner(true);
+      const response2 = await fetch(`${urlBaseApi}/api/curso/form`, opciones);
+      setMostrarSpinner(false);
+
+      if (response2.ok) {
+        const datos2 = await response2.json();
+        setPeriodos(datos2?.periodos ?? []);
+      } else {
+        const datos2 = await response2.json();
+        mensajesDeError(
+          setPopup,
+          response2.status,
+          typeof datos2.datos !== "undefined" ? datos2.datos : {}
+        );
+      }
+    } catch (error) {
+      // Manejar el caso de error en la solicitud
+      console.error("Error en la solicitud al servidor", error);
+    }
+  };
+
   const obtenerDatosDocentes = async () => {
     const headers = {
       Authorization: `Bearer ${jwt}`,
@@ -415,6 +451,7 @@ function FormularioCrearCurso() {
     formData.append("nombre", nombre);
     formData.append("codigo", codigo);
     formData.append("nivel", nivel);
+    formData.append("id_periodo", periodo);
     formData.append("personalizado_tipo_curso", tipoCurso);
     formData.append("promocionado", promocionado);
     formData.append(
@@ -506,7 +543,8 @@ function FormularioCrearCurso() {
       setMostrarSpinner(true);
       const response = await fetch(`${urlBaseApi}/api/curso`, opciones);
       setMostrarSpinner(false);
-      const datos = await response.json();
+      const datos = await response?.json();
+
       if (response.ok) {
         //se guardó satisfactoriamente el curso
         setPopup({
@@ -547,6 +585,10 @@ function FormularioCrearCurso() {
   const fileList = acceptedFiles.map((file, index) => (
     <li key={`imagen-ajunta${index}`}>{file.name}</li>
   ));
+
+  useEffect(() => {
+    obtenerPeriodos();
+  }, []);
 
   return (
     <>
@@ -617,6 +659,28 @@ function FormularioCrearCurso() {
                       />
                       {erroresCampos["codigo"].length > 0 && (
                         <SpamError mensaje={erroresCampos["codigo"]} />
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-lg-6">
+                    <div className="form-group">
+                      <label className="label-text">Periodo academico</label>
+                      <select
+                        onChange={handlePeridoChange}
+                        name="id_periodo"
+                        className={`form-control ${
+                          temaActual == 1 ? "" : "select-dark"
+                        }`}
+                      >
+                        <option value=""> -- Seleccione --</option>
+                        {periodos.map((item) => (
+                          <>
+                            <option value={item.id}>{item.nombre}</option>
+                          </>
+                        ))}
+                      </select>
+                      {erroresCampos["id_periodo"].length > 0 && (
+                        <SpamError mensaje={erroresCampos["id_periodo"]} />
                       )}
                     </div>
                   </div>

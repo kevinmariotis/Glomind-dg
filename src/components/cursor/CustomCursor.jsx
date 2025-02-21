@@ -11,7 +11,7 @@ function CustomCursor() {
   const location = useLocation();
   const dispatch = useDispatch();
   const locationsNo90 = ["/", "/signup", "/login", "/recover"];
-  const partialLocationsNo90 = ["/examen/presentacion"];
+  const partialLocationsNo90 = ["/examen/presentacion", "/curso/notas"];
   const [cursorX, setCursorX] = useState(0);
   const [cursorY, setCursorY] = useState(0);
   const [deviceType, setDeviceType] = useState("");

@@ -57,7 +57,13 @@ function DashboardMenu() {
         </Link>
       </div>
       <ul className="generic-list-item off-canvas-menu-list off--canvas-menu-list pt-35px list-sm">
-        <li className={currentMenu === "/" || currentMenu === "/inicio" ? "page-active" : ""}>
+        <li
+          className={
+            currentMenu === "/" || currentMenu === "/inicio"
+              ? "page-active"
+              : ""
+          }
+        >
           <Link to="/">
             <i className="la la-home mr-2"></i> <span>Inicio</span>
           </Link>
@@ -68,7 +74,8 @@ function DashboardMenu() {
           }
         >
           <Link to="/cursos/matriculados">
-            <i className="la la-book mr-2"></i> <span>{esDocente ? "Cursos Asignados" : "Mis cursos"}</span>
+            <i className="la la-book mr-2"></i>{" "}
+            <span>{esDocente ? "Cursos Asignados" : "Mis cursos"}</span>
           </Link>
         </li>
         {/* <li className={currentMenu === '/cursos/favoritos' ? 'page-active' : ''}><Link to="/cursos/favoritos"><svg className="mr-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/></svg> Curso Favoritos</Link></li> */}
@@ -140,6 +147,14 @@ function DashboardMenu() {
             <Link to="/categoriasistema">
               <i className="la la-tag mr-2"></i>
               <span>Categorías y Tags</span>
+            </Link>
+          </li>
+        )}
+        {validarPermisos([107, 108, 109]) && (
+          <li className={currentMenu === "/periodos" ? "page-active" : ""}>
+            <Link to="/periodos">
+              <i className="la la-calendar mr-2"></i>
+              <span>Periodos</span>
             </Link>
           </li>
         )}

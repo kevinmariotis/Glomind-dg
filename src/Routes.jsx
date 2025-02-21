@@ -59,6 +59,7 @@ import DashboardMenu from "./components/DashboardMenu";
 // import Login from './components/login/Login';
 import SignUp from "./components/signUp/SignUp";
 import PaginaInicio from "./pages/inicio/PaginaInicio";
+import PaginaPeriodos from "./pages/periodos/PaginaPeriodos";
 import PaginaCalificaciones from "./pages/calificaciones/PaginaCalificaciones";
 import IntroScreen from "./components/intro/IntroScreen";
 import { useDispatch, useSelector } from "react-redux";
@@ -418,6 +419,14 @@ const Rutas = () => {
                 ])}
               >
                 <PaginaCategoriasSistema />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/periodos"
+            element={
+              <ProtectedRoute permiso={validarPermisos([107, 108, 109])}>
+                <PaginaPeriodos />
               </ProtectedRoute>
             }
           />

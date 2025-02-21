@@ -29,6 +29,7 @@ function FormularioEditarCurso() {
   const [nombre, setNombre] = useState("");
   const [codigo, setCodigo] = useState("");
   const [nivel, setNivel] = useState("");
+  const [periodo, setPeriodo] = useState("");
   const [tipoCurso, setTipoCurso] = useState("");
   const [promocionado, setPromocionado] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState({
@@ -70,6 +71,7 @@ function FormularioEditarCurso() {
   const [queAprenderas, setQueAprenderas] = useState([]);
   const [requierimientos, setRequerimientos] = useState([]);
   const [otherFields, setOtherFields] = useState({});
+  const [periodos, setPeriodos] = useState([]);
 
   const [mostrarSpinner, setMostrarSpinner] = useState(false);
 
@@ -99,6 +101,9 @@ function FormularioEditarCurso() {
   };
   const handleNivelChange = (event) => {
     setNivel(event.target.value);
+  };
+  const handlePeridoChange = (event) => {
+    setPeriodo(event.target.value);
   };
   const handleTipoCursoChange = (event) => {
     setTipoCurso(event.target.value);
@@ -151,6 +156,7 @@ function FormularioEditarCurso() {
     nombre: [],
     codigo: [],
     nivel: [],
+    id_periodo: [],
     promocionado: [],
     id_categoria: [],
     expedir_certificado: [],
@@ -313,6 +319,7 @@ function FormularioEditarCurso() {
         setNombre(datos.curso.nombre);
         setCodigo(datos.curso.codigo);
         setNivel(datos.curso.nivel);
+        setPeriodo(datos.curso.id_periodo);
         setTipoCurso(datos.curso.personalizado_tipo_curso);
         setPromocionado(datos.curso.promocionado);
         setExpedirCertificado(datos.curso.expedir_certificado);
@@ -481,6 +488,36 @@ function FormularioEditarCurso() {
     }
   };
 
+  const obtenerPeriodos = async () => {
+    const headers = {
+      Authorization: `Bearer ${jwt}`,
+    };
+    try {
+      const opciones = {
+        method: "GET",
+        headers: headers,
+      };
+      setMostrarSpinner(true);
+      const response2 = await fetch(`${urlBaseApi}/api/curso/form`, opciones);
+      setMostrarSpinner(false);
+
+      if (response2.ok) {
+        const datos2 = await response2.json();
+        setPeriodos(datos2?.periodos ?? []);
+      } else {
+        const datos2 = await response2.json();
+        mensajesDeError(
+          setPopup,
+          response2.status,
+          typeof datos2.datos !== "undefined" ? datos2.datos : {}
+        );
+      }
+    } catch (error) {
+      // Manejar el caso de error en la solicitud
+      console.error("Error en la solicitud al servidor", error);
+    }
+  };
+
   const obtenerDatosDocentes = async () => {
     const headers = {
       Authorization: `Bearer ${jwt}`,
@@ -618,6 +655,7 @@ function FormularioEditarCurso() {
       nombre: nombre.toString(),
       codigo: codigo.toString(),
       nivel: nivel.toString(),
+      id_periodo: periodo.toString(),
       personalizado_tipo_curso: tipoCurso.toString(),
       promocionado: promocionado.toString(),
       id_instructor:
@@ -745,6 +783,10 @@ function FormularioEditarCurso() {
     <li key={`imagen-ajunta${index}`}>{file.name}</li>
   ));
 
+  useEffect(() => {
+    obtenerPeriodos();
+  }, []);
+
   return (
     <>
       {mostrarSpinner && <Spinner />}
@@ -822,6 +864,29 @@ function FormularioEditarCurso() {
                   </div>
                   <div className="col-lg-6">
                     <div className="form-group">
+                      <label className="label-text">Periodo academico</label>
+                      <select
+                        onChange={handlePeridoChange}
+                        name="id_periodo"
+                        className={`form-control ${
+                          temaActual == 1 ? "" : "select-dark"
+                        }`}
+                        value={periodo}
+                      >
+                        <option value=""> -- Seleccione --</option>
+                        {periodos.map((item) => (
+                          <>
+                            <option value={item.id}>{item.nombre}</option>
+                          </>
+                        ))}
+                      </select>
+                      {erroresCampos["id_periodo"].length > 0 && (
+                        <SpamError mensaje={erroresCampos["id_periodo"]} />
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-lg-6">
+                    <div className="form-group">
                       <label className="label-text">Nivel</label>
                       <select
                         value={nivel}
@@ -852,6 +917,7 @@ function FormularioEditarCurso() {
                           className={`form-control ${
                             temaActual == 1 ? "" : "select-dark"
                           }`}
+                          value={tipoCurso}
                         >
                           <option value=""> -- Seleccione --</option>
                           {Object.keys(
