@@ -300,7 +300,6 @@ function FormularioEditarCurso() {
     setCategoriaSeleccionada({ id: 0, nombre: "Ninguna" });
     obtenerCategorias(0);
   };
-  console.log(otherFields);
 
   const obtenerDatosServidor = async () => {
     const headers = {
@@ -336,7 +335,7 @@ function FormularioEditarCurso() {
           datos.curso.precio_adicional_certificado.replace(/\D/g, "")
         );
         setDescripcion(datos.curso.desc_general);
-        console.log("....", datos);
+
         setOtherFields({
           desc_tiempo_certificado: datos.curso?.desc_tiempo_certificado,
           desc_asinc_horas_dedicacion: datos.curso?.desc_asinc_horas_dedicacion,
@@ -369,64 +368,6 @@ function FormularioEditarCurso() {
           ]);
         }
 
-        let area_de_formacionx =
-          datos.curso.area_de_formacion.split("<separador>");
-        area_de_formacionx.forEach(function (element) {
-          setArea_de_formacion((estadoActual) => {
-            if (!estadoActual.includes(element)) {
-              const nuevoEstado = new Set([...estadoActual, element]);
-              return Array.from(nuevoEstado);
-            }
-            return estadoActual; // El elemento ya existe, no se agrega
-          });
-        });
-        let fines_de_aprendizajex =
-          datos.curso.fines_de_aprendizaje.split("<separador>");
-        fines_de_aprendizajex.forEach(function (element) {
-          setFines_de_aprendizaje((estadoActual) => {
-            if (!estadoActual.includes(element)) {
-              const nuevoEstado = new Set([...estadoActual, element]);
-              return Array.from(nuevoEstado);
-            }
-            return estadoActual; // El elemento ya existe, no se agrega
-          });
-        });
-
-        let proposito_del_cursox =
-          datos.curso.proposito_del_curso.split("<separador>");
-        proposito_del_cursox.forEach(function (element) {
-          setProposito_del_curso((estadoActual) => {
-            if (!estadoActual.includes(element)) {
-              const nuevoEstado = new Set([...estadoActual, element]);
-              return Array.from(nuevoEstado);
-            }
-            return estadoActual; // El elemento ya existe, no se agrega
-          });
-        });
-        let queaprenderasx =
-          datos.curso.desc_que_aprenderas.split("<separador>");
-        queaprenderasx.forEach(function (element) {
-          setQueAprenderas((estadoActual) => {
-            if (!estadoActual.includes(element)) {
-              const nuevoEstado = new Set([...estadoActual, element]);
-              return Array.from(nuevoEstado);
-            }
-            return estadoActual; // El elemento ya existe, no se agrega
-          });
-        });
-
-        let requerimientosx =
-          datos.curso.desc_requerimientos.split("<separador>");
-        requerimientosx.forEach(function (element) {
-          setRequerimientos((estadoActual) => {
-            if (!estadoActual.includes(element)) {
-              const nuevoEstado = new Set([...estadoActual, element]);
-              return Array.from(nuevoEstado);
-            }
-            return estadoActual; // El elemento ya existe, no se agrega
-          });
-        });
-
         let arbolx = datos.arbol;
         let arbol_text = "";
         arbolx.forEach(function (element) {
@@ -440,6 +381,43 @@ function FormularioEditarCurso() {
           id: datos.curso.id_categoria,
         });
         obtenerCategorias(datos.curso.id_categoria);
+
+        const procesarYActualizarEstado = (datos, setter, campo) => {
+          let valores = datos.curso[campo].split("<separador>");
+          // Usamos un Set para eliminar duplicados
+          const nuevosValores = new Set(valores);
+
+          setter((estadoActual) => {
+            // Combinamos el estado actual con los nuevos valores sin duplicados
+            const nuevoEstado = new Set([...estadoActual, ...nuevosValores]);
+            return Array.from(nuevoEstado); // Convertimos de nuevo a array 
+          });
+        };
+        procesarYActualizarEstado(
+          datos,
+          setArea_de_formacion,
+          "area_de_formacion"
+        );
+        procesarYActualizarEstado(
+          datos,
+          setFines_de_aprendizaje,
+          "fines_de_aprendizaje"
+        );
+        procesarYActualizarEstado(
+          datos,
+          setProposito_del_curso,
+          "proposito_del_curso"
+        );
+        procesarYActualizarEstado(
+          datos,
+          setQueAprenderas,
+          "desc_que_aprenderas"
+        );
+        procesarYActualizarEstado(
+          datos,
+          setRequerimientos,
+          "desc_requerimientos"
+        );
       } else {
         const datos = await response.json();
         mensajesDeError(
