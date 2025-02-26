@@ -5,45 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 /* eslint-disable react/prop-types */
 const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
+  const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [modulos] = useState([
-    {
-      id: 1,
-      title: "Fundamentos de la Inteligencia Artificial",
-      description:
-        "Explora los conceptos clave, historia y evolución de la inteligencia artificial, con énfasis en su impacto en la educación. Aprende los principios básicos y cómo la IA transforma los procesos de enseñanza y aprendizaje.",
-      imagenes: ["/images/prueba/M1I1.png", "/images/prueba/M1I2.png"],
-    },
-    {
-      id: 2,
-      title: "Inteligencia Artificial Generativa",
-      description:
-        "Descubre cómo la IA generativa revoluciona la creación de contenidos educativos mediante herramientas innovadoras. Aprende a utilizarlas de manera efectiva y ética para enriquecer experiencias de aprendizaje.",
-      imagenes: ["/images/prueba/M2I1.png", "/images/prueba/M2I2.png"],
-    },
-    {
-      id: 3,
-      title: "Aplicaciones Prácticas de la IA en la Educación",
-      description:
-        "Conoce cómo implementar la IA para personalizar el aprendizaje, diseñar rúbricas, gamificar contenidos y desarrollar soluciones educativas inteligentes. Aprende a integrar estas herramientas en contextos educativos reales.",
-      imagenes: ["/images/prueba/M3I1.png", "/images/prueba/M3I2.png"],
-    },
-    {
-      id: 4,
-      title: "Ética, Privacidad y Regulación en Inteligencia Artificial",
-      description:
-        "Analiza los principios éticos, normativas y desafíos relacionados con el uso responsable de la IA en educación. Aprende a proteger datos, garantizar la privacidad y abordar dilemas éticos en su implementación.",
-      imagenes: ["/images/prueba/M4I1.png"],
-    },
-    {
-      id: 5,
-      title: "Proyecto Integrador y Taller de Innovación",
-      description:
-        "Diseña y prototipa soluciones educativas basadas en IA, aplicando la creatividad y el conocimiento adquirido. Presenta tu proyecto y recibe retroalimentación para perfeccionar tus propuestas innovadoras.",
-      imagenes: ["/images/prueba/M5I1.png", "/images/prueba/M5I2.png"],
-    },
-  ]);
   const [isOpen, setIsOpen] = useState([]);
   const [idHovered, setIdHovered] = useState(null);
   const [idIndexImageRendered, setIndexImageRendered] = useState(0);
@@ -57,6 +21,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
       setIsOpen([...isOpen, index]);
     }
   };
+
   const handleMouseEnter = (urlImage, id) => {
     if (!isOpen.includes(id)) {
       dispatch(
@@ -83,8 +48,10 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
     let timeoutId; // Variable para almacenar el ID del timeout
     if (idHovered) {
       let nextImage = 0;
-      const hoveredModule = modulos.find((item) => item.id === idHovered);
-      if (hoveredModule?.imagenes[idIndexImageRendered + 1]) {
+      const hoveredModule = datosCurso.contenido?.find(
+        (item) => item.id_categoria === idHovered
+      );
+      if (hoveredModule?.media[idIndexImageRendered + 1]) {
         nextImage = idIndexImageRendered + 1;
       }
 
@@ -93,7 +60,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
         dispatch(
           setImage({
             isImage: true,
-            urlImage: hoveredModule?.imagenes[nextImage],
+            urlImage: `${urlBaseApi}/${hoveredModule?.media[nextImage]?.media}`,
           })
         );
         setIndexImageRendered(nextImage);
@@ -115,6 +82,8 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
       }
     }
   }, [datosCurso]);
+
+  console.log(datosCurso)
 
   return (
     <>
@@ -141,23 +110,26 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                       fontSize: "20px",
                     }}
                   >
-                    A través de cinco módulos cuidadosamente estructurados, los
+                    {datosCurso.desc_general?.split("<br />")?.[0]}
+                    {/* A través de cinco módulos cuidadosamente estructurados, los
                     participantes explorarán desde los fundamentos de la IA
                     hasta su aplicación práctica en el aula, fomentando la
-                    innovación educativa y el aprendizaje significativo.
+                    innovación educativa y el aprendizaje significativo. */}
                   </p>
                 </div>
               </div>
-            <div style={{ width: "100%", textAlign: "left", marginTop: "20px" }}>
-              <button
-                className="btn theme-btn btn-round"
-                onClick={() => setVerBienvenida(false)}
-                style={{ marginLeft: "auto" }}
+              <div
+                style={{ width: "100%", textAlign: "left", marginTop: "20px" }}
               >
-                Ir al Diplomado
-                <i className="la la-arrow-right ml-2"></i>
-              </button>
-            </div>
+                <button
+                  className="btn theme-btn btn-round"
+                  onClick={() => setVerBienvenida(false)}
+                  style={{ marginLeft: "auto" }}
+                >
+                  Ir al Diplomado
+                  <i className="la la-arrow-right ml-2"></i>
+                </button>
+              </div>
             </div>
             <div style={{ padding: "10px 50px 50px 50px" }}>
               <div
@@ -179,7 +151,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                 style={{
                   margin: "20px 0",
                   // border: "1px solid var(--Azul-petroleo) !important",
-                  padding: "10px 30px"
+                  padding: "10px 30px",
                 }}
               >
                 <div className="lecture-overview-item m-0">
@@ -232,9 +204,9 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
             <div>
-              {modulos.map((modulo, index) => (
+              {datosCurso.contenido?.map((modulo, index) => (
                 <div key={index} style={{ marginBottom: "70px" }}>
                   <div
                     className="d-flex"
@@ -246,10 +218,17 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                     <div
                       className="text-left hover-50"
                       style={{
-                        maxWidth: "1300px",
+                        // maxWidth: "1300px",
+                        width: "80%"
                       }}
-                      onMouseEnter={() =>
-                        handleMouseEnter(modulo.imagenes[0], modulo.id)
+                      onMouseEnter={
+                        modulo.media?.length > 0
+                          ? () =>
+                              handleMouseEnter(
+                                `${urlBaseApi}/${modulo.media[0]?.media}`,
+                                modulo.id_categoria
+                              )
+                          : null
                       }
                       onMouseLeave={handleMouseLeave}
                     >
@@ -263,15 +242,15 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                       >
                         Módulo #{index + 1}
                       </h2>
-                      <h2 className="mb-3">{modulo.title}</h2>
-                      <p className="text-muted">{modulo.description}</p>
+                      <h2 className="mb-3">{modulo.nombre}</h2>
+                      <p className="text-muted">{modulo.descripcion}</p>
                     </div>
                     <div className="d-flex justify-content-center align-items-center">
                       <div className="text-center">
                         <button
                           className="btn theme-btn rounded-circle"
-                          onClick={() => toggleAccordion(modulo.id)}
-                          aria-expanded={isOpen.includes(modulo.id)}
+                          onClick={() => toggleAccordion(modulo.id_categoria)}
+                          aria-expanded={isOpen.includes(modulo.id_categoria)}
                           style={{
                             width: "70px",
                             height: "70px",
@@ -283,7 +262,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                         >
                           <i
                             className={`la ${
-                              isOpen.includes(modulo.id)
+                              isOpen.includes(modulo.id_categoria)
                                 ? "la-minus"
                                 : "la-plus"
                             }`}
@@ -295,15 +274,15 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                   </div>
                   <div
                     className={`my-4 collapse ${
-                      isOpen.includes(modulo.id) ? "show" : ""
+                      isOpen.includes(modulo.id_categoria) ? "show" : ""
                     }`}
                     style={{ padding: "0 40px" }}
                   >
                     <div className="d-flex">
-                      {modulo.imagenes.map((img, index) => (
+                      {modulo.media?.map((img, index) => (
                         <div key={index}>
                           <img
-                            src={img}
+                            src={`${urlBaseApi}/${img.media}`}
                             alt="AI Example 1"
                             className="img-fluid shadow"
                             style={{

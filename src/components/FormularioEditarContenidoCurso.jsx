@@ -21,18 +21,22 @@ import Button from "react-bootstrap/Button";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import GraficCircle from "./grafics/GraficCircle";
+import { clickOutsideHandler } from "ckeditor5";
+import { useSelector } from "react-redux";
 
 function FormularioEditarContenidoCurso() {
   const urlBase = import.meta.env.VITE_URL_BASE;
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const navigate = useNavigate();
   const location = useLocation();
+  const { camposPersonalizablesCursos } = useSelector((state) => state.config);
   const { id, url_amigable_volver } = useParams();
   const { jwt, permissions, urlAmigableVolver, setUrlAmigableVolver } =
     useContext(AuthContext);
   const [nombre, setNombre] = useState("");
   const [examenesSoloPago, setExamenesSoloPago] = useState(0);
   const [esDocente, setEsDocente] = useState(0);
+  const [tipoCurso, setTipoCurso] = useState(0);
   const [instructorEditaContenido, setInstructorEditaContenido] = useState(0);
   const [popUp, setPopup] = useState({
     mostrar: false,
@@ -98,6 +102,8 @@ function FormularioEditarContenidoCurso() {
   const [mostrarPopUpAgregarVideo, setMostrarPopUpAgregarVideo] =
     useState(false);
   const [nombreSeccion, setNombreSeccion] = useState("");
+  const [descripcionSeccion, setDescripcionSeccion] = useState("");
+  const [imagenesSeccion, setImagenesSeccion] = useState([]);
   const [idSeccionEditando, setIdSeccionEditando] = useState(-1);
   const [idSeccionAgregarContenido, setIdSeccionAgregarContenido] =
     useState(-1);
@@ -148,6 +154,20 @@ function FormularioEditarContenidoCurso() {
   const handleNombreSeccionChange = (event) => {
     setNombreSeccion(event.target.value);
   };
+  const handleDescripcionSeccionChange = (event) => {
+    setDescripcionSeccion(event.target.value);
+  };
+  const handleImagenSeccionChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImagenesSeccion([
+        ...imagenesSeccion,
+        { obj: file, url: imageUrl, new: true },
+      ]);
+    }
+    event.target.value = "";
+  };
 
   const handleFuncionAceptarPopUp = () => {
     setPopup({ ...popUp, mostrar: false });
@@ -166,6 +186,8 @@ function FormularioEditarContenidoCurso() {
   const handleAbrirCrearSeccion = (event) => {
     event.preventDefault();
     setNombreSeccion("");
+    setDescripcionSeccion("");
+    setImagenesSeccion([]);
     setMostrarPopUpCrearSeccion(true);
   };
   const handleCerrarCrearSeccion = () => {
@@ -281,17 +303,17 @@ function FormularioEditarContenidoCurso() {
         );
       }
 
-      const response2 = await fetch(
-        `${urlBaseApi}/api/curso/informacionBasica/${id}`,
-        opciones
-      );
+      const response2 = await fetch(`${urlBaseApi}/api/curso/${id}`, opciones);
       if (response2.ok) {
         const datos2 = await response2.json();
-        setNombre(datos2.nombre);
-        setExamenesSoloPago(datos2.examenes_solo_pago);
-        setEsDocente(datos2.es_docente);
-        if (datos2.instructor_edita_contenido) {
-          setInstructorEditaContenido(datos2.instructor_edita_contenido);
+        setNombre(datos2?.curso?.nombre);
+        setExamenesSoloPago(datos2?.curso?.examenes_solo_pago);
+        setEsDocente(datos2?.curso?.es_docente);
+        setTipoCurso(datos2?.curso?.personalizado_tipo_curso);
+        if (datos2?.curso?.instructor_edita_contenido) {
+          setInstructorEditaContenido(
+            datos2?.curso?.instructor_edita_contenido
+          );
         }
       } else {
         const datos2 = await response2.json();
@@ -391,12 +413,58 @@ function FormularioEditarContenidoCurso() {
     }
   };
 
+  const guardarImagenes = async (idSeccion) => {
+    const errores = [];
+    const completados = [];
+    for (let index = 0; index < imagenesSeccion.length; index++) {
+      const element = imagenesSeccion[index];
+      if (element.new) {
+        const formData = new FormData();
+        formData.append("id_curso_categoria", idSeccion);
+        formData.append("archivo", element.obj);
+
+        try {
+          const opciones = {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+            body: formData,
+          };
+          const response = await fetch(
+            `${urlBaseApi}/api/cursocategoriamedia`,
+            opciones
+          );
+          const datos = await response.json();
+
+          if (response.ok) {
+            completados.push({
+              index,
+              mostrar: true,
+              titulo: "Listo",
+              contenido: "Sección creada correctamente.",
+            });
+          } else {
+            errores.push({
+              mensaje: datos.mensaje,
+              nameImage: element.obj?.name,
+            });
+          }
+        } catch (error) {
+          console.error("Error de conexión:", error);
+        }
+      }
+    }
+    return { errores, completados };
+  };
+
   const handleCrearSeccion = async (event) => {
     event.preventDefault();
     reiniciarErrorCampoGlobal();
 
     const formData = new FormData();
     formData.append("nombre", nombreSeccion);
+    formData.append("descripcion", descripcionSeccion);
     formData.append("id_curso", id);
 
     const opciones = {
@@ -417,15 +485,26 @@ function FormularioEditarContenidoCurso() {
       const datos = await response.json();
       if (response.ok) {
         //se guardó satisfactoriamente el curso
-        setNombreSeccion("");
-        setMostrarPopUpCrearSeccion(false);
-        setPopup({
-          mostrar: true,
-          titulo: "Listo",
-          contenido: "Sección creada correctamente.",
-        });
+        const result = await guardarImagenes(datos.id_curso_categoria);
+        if (result.errores?.length === 0) {
+          setNombreSeccion("");
+          setDescripcionSeccion("");
+          setImagenesSeccion([]);
+          setMostrarPopUpCrearSeccion(false);
+          setPopup({
+            mostrar: true,
+            titulo: "Listo",
+            contenido: "Sección creada correctamente.",
+          });
+        } else {
+          console.log(1);
+          setPopup({
+            mostrar: true,
+            titulo: "Error en el cargue de imagenes",
+            contenido: `${result.errores[0]?.mensaje} -- ${result.errores[0]?.nameImage}`,
+          });
+        }
         obtenerDatosServidor();
-        return;
       } else {
         mensajesDeError(
           setPopup,
@@ -480,7 +559,6 @@ function FormularioEditarContenidoCurso() {
       const datos = await response.json();
       if (response.ok) {
         obtenerDatosServidor();
-        return;
       } else {
         mensajesDeError(
           setPopup,
@@ -558,16 +636,74 @@ function FormularioEditarContenidoCurso() {
     }
   };
 
-  const handleEditarSeccion = (event, id_categoria, nombre_actual) => {
+  const handleEditarSeccion = async (event, id_categoria, values) => {
     event.preventDefault();
-    setNombreSeccion(nombre_actual);
-    setIdSeccionEditando(id_categoria);
-    setMostrarPopUpEditarSeccion(true);
+
+    const opciones = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    };
+    const response = await fetch(
+      `${urlBaseApi}/api/cursocategoria/media/${id_categoria}`,
+      opciones
+    );
+    const datos = await response.json();
+    if (response.ok) {
+      setNombreSeccion(values.nombre);
+      setDescripcionSeccion(values.descripcion);
+      setIdSeccionEditando(id_categoria);
+      setMostrarPopUpEditarSeccion(true);
+      setImagenesSeccion(
+        datos.map((item) => {
+          return { url: `${urlBaseApi}/${item.media}`, id: item.id };
+        })
+      );
+    }
+  };
+
+  const eliminarImagenSeccion = async (id, isNew, img) => {
+    if (isNew) {
+      setImagenesSeccion((current) => current.filter((_, i) => i !== id));
+    } else {
+      const opciones = {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      };
+      setMostrarSpinner(true);
+      const response = await fetch(
+        `${urlBaseApi}/api/cursocategoriamedia/${id}`,
+        opciones
+      );
+      setMostrarSpinner(false);
+      if (response.ok) {
+        setImagenesSeccion((current) =>
+          current.filter((item) => item.id !== id)
+        );
+        setPopup({
+          mostrar: true,
+          titulo: "Listo",
+          contenido: "Imagen eliminada correctamente.",
+        });
+      } else {
+        mensajesDeError(
+          setPopup,
+          response.status,
+          typeof datos.datos !== "undefined" ? datos.datos : {},
+          setErrorCampoGlobal,
+          { titulo: "", contenido: "" }
+        );
+      }
+    }
   };
 
   const editarSeccion = async (event) => {
     const raw = {
       nombre: nombreSeccion,
+      descripcion: descripcionSeccion,
     };
     const opciones = {
       method: "PUT",
@@ -583,17 +719,26 @@ function FormularioEditarContenidoCurso() {
         `${urlBaseApi}/api/cursocategoria/${idSeccionEditando}`,
         opciones
       );
-      setMostrarSpinner(false);
       const datos = await response.json();
       if (response.ok) {
-        setMostrarPopUpEditarSeccion(false);
-        setPopup({
-          mostrar: true,
-          titulo: "Listo",
-          contenido: "Sección editada correctamente.",
-        });
+        const result = await guardarImagenes(idSeccionEditando);
+        console.log(result);
+        if (result.errores?.length === 0) {
+          setMostrarPopUpEditarSeccion(false);
+          setPopup({
+            mostrar: true,
+            titulo: "Listo",
+            contenido: "Sección editada correctamente.",
+          });
+        } else {
+          setPopup({
+            mostrar: true,
+            titulo: "Error en el cargue de imagenes",
+            contenido: `${result.errores[0]?.mensaje} -- ${result.errores[0]?.nameImage}`,
+          });
+        }
         obtenerDatosServidor();
-        return;
+        setMostrarSpinner(false);
       } else {
         mensajesDeError(
           setPopup,
@@ -668,7 +813,7 @@ function FormularioEditarContenidoCurso() {
   const handleSubirDescargable = async (event) => {
     event.preventDefault();
     reiniciarErrorCampoGlobal();
-    
+
     if (popUpDescargable.archivo_seleccionado != null) {
       setMostrarSpinner(true);
       const formData = new FormData();
@@ -677,9 +822,9 @@ function FormularioEditarContenidoCurso() {
       formData.append("nombre", popUpDescargable.nombre);
       formData.append("descripcion", popUpDescargable.descripcion);
       formData.append("archivo", popUpDescargable.archivo_seleccionado);
-      
+
       const xhr = new XMLHttpRequest();
-      
+
       // Escuchamos el evento de progreso para actualizar el estado del progreso.
       xhr.upload.addEventListener("progress", (event) => {
         if (event.lengthComputable) {
@@ -687,7 +832,7 @@ function FormularioEditarContenidoCurso() {
           //setProgress(percentage.toFixed(0));
         }
       });
-      
+
       // Evento de finalización de la carga.
       xhr.onload = () => {
         setMostrarSpinner(false);
@@ -1435,11 +1580,88 @@ function FormularioEditarContenidoCurso() {
                     name="nombre"
                     maxLength="128"
                     value={nombreSeccion}
-                    placeholder="Ej: Manipulación del DOM con React"
+                    placeholder=""
                   />
                   {erroresCampos["nombre"].length > 0 && (
                     <SpamError mensaje={erroresCampos["nombre"]} />
                   )}
+                </div>
+                {camposPersonalizablesCursos.tipos_curso[tipoCurso]
+                  ?.editar_seccion_descripcion && (
+                  <div className="form-group">
+                    <label className="label-text">Descripcion</label>
+                    <textarea
+                      onChange={handleDescripcionSeccionChange}
+                      className="form-control form--control pl-3"
+                      type="text"
+                      name="descripcion"
+                      value={descripcionSeccion}
+                    />
+                    {erroresCampos["descripcion"].length > 0 && (
+                      <SpamError mensaje={erroresCampos["descripcion"]} />
+                    )}
+                  </div>
+                )}
+                {camposPersonalizablesCursos.tipos_curso[tipoCurso]
+                  ?.editar_seccion_media && (
+                  <div className="form-group">
+                    <label className="label-text">Cargar una imagen</label>
+                    <input
+                      onChange={handleImagenSeccionChange}
+                      className="form-control form--control pl-3"
+                      type="file"
+                      name="imagen"
+                    />
+                  </div>
+                )}
+                <div className="row">
+                  {imagenesSeccion.length > 0 && (
+                    <h4 className="col-12">Imagenes Cargadas</h4>
+                  )}
+                  {imagenesSeccion.map((img, indexImage) => (
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "200px",
+                        height: "200px",
+                        margin: "10px",
+                      }}
+                    >
+                      <i
+                        onClick={() =>
+                          eliminarImagenSeccion(
+                            img.new ? indexImage : img.id,
+                            img.new
+                          )
+                        }
+                        className="la la-times"
+                        style={{
+                          color: "var(--Lavander)",
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          margin: "10px",
+                          background: "var(--Blanco-fondo)",
+                          padding: "5px",
+                          borderRadius: "10px",
+                        }}
+                      ></i>
+                      <img
+                        src={img.url}
+                        alt="imagen de seccion"
+                        style={{
+                          width: "200px",
+                          height: "200px",
+                          borderRadius: "20px",
+                          objectFit: "cover",
+                          objectPosition: "center",
+                        }}
+                      />
+                      {erroresCampos["imagen"].length > 0 && (
+                        <SpamError mensaje={erroresCampos["imagen"]} />
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="modal-footer border-top-gray">
@@ -1501,11 +1723,89 @@ function FormularioEditarContenidoCurso() {
                     name="nombre"
                     maxLength="128"
                     value={nombreSeccion}
-                    placeholder="Ej: Manipulación del DOM con React"
+                    placeholder=""
                   />
                   {erroresCampos["nombre"].length > 0 && (
                     <SpamError mensaje={erroresCampos["nombre"]} />
                   )}
+                </div>
+                {camposPersonalizablesCursos.tipos_curso[tipoCurso]
+                  ?.editar_seccion_descripcion && (
+                  <div className="form-group">
+                    <label className="label-text">Descripcion</label>
+                    <textarea
+                      onChange={handleDescripcionSeccionChange}
+                      className="form-control form--control pl-3"
+                      type="text"
+                      name="descripcion"
+                      value={descripcionSeccion}
+                    />
+                    {erroresCampos["descripcion"].length > 0 && (
+                      <SpamError mensaje={erroresCampos["descripcion"]} />
+                    )}
+                  </div>
+                )}
+                {camposPersonalizablesCursos.tipos_curso[tipoCurso]
+                  ?.editar_seccion_media && (
+                  <div className="form-group">
+                    <label className="label-text">Cargar una imagen</label>
+                    <input
+                      onChange={handleImagenSeccionChange}
+                      className="form-control form--control pl-3"
+                      type="file"
+                      name="imagen"
+                    />
+                  </div>
+                )}
+                <div className="row">
+                  {imagenesSeccion.length > 0 && (
+                    <h4 className="col-12">Imagenes Cargadas</h4>
+                  )}
+                  {imagenesSeccion.map((img, indexImage) => (
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "200px",
+                        height: "200px",
+                        margin: "10px",
+                      }}
+                    >
+                      <i
+                        onClick={() =>
+                          eliminarImagenSeccion(
+                            img.new ? indexImage : img.id,
+                            img.new,
+                            img
+                          )
+                        }
+                        className="la la-times"
+                        style={{
+                          color: "var(--Lavander)",
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          margin: "10px",
+                          background: "var(--Blanco-fondo)",
+                          padding: "5px",
+                          borderRadius: "10px",
+                        }}
+                      ></i>
+                      <img
+                        src={img.url}
+                        alt="imagen de seccion"
+                        style={{
+                          width: "200px",
+                          height: "200px",
+                          borderRadius: "20px",
+                          objectFit: "cover",
+                          objectPosition: "center",
+                        }}
+                      />
+                      {erroresCampos["imagen"].length > 0 && (
+                        <SpamError mensaje={erroresCampos["imagen"]} />
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="modal-footer border-top-gray">
@@ -1837,7 +2137,7 @@ function FormularioEditarContenidoCurso() {
                           handleEditarSeccion(
                             event,
                             contenido[key].id_categoria,
-                            contenido[key].nombre
+                            contenido[key]
                           );
                         }}
                         data-toggle="tooltip"
