@@ -8,6 +8,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [modulos, setModulos] = useState([]);
   const [isOpen, setIsOpen] = useState([]);
   const [idHovered, setIdHovered] = useState(null);
   const [idIndexImageRendered, setIndexImageRendered] = useState(0);
@@ -48,7 +49,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
     let timeoutId; // Variable para almacenar el ID del timeout
     if (idHovered) {
       let nextImage = 0;
-      const hoveredModule = datosCurso.contenido?.find(
+      const hoveredModule = modulos?.find(
         (item) => item.id_categoria === idHovered
       );
       if (hoveredModule?.media[idIndexImageRendered + 1]) {
@@ -81,9 +82,16 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
         setVerBienvenida(false);
       }
     }
+    setModulos(
+      datosCurso.contenido?.map((item) => {
+        const result = item.media?.filter(
+          (value, index, self) =>
+            index === self.findIndex((t) => t.id === value.id)
+        );
+        return { ...item, media: result };
+      })
+    );
   }, [datosCurso]);
-
-  console.log(datosCurso)
 
   return (
     <>
@@ -206,7 +214,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
               </div>
             </div>
             <div>
-              {datosCurso.contenido?.map((modulo, index) => (
+              {modulos?.map((modulo, index) => (
                 <div key={index} style={{ marginBottom: "70px" }}>
                   <div
                     className="d-flex"
@@ -219,7 +227,7 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                       className="text-left hover-50"
                       style={{
                         // maxWidth: "1300px",
-                        width: "80%"
+                        width: "80%",
                       }}
                       onMouseEnter={
                         modulo.media?.length > 0
@@ -278,9 +286,9 @@ const PaginaBienvenida = ({ datosCurso = {}, setVerBienvenida }) => {
                     }`}
                     style={{ padding: "0 40px" }}
                   >
-                    <div className="d-flex">
+                    <div className="row">
                       {modulo.media?.map((img, index) => (
-                        <div key={index}>
+                        <div className="col-lg-3 col-sm-6" key={index}>
                           <img
                             src={`${urlBaseApi}/${img.media}`}
                             alt="AI Example 1"
