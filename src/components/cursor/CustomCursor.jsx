@@ -139,7 +139,7 @@ function CustomCursor() {
               }
             `}
           </style>
-          {VITE_CURSOR === "false" && (
+          {VITE_CURSOR === "true" && (
             <style>
               {`
               * {
@@ -159,7 +159,7 @@ function CustomCursor() {
             </>
           ) : (
             <>
-              {VITE_CURSOR === "false" && (
+              {VITE_CURSOR === "true" && (
                 <>
                   <div
                     id="cursor"
