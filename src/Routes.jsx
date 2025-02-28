@@ -70,6 +70,7 @@ import ChatBot from "./components/bot/ChatBot";
 //import Home from './components/Home';
 
 const Rutas = () => {
+  const VITE_CHAT_BOT = import.meta.env.VITE_CHAT_BOT;
   const { authenticated, permissions, esDocente } = useContext(AuthContext); //se obtiene los datos del contexto de la sesion (AuthContext)
   const { showIntro, showApp } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -106,7 +107,9 @@ const Rutas = () => {
         urlSinMenu.every((item) => !location.pathname?.includes(item)) && (
           <DashboardMenu />
         )}
-      {authenticated && !showIntro && <ChatBot />}
+      {VITE_CHAT_BOT === "true" && (
+        <>{authenticated && !showIntro && <ChatBot />}</>
+      )}
 
       {(!authenticated || showApp) && (
         <Routes>

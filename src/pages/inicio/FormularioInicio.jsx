@@ -10,6 +10,8 @@ import TarjetaCategoriaAdmin from "../../components/cards/TarjetaCategoriaAdmin"
 
 const FormularioInicio = () => {
   const urlBaseApi = import.meta.env.VITE_URL_BASE_API;
+  const VITE_OFERTA_ACADEMICA = import.meta.env.VITE_OFERTA_ACADEMICA;
+
   const { jwt, nombres, esDocente } = useContext(AuthContext);
 
   const [categoriasNiveles, setCategoriasNiveles] = useState([
@@ -143,68 +145,72 @@ const FormularioInicio = () => {
           </div>
         )}
 
-        <CustomBreandcrumb
-          titles={[...categoriasNiveles.map((item) => item.nombre)]}
-        />
+        {VITE_OFERTA_ACADEMICA === "true" && (
+          <CustomBreandcrumb
+            titles={[...categoriasNiveles.map((item) => item.nombre)]}
+          />
+        )}
 
-        {loading ? (
-          <Spinner />
-        ) : categorias.length > 0 ? (
-          <div className="row">
-            {categoriasNiveles.length !== 2 &&
-              categorias.map((categoria) => (
-                <TarjetaCategoriaAdmin
-                  key={`tarjeta-categoria-admin-${categoria.id}`}
-                  id_categoria={categoria.id}
-                  nombre={categoria.nombre}
-                  imagen={categoria.imagen_pequena}
-                  funcionNavegar={cambiarCategoria}
-                  funcionCantidadCursos={contarCursosCategoria}
-                />
-                // <div key={`cat-${index}`} className="col-lg-3 p-3">
-                //   <div
-                //     className="card-basic"
-                //     onClick={() => cambiarCategoria(categoria.id)}
-                //   >
-                //     <div>
-                //       <h2>{categoria.nombre}</h2>
-                //       {categoriaSeleccionada !== 0 && (
-                //         <p>
-                //           ( {cursos.length}{" "}
-                //           {cursos.length === 1 ? "Resultado" : "Resultados"})
-                //         </p>
-                //       )}
-                //     </div>
-                //   </div>
-                // </div>
-              ))}
-            {categoriasNiveles.length === 2 &&
-              categorias.map((categoria) => (
-                <div
-                  key={`tarjeta-categoria-admin-${categoria.id}`}
-                  className="col-lg-3 py-3"
-                >
-                  <CardPensum
-                    title={categoria.nombre}
-                    img={
-                      categoria.imagen_pequena != null
-                        ? urlBaseApi + "/" + categoria.imagen_pequena
-                        : "/images/img8.jpg"
-                    }
-                    description={categoria.descripcion}
-                    path="https://uvirtualad.mx"
-                    value={categoria.personalizado_2 ?? "0.0"}
-                    items={[
-                      categoriasNiveles[1]?.nombre,
-                      categoria.personalizado_3,
-                      categoria.personalizado_4?.split(" ")[0] ?? "",
-                      categoria.personalizado_5?.split(" ")[0] ?? "",
-                      categoria.personalizado_6,
-                    ]}
-                  />
-                </div>
-              ))}
-            {/* <TarjetaCategoriaAdmin
+        {VITE_OFERTA_ACADEMICA === "true" && (
+          <>
+            {loading ? (
+              <Spinner />
+            ) : categorias.length > 0 ? (
+              <div className="row">
+                {categoriasNiveles.length !== 2 &&
+                  categorias.map((categoria) => (
+                    <TarjetaCategoriaAdmin
+                      key={`tarjeta-categoria-admin-${categoria.id}`}
+                      id_categoria={categoria.id}
+                      nombre={categoria.nombre}
+                      imagen={categoria.imagen_pequena}
+                      funcionNavegar={cambiarCategoria}
+                      funcionCantidadCursos={contarCursosCategoria}
+                    />
+                    // <div key={`cat-${index}`} className="col-lg-3 p-3">
+                    //   <div
+                    //     className="card-basic"
+                    //     onClick={() => cambiarCategoria(categoria.id)}
+                    //   >
+                    //     <div>
+                    //       <h2>{categoria.nombre}</h2>
+                    //       {categoriaSeleccionada !== 0 && (
+                    //         <p>
+                    //           ( {cursos.length}{" "}
+                    //           {cursos.length === 1 ? "Resultado" : "Resultados"})
+                    //         </p>
+                    //       )}
+                    //     </div>
+                    //   </div>
+                    // </div>
+                  ))}
+                {categoriasNiveles.length === 2 &&
+                  categorias.map((categoria) => (
+                    <div
+                      key={`tarjeta-categoria-admin-${categoria.id}`}
+                      className="col-lg-3 py-3"
+                    >
+                      <CardPensum
+                        title={categoria.nombre}
+                        img={
+                          categoria.imagen_pequena != null
+                            ? urlBaseApi + "/" + categoria.imagen_pequena
+                            : "/images/img8.jpg"
+                        }
+                        description={categoria.descripcion}
+                        path="https://uvirtualad.mx"
+                        value={categoria.personalizado_2 ?? "0.0"}
+                        items={[
+                          categoriasNiveles[1]?.nombre,
+                          categoria.personalizado_3,
+                          categoria.personalizado_4?.split(" ")[0] ?? "",
+                          categoria.personalizado_5?.split(" ")[0] ?? "",
+                          categoria.personalizado_6,
+                        ]}
+                      />
+                    </div>
+                  ))}
+                {/* <TarjetaCategoriaAdmin
                 key={`tarjeta-categoria-admin-${categoria.id}`}
                 id_categoria={categoria.id}
                 nombre={categoria.nombre}
@@ -212,9 +218,11 @@ const FormularioInicio = () => {
                 funcionNavegar={cambiarCategoria}
                 totalCursos={cursos.length}
               /> */}
-          </div>
-        ) : (
-          <p>Lo sentimos, no se encontraron resultados</p>
+              </div>
+            ) : (
+              <p>Lo sentimos, no se encontraron resultados</p>
+            )}
+          </>
         )}
         {/* Cursos recientes */}
         <CursosRecientes />

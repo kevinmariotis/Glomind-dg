@@ -6,6 +6,7 @@ import { AuthContext } from "../../AuthContext";
 import { setImage } from "../../redux/slices/CursorSlice";
 
 function CustomCursor() {
+  const VITE_CURSOR = import.meta.env.VITE_CURSOR;
   const { esMovil } = useContext(AuthContext);
   const { isImage, urlImage } = useSelector((state) => state.cursor);
   const location = useLocation();
@@ -101,48 +102,53 @@ function CustomCursor() {
         <div>
           <style>
             {`
-        * {
-            margin: 0;
-            cursor: none !important;
-        }
+              #cursor {
+                  position: absolute;
+                  background-color: var(--Lavander);
+                  height: 12px;
+                  width: 12px;
+                  border-radius: 50%;
+                  transform: translate(-50%, -50%);
+                  pointer-events: none;
+                  transition: background-color 0.2s ease;
+                  z-index: 99999;
+                  border: 1px solid var(--Azul-petroleo);
+              }
 
-        #cursor {
-            position: absolute;
-            background-color: var(--Lavander);
-            height: 12px;
-            width: 12px;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            transition: background-color 0.2s ease;
-            z-index: 99999;
-            border: 1px solid var(--Azul-petroleo);
-        }
+              #cursor-image {
+                  position: absolute;            
+                  width: 300px;
+                  transform: translate(-50%, -50%);
+                  pointer-events: none;
+                  z-index: 99999;
+                  border-radius: 15px;
+                  opacity: 0.7;
+              }
 
-        #cursor-image {
-            position: absolute;            
-            width: 300px;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 99999;
-            border-radius: 15px;
-            opacity: 0.7;
-        }
-
-        #cursor-border {
-            position: absolute;
-            width: ${buttonHovered ? "70px" : "40px"};
-            height: ${buttonHovered ? "70px" : "40px"};
-            background-color: transparent;
-            border: 3px solid var(--Azul-petroleo);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 99999;
-            transition: all 0.2s ease-out;
-        }
-      `}
+              #cursor-border {
+                  position: absolute;
+                  width: ${buttonHovered ? "70px" : "40px"};
+                  height: ${buttonHovered ? "70px" : "40px"};
+                  background-color: transparent;
+                  border: 3px solid var(--Azul-petroleo);
+                  border-radius: 50%;
+                  transform: translate(-50%, -50%);
+                  pointer-events: none;
+                  z-index: 99999;
+                  transition: all 0.2s ease-out;
+              }
+            `}
           </style>
+          {VITE_CURSOR === "false" && (
+            <style>
+              {`
+              * {
+                  margin: 0;
+                  cursor: none !important;
+              }
+            `}
+            </style>
+          )}
           {isImage ? (
             <>
               <img
@@ -153,11 +159,15 @@ function CustomCursor() {
             </>
           ) : (
             <>
-              <div
-                id="cursor"
-                style={{ left: `${cursorX}px`, top: `${cursorY}px` }}
-              ></div>
-              <div id="cursor-border"></div>
+              {VITE_CURSOR === "false" && (
+                <>
+                  <div
+                    id="cursor"
+                    style={{ left: `${cursorX}px`, top: `${cursorY}px` }}
+                  ></div>
+                  <div id="cursor-border"></div>
+                </>
+              )}
             </>
           )}
         </div>

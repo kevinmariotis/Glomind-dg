@@ -11,7 +11,7 @@ import CustomCursor from "./cursor/CustomCursor";
 
 function App() {
   const persistor = persistStore(store);
-  
+
   useEffect(() => {
     fijarHeader();
   }, []);
