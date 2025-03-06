@@ -28,7 +28,7 @@ const FomularioCalificaciones = () => {
   const [muted, setMuted] = useState(false);
 
   // State navbar
-  const [showNav, setShowNav] = useState(false);
+  const [showNav, setShowNav] = useState(true);
 
   const fabStyle = {
     position: "fixed",
@@ -148,6 +148,95 @@ const FomularioCalificaciones = () => {
       obtenerActividades();
     }
   }, [cursoSeleccionado]);
+
+  let [questionBank, setQuestionBank] = useState([
+    // Nivel 0
+    {
+      ubication: 'NORTH',
+      position: { top: 95 },
+      private_hole: ''
+    },
+    {
+      ubication: 'EAST',
+      position: { left: 95 },
+      private_hole: ''
+    },
+    {
+      ubication: 'SOUTH',
+      position: { bottom: 20 },
+      private_hole: ''
+    },
+    {
+      ubication: 'WEST',
+      position: { left: -95 },
+      private_hole: ''
+    },
+    // Nivel 1
+    // Norte 1
+    {
+      ubication: 'N1',
+      position: { right: 20, top: 190 },
+      private_hole: ''
+    },
+    {
+      ubication: 'N2',
+      position: { top: 190 },
+      private_hole: ''
+    },
+    {
+      ubication: 'N3',
+      position: { left: 95, top: 190 },
+      private_hole: ''
+    },
+    // Este 1
+    {
+      ubication: 'E1',
+      position: { left: 0 },
+      private_hole: ''
+    },
+    {
+      ubication: 'E2',
+      position: { left: 188 },
+      private_hole: ''
+    },
+    {
+      ubication: 'E3',
+      position: { left: 0 },
+      private_hole: ''
+    },
+    // Sur 1
+    {
+      ubication: 'S1',
+      position: { left: -50, bottom: 115 },
+      private_hole: ''
+    },
+    {
+      ubication: 'S2',
+      position: { left: 50, bottom: 115 },
+      private_hole: ''
+    },
+    {
+      ubication: 'S3',
+      position: { left: 0 },
+      private_hole: ''
+    },
+    // Oeste 1
+    {
+      ubication: 'W1',
+      position: { left: 0 },
+      private_hole: ''
+    },
+    {
+      ubication: 'W2',
+      position: { left: -188 },
+      private_hole: ''
+    },
+    {
+      ubication: 'W3',
+      position: { left: 0 },
+      private_hole: ''
+    },
+  ])
 
   let [dropdowns, setDropdowns] = useState([
     // FAKE
@@ -379,9 +468,9 @@ const FomularioCalificaciones = () => {
       dropdown.status = false;
       if (
         dropdown.id === 1 ||
-        dropdown.id === 2 ||
-        dropdown.id === 3 ||
-        dropdown.id === 4 ||
+        // dropdown.id === 2 ||
+        // dropdown.id === 3 ||
+        // dropdown.id === 4 ||
         dropdown.id === 5
       ) {
         document.getElementById(`drop-${dropdown.id}`).style.visibility =
@@ -515,7 +604,7 @@ const FomularioCalificaciones = () => {
             </button>
             {showNav && (
               <>
-                <button
+                {/* <button
                   className="btn theme-btn btn-round"
                   style={{
                     padding: "5px 20px",
@@ -561,7 +650,7 @@ const FomularioCalificaciones = () => {
                     style={{ marginRight: "10px" }}
                   />
                   Licenciatura
-                </button>
+                </button> */}
                 <button
                   className="btn theme-btn btn-round ml-2"
                   style={{
@@ -775,7 +864,8 @@ const FomularioCalificaciones = () => {
                     fontSize: "24px",
                     padding: "0",
                     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                    visibility: dropdown.id !== 1 && "hidden",
+                    // visibility: (dropdown.id !== 1 && dropdown.id !== 2 && dropdown.id !== 3 && dropdown.id !== 4 && dropdown.id !== 5) && "hidden",
+                    visibility: (dropdown.id !== 1 && dropdown.id !== 5) && "hidden",
                   }}
                   onClick={() => {
                     selectOpt(dropdown);
@@ -856,7 +946,7 @@ const FomularioCalificaciones = () => {
                   setLevelOne("");
                   setLevelTwo("");
                   setLevelThree("");
-                  setShowNav(false);
+                  setShowNav(true);
                 }}
               >
                 <i className="la la-arrow-left icon mr-1"></i>
