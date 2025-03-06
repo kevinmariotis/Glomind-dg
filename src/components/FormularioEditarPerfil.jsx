@@ -1057,7 +1057,7 @@ function FormularioEditarPerfil() {
                     <div className="form-group">
                       <input
                         onChange={handleCedulaChange}
-                        maxLength={16}
+                        maxLength={40}
                         className="form-control form--control"
                         type="text"
                         name="text"
