@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import ThemePicker from "./ThemePicker";
@@ -18,7 +18,7 @@ function HeaderTop() {
               <ul className="generic-list-item d-flex flex-wrap align-items-center fs-14">
                 <li className="d-flex align-items-center">
                   <i className="la la-envelope-o mr-1"></i>
-                  <a href="mailto:info@uvirtualad.mx">
+                  <a href="mailto:soporteglomind@desoftinn.com">
                     soporteglomind@desoftinn.com
                   </a>
                 </li>
